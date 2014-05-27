@@ -20,8 +20,7 @@
 
 
 #include <aspect/compositional_initial_conditions/boundary_layers.h>
-#include <aspect/geometry_model/box.h>
-#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
@@ -40,16 +39,22 @@ namespace aspect
           if ((depth < upper_layer_thickness)
               || (depth > maximal_depth - lower_layer_thickness))
             return 0.0;
-          else
+          else if ((depth > upper_layer_thickness)
+              && (depth < lithosphere_thickness))
             return 1.0;
+          else
+            return 1-mantle_morb_content;
         }
       else if (n_comp == 1)
         {
           if ((depth < upper_layer_thickness)
               || (depth > maximal_depth - lower_layer_thickness))
             return 1.0;
-          else
+          else if ((depth > upper_layer_thickness)
+              && (depth < lithosphere_thickness))
             return 0.0;
+          else
+            return mantle_morb_content;
         }
       return 0.0;
     }
@@ -68,6 +73,12 @@ namespace aspect
           prm.declare_entry ("Lower boundary layer thickness","150000",
                              Patterns::Double (0),
                              "The thickness of the lower boundary layer.");
+          prm.declare_entry ("Lithosphere thickness","100000",
+                             Patterns::Double (0),
+                             "The thickness of the oceanic lithosphere.");
+          prm.declare_entry ("Mantle morb content","0.18",
+                             Patterns::Double (0),
+                             "The MORB content of the general mantle.");
         }
         prm.leave_subsection();
       }
@@ -88,6 +99,8 @@ namespace aspect
         prm.enter_subsection("Boundary layers");
         {
           lower_layer_thickness          = prm.get_double ("Lower boundary layer thickness");
+          lithosphere_thickness          = prm.get_double ("Lithosphere thickness");
+          mantle_morb_content            = prm.get_double ("Mantle morb content");
           upper_layer_thickness          = prm.get_double ("Upper boundary layer thickness");
         }
 

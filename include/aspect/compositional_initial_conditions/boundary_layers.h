@@ -75,6 +75,8 @@ namespace aspect
       private:
         unsigned int n_compositional_fields;
         double lower_layer_thickness;
+        double lithosphere_thickness;
+        double mantle_morb_content;
         double upper_layer_thickness;
     };
   }
