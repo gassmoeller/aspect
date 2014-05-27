@@ -6,7 +6,10 @@ set Use years in output instead of seconds = false
 set End time                               = 1e3
 set Output directory                       = output
 
-set Number of cheap Stokes solver steps    = 30
+set Number of cheap Stokes solver steps    = 40
+set Timing output frequency                = 10
+set CFL number                             = 1.0
+
 
 subsection Discretization
   set Stokes velocity polynomial degree = 2
@@ -93,11 +96,11 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set Time between graphical output = 0
+    set Time between graphical output = 0.02
     set List of output variables      = density, viscosity
   end
 
   subsection Depth average
-    set Time between graphical output = 0.005
+    set Time between graphical output = 0.02
   end
 end
