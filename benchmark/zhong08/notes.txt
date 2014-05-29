@@ -1,0 +1,49 @@
+A1 is converged after 500 timesteps with CFL=5.0 (time: 5.9087e-01)
+
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: Visualization file name
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Outward heat flux through boundary with indicator 0 (W)
+# 19: Outward heat flux through boundary with indicator 1 (W)
+ 500 5.9087e-01 49152 1268968 405570  14  4  46  63 1.0180e-03                       "" 2.97508703e+01 7.25205382e+01 0.00000000e+00 2.74994111e-01 1.00000000e+00 2.74994111e-01 -1.19040625e+02 1.25528919e+02
+2957 3.1048e+00 49152 1268968 405570  15  3  27  50 1.0236e-03                       "" 2.95801654e+01 7.24640991e+01 0.00000000e+00 2.69815866e-01 1.00000000e+00 2.69815866e-01 -1.19633528e+02 1.23017521e+02
+
+Reference:  a1:
+32.66   29.5801654e  v_rms
+0.2171   0.269815866   <T>
+
+heat flux:
+-1.19633528e+02 1.23017521e+02
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |  1.04e+05s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |      2951 |  2.19e+03s |       2.1% |
+| Assemble temperature system     |      2951 |  1.39e+04s |        13% |
+| Build Stokes preconditioner     |         1 |      48.6s |     0.047% |
+| Build temperature preconditioner|      2951 |  1.71e+03s |       1.6% |
+| Solve Stokes system             |      2951 |  8.28e+04s |        80% |
+| Solve temperature system        |      2951 |   1.9e+03s |       1.8% |
+| Initialization                  |         2 |     0.684s |   0.00066% |
+| Postprocessing                  |      2951 |       680s |      0.65% |
+| Setup dof systems               |         1 |      6.85s |    0.0066% |
++---------------------------------+-----------+------------+------------+
+
+
