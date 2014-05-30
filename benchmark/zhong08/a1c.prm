@@ -1,0 +1,106 @@
+# A simple setup for convection in a quarter of a 2d shell. See the
+# manual for more information.
+
+set Dimension                              = 3
+set Use years in output instead of seconds = false
+set End time                               = 1e3
+set Output directory                       = output
+
+set Number of cheap Stokes solver steps    = 40
+set Timing output frequency                = 10
+set CFL number                             = 1.0
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree = 2
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1.0
+    set Thermal expansion coefficient = 1.0 # ? 1e-6
+    set Viscosity                     = 0.091125 # d^3=0.45^3
+    set Reference specific heat       = 1.0
+    set Thermal conductivity          = 1.0
+    set Reference temperature         = 0.0 #1.0
+    set Thermal viscosity exponent    = 0.0
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 0.55
+    set Outer radius  = 1.0
+    set Opening angle = 360
+  end
+end
+
+
+subsection Model settings
+  set Remove nullspace                        = net rotation
+  set Zero velocity boundary indicators       = 
+  set Tangential velocity boundary indicators = 0,1
+  set Prescribed velocity boundary indicators =
+  set Fixed temperature boundary indicators   = 0,1
+  set Include shear heating                   = false
+end
+
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 1.0
+    set Outer temperature = 0.0
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Vertical wave number = 1
+    set Lateral wave number one = 3
+    set Lateral wave number two = 2
+    set Magnitude = 0.01
+    set Reference temperature = 1.0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 7000.0 # * 1e6
+  end
+end
+
+
+subsection Termination criteria
+  set Termination criteria = end time
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+  set Initial adaptive refinement        = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, basic statistics
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 0.02
+    set List of output variables      = density, viscosity
+  end
+
+  subsection Depth average
+    set Time between graphical output = 0.02
+  end
+end
