@@ -103,6 +103,11 @@ namespace aspect
          */
         double dT;
 
+        /*
+         * Thickness of the lower boundary layer of constant temperature.
+         */
+        double thickness_bottom_boundary_layer;
+
         /**
          * A function object representing the compositional fields that will
          * be used as a reference profile for calculating the thermal

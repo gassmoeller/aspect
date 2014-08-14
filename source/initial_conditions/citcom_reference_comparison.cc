@@ -76,12 +76,19 @@ namespace aspect
                                                  erfc(this->get_geometry_model().depth(position) /
                                                       (2 * sqrt(kappa * age_top)))
                                                  : 0.0;
-      const double bottom_heating_temperature = age_bottom > 0.0 ?
-                                                dT
-                                                * erfc((this->get_geometry_model().maximal_depth()
-                                                        - this->get_geometry_model().depth(position)) /
-                                                       (2 * sqrt(kappa * age_bottom)))
-                                                : 0.0;
+
+      double bottom_heating_temperature = 0.0;
+
+      if (this->get_geometry_model().maximal_depth() - thickness_bottom_boundary_layer - this->get_geometry_model().depth(position) >= 0.0 )
+        {
+          if (age_bottom > 0.0)
+            bottom_heating_temperature = dT * erfc((this->get_geometry_model().maximal_depth()
+                                                  - this->get_geometry_model().depth(position)
+                                                  - thickness_bottom_boundary_layer)
+                                                  /(2 * sqrt(kappa * age_bottom)));
+        }
+      else
+        bottom_heating_temperature = dT;
 
       // set the initial temperature perturbation
       // first: get the center of the perturbation, then check the distance to the
@@ -185,6 +192,9 @@ namespace aspect
           prm.declare_entry ("dT", "0",
                              Patterns::Double (0),
                              "The temperature jump of the bottom boundary layer.");
+          prm.declare_entry ("Thickness bottom boundary layer", "0",
+                             Patterns::Double (0),
+                             "Thickness of the constant bottom boundary layer.");
           prm.declare_entry ("Radius", "0e0",
                              Patterns::Double (0),
                              "The Radius (in m) of the initial spherical temperature perturbation "
@@ -246,6 +256,7 @@ namespace aspect
           age_top_boundary_layer = prm.get_double ("Age top boundary layer");
           age_bottom_boundary_layer = prm.get_double ("Age bottom boundary layer");
           dT = prm.get_double("dT");
+          thickness_bottom_boundary_layer = prm.get_double("Thickness bottom boundary layer");
           radius = prm.get_double ("Radius");
           amplitude = prm.get_double ("Amplitude");
           perturbation_position = prm.get("Position");
