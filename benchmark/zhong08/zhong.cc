@@ -20,7 +20,13 @@
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/initial_conditions/interface.h>
+
+#include <aspect/geometry_model/spherical_shell.h>
+
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
+#include <boost/math/special_functions/spherical_harmonic.hpp>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -477,6 +483,188 @@ namespace aspect
       prm.leave_subsection();
     }
 
+    /**
+     * A class that describes a perturbed initially constant temperature field
+     * for any geometry model or dimension in shape of a harmonic function.
+     * For 3D spherical shell models this is achieved by using spherical
+     * harmonics, in any other case sine function are scaled to fit the model
+     * geometry.
+     *
+     * @ingroup InitialConditionsModels
+     */
+    template <int dim>
+    class ZhongInitial : public ::aspect::InitialConditions::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * Return the initial temperature as a function of position.
+         */
+        virtual
+        double initial_temperature (const Point<dim> &position) const;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+
+      private:
+
+        /**
+         * The radial/depth wave number of the harmonic perturbation. All wave
+         * number variables are in fact twice the wave number in a
+         * mathematical sense. This allows the user to prescribe a single up-
+         * / downswing or half periods.
+         */
+        int vertical_wave_number;
+
+        /**
+         * The lateral wave number  of the harmonic perturbation in the first
+         * dimension. This is the only lateral wave number in 2D and equals
+         * the degree of the spherical harmonics in a 3D spherical shell.
+         */
+        int lateral_wave_number_1;
+
+        /**
+         * The lateral wave number of the harmonic perturbation in the second
+         * dimension. This is not used in 2D and equals the order of the
+         * spherical harmonics in a 3D spherical shell.
+         */
+        int lateral_wave_number_2;
+
+        /**
+         * The maximal magnitude of the harmonic perturbation.
+         */
+        double magnitude;
+    };
+
+    // NOTE: this module uses the Boost spherical harmonics package which is not designed
+    // for very high order (> 100) spherical harmonics computation. If you use harmonic
+    // perturbations of a high order be sure to confirm the accuracy first.
+    // For more information, see:
+    // http://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_poly/sph_harm.html
+    //
+    template <int dim>
+    double
+    ZhongInitial<dim>::
+    initial_temperature (const Point<dim> &position) const
+    {
+      const GeometryModel::SphericalShell<dim> *
+          geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model());
+      AssertThrow(geometry_model != 0,
+                  ExcMessage("This initial condition can only be used if the geometry "
+                      "is a spherical shell."))
+
+      const double top_temperature = this->get_boundary_temperature().minimal_temperature();
+      const double bottom_temperature = this->get_boundary_temperature().maximal_temperature();
+
+      const double inner_radius = geometry_model->inner_radius();
+      const double outer_radius = geometry_model->outer_radius();
+
+      // s = fraction of the way from
+      // the inner to the outer
+      // boundary; 0<=s<=1
+      const double s = this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth();
+      const double conductive_profile = inner_radius * (position.norm() - outer_radius)
+          / (position.norm() * (inner_radius - outer_radius));
+      const double background_temperature = top_temperature + conductive_profile * (bottom_temperature - top_temperature);
+      const double depth_perturbation = std::sin(vertical_wave_number*s*numbers::PI);
+
+      double lateral_perturbation = 0.0;
+
+      // In case of spherical shell calculate spherical coordinates
+      const std_cxx1x::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
+
+      if (dim==2)
+        {
+          // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
+          // This way the perturbation is alway 0 at the model boundaries.
+          const double opening_angle = geometry_model->opening_angle()*numbers::PI/180.0;
+          lateral_perturbation = std::sin(lateral_wave_number_1*scoord[1]*numbers::PI/opening_angle);
+        }
+
+      else if (dim==3)
+        {
+          // Spherical harmonics are only defined for order <= degree
+          // and degree >= 0. Verify that it is indeed.
+          Assert ( std::abs(lateral_wave_number_2) <= lateral_wave_number_1,
+                   ExcMessage ("Spherical harmonics can only be computed for "
+                               "order <= degree."));
+          Assert ( lateral_wave_number_1 >= 0,
+                   ExcMessage ("Spherical harmonics can only be computed for "
+                               "degree >= 0."));
+          // use a spherical harmonic function as lateral perturbation
+          lateral_perturbation = boost::math::spherical_harmonic_r(lateral_wave_number_1,lateral_wave_number_2,scoord[2],scoord[1]);
+        }
+      return background_temperature + magnitude * depth_perturbation * lateral_perturbation;
+    }
+
+    template <int dim>
+    void
+    ZhongInitial<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Initial conditions");
+      {
+        prm.enter_subsection("Zhong");
+        {
+          prm.declare_entry ("Vertical wave number", "1",
+                             Patterns::Integer (),
+                             "Doubled radial wave number of the harmonic perturbation. "
+                             " One equals half of a sine period over the model domain. "
+                             " This allows for single up-/downswings. Negative numbers "
+                             " reverse the sign of the perturbation.");
+          prm.declare_entry ("Lateral wave number one", "3",
+                             Patterns::Integer (),
+                             "Doubled first lateral wave number of the harmonic perturbation. "
+                             "Equals the spherical harmonic degree in 3D spherical shells. "
+                             "In all other cases one equals half of a sine period over "
+                             "the model domain. This allows for single up-/downswings. "
+                             "Negative numbers reverse the sign of the perturbation but are "
+                             "not allowed for the spherical harmonic case.");
+          prm.declare_entry ("Lateral wave number two", "2",
+                             Patterns::Integer (),
+                             "Doubled second lateral wave number of the harmonic perturbation. "
+                             "Equals the spherical harmonic order in 3D spherical shells. "
+                             "In all other cases one equals half of a sine period over "
+                             "the model domain. This allows for single up-/downswings. "
+                             "Negative numbers reverse the sign of the perturbation.");
+          prm.declare_entry ("Magnitude", "1.0",
+                             Patterns::Double (0),
+                             "The magnitude of the Harmonic perturbation.");
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
+
+    template <int dim>
+    void
+    ZhongInitial<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Initial conditions");
+      {
+        prm.enter_subsection("Zhong");
+        {
+          vertical_wave_number = prm.get_integer ("Vertical wave number");
+          lateral_wave_number_1 = prm.get_integer ("Lateral wave number one");
+          lateral_wave_number_2 = prm.get_integer ("Lateral wave number two");
+          magnitude = prm.get_double ("Magnitude");
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
     template <int dim>
     class ZhongTemperaturePostprocessor : public ::aspect::Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
@@ -524,7 +712,7 @@ namespace aspect
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
                   if (std::abs(this->get_geometry_model().depth(fe_values.quadrature_point(q))
-                               - this->get_geometry_model().maximal_depth() / 2.0) < 0.025)
+                               - this->get_geometry_model().maximal_depth() / 2.0) < 0.025 * this->get_geometry_model().maximal_depth())
                     {
                       local_max_temperature = std::max<double>(local_max_temperature,temperature_values[q]);
                       local_min_temperature = std::min<double>(local_min_temperature,temperature_values[q]);
@@ -543,7 +731,7 @@ namespace aspect
           double local_values[2] = { -local_min_temperature, local_max_temperature };
           double global_values[2];
 
-          Utilities::MPI::max (local_values, this->get_mpi_communicator(), global_values);
+          dealii::Utilities::MPI::max (local_values, this->get_mpi_communicator(), global_values);
 
           global_min_temperature = -global_values[0];
           global_max_temperature = global_values[1];
@@ -623,7 +811,7 @@ namespace aspect
                   for (unsigned int q=0; q<n_q_points; ++q)
                     {
                       if (std::abs(this->get_geometry_model().depth(fe_values.quadrature_point(q))
-                                   - this->get_geometry_model().maximal_depth() / 2.0) < 0.025)
+                                   - this->get_geometry_model().maximal_depth() / 2.0) < 0.025 * this->get_geometry_model().maximal_depth())
                         {
                           const double radial_velocity = velocity_values[q]*fe_values.quadrature_point(q) / fe_values.quadrature_point(q).norm();
                           local_maximum_radial_velocity = std::max (radial_velocity,
@@ -645,7 +833,7 @@ namespace aspect
               double local_values[2] = { -local_minimum_radial_velocity, local_maximum_radial_velocity };
               double global_values[2];
 
-              Utilities::MPI::max (local_values, this->get_mpi_communicator(), global_values);
+              dealii::Utilities::MPI::max (local_values, this->get_mpi_communicator(), global_values);
 
               global_minimum_radial_velocity = -global_values[0];
               global_maximum_radial_velocity = global_values[1];
@@ -689,6 +877,13 @@ namespace aspect
                                    "zhong",
                                    "A material model that has constant values "
                                    "for all coefficients but the density and viscosity.")
+    ASPECT_REGISTER_INITIAL_CONDITIONS(ZhongInitial,
+                                   "zhong",
+                                   "An initial temperature field in which the temperature "
+                                   "is perturbed following a harmonic function (spherical "
+                                   "harmonic) "
+                                   "in lateral and radial direction from an otherwise "
+                                   "linear temperature profile.")
     ASPECT_REGISTER_POSTPROCESSOR(ZhongTemperaturePostprocessor,
                                   "zhong temperature",
                                   "A postprocessor that computes some statistics about "
