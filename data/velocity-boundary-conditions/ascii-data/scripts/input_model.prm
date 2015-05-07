@@ -1,0 +1,80 @@
+#########################################################
+# This is a variation of the composition-passive.prm
+# parameter file, with the exception that we also
+# advect along a set of tracers and that we do not longer
+# compute temperature statistics and composition statistics
+# as part of postprocessing
+
+set Dimension                              = 3
+set Start time                             = 0
+set End time                               = 5e6
+set Use years in output instead of seconds = true
+set Output directory                       = input_model_1
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 3391000 
+    set Outer radius = 6371000
+    set Opening angle = 360
+  end
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = outer,inner
+  set Zero velocity boundary indicators       =
+  set Tangential velocity boundary indicators = outer, inner
+  set Prescribed velocity boundary indicators = 
+end
+
+subsection Boundary temperature model
+  set Model name = constant
+
+  subsection Constant
+    set Boundary indicator to temperature mappings = outer:273, inner:2573
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+end
+
+
+subsection Initial conditions
+  set Model name = harmonic perturbation
+
+  subsection Harmonic perturbation
+    set Magnitude = 100
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal conductivity          = 4
+    set Thermal expansion coefficient = 5e-5
+    set Viscosity                     = 1e22
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1 
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Time between graphical output = 0.1
+    set Interpolate output = false
+  end
+end
