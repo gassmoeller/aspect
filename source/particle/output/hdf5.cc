@@ -190,6 +190,8 @@ namespace aspect
 
             entry.add_attribute("velocity", 3);
             entry.add_attribute("id", 1);
+
+            std::vector<XDMFEntry> xdmf_entries;
             xdmf_entries.push_back(entry);
 
             data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), this->get_mpi_communicator());
@@ -204,6 +206,32 @@ namespace aspect
         file_index++;
 
         return output_path_prefix;
+      }
+
+
+      template <int dim>
+      template <class Archive>
+      void HDF5Output<dim>::serialize (Archive &ar, const unsigned int)
+      {
+        // invoke serialization of the base class
+        ar &file_index
+        ;
+      }
+
+      template <int dim>
+      void
+      HDF5Output<dim>::save (std::ostringstream &os) const
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
+
+      template <int dim>
+      void
+      HDF5Output<dim>::load (std::istringstream &is)
+      {
+        aspect::iarchive ia (is);
+        ia >> (*this);
       }
     }
   }

@@ -81,16 +81,32 @@ namespace aspect
                                const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
                                const double current_time);
 
+
+          /**
+           * Read or write the data of this object for serialization
+           */
+          template <class Archive>
+          void serialize(Archive &ar, const unsigned int version);
+
+          /**
+           * Save the state of the object.
+           */
+          virtual
+          void
+          save (std::ostringstream &os) const;
+
+          /**
+           * Restore the state of the object.
+           */
+          virtual
+          void
+          load (std::istringstream &is);
+
         private:
           /**
            * Internal index of file output number.
            */
-          unsigned int    file_index;
-
-          /**
-           *  A set of XDMF data objects to create the XDMF file for particles
-           */
-          std::vector<XDMFEntry>          xdmf_entries;
+          unsigned int file_index;
       };
     }
   }
