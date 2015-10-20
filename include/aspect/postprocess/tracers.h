@@ -28,6 +28,8 @@
 #include <aspect/simulator_access.h>
 #include <aspect/particle/particle.h>
 
+#include <deal.II/base/std_cxx11/unique_ptr.h>
+
 namespace aspect
 {
   namespace Postprocess
@@ -139,7 +141,7 @@ namespace aspect
         /**
          * Pointer to an output object
          */
-        std_cxx11::unique_ptr<Particle::Output::Interface<dim> >       output;
+        std_cxx11::unique_ptr<Particle::Output::Interface<dim> > output;
 
         /**
          * Whether particles have been created and initialized yet or not.
