@@ -17,5 +17,5 @@
 # 17: Global mass for composition C_1
 # 18: Number of advected particles
 # 19: Particle file name
-0 0.0000e+00 64 2312 729 729 0  0 32 15  3 1.0000e+01 1.33396574e-04 3.28761665e-04  0.00000000e+00 1.00000000e+00 2.09224301e-01 40 output-tracer-box-3d/output-tracer-box-3d/particle-00000 
-1 1.0000e+01 64 2312 729 729 0 11 26 27 27 2.4528e+02 1.35483537e-04 3.32391552e-04 -1.18774173e-02 1.00447226e+00 2.07680080e-01 40 output-tracer-box-3d/output-tracer-box-3d/particle-00001 
+0 0.0000e+00 256 2467 1089 1089 0  0 33 24 4 7.0000e+01 1.81487741e-04 4.04466709e-04  0.00000000e+00 1.00000000e+00 1.82454287e-01 10 output-van_keken_smooth_tracer_rk4/output-van_keken_smooth_tracer_rk4/particles-00000 
+1 7.0000e+01 256 2467 1089 1089 0 14 33 24 4 3.9382e+01 3.27312910e-04 7.27581702e-04 -2.20654268e-03 1.00187358e+00 1.82473299e-01 10 output-van_keken_smooth_tracer_rk4/output-van_keken_smooth_tracer_rk4/particles-00001 

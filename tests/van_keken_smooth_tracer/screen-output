@@ -18,7 +18,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      RMS, max velocity:         0.000181 m/s, 0.000404 m/s
      Compositions min/max/mass: 0/1/0.1825
-     Writing particle output:   output-van-keken-smooth-tracer-radial/particles-00000
+     Writing particle output:   output-van_keken_smooth_tracer/particles-00000
 
 *** Timestep 1:  t=70 seconds
    Solving temperature system... 0 iterations.
@@ -28,27 +28,27 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      RMS, max velocity:         0.000327 m/s, 0.000728 m/s
      Compositions min/max/mass: -0.002207/1.002/0.1825
-     Writing particle output:   output-van-keken-smooth-tracer-radial/particles-00001
+     Writing particle output:   output-van_keken_smooth_tracer/particles-00001
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      1.41s |            |
+| Total wallclock time elapsed since start    |      1.93s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |     0.258s |        18% |
-| Assemble composition system     |         2 |     0.358s |        25% |
-| Assemble temperature system     |         2 |     0.386s |        27% |
-| Build Stokes preconditioner     |         1 |     0.121s |       8.6% |
-| Build composition preconditioner|         2 |   0.00364s |      0.26% |
-| Build temperature preconditioner|         2 |   0.00523s |      0.37% |
-| Solve Stokes system             |         2 |     0.123s |       8.7% |
-| Solve composition system        |         2 |   0.00333s |      0.24% |
-| Solve temperature system        |         2 |   0.00159s |      0.11% |
-| Initialization                  |         2 |    0.0617s |       4.4% |
-| Postprocessing                  |         2 |   0.00927s |      0.66% |
-| Setup dof systems               |         1 |    0.0328s |       2.3% |
+| Assemble Stokes system          |         2 |     0.328s |        17% |
+| Assemble composition system     |         2 |     0.409s |        21% |
+| Assemble temperature system     |         2 |     0.441s |        23% |
+| Build Stokes preconditioner     |         1 |     0.285s |        15% |
+| Build composition preconditioner|         2 |   0.00506s |      0.26% |
+| Build temperature preconditioner|         2 |   0.00521s |      0.27% |
+| Solve Stokes system             |         2 |     0.187s |       9.7% |
+| Solve composition system        |         2 |   0.00369s |      0.19% |
+| Solve temperature system        |         2 |    0.0015s |     0.078% |
+| Initialization                  |         2 |    0.0659s |       3.4% |
+| Postprocessing                  |         2 |    0.0132s |      0.68% |
+| Setup dof systems               |         1 |       0.1s |       5.2% |
 +---------------------------------+-----------+------------+------------+
 
