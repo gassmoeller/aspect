@@ -173,12 +173,9 @@ namespace aspect
                                          "ascii file",
                                          "Generates a distribution of tracers from coordinates "
                                          "specified in an Ascii data file. The file format is "
-                                         "identical to the one from other ascii data plugins, "
-                                         "except that it only needs to contain as many columns as "
-                                         "dimensions to specify the position of each tracer. Note "
-                                         "that this plugin does ignore the number of tracers set in "
-                                         "the input file and instead generates as many particles "
-                                         "as there are readable lines in the ascii file.")
+                                         "a simple text file, with as many columns as spatial "
+                                         "dimensions and as many lines as tracers to be generated.
+                                         "Initial comment lines starting with '#' will be discarded.")
     }
   }
 }
