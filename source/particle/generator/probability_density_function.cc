@@ -45,7 +45,7 @@ namespace aspect
       ProbabilityDensityFunction<dim>::generate_particles()
       {
         // Get the local accumulated probabilities for every cell
-        const std::vector<double> accumulated_cell_weights = local_accumulated_cell_weights();
+        const std::vector<double> accumulated_cell_weights = compute_local_accumulated_cell_weights();
 
         // Sum the local integrals over all nodes
         double local_function_integral = accumulated_cell_weights.back();
@@ -83,18 +83,8 @@ namespace aspect
 
       template <int dim>
       std::vector<double>
-      ProbabilityDensityFunction<dim>::local_accumulated_cell_weights () const
+      ProbabilityDensityFunction<dim>::compute_local_accumulated_cell_weights () const
       {
-        //evaluate function at all cell midpoints, sort cells according to weight
-        const QMidpoint<dim> quadrature_formula;
-        const unsigned int n_quadrature_points = quadrature_formula.size();
-
-        FEValues<dim> fe_values (this->get_mapping(),
-                                 this->get_fe(),
-                                 quadrature_formula,
-                                 update_quadrature_points |
-                                 update_JxW_values);
-
         std::vector<double> accumulated_cell_weights;
 
         // compute the integral weight by quadrature
@@ -104,9 +94,6 @@ namespace aspect
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
             {
-              fe_values.reinit (cell);
-              const std::vector<Point<dim> > position = fe_values.get_quadrature_points();
-
               // Then add the weight of the current cell. Weights are always
               // interpreted positively, even if the function evaluates to a
               // negative number.
@@ -114,13 +101,34 @@ namespace aspect
               if (accumulated_cell_weights.size() > 0)
                 next_cell_weight = accumulated_cell_weights.back();
 
-              for (unsigned int q = 0; q < n_quadrature_points; ++q)
-                next_cell_weight += std::fabs(function.value(position[q]) * fe_values.JxW(q));
+              next_cell_weight += std::fabs(get_cell_weight(cell));
 
               // Start from the weight of the previous cell
               accumulated_cell_weights.push_back(next_cell_weight);
             }
         return accumulated_cell_weights;
+      }
+
+      template <int dim>
+      double
+      ProbabilityDensityFunction<dim>::get_cell_weight (typename DoFHandler<dim>::active_cell_iterator &cell) const
+      {
+        // Evaluate function at all cell midpoints, sort cells according to weight
+        const QMidpoint<dim> quadrature_formula;
+
+        // In the simplest case we do not even need a FEValues object, because
+        // using cell->center() and cell->measure() would be equivalent. This
+        // fails however for higher-order mappings like we use.
+        FEValues<dim> fe_values (this->get_mapping(),
+            this->get_fe(),
+            quadrature_formula,
+            update_quadrature_points |
+            update_JxW_values);
+
+        fe_values.reinit (cell);
+        const std::vector<Point<dim> > position = fe_values.get_quadrature_points();
+
+        return function.value(position[0]) * fe_values.JxW(0);
       }
 
       template <int dim>

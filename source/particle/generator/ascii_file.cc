@@ -174,7 +174,7 @@ namespace aspect
                                          "Generates a distribution of tracers from coordinates "
                                          "specified in an Ascii data file. The file format is "
                                          "a simple text file, with as many columns as spatial "
-                                         "dimensions and as many lines as tracers to be generated.
+                                         "dimensions and as many lines as tracers to be generated. "
                                          "Initial comment lines starting with '#' will be discarded.")
     }
   }

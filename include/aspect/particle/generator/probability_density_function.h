@@ -87,6 +87,16 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+        protected:
+
+          /**
+           * Returns the weight of one cell, which is interpreted as the probability
+           * to generate particles in this cell.
+           */
+          virtual
+          double
+          get_cell_weight (typename DoFHandler<dim>::active_cell_iterator &cell) const;
+
         private:
           /**
            * Random number generator and an object that describes a
@@ -133,7 +143,7 @@ namespace aspect
            * volume for every cell it loops over.
            */
           std::vector<double>
-          local_accumulated_cell_weights () const;
+          compute_local_accumulated_cell_weights () const;
       };
 
     }
