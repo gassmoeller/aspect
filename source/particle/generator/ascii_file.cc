@@ -61,11 +61,11 @@ namespace aspect
               // Try to add the particle, if it is not in this domain, do not
               // worry about it and move on to next point.
               try
-              {
+                {
                   particles.insert(this->generate_particle(coordinates,id));
-              }
+                }
               catch (ExcParticlePointNotInDomain &)
-              {}
+                {}
 
               id++;
             }
@@ -75,11 +75,11 @@ namespace aspect
               // Try to add the particle, if it is not in this domain, do not
               // worry about it and move on to next point.
               try
-              {
+                {
                   particles.insert(this->generate_particle(coordinates,id));
-              }
+                }
               catch (ExcParticlePointNotInDomain &)
-              {}
+                {}
 
               id++;
             }
