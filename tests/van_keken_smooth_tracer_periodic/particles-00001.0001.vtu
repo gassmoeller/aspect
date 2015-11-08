@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
 <VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian">
   <UnstructuredGrid>
-    <Piece NumberOfPoints="5" NumberOfCells="5">
+    <Piece NumberOfPoints="7" NumberOfCells="7">
       <Points>
         <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          0.0652638 0.847684 0.0
-          0.176237 0.848493 0.0
-          0.466487 0.93154 0.0
-          0.464414 0.998054 0.0
-          0.809201 0.787648 0.0
+          0.351272 0.749583 0.0
+          0.235356 0.961797 0.0
+          0.48991 0.717986 0.0
+          0.654421 0.648287 0.0
+          0.679221 0.691473 0.0
+          0.677962 0.725072 0.0
+          0.895479 0.794354 0.0
         </DataArray>
       </Points>
       <Cells>
@@ -18,6 +20,8 @@
           2
           3
           4
+          5
+          6
         </DataArray>
         <DataArray type="Int32" Name="offsets" Format="ascii">
           1
@@ -25,8 +29,12 @@
           3
           4
           5
+          6
+          7
         </DataArray>
         <DataArray type="UInt8" Name="types" Format="ascii">
+          1
+          1
           1
           1
           1
@@ -36,13 +44,17 @@
       </Cells>
       <PointData Scalars="scalars">
         <DataArray type="UInt64" Name="id" NumberOfComponents="1" Format="ascii">
+          12
+          15
           9
-          8
-          5
-          6
           7
+          11
+          14
+          8
         </DataArray>
         <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
+          0 
+          0 
           0 
           0 
           0 
@@ -55,13 +67,17 @@
           0 
           0 
           0 
+          0 
+          0 
         </DataArray>
         <DataArray type="Float64" Name="initial position" NumberOfComponents="3" Format="ascii">
-          0.0679012 0.84668 0 
-          0.176986 0.846701 0 
-          0.464841 0.931612 0 
-          0.464356 0.998054 0 
-          0.812554 0.789522 0 
+          0.347385 0.746966 0 
+          0.235189 0.961657 0 
+          0.484835 0.719659 0 
+          0.653475 0.656374 0 
+          0.679479 0.697835 0 
+          0.678169 0.730201 0 
+          0.899482 0.794379 0 
         </DataArray>
       </PointData>
     </Piece>

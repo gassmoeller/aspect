@@ -224,7 +224,7 @@ namespace aspect
 
             prm.enter_subsection("Generator");
             {
-              prm.enter_subsection("Random function");
+              prm.enter_subsection("Probability density function");
               {
                 Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
               }
@@ -250,7 +250,7 @@ namespace aspect
 
             prm.enter_subsection("Generator");
             {
-              prm.enter_subsection("Random function");
+              prm.enter_subsection("Probability density function");
               {
                 try
                   {

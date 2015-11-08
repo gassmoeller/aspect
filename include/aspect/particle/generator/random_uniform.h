@@ -49,11 +49,6 @@ namespace aspect
           virtual
           double
           get_cell_weight (typename DoFHandler<dim>::active_cell_iterator &cell) const;
-
-          /**
-           * Number of particles to create
-           */
-          types::particle_index n_tracers;
       };
 
     }

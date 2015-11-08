@@ -49,8 +49,8 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_GENERATOR(RandomUniform,
                                          "random uniform",
-                                         "Generate random uniform distribution of "
-                                         "particles over entire simulation domain.")
+                                         "Generates a random uniform distribution of "
+                                         "particles over the entire simulation domain.")
     }
   }
 }
