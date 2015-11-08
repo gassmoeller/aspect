@@ -56,16 +56,16 @@
       </Cells>
       <PointData Scalars="scalars">
         <DataArray type="UInt64" Name="id" NumberOfComponents="1" Format="ascii">
-          10
-          6
+          9
+          5
+          0
+          2
           1
           3
-          2
-          4
-          8
-          9
           7
-          5
+          8
+          6
+          4
         </DataArray>
       </PointData>
     </Piece>

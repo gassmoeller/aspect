@@ -92,7 +92,8 @@ namespace aspect
                         particles.insert(this->generate_particle(particle_position,particle_index++));
                       }
                     catch (ExcParticlePointNotInDomain &)
-                      {}                  }
+                      {}
+                  }
               }
             else if (dim == 3)
               {
