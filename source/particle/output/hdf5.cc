@@ -20,12 +20,31 @@
 
 #include <aspect/particle/output/hdf5.h>
 
+// TODO: Remove
+#define DEAL_II_WITH_HDF5
+
+#ifdef DEAL_II_WITH_HDF5
+ #include <hdf5.h>
+#endif
+
 namespace aspect
 {
   namespace Particle
   {
     namespace Output
     {
+
+      // Define the hdf5 type of the partice index output
+#ifdef DEAL_II_WITH_HDF5
+
+#ifdef DEAL_II_WITH_64BIT_INDICES
+#  define HDF5_PARTICLE_INDEX_TYPE H5T_NATIVE_ULLONG
+#else
+#  define HDF5_PARTICLE_INDEX_TYPE H5T_NATIVE_UINT
+#endif
+
+#endif
+
       template <int dim>
       HDF5Output<dim>::HDF5Output()
         :
@@ -70,7 +89,7 @@ namespace aspect
 
         // Create the file dataspace descriptions
         types::particle_index n_local_particles = particles.size();
-        types::particle_index n_global_particles = Utilities::MPI::sum(n_local_particles,this->get_mpi_communicator());
+        const types::particle_index n_global_particles = Utilities::MPI::sum(n_local_particles,this->get_mpi_communicator());
 
         hsize_t dims[2];
         dims[0] = n_global_particles;
@@ -97,9 +116,9 @@ namespace aspect
         count[1] = 0;
         hid_t file_dataspace_id = H5Screate_simple (1, count, NULL);
 #if H5Acreate_vers == 1
-        hid_t pattr_id = H5Acreate(h5_file_id, "Ermahgerd! Pertecrs!", H5T_NATIVE_INT, file_dataspace_id, H5P_DEFAULT);
+        hid_t pattr_id = H5Acreate(h5_file_id, "Particles", H5T_NATIVE_INT, file_dataspace_id, H5P_DEFAULT);
 #else
-        hid_t pattr_id = H5Acreate(h5_file_id, "Ermahgerd! Pertecrs!", H5T_NATIVE_INT, file_dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+        hid_t pattr_id = H5Acreate(h5_file_id, "Particles", H5T_NATIVE_INT, file_dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
 #endif
         H5Aclose(pattr_id);
         H5Sclose(file_dataspace_id);
@@ -116,10 +135,10 @@ namespace aspect
         offset[1] = 0;
 
         // Select the appropriate dataspace for this process
-        hid_t one_dim_mem_ds_id = H5Screate_simple(1, count, NULL);
-        hid_t dim_mem_ds_id = H5Screate_simple(2, count, NULL);
-        hid_t pos_file_dataspace_id = H5Dget_space(position_dataset);
-        hid_t pid_file_dataspace_id = H5Dget_space(particle_index_dataset);
+        const hid_t one_dim_mem_ds_id = H5Screate_simple(1, count, NULL);
+        const hid_t dim_mem_ds_id = H5Screate_simple(2, count, NULL);
+        const hid_t pos_file_dataspace_id = H5Dget_space(position_dataset);
+        const hid_t pid_file_dataspace_id = H5Dget_space(particle_index_dataset);
 
         // And select the hyperslabs from each dataspace
         H5Sselect_hyperslab(pos_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);

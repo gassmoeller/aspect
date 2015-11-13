@@ -26,13 +26,6 @@
 
 #include <deal.II/numerics/data_out.h>
 
-// TODO: Remove
-#define DEAL_II_WITH_HDF5
-
-#ifdef DEAL_II_WITH_HDF5
- #include <hdf5.h>
-#endif
-
 namespace aspect
 {
   namespace Particle
@@ -115,21 +108,11 @@ namespace aspect
            */
           unsigned int file_index;
 
-#ifdef DEAL_II_WITH_HDF5
           /**
            * Vector of so far created xdmf_entries (one per written output
            * file).
            */
           std::vector<XDMFEntry> xdmf_entries;
-
-// Define the hdf5 type of the partice index output
-#ifdef DEAL_II_WITH_64BIT_INDICES
-#  define HDF5_PARTICLE_INDEX_TYPE H5T_NATIVE_ULLONG
-#else
-#  define HDF5_PARTICLE_INDEX_TYPE H5T_NATIVE_UINT
-#endif
-
-#endif
       };
     }
   }
