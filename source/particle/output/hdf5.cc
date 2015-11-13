@@ -105,7 +105,8 @@ namespace aspect
                     property_component_list[property].second
                     :
                     3);
-            property_data[property].resize(data_components * n_local_particles);
+
+            property_data[property].resize(data_components * n_local_particles,0.0);
           }
 
         typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it = particles.begin();
@@ -121,8 +122,14 @@ namespace aspect
 
             for (unsigned int property = 0; property < property_component_list.size(); ++property)
               {
-                const unsigned int data_components = property_component_list[property].second;
-                for (unsigned int component = 0; component < data_components; ++component,++particle_property_index)
+
+                const unsigned int data_components = (property_component_list[property].second != 2
+                    ?
+                        property_component_list[property].second
+                        :
+                        3);
+
+                for (unsigned int component = 0; component < property_component_list[property].second; ++component,++particle_property_index)
                   property_data[property][i * data_components + component] = properties[particle_property_index];
 
               }
@@ -192,8 +199,8 @@ namespace aspect
             global_dataset_size[1] = data_components;
             local_dataset_size[1] = data_components;
 
-            const hid_t property_dataspace = H5Screate_simple(1, global_dataset_size, NULL);
-            const hid_t local_property_dataspace = H5Screate_simple(1, local_dataset_size, NULL);
+            const hid_t property_dataspace = H5Screate_simple(2, global_dataset_size, NULL);
+            const hid_t local_property_dataspace = H5Screate_simple(2, local_dataset_size, NULL);
 #if H5Dcreate_vers == 1
             const hid_t particle_property_dataset = H5Dcreate(h5_file, property_component_list[property].first.c_str(), H5T_NATIVE_DOUBLE, property_dataspace, H5P_DEFAULT);
 #else
@@ -224,7 +231,7 @@ namespace aspect
 
             entry.add_attribute("id", 1);
 
-            for (unsigned int property = 0; property != property_component_list.size(); ++property)
+            for (unsigned int property = 0; property < property_component_list.size(); ++property)
               {
                 const unsigned int data_components = (property_component_list[property].second != 2
                     ?
