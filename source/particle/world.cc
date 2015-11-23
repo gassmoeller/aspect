@@ -543,7 +543,7 @@ namespace aspect
           for (; particle != send_particle_range.second; ++particle)
             {
               particle->second.write_data(data);
-              integrator->write_data(data, particle->second.get_id());
+              data = integrator->write_data(data, particle->second.get_id());
             }
         }
 
@@ -599,7 +599,7 @@ namespace aspect
       for (int i=0; i<n_recv_particles; ++i)
         {
           const Particle<dim> recv_particle(recv_data_it,property_manager->get_particle_size());
-          integrator->read_data(recv_data_it, recv_particle.get_id());
+          recv_data_it = integrator->read_data(recv_data_it, recv_particle.get_id());
 
           typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;
           try
