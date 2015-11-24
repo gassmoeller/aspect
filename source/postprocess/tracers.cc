@@ -112,7 +112,7 @@ namespace aspect
                                 this->get_output_directory() + data_file_name);
           return std::make_pair("Writing particle output: ", data_file_name);
         }
-      return std::make_pair("","");
+      return std::make_pair("Number of advected particles",Utilities::int_to_string(world.n_global_particles()));
     }
 
 
@@ -395,7 +395,7 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(Tracers,
                                   "tracers",
-                                  "A Postprocessor that creates tracer particles, which follow the "
+                                  "A Postprocessor that creates tracer particles that follow the "
                                   "velocity field of the simulation. The particles can be generated "
                                   "and propagated in various ways and they can carry a number of "
                                   "constant or time-varying properties. The postprocessor can write "

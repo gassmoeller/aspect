@@ -635,41 +635,27 @@ namespace aspect
           const Particle<dim> recv_particle(recv_data_it,property_manager->get_particle_size());
           recv_data_it = integrator->read_data(recv_data_it, recv_particle.get_id());
 
-          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;
-          try
+          const typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
+              (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
+
+          Assert(cell->is_locally_owned(),
+                 ExcMessage("Another process sent us a particle, but the particle is not in our domain."));
+
+          const types::LevelInd found_cell = std::make_pair(cell->level(),cell->index());
+
+          if (particle_load_balancing == remove_particles || particle_load_balancing == remove_and_add_particles)
             {
-              cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
-            }
-          catch (GridTools::ExcPointNotFound<dim> &)
-            {
-              AssertThrow(false,ExcInternalError());
-              // If we can find no cell for this particle it has left the domain due
-              // to an integration error or open boundary. Simply ignore the
-              // tracer in this case.
-              continue;
-            }
+              // Detect if we need to reduce the number of tracers in this cell,
+              // we first reduce the incoming tracers, because they likely came from
+              // a region, where the particle density is higher than in this cell
+              // (otherwise this would not have been triggered).
+              const bool reduce_particles = (max_particles_per_cell > 0) && (particles.count(found_cell) >= max_particles_per_cell);
 
-          if (cell->is_locally_owned())
-            {
-              const types::LevelInd found_cell = std::make_pair(cell->level(),cell->index());
-
-              if (particle_load_balancing == remove_particles || particle_load_balancing == remove_and_add_particles)
-                {
-                  const unsigned int coarsen_factor = (dim == 3) ? 8 : 4;
-
-                  // Detect if we need to reduce the number of tracers in this cell,
-                  // we first reduce the incoming tracers, because they likely came from
-                  // a region, where the particle density is higher than in this cell
-                  // (otherwise this would not have been triggered).
-                  const bool reduce_tracers = (max_particles_per_cell > 0) && (particles.count(found_cell) >= max_particles_per_cell);
-
-                  if ( !reduce_tracers || (i % coarsen_factor == 0))
-                    particles.insert(std::make_pair(found_cell, recv_particle));
-                }
-              else
+              if ( !reduce_particles || (i % GeometryInfo<dim>::max_children_per_cell == 0))
                 particles.insert(std::make_pair(found_cell, recv_particle));
-
             }
+          else
+            particles.insert(std::make_pair(found_cell, recv_particle));
         }
 
       AssertThrow(recv_data_it == &recv_data.back()+1,
@@ -701,8 +687,7 @@ namespace aspect
           particle_points[i] = this->get_mapping().transform_real_to_unit_cell(cell, position);
         }
 
-      const std::vector< double > weights(particles_in_cell, 1./((double) particles_in_cell));
-      const Quadrature<dim> quadrature_formula(particle_points, weights);
+      const Quadrature<dim> quadrature_formula(particle_points);
       FEValues<dim> fe_value (this->get_mapping(),
                               this->get_fe(),
                               quadrature_formula,
@@ -748,8 +733,7 @@ namespace aspect
           particle_points[i] = this->get_mapping().transform_real_to_unit_cell(cell, position);
         }
 
-      const std::vector< double > weights(particles_in_cell, 1./((double) particles_in_cell));
-      const Quadrature<dim> quadrature_formula(particle_points, weights);
+      const Quadrature<dim> quadrature_formula(particle_points);
       FEValues<dim> fe_value (this->get_mapping(),
                               this->get_fe(),
                               quadrature_formula,
@@ -790,8 +774,7 @@ namespace aspect
           particle_points[i] = this->get_mapping().transform_real_to_unit_cell(cell, position);
         }
 
-      const std::vector< double > weights(particles_in_cell, 1./((double) particles_in_cell));
-      const Quadrature<dim> quadrature_formula(particle_points, weights);
+      const Quadrature<dim> quadrature_formula(particle_points);
       FEValues<dim> fe_value (this->get_mapping(),
                               this->get_fe(),
                               quadrature_formula,
@@ -822,6 +805,8 @@ namespace aspect
     void
     World<dim>::initialize_particles()
     {
+      // TODO: Change this loop over all cells to use the WorkStream interface
+
       // Loop over all cells and initialize the particles cell-wise
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -846,6 +831,8 @@ namespace aspect
     void
     World<dim>::update_particles()
     {
+      // TODO: Change this loop over all cells to use the WorkStream interface
+
       // Loop over all cells and update the particles cell-wise
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -870,6 +857,8 @@ namespace aspect
     void
     World<dim>::advect_particles()
     {
+      // TODO: Change this loop over all cells to use the WorkStream interface
+
       // Loop over all cells and advect the particles cell-wise
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
