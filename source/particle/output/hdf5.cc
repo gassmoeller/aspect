@@ -20,9 +20,6 @@
 
 #include <aspect/particle/output/hdf5.h>
 
-// TODO: Remove
-#define DEAL_II_WITH_HDF5
-
 #ifdef DEAL_II_WITH_HDF5
 #include <hdf5.h>
 #endif
