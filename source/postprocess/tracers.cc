@@ -308,10 +308,10 @@ namespace aspect
 
       AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
                   ExcMessage("The current tracer algorithm does not work in"
-                      "parallel if the CFL number is larger than 1.0, because "
-                      "in this case tracers can move more than one cell's "
-                      "diameter in one time step and therefore skip the layer "
-                      "of ghost cells around the local subdomain."));
+                             "parallel if the CFL number is larger than 1.0, because "
+                             "in this case tracers can move more than one cell's "
+                             "diameter in one time step and therefore skip the layer "
+                             "of ghost cells around the local subdomain."));
 
       // Parameters that are handed down to the particle world in this function
       unsigned int max_tracers_per_cell,tracer_weight;
