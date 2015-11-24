@@ -425,7 +425,12 @@ namespace aspect
               // If we can find no cell for this particle it has left the domain due
               // to an integration error or an open boundary.
               lost_particles.insert(*it);
-              particles.erase(it++);
+
+              // Now remove the lost particle and continue with next particle.
+              // Also make sure we do not invalidate the iterator we are increasing.
+              const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
+              it++;
+              particles.erase(particle_to_delete);
               continue;
             }
 
@@ -440,7 +445,11 @@ namespace aspect
           else
             moved_particles_domain.insert(std::make_pair(cell->subdomain_id(),it->second));
 
-          particles.erase(it++);
+          // Now remove the lost particle and continue with next particle.
+          // Also make sure we do not invalidate the iterator we are increasing.
+          const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
+          it++;
+          particles.erase(particle_to_delete);
         }
 
       // If particles fell out of the mesh, put them back in if they have crossed
