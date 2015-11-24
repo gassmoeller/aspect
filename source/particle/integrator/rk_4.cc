@@ -120,7 +120,7 @@ namespace aspect
       }
 
       template <int dim>
-      const void*
+      const void *
       RK4<dim>::read_data(const void *data,
                           const types::particle_index id_num)
       {
@@ -150,7 +150,7 @@ namespace aspect
       }
 
       template <int dim>
-      void*
+      void *
       RK4<dim>::write_data(void *data,
                            const types::particle_index id_num) const
       {

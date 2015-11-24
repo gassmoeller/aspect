@@ -177,7 +177,7 @@ namespace aspect
   void Simulator<dim>::initialize_tracers_if_selected ()
   {
     Postprocess::Tracers<dim> *tracer_postprocessor = const_cast<Postprocess::Tracers<dim> *>
-    (postprocess_manager.template find_postprocessor<Postprocess::Tracers<dim> >());
+                                                      (postprocess_manager.template find_postprocessor<Postprocess::Tracers<dim> >());
 
     // If the tracer postprocessor has been selected
     if (tracer_postprocessor != 0)

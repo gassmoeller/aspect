@@ -104,16 +104,16 @@ namespace aspect
       set_last_output_time (this->get_time());
 
       const double output_time = (this->convert_output_to_years() ?
-          this->get_time() / year_in_seconds :
-          this->get_time());
+                                  this->get_time() / year_in_seconds :
+                                  this->get_time());
 
       const std::string data_file_name = output->output_particle_data(world.get_particles(),
-          world.get_property_manager().get_data_info(),
-          output_time);
+                                                                      world.get_property_manager().get_data_info(),
+                                                                      output_time);
 
       // record the file base file name in the output file
       statistics.add_value ("Particle file name",
-          this->get_output_directory() + data_file_name);
+                            this->get_output_directory() + data_file_name);
       return std::make_pair("Writing particle output: ", data_file_name);
     }
 

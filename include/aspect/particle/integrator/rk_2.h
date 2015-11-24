@@ -106,7 +106,7 @@ namespace aspect
            * for.
            */
           virtual
-          const void*
+          const void *
           read_data(const void *data,
                     const types::particle_index id_num);
 
@@ -121,7 +121,7 @@ namespace aspect
            * for.
            */
           virtual
-          void*
+          void *
           write_data(void *data,
                      const types::particle_index id_num) const;
 

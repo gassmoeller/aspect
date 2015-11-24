@@ -312,8 +312,8 @@ namespace aspect
          */
         void
         move_particles_back_into_mesh(std::multimap<types::LevelInd, Particle<dim> >            &lost_particles,
-                                    std::multimap<types::LevelInd, Particle<dim> >            &moved_particles_cell,
-                                    std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain);
+                                      std::multimap<types::LevelInd, Particle<dim> >            &moved_particles_cell,
+                                      std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain);
 
         /**
          * Transfer particles that have crossed subdomain boundaries to other

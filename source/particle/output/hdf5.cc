@@ -24,7 +24,7 @@
 #define DEAL_II_WITH_HDF5
 
 #ifdef DEAL_II_WITH_HDF5
- #include <hdf5.h>
+#include <hdf5.h>
 #endif
 
 namespace aspect
@@ -101,10 +101,10 @@ namespace aspect
         for (unsigned int property = 0; property < property_component_list.size(); ++property)
           {
             const unsigned int data_components = (property_component_list[property].second != 2
-                ?
-                    property_component_list[property].second
-                    :
-                    3);
+                                                  ?
+                                                  property_component_list[property].second
+                                                  :
+                                                  3);
 
             property_data[property].resize(data_components * n_local_particles,0.0);
           }
@@ -124,10 +124,10 @@ namespace aspect
               {
 
                 const unsigned int data_components = (property_component_list[property].second != 2
-                    ?
-                        property_component_list[property].second
-                        :
-                        3);
+                                                      ?
+                                                      property_component_list[property].second
+                                                      :
+                                                      3);
 
                 for (unsigned int component = 0; component < property_component_list[property].second; ++component,++particle_property_index)
                   property_data[property][i * data_components + component] = properties[particle_property_index];
@@ -191,10 +191,10 @@ namespace aspect
         for (unsigned int property = 0; property != property_component_list.size(); ++property)
           {
             const unsigned int data_components = (property_component_list[property].second != 2
-                ?
-                    property_component_list[property].second
-                    :
-                    3);
+                                                  ?
+                                                  property_component_list[property].second
+                                                  :
+                                                  3);
 
             global_dataset_size[1] = data_components;
             local_dataset_size[1] = data_components;
@@ -234,10 +234,10 @@ namespace aspect
             for (unsigned int property = 0; property < property_component_list.size(); ++property)
               {
                 const unsigned int data_components = (property_component_list[property].second != 2
-                    ?
-                        property_component_list[property].second
-                        :
-                        3);
+                                                      ?
+                                                      property_component_list[property].second
+                                                      :
+                                                      3);
 
                 entry.add_attribute(property_component_list[property].first, data_components);
               }
@@ -264,7 +264,7 @@ namespace aspect
       {
         // invoke serialization of the base class
         ar &file_index
-           &xdmf_entries
+        &xdmf_entries
         ;
       }
 

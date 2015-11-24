@@ -37,9 +37,9 @@ namespace aspect
   {
     template <>
     World<2>::World()
-    :
-    global_number_of_particles(0),
-    data_offset(numbers::invalid_unsigned_int)
+      :
+      global_number_of_particles(0),
+      data_offset(numbers::invalid_unsigned_int)
     {
 
       aspect::internals::SimulatorSignals::register_connector_function_2d (std_cxx11::bind(&World<2>::connect_to_signals,
@@ -49,9 +49,9 @@ namespace aspect
 
     template <>
     World<3>::World()
-    :
-    global_number_of_particles(0),
-    data_offset(numbers::invalid_unsigned_int)
+      :
+      global_number_of_particles(0),
+      data_offset(numbers::invalid_unsigned_int)
     {
       aspect::internals::SimulatorSignals::register_connector_function_3d (std_cxx11::bind(&World<3>::connect_to_signals,
                                                                            std_cxx11::ref(*this),
@@ -456,8 +456,8 @@ namespace aspect
       // a periodic boundary. If they have left the mesh otherwise, they will be
       // discarded by being deleted from lost_particles, and not inserted anywhere.
       move_particles_back_into_mesh(lost_particles,
-                                  moved_particles_cell,
-                                  moved_particles_domain);
+                                    moved_particles_cell,
+                                    moved_particles_domain);
 
       // Reinsert all local particles with their cells
       particles.insert(moved_particles_cell.begin(),moved_particles_cell.end());
@@ -469,9 +469,9 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::move_particles_back_into_mesh(std::multimap<types::LevelInd, Particle<dim> >            &lost_particles,
-                                            std::multimap<types::LevelInd, Particle<dim> >            &moved_particles_cell,
-                                            std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain)
+    World<dim>::move_particles_back_into_mesh(std::multimap<types::LevelInd, Particle<dim> >          &lost_particles,
+                                              std::multimap<types::LevelInd, Particle<dim> >            &moved_particles_cell,
+                                              std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain)
     {
       // TODO: fix this to work with arbitrary meshes. Currently periodic boundaries only work for boxes.
       // If the geometry is not a box, we simply discard particles that have left the
@@ -640,7 +640,7 @@ namespace aspect
           recv_data_it = integrator->read_data(recv_data_it, recv_particle.get_id());
 
           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
-              (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
+            (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
 
           Assert(cell->is_locally_owned(),
                  ExcMessage("Another process sent us a particle, but the particle is not in our domain."));
