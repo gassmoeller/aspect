@@ -88,7 +88,7 @@ namespace aspect
       // Advance the particles in the world to the current time
       world.advance_timestep();
 
-      statistics.add_value("Number of advected particles",world.get_global_particle_count());
+      statistics.add_value("Number of advected particles",world.n_global_particles());
 
       // If it's time to generate an output file and we created an output
       // object, call the appropriate functions and reset the timer
