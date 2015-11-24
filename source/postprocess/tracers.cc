@@ -40,20 +40,18 @@ namespace aspect
     template <int dim>
     Tracers<dim>::Tracers ()
       :
-      initialized(false),
-      next_data_output_time(std::numeric_limits<double>::quiet_NaN())
-    {}
 
+      last_output_time(std::numeric_limits<double>::quiet_NaN())
+    {}
 
     template <int dim>
     Tracers<dim>::~Tracers ()
-    {
-    }
+    {}
 
     template <int dim>
     void
-    Tracers<dim>::initialize()
-    {
+    Tracers<dim>::initialize ()
+    {}
 
     template <int dim>
     void
@@ -81,12 +79,12 @@ namespace aspect
     std::pair<std::string,std::string>
     Tracers<dim>::execute (TableHandler &statistics)
     {
-      // Let the generator add the specified number of particles if we have not
-      // already done so
-      if (!initialized)
+      // if this is the first time we get here, set the last output time
+      // to the current time - output_interval. this makes sure we
+      // always produce data during the first time step
+      if (std::isnan(last_output_time))
         {
-          initialized = true;
-          next_data_output_time = this->get_time();
+          last_output_time = this->get_time() - output_interval;
         }
 
       // Advance the particles in the world to the current time
@@ -94,49 +92,49 @@ namespace aspect
 
       statistics.add_value("Number of advected particles",world.n_global_particles());
 
-      // If it's time to generate an output file and we created an output
-      // object, call the appropriate functions and reset the timer
-      if ((this->get_time() >= next_data_output_time) && output)
-        {
-          if (world.get_property_manager().need_update() == Particle::Property::update_output_step)
-            world.update_particles();
+      // If it's not time to generate an output file or we do not write output
+      // return early with the number of particles that were advected
+      if ((this->get_time() < last_output_time + output_interval) || !output)
+        return std::make_pair("Number of advected particles",Utilities::int_to_string(world.n_global_particles()));
 
-          set_next_data_output_time (this->get_time());
 
-          const double output_time = (this->convert_output_to_years() ?
-                                      this->get_time() / year_in_seconds :
-                                      this->get_time());
+      if (world.get_property_manager().need_update() == Particle::Property::update_output_step)
+        world.update_particles();
 
-          const std::string data_file_name = output->output_particle_data(world.get_particles(),
-                                                                          world.get_property_manager().get_data_info(),
-                                                                          output_time);
+      set_last_output_time (this->get_time());
 
-          // record the file base file name in the output file
-          statistics.add_value ("Particle file name",
-                                this->get_output_directory() + data_file_name);
-          return std::make_pair("Writing particle output: ", data_file_name);
-        }
-      return std::make_pair("Number of advected particles",Utilities::int_to_string(world.n_global_particles()));
+      const double output_time = (this->convert_output_to_years() ?
+          this->get_time() / year_in_seconds :
+          this->get_time());
+
+      const std::string data_file_name = output->output_particle_data(world.get_particles(),
+          world.get_property_manager().get_data_info(),
+          output_time);
+
+      // record the file base file name in the output file
+      statistics.add_value ("Particle file name",
+          this->get_output_directory() + data_file_name);
+      return std::make_pair("Writing particle output: ", data_file_name);
     }
 
 
 
     template <int dim>
     void
-    Tracers<dim>::set_next_data_output_time (const double current_time)
+    Tracers<dim>::set_last_output_time (const double current_time)
     {
-      // if output_interval is positive, then set the next output interval to
-      // a positive multiple.
-      if (data_output_interval > 0)
+      // if output_interval is positive, then update the last supposed output
+      // time
+      if (output_interval > 0)
         {
-          // the current time is always in seconds, so we need to convert the output_interval to the same unit
-          const double output_interval_in_s = (this->convert_output_to_years() ?
-                                               (data_output_interval*year_in_seconds) :
-                                               data_output_interval);
-
-          // we need to compute the smallest integer that is bigger than current_time/my_output_interval,
-          // even if it is a whole number already (otherwise we output twice in a row)
-          next_data_output_time = (std::floor(current_time/output_interval_in_s)+1.0) * output_interval_in_s;
+          // We need to find the last time output was supposed to be written.
+          // this is the last_output_time plus the largest positive multiple
+          // of output_intervals that passed since then. We need to handle the
+          // edge case where last_output_time+output_interval==current_time,
+          // we did an output and std::floor sadly rounds to zero. This is done
+          // by forcing std::floor to round 1.0-eps to 1.0.
+          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+          last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval*magic) * output_interval/magic;
         }
     }
 
@@ -145,8 +143,7 @@ namespace aspect
     template <class Archive>
     void Tracers<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &next_data_output_time
-      &initialized
+      ar &last_output_time
       ;
     }
 
@@ -301,6 +298,7 @@ namespace aspect
     void
     Tracers<dim>::parse_parameters (ParameterHandler &prm)
     {
+      // Parameters that are handed down to the particle world in this function
       unsigned int max_tracers_per_cell,tracer_weight;
       typename aspect::Particle::World<dim>::ParticleLoadBalancing load_balancing;
 
@@ -308,7 +306,9 @@ namespace aspect
       {
         prm.enter_subsection("Tracers");
         {
-          data_output_interval = prm.get_double ("Time between data output");
+          output_interval = prm.get_double ("Time between data output");
+          if (this->convert_output_to_years())
+            output_interval *= year_in_seconds;
 
           max_tracers_per_cell = prm.get_integer("Maximum tracers per cell");
           tracer_weight = prm.get_integer("Tracer weight");
