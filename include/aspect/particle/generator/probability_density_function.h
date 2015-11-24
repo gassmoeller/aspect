@@ -132,10 +132,10 @@ namespace aspect
            * Generate a set of particles distributed within the local domain
            * according to the probability density function.
            *
-           * @param [in] cells Map between accumulated cell weight and cell index
+           * @param [in] local_weights_map Map between accumulated cell weight and cell index
            * for all locally owned active cells.
-           * @param [in] start_id The starting ID to assign to generated particles of the local process.
-           * @param [in] local_particles The local number of particles to generate.
+           * @param [in] local_start_id The starting ID to assign to generated particles of the local process.
+           * @param [in] n_local_particles The local number of particles to generate.
            * @return A map between cells and all generated particles.
            *
            */

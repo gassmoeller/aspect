@@ -83,6 +83,7 @@ namespace aspect
          * take the properties of the closest particle, but more complicated
          * schemes are possible.
          *
+         * @param [in] generator The particle generator for this world.
          * @param [in] manager The property manager for this world.
          * @param [in] load_balancing The strategy used to balance the
          * computational load for particle advection across processes.

@@ -197,7 +197,7 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK4,
                                           "rk4",
                                           "Runge Kutta fourth order integrator, where "
-                                          "$y_{n+1} = y_n + (1/6)*k1 + (1/3)*k2 + (1/3)*k3 + (1/6)*k4$ "
+                                          "$y_{n+1} = y_n + (1/6)*k_1 + (1/3)*k_2 + (1/3)*k_3 + (1/6)*k_4$ "
                                           "and $k_1$, $k_2$, $k_3$, $k_4$ are defined as usual.")
     }
   }
