@@ -298,6 +298,21 @@ namespace aspect
     void
     Tracers<dim>::parse_parameters (ParameterHandler &prm)
     {
+      // First do some error checking. The current algorithm does not find
+      // the cells around particles, if the particles moved more than one
+      // cell in one timestep and we are running in parallel, because they
+      // skip the layer of ghost cells around our local domain. Assert this
+      // is not possible.
+      const double CFL_number = prm.get_double ("CFL number");
+      const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+
+      AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
+                  ExcMessage("The current tracer algorithm does not work in"
+                      "parallel if the CFL number is larger than 1.0, because "
+                      "in this case tracers can move more than one cell's "
+                      "diameter in one time step and therefore skip the layer "
+                      "of ghost cells around the local subdomain."));
+
       // Parameters that are handed down to the particle world in this function
       unsigned int max_tracers_per_cell,tracer_weight;
       typename aspect::Particle::World<dim>::ParticleLoadBalancing load_balancing;
