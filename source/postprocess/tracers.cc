@@ -307,7 +307,7 @@ namespace aspect
       const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
 
       AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
-                  ExcMessage("The current tracer algorithm does not work in"
+                  ExcMessage("The current tracer algorithm does not work in "
                              "parallel if the CFL number is larger than 1.0, because "
                              "in this case tracers can move more than one cell's "
                              "diameter in one time step and therefore skip the layer "
@@ -344,10 +344,10 @@ namespace aspect
       prm.leave_subsection ();
 
       // Create a generator object depending on what the parameters specify
-      std_cxx11::shared_ptr<Particle::Generator::Interface<dim> > generator
-      (Particle::Generator::create_particle_generator<dim> (prm));
+      Particle::Generator::Interface<dim> *generator
+        = Particle::Generator::create_particle_generator<dim> (prm);
 
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator))
         sim->initialize_simulator (this->get_simulator());
       generator->parse_parameters(prm);
 
@@ -367,34 +367,35 @@ namespace aspect
 
 
       // Create an integrator object depending on the specified parameter
-      std_cxx11::shared_ptr<Particle::Integrator::Interface<dim> >   integrator
-      (Particle::Integrator::create_particle_integrator<dim> (prm));
+      Particle::Integrator::Interface<dim> *integrator =
+        Particle::Integrator::create_particle_integrator<dim> (prm);
 
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator))
         sim->initialize_simulator (this->get_simulator());
       integrator->parse_parameters(prm);
 
       // Create an interpolator object depending on the specified parameter
-      std_cxx11::shared_ptr<Particle::Interpolator::Interface<dim> > interpolator
-      (Particle::Interpolator::create_particle_interpolator<dim> (prm));
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
+      Particle::Interpolator::Interface<dim> *interpolator =
+        Particle::Interpolator::create_particle_interpolator<dim> (prm);
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator))
         sim->initialize_simulator (this->get_simulator());
       interpolator->parse_parameters(prm);
 
 
       // Creaty an property_manager object and initialize its properties
-      std_cxx11::shared_ptr<Particle::Property::Manager<dim> > property_manager (new Particle::Property::Manager<dim> ());
-      SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
+      Particle::Property::Manager<dim> *property_manager = new Particle::Property::Manager<dim> ();
+      SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager);
       sim->initialize_simulator (this->get_simulator());
       property_manager->parse_parameters(prm);
       property_manager->initialize();
 
 
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&world))
+        sim->initialize_simulator (this->get_simulator());
+
       // Initialize the particle world with the appropriate settings
       // Ownership of generator, integrator, interpolator and property_manager
       // is transferred to world here
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&world))
-        sim->initialize_simulator (this->get_simulator());
       world.initialize(generator,
                        integrator,
                        interpolator,

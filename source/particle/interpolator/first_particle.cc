@@ -54,7 +54,7 @@ namespace aspect
             const types::LevelInd cell_index = std::make_pair<unsigned int, unsigned int> (cell->level(),cell->index());
 
             AssertThrow(particles.find(cell_index) != particles.end(),
-                        ExcMessage("At least one cell contained no particles. The 'First"
+                        ExcMessage("At least one cell contained no particles. The 'First "
                                    "particle' interpolation scheme does not support this case. "));
 
             // Find will only return the first particle it finds in that particular cell,

@@ -20,6 +20,8 @@
 
 #include <aspect/particle/output/hdf5.h>
 
+#include <deal.II/numerics/data_out.h>
+
 #ifdef DEAL_II_WITH_HDF5
 #include <hdf5.h>
 #endif

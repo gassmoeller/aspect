@@ -64,18 +64,18 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::initialize(std_cxx11::shared_ptr<Generator::Interface<dim> > particle_generator,
-                           std_cxx11::shared_ptr<Integrator::Interface<dim> > particle_integrator,
-                           std_cxx11::shared_ptr<Interpolator::Interface<dim> > property_interpolator,
-                           std_cxx11::shared_ptr<Property::Manager<dim> > manager,
+    World<dim>::initialize(Generator::Interface<dim> *particle_generator,
+                           Integrator::Interface<dim> *particle_integrator,
+                           Interpolator::Interface<dim> *property_interpolator,
+                           Property::Manager<dim> *manager,
                            const ParticleLoadBalancing &load_balancing,
                            const unsigned int max_part_per_cell,
                            const unsigned int weight)
     {
-      generator = particle_generator;
-      integrator = particle_integrator;
-      interpolator = property_interpolator;
-      property_manager = manager;
+      generator.reset(particle_generator);
+      integrator.reset(particle_integrator);
+      interpolator.reset(property_interpolator);
+      property_manager.reset(manager);
       particle_load_balancing = load_balancing;
       max_particles_per_cell = max_part_per_cell;
       tracer_weight = weight;
@@ -335,12 +335,12 @@ namespace aspect
                              const typename parallel::distributed::Triangulation<dim>::CellStatus status,
                              const void *data)
     {
-      const unsigned int *n_particles_in_cell = static_cast<const unsigned int *> (data);
-      const void *pdata = reinterpret_cast<const void *> (n_particles_in_cell + 1);
+      const unsigned int *n_particles_in_cell_ptr = static_cast<const unsigned int *> (data);
+      const void *pdata = reinterpret_cast<const void *> (n_particles_in_cell_ptr + 1);
 
       // Load all particles from the data stream and store them in the local
       // particle map.
-      for (unsigned int i = 0; i < *n_particles_in_cell; ++i)
+      for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
         {
           Particle<dim> p(pdata,property_manager->get_particle_size());
 
@@ -590,13 +590,12 @@ namespace aspect
                              "is inconsistent with the number and size of particles."));
 
       // Notify other processors how many particles we will send
-      MPI_Request *n_requests = new MPI_Request[2*n_neighbors];
+      std::vector<MPI_Request> n_requests(2*n_neighbors);
       for (unsigned int i=0; i<n_neighbors; ++i)
         MPI_Irecv(&(n_recv_data[i]), 1, MPI_INT, neighbors[i], 0, this->get_mpi_communicator(), &(n_requests[2*i]));
       for (unsigned int i=0; i<n_neighbors; ++i)
         MPI_Isend(&(n_send_data[i]), 1, MPI_INT, neighbors[i], 0, this->get_mpi_communicator(), &(n_requests[2*i+1]));
-      MPI_Waitall(2*n_neighbors,n_requests,MPI_STATUSES_IGNORE);
-      delete[] n_requests;
+      MPI_Waitall(2*n_neighbors,&n_requests[0],MPI_STATUSES_IGNORE);
 
       // Determine how many particles and data we will receive
       int total_recv_data = 0;
@@ -611,7 +610,7 @@ namespace aspect
       std::vector<char> recv_data(total_recv_data);
 
       // Exchange the particle data between domains
-      MPI_Request *requests = new MPI_Request[2*n_neighbors];
+      std::vector<MPI_Request> requests(2*n_neighbors);
       unsigned int send_ops = 0;
       unsigned int recv_ops = 0;
 
@@ -628,8 +627,7 @@ namespace aspect
             MPI_Isend(&(send_data[send_offsets[i]]), n_send_data[i], MPI_CHAR, neighbors[i], 1, this->get_mpi_communicator(),&(requests[send_ops+recv_ops]));
             recv_ops++;
           }
-      MPI_Waitall(send_ops+recv_ops,requests,MPI_STATUSES_IGNORE);
-      delete[] requests;
+      MPI_Waitall(send_ops+recv_ops,&requests[0],MPI_STATUSES_IGNORE);
 
       // Put the received particles into the domain if they are in the triangulation
       const void *recv_data_it = static_cast<const void *> (&recv_data.front());

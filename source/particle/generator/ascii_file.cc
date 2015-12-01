@@ -37,7 +37,7 @@ namespace aspect
         const std::string filename = data_directory+data_filename;
         std::ifstream in(filename.c_str(), std::ios::in);
         AssertThrow (in,
-                     ExcMessage (std::string("Couldn't open data file <"
+                     ExcMessage (std::string("Could not open data file <"
                                              +
                                              filename
                                              +
@@ -160,7 +160,7 @@ namespace aspect
                                          "specified in an Ascii data file. The file format is "
                                          "a simple text file, with as many columns as spatial "
                                          "dimensions and as many lines as tracers to be generated. "
-                                         "Initial comment lines starting with '#' will be discarded."
+                                         "Initial comment lines starting with `\\#' will be discarded."
                                          "All of the values that define this generator are read "
                                          "from a section ``Particle generator/Ascii file'' in the "
                                          "input file, see "
