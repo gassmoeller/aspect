@@ -40,9 +40,11 @@ def generate_sphere_octant_coordinates(resolution_radius, resolution_lateral, bo
     np.savetxt(filename  + "_" + boundary_name + ".csv", np_coords, delimiter=',', header=header, footer="", comments='')
     return filename, np.array(scoords)
 
+
+
 """ Usage: This script expects 5 input arguments:
 Input model file (*.pvd)
-Output data name (is extended with the boundaries name and saved as csv and vtp)
+Output data name (is extended with the boundary's name and saved as csv and vtp)
 Radial resolution (number of points)
 Lateral resolution (number of points)
 Property (velocity, temperature or the name of another existing property in the input model
@@ -70,11 +72,15 @@ names = "west","east","south","inner","outer"
 model = simple.OpenDataFile(input_data)
 model.UpdatePipeline()
 
+transformed_model = simple.Transform()
+transformed_model.Input = model
+transformed_model.Transform.Rotate = [0,0,0]
+
 for name in names:
     input_coord_filename,scoords = generate_sphere_octant_coordinates(resolution_radius, resolution_lateral, name)
     input_coord_filename += "_"
     reader = simple.OpenDataFile(input_coord_filename + name + ".csv")
-    
+
     tabletopoints = servermanager.filters.TableToPoints()
     tabletopoints.XColumn = 'x'
     tabletopoints.YColumn = 'y'
@@ -83,23 +89,23 @@ for name in names:
     tabletopoints.UpdatePipeline()
     
     resample = simple.ResampleWithDataset()
-    resample.Input = model
+    resample.Input = transformed_model
     resample.Source = tabletopoints
     
     writer_vtp = simple.XMLPolyDataWriter()
     writer_vtp.Input = resample
     writer_vtp.Writealltimestepsasfileseries = 1
-    writer_vtp.FileName = output_data + name + ".vtp"
+    writer_vtp.FileName = output_data + "_" + name + ".vtp"
     writer_vtp.UpdatePipeline()
     
     writer = simple.DataSetCSVWriter()
     writer.Input = resample
     writer.WriteAllTimeSteps = 1
-    writer.FileName = output_data + name + ".csv"
+    writer.FileName = output_data "_" + name + ".csv"
         
     writer.UpdatePipeline()
     
-    files = glob.glob(output_data + name + ".*.csv")
+    files = glob.glob(output_data "_" + name + ".*.csv")
     
     for file in files:
         reformat_data = np.genfromtxt(file, delimiter=',',names=True)
