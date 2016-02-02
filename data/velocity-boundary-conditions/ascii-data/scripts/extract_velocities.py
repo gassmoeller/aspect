@@ -101,11 +101,11 @@ for name in names:
     writer = simple.DataSetCSVWriter()
     writer.Input = resample
     writer.WriteAllTimeSteps = 1
-    writer.FileName = output_data "_" + name + ".csv"
+    writer.FileName = output_data + "_" + name + ".csv"
         
     writer.UpdatePipeline()
     
-    files = glob.glob(output_data "_" + name + ".*.csv")
+    files = glob.glob(output_data + "_" + name + ".*.csv")
     
     for file in files:
         reformat_data = np.genfromtxt(file, delimiter=',',names=True)
