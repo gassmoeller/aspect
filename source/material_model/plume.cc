@@ -63,7 +63,7 @@ namespace aspect
     double
     Plume<dim>::
     viscosity (const double temperature,
-               const double /*pressure*/,
+               const double pressure,
                const std::vector<double> &compositional_fields,
                const SymmetricTensor<2,dim> &,
                const Point<dim> &position) const
@@ -87,7 +87,16 @@ namespace aspect
 
       const double vis_radial = radial_viscosity_lookup->radial_viscosity(depth);
 
-      return std::max(std::min(vis_lateral * vis_radial,max_eta),min_eta);
+      // Incorporate dehydration rheology after Ito et al. (1999)
+      // Pre-exponential viscosity factor is 1 below and 50 above the dry solidus of peridotite, respectively
+
+      // T_solidus for peridotite after Katz, 2003
+      const double T_solidus = A1 + 273.15 + A2 * pressure + A3 * pressure * pressure;
+
+      if (use_dehydration_rheology && temperature >= T_solidus && pressure < 1.3e10)
+    	return std::max(std::min(50 * vis_lateral * vis_radial,max_eta),min_eta);
+      else
+		return std::max(std::min(vis_lateral * vis_radial,max_eta),min_eta);
     }
 
 
@@ -832,6 +841,14 @@ namespace aspect
                              "The relative cutoff value for lateral viscosity variations "
                              "caused by temperature deviations. The viscosity may vary "
                              "laterally by this factor squared.");
+          prm.declare_entry ("Use dehydration rheology", "false",
+                             Patterns::Bool (),
+                             "Whether to use the dehydration rheology after "
+                             "Ito et al. (1999), which incorporates an abrupt "
+                             "viscosity increase at the dry solidus. The "
+                             "pre-exponential factor applied is 1 below and 50 "
+                             "above the dry solidus of peridotite, respectively. "
+                             "This behaviour might or might not be desired.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
@@ -1007,6 +1024,7 @@ namespace aspect
           radial_viscosity_file_name   = prm.get ("Radial viscosity file name");
           lateral_viscosity_file_name  = prm.get ("Lateral viscosity file name");
           use_lateral_average_temperature = prm.get_bool ("Use lateral average temperature for viscosity");
+          use_dehydration_rheology = prm.get_bool ("Use dehydration rheology");
           interpolation        = prm.get_bool ("Bilinear interpolation");
           latent_heat          = prm.get_bool ("Latent heat");
           compressible         = prm.get_bool ("Compressible");
@@ -1083,7 +1101,7 @@ namespace aspect
                                    "The partial derivatives of entropy with respect to temperature "
                                    "and pressure required for calculating the latent heat consumption "
                                    "are then calculated as product of this constant entropy change, "
-                                   "and the respective derivative of the function the describes the "
+                                   "and the respective derivative of the function that describes the "
                                    "melt fraction. This is linearly averaged with respect to the "
                                    "fractions of the two materials present. "
                                    "If no compositional fields are specified in the input file, the "
@@ -1091,6 +1109,12 @@ namespace aspect
                                    "fields are specified, the model assumes that the first compositional "
                                    "field is the fraction of pyroxenite and the rest of the material "
                                    "is peridotite. "
+				   "The use of the dehydration rheology after Ito et al. (1999), (Mantle "
+				   "flow, melting, and dehydration of the Iceland mantle plume, "
+				   "Earth and Planetary Science Letters, 165 (1), 81–96, doi: "
+				   "10.1016/S0012-821X(98)00216-7) can be controlled with the "
+				   "'Use dehydration rheology' input parameter in order to increase the "
+				   "visosity abruptly and thus decrease the melt production rate. "
                                    "\n\n")
   }
 }

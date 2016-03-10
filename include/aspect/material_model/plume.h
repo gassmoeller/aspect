@@ -222,6 +222,7 @@ namespace aspect
         bool latent_heat;
         bool compressible;
         bool use_lateral_average_temperature;
+        bool use_dehydration_rheology;
         double reference_eta;
         std::vector<double> avg_temp;
         double min_eta;
