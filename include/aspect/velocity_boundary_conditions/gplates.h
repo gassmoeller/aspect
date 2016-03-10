@@ -68,6 +68,9 @@ namespace aspect
           void load_file(const std::string &filename,
                          const MPI_Comm &comm);
 
+          Tensor<2,3>
+          get_rotation_matrix() const;
+
           /**
            * Returns the computed surface velocity in cartesian coordinates.
            * Takes as input the position. Actual velocity interpolation is
@@ -182,6 +185,9 @@ namespace aspect
          * Empty Constructor.
          */
         GPlates ();
+
+        Tensor<2,3>
+        get_rotation_matrix() const;
 
         /**
          * Return the boundary velocity as a function of position. For the

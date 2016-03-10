@@ -79,7 +79,7 @@ namespace aspect
             // (0,1,0).
             const Tensor<1,3> rotated_point_one = transpose(rotation_matrix) * point_one;
 
-            const double point_one_coords[3] = {0.0,1.0,0.0};
+            const double point_one_coords[3] = {1.0,0.0,0.0};
             const Tensor<1,3> final_point_one (point_one_coords);
 
             const double second_rotation_angle = std::acos(rotated_point_one*final_point_one);
@@ -116,7 +116,8 @@ namespace aspect
         output << std::setprecision (3) << std::setw(3) << std::fixed << std::endl
                << "   Setting up GPlates boundary velocity plugin."  << std::endl
                << std::endl;
-        if (dim == 2)
+
+        if ((rotation_matrix - unit_symmetric_tensor<3>()).norm() > 1e-3)
           {
             Tensor<1,3> rotation_axis;
             const double rotation_angle = rotation_axis_from_matrix(rotation_axis,rotation_matrix);
@@ -236,14 +237,17 @@ namespace aspect
       }
 
       template <int dim>
+      Tensor<2,3>
+      GPlatesLookup<dim>::get_rotation_matrix() const
+      {
+        return rotation_matrix;
+      }
+
+      template <int dim>
       Tensor<1,dim>
       GPlatesLookup<dim>::surface_velocity(const Point<dim> &position) const
       {
-        const Point<3> internal_position ((dim == 2)
-                                          ?
-                                          rotation_matrix * convert_tensor<dim,3>(position)
-                                          :
-                                          convert_tensor<dim,3>(position));
+        const Point<3> internal_position (rotation_matrix * convert_tensor<dim,3>(position));
 
         // transform internal_position in spherical coordinates
         std_cxx11::array<double,3> spherical_point =
@@ -311,11 +315,7 @@ namespace aspect
 
         // Convert_tensor conveniently also handles the projection to the 2D plane by
         // omitting the z-component of velocity (since the 2D model lies in the x-y plane).
-        const Tensor<1,dim> output_boundary_velocity = (dim == 2)
-                                                       ?
-                                                       convert_tensor<3,dim>(transpose(rotation_matrix) * interpolated_velocity_in_cart)
-                                                       :
-                                                       convert_tensor<3,dim>(interpolated_velocity_in_cart);
+        const Tensor<1,dim> output_boundary_velocity = convert_tensor<3,dim>(transpose(rotation_matrix) * interpolated_velocity_in_cart);
 
         return output_boundary_velocity;
       }
@@ -740,6 +740,13 @@ namespace aspect
                         << "   Loading new velocity file did not succeed." << std::endl
                         << "   Assuming constant boundary conditions for rest of model run."
                         << std::endl << std::endl;
+    }
+
+    template <int dim>
+    Tensor<2,3>
+    GPlates<dim>::get_rotation_matrix() const
+    {
+      return lookup->get_rotation_matrix();
     }
 
     template <int dim>
