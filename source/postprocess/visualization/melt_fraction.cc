@@ -62,7 +62,7 @@ namespace aspect
             const double pressure    = this->get_adiabatic_conditions().pressure(evaluation_points[q]);
             const double temperature = uh[q][this->introspection().component_indices.temperature];
             const double nonadiabatic_temperature = uh[q][this->introspection().component_indices.temperature]
-                                                          - this->get_adiabatic_conditions().temperature(evaluation_points[q]);
+                                                    - this->get_adiabatic_conditions().temperature(evaluation_points[q]);
 
             std::vector<double> composition(this->n_compositional_fields());
 
@@ -135,7 +135,7 @@ namespace aspect
             // if nonadiabatic_temperature > 50
             // composition_fraction = 10 %
             melt_fraction =  pyroxenite_fraction * pyroxenite_melt_fraction +
-                (1-pyroxenite_fraction) * peridotite_melt_fraction;
+                             (1-pyroxenite_fraction) * peridotite_melt_fraction;
 
             computed_quantities[q](0) = melt_fraction;
           }

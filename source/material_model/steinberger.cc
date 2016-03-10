@@ -246,9 +246,9 @@ namespace aspect
 
             // use these coordinates for a bilinear interpolation
             return ((1-xi)*(1-eta)*values[inT][inp] +
-                xi    *(1-eta)*values[inT+1][inp] +
-                (1-xi)*eta    *values[inT][inp+1] +
-                xi    *eta    *values[inT+1][inp+1]);
+                    xi    *(1-eta)*values[inT+1][inp] +
+                    (1-xi)*eta    *values[inT][inp+1] +
+                    xi    *eta    *values[inT+1][inp+1]);
           }
       }
 

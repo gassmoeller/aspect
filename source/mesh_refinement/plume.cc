@@ -39,12 +39,12 @@ namespace aspect
       // verify that the we have a plume boundary temperature model
       // which will give us the plume position
       Assert (dynamic_cast<const BoundaryTemperature::Plume<dim> *>(&this->get_boundary_temperature())
-          != 0,
-          ExcMessage ("This refinement parameter is only implemented if the boundary "
-              "temperature plugin is the 'plume' model."));
+              != 0,
+              ExcMessage ("This refinement parameter is only implemented if the boundary "
+                          "temperature plugin is the 'plume' model."));
 
-      const BoundaryTemperature::Plume<dim> * boundary_temperature =
-          dynamic_cast<const BoundaryTemperature::Plume<dim> *> (&this->get_boundary_temperature());
+      const BoundaryTemperature::Plume<dim> *boundary_temperature =
+        dynamic_cast<const BoundaryTemperature::Plume<dim> *> (&this->get_boundary_temperature());
 
       const Point <dim> plume_position = boundary_temperature->get_plume_position();
 
@@ -62,10 +62,10 @@ namespace aspect
                   Point<dim> vertex = cell->vertex(v);
                   vertex[dim-1] = 0;
                   const double minimum_refinement_level = ((vertex - plume_position).norm() < plume_refinement_radius)
-                                                            ?
-                                                            plume_refinement_level
-                                                            :
-                                                            0;
+                                                          ?
+                                                          plume_refinement_level
+                                                          :
+                                                          0;
 
                   if (cell->level() <= rint(minimum_refinement_level))
                     clear_coarsen = true;

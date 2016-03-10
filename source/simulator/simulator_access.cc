@@ -190,7 +190,7 @@ namespace aspect
   SimulatorAccess<dim>::get_max_refinement_level () const
   {
     return simulator->parameters.initial_global_refinement +
-        simulator->parameters.initial_adaptive_refinement;
+           simulator->parameters.initial_adaptive_refinement;
   }
 
   template <int dim>

@@ -39,26 +39,26 @@ namespace aspect
     {
       if (use_lithosphere_file)
         {
-      AssertThrow ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
-          ExcMessage ("This initial plume plugin can only be used with a lithosphere "
-                      "file when using a box geometry."));
+          AssertThrow ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
+                       ExcMessage ("This initial plume plugin can only be used with a lithosphere "
+                                   "file when using a box geometry."));
 
-      lithosphere_thickness.reset(new Utilities::AsciiDataLookup<dim-1> (1,1));
+          lithosphere_thickness.reset(new Utilities::AsciiDataLookup<dim-1> (1,1));
 
-      const std::string filename = data_directory + data_file_name;
+          const std::string filename = data_directory + data_file_name;
 
-      this->get_pcout() << std::endl << "   Loading Ascii data initial file "
-                        << filename << "." << std::endl << std::endl;
+          this->get_pcout() << std::endl << "   Loading Ascii data initial file "
+                            << filename << "." << std::endl << std::endl;
 
-      if (Utilities::fexists(filename))
-        lithosphere_thickness->load_file(filename);
-      else
-        AssertThrow(false,
-                    ExcMessage (std::string("Ascii data file <")
-                               +
-                               filename
-                               +
-                               "> not found!"));
+          if (Utilities::fexists(filename))
+            lithosphere_thickness->load_file(filename);
+          else
+            AssertThrow(false,
+                        ExcMessage (std::string("Ascii data file <")
+                                    +
+                                    filename
+                                    +
+                                    "> not found!"));
         }
     }
 
@@ -124,12 +124,12 @@ namespace aspect
 
       if (!use_lithosphere_file)
         {
-      // analytical solution for the thermal boundary layer from half-space cooling model
-      surface_cooling_temperature = age_top > 0.0 ?
-                                             (T_surface - adiabatic_surface_temperature) *
-                                             erfc(this->get_geometry_model().depth(position) /
-                                                  (2 * sqrt(kappa * age_top)))
-                                             : 0.0;
+          // analytical solution for the thermal boundary layer from half-space cooling model
+          surface_cooling_temperature = age_top > 0.0 ?
+                                        (T_surface - adiabatic_surface_temperature) *
+                                        erfc(this->get_geometry_model().depth(position) /
+                                             (2 * sqrt(kappa * age_top)))
+                                        : 0.0;
         }
       else
         {
@@ -141,7 +141,7 @@ namespace aspect
           const double depth = this->get_geometry_model().depth(position);
 
           surface_cooling_temperature =  (T_surface - adiabatic_surface_temperature) *
-                                          erfc(depth / lith_thickness);
+                                         erfc(depth / lith_thickness);
         }
 
       const double bottom_heating_temperature = age_bottom > 0.0 ?
@@ -355,10 +355,10 @@ namespace aspect
           if (perturbation_position == "coordinates")
             {
               std::vector<double> coordinates = dealii::Utilities::string_to_double(
-                  dealii::Utilities::split_string_list(prm.get("Midpoint coordinates")));
+                                                  dealii::Utilities::split_string_list(prm.get("Midpoint coordinates")));
 
               for (unsigned int i = 0; i < dim; i++)
-              midpoint_coordinates(i) = coordinates[i];
+                midpoint_coordinates(i) = coordinates[i];
             }
 
           subadiabaticity = prm.get_double ("Subadiabaticity");

@@ -94,9 +94,9 @@ namespace aspect
       const double T_solidus = A1 + 273.15 + A2 * pressure + A3 * pressure * pressure;
 
       if (use_dehydration_rheology && temperature >= T_solidus && pressure < 1.3e10)
-    	return std::max(std::min(50 * vis_lateral * vis_radial,max_eta),min_eta);
+        return std::max(std::min(50 * vis_lateral * vis_radial,max_eta),min_eta);
       else
-		return std::max(std::min(vis_lateral * vis_radial,max_eta),min_eta);
+        return std::max(std::min(vis_lateral * vis_radial,max_eta),min_eta);
     }
 
 
@@ -296,8 +296,8 @@ namespace aspect
       else
         {
           // fourth, melt fraction dependence
-         const double melt_dependence = (1.0 - relative_melt_density)
-                                        * melt_fraction(temperature, this->get_adiabatic_conditions().pressure(position), compositional_fields, position);
+          const double melt_dependence = (1.0 - relative_melt_density)
+                                         * melt_fraction(temperature, this->get_adiabatic_conditions().pressure(position), compositional_fields, position);
 
           // in the end, all the influences are added up
           return get_corrected_density(temperature,pressure,compositional_fields,position)
@@ -537,10 +537,10 @@ namespace aspect
       const double dT_liquidus_dp       = C2 + 2 * C3 * pressure;
 
       const double peridotite_fraction = (this->introspection().compositional_name_exists("peridotite_fraction"))
-      ?
-          compositional_fields[this->introspection().compositional_index_for_name("peridotite_fraction")]
-                               :
-          1.0;
+                                         ?
+                                         compositional_fields[this->introspection().compositional_index_for_name("peridotite_fraction")]
+                                         :
+                                         1.0;
 
       if (temperature > T_solidus && temperature < T_liquidus && pressure < 1.3e10)
         {
@@ -615,7 +615,7 @@ namespace aspect
             }
 
           entropy_gradient += melt_fraction_derivative * pyroxenite_melting_entropy_change
-              * compositional_fields[this->introspection().compositional_index_for_name("pyroxenite_fraction")];
+                              * compositional_fields[this->introspection().compositional_index_for_name("pyroxenite_fraction")];
         }
 
       return entropy_gradient;
@@ -697,14 +697,14 @@ namespace aspect
                    const Point<dim> &position) const
     {
       return (this->introspection().compositional_name_exists("pyroxenite_fraction"))
-              ?
-              pyroxenite_melt_fraction(temperature, pressure, composition, position)
-              * composition[this->introspection().compositional_index_for_name("pyroxenite_fraction")]
-              +
-              peridotite_melt_fraction(temperature, pressure, composition, position)
-              * composition[this->introspection().compositional_index_for_name("peridotite_fraction")]
-              :
-              peridotite_melt_fraction(temperature, pressure, composition, position);
+             ?
+             pyroxenite_melt_fraction(temperature, pressure, composition, position)
+             * composition[this->introspection().compositional_index_for_name("pyroxenite_fraction")]
+             +
+             peridotite_melt_fraction(temperature, pressure, composition, position)
+             * composition[this->introspection().compositional_index_for_name("peridotite_fraction")]
+             :
+             peridotite_melt_fraction(temperature, pressure, composition, position);
 
     }
 
@@ -712,7 +712,7 @@ namespace aspect
     template <int dim>
     void
     Plume<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                               typename Interface<dim>::MaterialModelOutputs &out) const
+                         typename Interface<dim>::MaterialModelOutputs &out) const
     {
 
       Assert ((n_material_data <= in.composition[0].size()) || (n_material_data == 1),
@@ -729,10 +729,10 @@ namespace aspect
                                                             in.position[i]);
 
           const double adiabatic_pressure = (this->get_adiabatic_conditions().is_initialized())
-                  ?
-                      this->get_adiabatic_conditions().pressure(in.position[i])
-                      :
-                      pressure;
+                                            ?
+                                            this->get_adiabatic_conditions().pressure(in.position[i])
+                                            :
+                                            pressure;
 
 
           /* We are only asked to give viscosities if strain_rate.size() > 0
@@ -1109,12 +1109,12 @@ namespace aspect
                                    "fields are specified, the model assumes that the first compositional "
                                    "field is the fraction of pyroxenite and the rest of the material "
                                    "is peridotite. "
-				   "The use of the dehydration rheology after Ito et al. (1999), (Mantle "
-				   "flow, melting, and dehydration of the Iceland mantle plume, "
-				   "Earth and Planetary Science Letters, 165 (1), 81–96, doi: "
-				   "10.1016/S0012-821X(98)00216-7) can be controlled with the "
-				   "'Use dehydration rheology' input parameter in order to increase the "
-				   "visosity abruptly and thus decrease the melt production rate. "
+                                   "The use of the dehydration rheology after Ito et al. (1999), (Mantle "
+                                   "flow, melting, and dehydration of the Iceland mantle plume, "
+                                   "Earth and Planetary Science Letters, 165 (1), 81–96, doi: "
+                                   "10.1016/S0012-821X(98)00216-7) can be controlled with the "
+                                   "'Use dehydration rheology' input parameter in order to increase the "
+                                   "visosity abruptly and thus decrease the melt production rate. "
                                    "\n\n")
   }
 }

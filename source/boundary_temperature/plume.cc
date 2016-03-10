@@ -35,94 +35,94 @@ namespace aspect
   {
 
     namespace internal
-     {
+    {
       template <int dim>
-       PlumeLookup<dim>::PlumeLookup(const std::string &filename,
-                                     const ConditionalOStream &pcout)
-       {
-         pcout << std::endl << "   Loading Plume position file for boundary temperature: "
-               << filename << "." << std::endl << std::endl;
+      PlumeLookup<dim>::PlumeLookup(const std::string &filename,
+                                    const ConditionalOStream &pcout)
+      {
+        pcout << std::endl << "   Loading Plume position file for boundary temperature: "
+              << filename << "." << std::endl << std::endl;
 
-         // Check whether file exists, we do not want to throw
-         // an exception in case it does not, because it could be by purpose
-         // (i.e. the end of the boundary condition is reached)
-         AssertThrow (fexists(filename),
-                      ExcMessage (std::string("Plume position file <")
-                                  +
-                                  filename
-                                  +
-                                  "> not found!"));
+        // Check whether file exists, we do not want to throw
+        // an exception in case it does not, because it could be by purpose
+        // (i.e. the end of the boundary condition is reached)
+        AssertThrow (fexists(filename),
+                     ExcMessage (std::string("Plume position file <")
+                                 +
+                                 filename
+                                 +
+                                 "> not found!"));
 
-         const double Myr_in_seconds = 1e6 * year_in_seconds;
-         const double km_in_m = 1e3;
+        const double Myr_in_seconds = 1e6 * year_in_seconds;
+        const double km_in_m = 1e3;
 
-         std::string temp;
-         std::ifstream in(filename.c_str(), std::ios::in);
-         AssertThrow (in,
-                      ExcMessage (std::string("Couldn't open file <") + filename));
+        std::string temp;
+        std::ifstream in(filename.c_str(), std::ios::in);
+        AssertThrow (in,
+                     ExcMessage (std::string("Couldn't open file <") + filename));
 
-         double time,start_time,x,y;
+        double time,start_time,x,y;
 
-         while (in >> time >> x >> y)
-           {
-             Point<dim> position;
-             switch(dim)
-             {
-             case 2:
-               position(0) = x;
-               break;
-             case 3:
-               position(0) = x;
-               position(1) = y;
-               break;
-             default:
-               AssertThrow(false,ExcNotImplemented());
-               break;
-             }
-             plume_positions.push_back(position*km_in_m);
+        while (in >> time >> x >> y)
+          {
+            Point<dim> position;
+            switch (dim)
+              {
+                case 2:
+                  position(0) = x;
+                  break;
+                case 3:
+                  position(0) = x;
+                  position(1) = y;
+                  break;
+                default:
+                  AssertThrow(false,ExcNotImplemented());
+                  break;
+              }
+            plume_positions.push_back(position*km_in_m);
 
-             if (times.size() == 0)
-               start_time = time * Myr_in_seconds;
-             times.push_back(start_time - time * Myr_in_seconds);
-           }
-       }
+            if (times.size() == 0)
+              start_time = time * Myr_in_seconds;
+            times.push_back(start_time - time * Myr_in_seconds);
+          }
+      }
 
       template <int dim>
-       bool
-       PlumeLookup<dim>::fexists(const std::string &filename) const
-       {
-         std::ifstream ifile(filename.c_str());
-         return !(!ifile); // only in c++11 you can convert to bool directly
-       }
+      bool
+      PlumeLookup<dim>::fexists(const std::string &filename) const
+      {
+        std::ifstream ifile(filename.c_str());
+        return !(!ifile); // only in c++11 you can convert to bool directly
+      }
 
-       template <int dim>
-       Point<dim>
-       PlumeLookup<dim>::plume_position(const double time) const
-       {
-         if (time <= times.front())
-           return plume_positions.front();
-         else if (time >= times.back())
-           return plume_positions.back();
-         else
-           {
-             for (unsigned int i = 0; i < times.size() - 1; i++)
-               {
-                 if ((time >= times[i])
-                     && (time < times[i+1]))
-                   {
-                     const double timestep = times[i+1]-times[i];
-                     const double time_weight = (time - times[i]) / timestep;
+      template <int dim>
+      Point<dim>
+      PlumeLookup<dim>::plume_position(const double time) const
+      {
+        if (time <= times.front())
+          return plume_positions.front();
+        else if (time >= times.back())
+          return plume_positions.back();
+        else
+          {
+            for (unsigned int i = 0; i < times.size() - 1; i++)
+              {
+                if ((time >= times[i])
+                    && (time < times[i+1]))
+                  {
+                    const double timestep = times[i+1]-times[i];
+                    const double time_weight = (time - times[i]) / timestep;
 
-                     return Point<dim> ((1.0 - time_weight) * plume_positions[i]
-                                     + time_weight * plume_positions[i+1]);
-                   }
-               }
-             AssertThrow(false,
-                         ExcMessage("Did not find time interval for plume location."))
-           }
-         return Point<dim>();
-       }
-     }
+                    return Point<dim> ((1.0 - time_weight) * plume_positions[i]
+                                       + time_weight * plume_positions[i+1]);
+                  }
+              }
+            AssertThrow(false,
+                        ExcMessage("Did not find time interval for plume location."))
+          }
+        return Point<dim>();
+      }
+    }
 
 // ------------------------------ Box -------------------
 
@@ -244,7 +244,7 @@ namespace aspect
       Assert (boundary_indicator<2*dim, ExcMessage ("Unknown boundary indicator."));
       Assert (this->get_adiabatic_conditions().is_initialized(),
               ExcMessage ("The adiabatic conditions are not yet initialized,"
-                  "but they are necessary for the plume boundary temperature plugin."));
+                          "but they are necessary for the plume boundary temperature plugin."));
 
       double boundary_temperature(0);
       const types::boundary_id boundary_id(boundary_indicator);
@@ -262,7 +262,7 @@ namespace aspect
               if (distance_head_to_boundary < head_radius)
                 {
                   current_head_radius = sqrt(head_radius * head_radius
-                      - distance_head_to_boundary * distance_head_to_boundary);
+                                             - distance_head_to_boundary * distance_head_to_boundary);
                 }
             }
 
@@ -349,109 +349,109 @@ namespace aspect
     void
     Plume<dim>::declare_parameters (ParameterHandler &prm)
     {
-        prm.enter_subsection("Plume");
-        {
-          prm.declare_entry ("Data directory",
-                             "$ASPECT_SOURCE_DIR/data/boundary-temperature/plume/",
-                             Patterns::DirectoryName (),
-                             "The name of a directory that contains the model data. This path "
-                             "may either be absolute (if starting with a '/') or relative to "
-                             "the current directory. The path may also include the special "
-                             "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
-                             "in which the ASPECT source files were located when ASPECT was "
-                             "compiled. This interpretation allows, for example, to reference "
-                             "files located in the 'data/' subdirectory of ASPECT. ");
-          prm.declare_entry ("Plume position file name", "Tristan.sur",
-                             Patterns::Anything (),
-                             "The file name of the plume position data.");
-          prm.declare_entry ("Amplitude", "0",
-                             Patterns::Double (),
-                             "Amplitude of the plume tail temperature anomaly. Units: K.");
-          prm.declare_entry ("Inflow velocity", "0",
-                             Patterns::Double (),
-                             "Magnitude of the velocity inflow. Units: K.");
-          prm.declare_entry ("Radius", "0",
-                             Patterns::Double (),
-                             "Radius of the plume tail temperature anomaly. Units: m.");
-          prm.declare_entry ("Head amplitude", "0",
-                             Patterns::Double (),
-                             "Amplitude of the plume head temperature anomaly. Units: K.");
-          prm.declare_entry ("Head radius", "0",
-                             Patterns::Double (),
-                             "Radius of the plume head temperature anomaly. Units: m.");
-          prm.declare_entry ("Head velocity", "0",
-                             Patterns::Double (),
-                             "Magnitude of the plume head velocity inflow. Units: m/s or m/yr.");
-          prm.declare_entry ("Model time to start plume tail", "0",
-                             Patterns::Double (),
-                             "Time before the start of the plume position data at which "
-                             "the head starts to flow into the model. Units: years or "
-                             "seconds.");
-          /**
-           * Choose the type of side boundary temperature applied. Current choices
-           * are to apply temperatures from an adiabatic profile, the initial
-           * temperature or constant boundary temperatures.
-           */
-          prm.declare_entry ("Side boundary type", "initial",
-                             Patterns::Selection ("initial|adiabatic|constant"),
-                             "A selection that determines the assumed temperatures "
-                             "at the side boundaries. Choices are initial, adiabatic "
-                             "and constant to prescribe the initial temperature, "
-                             "temperatures from an adiabatic profile or a constant "
-                             "temperature.");
-          prm.declare_entry ("Age top boundary layer", "0e0",
-                             Patterns::Double (0),
-                             "The age of the upper thermal boundary layer, used for the calculation "
-                             "of the half-space cooling model temperature. Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
-                             "seconds otherwise.");
-          prm.declare_entry ("Age bottom boundary layer", "0e0",
-                             Patterns::Double (0),
-                             "The age of the lower thermal boundary layer, used for the calculation "
-                             "of the half-space cooling model temperature. Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
-                             "seconds otherwise.");
-          prm.declare_entry ("Subadiabaticity", "0e0",
-                             Patterns::Double (0),
-                             "If this value is larger than 0, the initial temperature profile will "
-                             "not be adiabatic, but subadiabatic. This value gives the maximal "
-                             "deviation from adiabaticity. Set to 0 for an adiabatic temperature "
-                             "profile. Units: K.\n\n"
-                             "The function object in the Function subsection "
-                             "represents the compositional fields that will be used as a reference "
-                             "profile for calculating the thermal diffusivity. "
-                             "This function is one-dimensional and depends only on depth. The format of this "
-                             "functions follows the syntax understood by the "
-                             "muparser library, see Section~\\ref{sec:muparser-format}.");
-          prm.declare_entry ("Left temperature", "1613",
-                             Patterns::Double (),
-                             "Temperature at the left boundary (at minimal x-value). Units: K.");
-          prm.declare_entry ("Right temperature", "1613",
-                             Patterns::Double (),
-                             "Temperature at the right boundary (at maximal x-value). Units: K.");
-          prm.declare_entry ("Bottom temperature", "4000",
-                             Patterns::Double (),
-                             "Temperature at the bottom boundary (at minimal z-value). Units: K.");
-          prm.declare_entry ("Top temperature", "273",
-                             Patterns::Double (),
-                             "Temperature at the top boundary (at maximal x-value). Units: K.");
-          if (dim==3)
-            {
-              prm.declare_entry ("Front temperature", "1613",
-                                 Patterns::Double (),
-                                 "Temperature at the front boundary (at minimal y-value). Units: K.");
-              prm.declare_entry ("Back temperature", "1613",
-                                 Patterns::Double (),
-                                 "Temperature at the back boundary (at maximal y-value). Units: K.");
-            }
-          prm.enter_subsection("Function");
+      prm.enter_subsection("Plume");
+      {
+        prm.declare_entry ("Data directory",
+                           "$ASPECT_SOURCE_DIR/data/boundary-temperature/plume/",
+                           Patterns::DirectoryName (),
+                           "The name of a directory that contains the model data. This path "
+                           "may either be absolute (if starting with a '/') or relative to "
+                           "the current directory. The path may also include the special "
+                           "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                           "in which the ASPECT source files were located when ASPECT was "
+                           "compiled. This interpretation allows, for example, to reference "
+                           "files located in the 'data/' subdirectory of ASPECT. ");
+        prm.declare_entry ("Plume position file name", "Tristan.sur",
+                           Patterns::Anything (),
+                           "The file name of the plume position data.");
+        prm.declare_entry ("Amplitude", "0",
+                           Patterns::Double (),
+                           "Amplitude of the plume tail temperature anomaly. Units: K.");
+        prm.declare_entry ("Inflow velocity", "0",
+                           Patterns::Double (),
+                           "Magnitude of the velocity inflow. Units: K.");
+        prm.declare_entry ("Radius", "0",
+                           Patterns::Double (),
+                           "Radius of the plume tail temperature anomaly. Units: m.");
+        prm.declare_entry ("Head amplitude", "0",
+                           Patterns::Double (),
+                           "Amplitude of the plume head temperature anomaly. Units: K.");
+        prm.declare_entry ("Head radius", "0",
+                           Patterns::Double (),
+                           "Radius of the plume head temperature anomaly. Units: m.");
+        prm.declare_entry ("Head velocity", "0",
+                           Patterns::Double (),
+                           "Magnitude of the plume head velocity inflow. Units: m/s or m/yr.");
+        prm.declare_entry ("Model time to start plume tail", "0",
+                           Patterns::Double (),
+                           "Time before the start of the plume position data at which "
+                           "the head starts to flow into the model. Units: years or "
+                           "seconds.");
+        /**
+         * Choose the type of side boundary temperature applied. Current choices
+         * are to apply temperatures from an adiabatic profile, the initial
+         * temperature or constant boundary temperatures.
+         */
+        prm.declare_entry ("Side boundary type", "initial",
+                           Patterns::Selection ("initial|adiabatic|constant"),
+                           "A selection that determines the assumed temperatures "
+                           "at the side boundaries. Choices are initial, adiabatic "
+                           "and constant to prescribe the initial temperature, "
+                           "temperatures from an adiabatic profile or a constant "
+                           "temperature.");
+        prm.declare_entry ("Age top boundary layer", "0e0",
+                           Patterns::Double (0),
+                           "The age of the upper thermal boundary layer, used for the calculation "
+                           "of the half-space cooling model temperature. Units: years if the "
+                           "'Use years in output instead of seconds' parameter is set; "
+                           "seconds otherwise.");
+        prm.declare_entry ("Age bottom boundary layer", "0e0",
+                           Patterns::Double (0),
+                           "The age of the lower thermal boundary layer, used for the calculation "
+                           "of the half-space cooling model temperature. Units: years if the "
+                           "'Use years in output instead of seconds' parameter is set; "
+                           "seconds otherwise.");
+        prm.declare_entry ("Subadiabaticity", "0e0",
+                           Patterns::Double (0),
+                           "If this value is larger than 0, the initial temperature profile will "
+                           "not be adiabatic, but subadiabatic. This value gives the maximal "
+                           "deviation from adiabaticity. Set to 0 for an adiabatic temperature "
+                           "profile. Units: K.\n\n"
+                           "The function object in the Function subsection "
+                           "represents the compositional fields that will be used as a reference "
+                           "profile for calculating the thermal diffusivity. "
+                           "This function is one-dimensional and depends only on depth. The format of this "
+                           "functions follows the syntax understood by the "
+                           "muparser library, see Section~\\ref{sec:muparser-format}.");
+        prm.declare_entry ("Left temperature", "1613",
+                           Patterns::Double (),
+                           "Temperature at the left boundary (at minimal x-value). Units: K.");
+        prm.declare_entry ("Right temperature", "1613",
+                           Patterns::Double (),
+                           "Temperature at the right boundary (at maximal x-value). Units: K.");
+        prm.declare_entry ("Bottom temperature", "4000",
+                           Patterns::Double (),
+                           "Temperature at the bottom boundary (at minimal z-value). Units: K.");
+        prm.declare_entry ("Top temperature", "273",
+                           Patterns::Double (),
+                           "Temperature at the top boundary (at maximal x-value). Units: K.");
+        if (dim==3)
           {
-            Functions::ParsedFunction<1>::declare_parameters (prm, 1);
+            prm.declare_entry ("Front temperature", "1613",
+                               Patterns::Double (),
+                               "Temperature at the front boundary (at minimal y-value). Units: K.");
+            prm.declare_entry ("Back temperature", "1613",
+                               Patterns::Double (),
+                               "Temperature at the back boundary (at maximal y-value). Units: K.");
           }
-          prm.leave_subsection();
+        prm.enter_subsection("Function");
+        {
+          Functions::ParsedFunction<1>::declare_parameters (prm, 1);
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
+      prm.leave_subsection ();
+    }
 
 
     template <int dim>
@@ -526,28 +526,28 @@ namespace aspect
           }
 
         switch (dim)
-        {
-           case 2:
-             temperature_[0] = prm.get_double ("Left temperature");
-             temperature_[1] = prm.get_double ("Right temperature");
-             temperature_[2] = prm.get_double ("Bottom temperature");
-             temperature_[3] = prm.get_double ("Top temperature");
-             break;
+          {
+            case 2:
+              temperature_[0] = prm.get_double ("Left temperature");
+              temperature_[1] = prm.get_double ("Right temperature");
+              temperature_[2] = prm.get_double ("Bottom temperature");
+              temperature_[3] = prm.get_double ("Top temperature");
+              break;
 
-           case 3:
-             temperature_[0] = prm.get_double ("Left temperature");
-             temperature_[1] = prm.get_double ("Right temperature");
-             temperature_[2] = prm.get_double ("Front temperature");
-             temperature_[3] = prm.get_double ("Back temperature");
-             temperature_[4] = prm.get_double ("Bottom temperature");
-             temperature_[5] = prm.get_double ("Top temperature");
-             break;
+            case 3:
+              temperature_[0] = prm.get_double ("Left temperature");
+              temperature_[1] = prm.get_double ("Right temperature");
+              temperature_[2] = prm.get_double ("Front temperature");
+              temperature_[3] = prm.get_double ("Back temperature");
+              temperature_[4] = prm.get_double ("Bottom temperature");
+              temperature_[5] = prm.get_double ("Top temperature");
+              break;
 
-           default:
-             Assert (false, ExcNotImplemented());
-           }
-        }
-        prm.leave_subsection ();
+            default:
+              Assert (false, ExcNotImplemented());
+          }
+      }
+      prm.leave_subsection ();
     }
   }
 }

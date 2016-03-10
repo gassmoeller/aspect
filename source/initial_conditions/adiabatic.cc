@@ -283,10 +283,10 @@ namespace aspect
           if (perturbation_position == "coordinates")
             {
               std::vector<double> coordinates = Utilities::string_to_double(
-                  Utilities::split_string_list(prm.get("Midpoint coordinates")));
+                                                  Utilities::split_string_list(prm.get("Midpoint coordinates")));
 
               for (unsigned int i = 0; i < dim; i++)
-              midpoint_coordinates(i) = coordinates[i];
+                midpoint_coordinates(i) = coordinates[i];
             }
 
           subadiabaticity = prm.get_double ("Subadiabaticity");

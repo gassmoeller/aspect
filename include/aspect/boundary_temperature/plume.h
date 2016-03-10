@@ -106,7 +106,7 @@ namespace aspect
          * Initialization function. This function is called once at the
          * beginning of the program. Loads file.
          */
-      virtual
+        virtual
         void
         initialize ();
 
@@ -114,7 +114,7 @@ namespace aspect
          * A function that is called at the beginning of each time step. For
          * the current plugin, this function updates the current plume position.
          */
-      virtual
+        virtual
         void
         update ();
 

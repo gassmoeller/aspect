@@ -40,11 +40,11 @@ namespace aspect
                                             const double velocity_scale_factor,
                                             const bool interpolate_velocity)
         :
-          components(components),
-          data(components),
-          time_scale_factor(time_scale_factor),
-          velocity_scale_factor(velocity_scale_factor),
-          interpolate_velocity(interpolate_velocity)
+        components(components),
+        data(components),
+        time_scale_factor(time_scale_factor),
+        velocity_scale_factor(velocity_scale_factor),
+        interpolate_velocity(interpolate_velocity)
       {
         // Check whether file exists, we do not want to throw
         // an exception in case it does not, because it could be by purpose
@@ -87,24 +87,24 @@ namespace aspect
 
             // each time will contain a map from plate character to velocity
             plate_velocity velocity;
-            switch(dim)
-            {
-            case 1:
-              velocity.first[0] = vx;
-              break;
-            case 2:
-              velocity.first[0] = vx;
-              velocity.first[1] = vy;
-              break;
-            default:
-              AssertThrow(false,ExcNotImplemented());
-              break;
-            }
+            switch (dim)
+              {
+                case 1:
+                  velocity.first[0] = vx;
+                  break;
+                case 2:
+                  velocity.first[0] = vx;
+                  velocity.first[1] = vy;
+                  break;
+                default:
+                  AssertThrow(false,ExcNotImplemented());
+                  break;
+              }
 
             velocity.second = omega;
 
             velocity_slice.insert(std::pair<unsigned char,plate_velocity >
-            (plate_id,velocity));
+                                  (plate_id,velocity));
 
             old_time = start_time;
           }
@@ -137,13 +137,13 @@ namespace aspect
         else
           {
             for (unsigned int i = velocity_values.size() - 2; i >= 0; i--)
-                if (time_until_end > velocity_values[i].first)
-                  {
-                    old_index = i + 1;
-                    next_index = i;
-                    velocity_time_weight = (velocity_values[old_index].first - time_until_end) / (velocity_values[old_index].first - velocity_values[next_index].first);
-                    break;
-                  }
+              if (time_until_end > velocity_values[i].first)
+                {
+                  old_index = i + 1;
+                  next_index = i;
+                  velocity_time_weight = (velocity_values[old_index].first - time_until_end) / (velocity_values[old_index].first - velocity_values[next_index].first);
+                  break;
+                }
           }
 
         const velocity_map old_map = velocity_values[old_index].second;
@@ -198,10 +198,10 @@ namespace aspect
         for (unsigned int i = 0; i < dim; i++)
           AssertThrow (table_points[i] != 0,
                        ExcMessage("There was no POINTS: keyword in the data file, or it could not "
-                           "be parsed correctly. Ensure that at least the first data file contains "
-                           "an information about the grid size in the form '# POINTS: x y', where "
-                           "x y (only x in 2D) are the number of points in the coordinate directions"
-                           " of the boundary grid."));
+                                  "be parsed correctly. Ensure that at least the first data file contains "
+                                  "an information about the grid size in the form '# POINTS: x y', where "
+                                  "x y (only x in 2D) are the number of points in the coordinate directions"
+                                  " of the boundary grid."));
 
         /**
          * Table for the new data. This peculiar reinit is necessary, because
@@ -219,16 +219,16 @@ namespace aspect
         while (!in.eof())
           {
             Point<dim> position;
-             for (unsigned int i = 0; i < dim; i++)
-               {
-                 if (!(in >> position[i]))
-                   break;
-                 data_tables[i](compute_table_indices(line)) = position[i];
-               }
+            for (unsigned int i = 0; i < dim; i++)
+              {
+                if (!(in >> position[i]))
+                  break;
+                data_tables[i](compute_table_indices(line)) = position[i];
+              }
 
-             char plate_id;
-             if (!(in >> plate_id))
-               break;
+            char plate_id;
+            if (!(in >> plate_id))
+              break;
 
             Tensor<1,dim+1> old_velocity = old_map.find(plate_id)->second.first;
             const double old_omega = old_map.find(plate_id)->second.second;
@@ -250,36 +250,36 @@ namespace aspect
               }
 
 
-             Tensor<1,dim+1> rotation_velocity;
-             Tensor<1,dim+1> old_rotation_velocity;
+            Tensor<1,dim+1> rotation_velocity;
+            Tensor<1,dim+1> old_rotation_velocity;
 
-             if (dim == 2)
-               {
-                 rotation_velocity[0] = -omega*position[1];
-                 rotation_velocity[1] = omega*position[0];
-                 old_rotation_velocity[0] = -old_omega*position[1];
-                 old_rotation_velocity[1] = old_omega*position[0];
-               }
-             else if (dim == 1)
-               {
-                 rotation_velocity[0] = -omega*position[0];
-                 old_rotation_velocity[0] = -old_omega*position[0];
-               }
+            if (dim == 2)
+              {
+                rotation_velocity[0] = -omega*position[1];
+                rotation_velocity[1] = omega*position[0];
+                old_rotation_velocity[0] = -old_omega*position[1];
+                old_rotation_velocity[1] = old_omega*position[0];
+              }
+            else if (dim == 1)
+              {
+                rotation_velocity[0] = -omega*position[0];
+                old_rotation_velocity[0] = -old_omega*position[0];
+              }
 
-             velocity += rotation_velocity;
-             old_velocity += old_rotation_velocity;
+            velocity += rotation_velocity;
+            old_velocity += old_rotation_velocity;
 
-             Tensor<1,dim+1> surface_velocity;
-             if (interpolate_velocity)
-               {
-                 surface_velocity = velocity_time_weight * velocity
+            Tensor<1,dim+1> surface_velocity;
+            if (interpolate_velocity)
+              {
+                surface_velocity = velocity_time_weight * velocity
                                    + (1-velocity_time_weight) * old_velocity;
-               }
-             else
-               surface_velocity = old_velocity;
+              }
+            else
+              surface_velocity = old_velocity;
 
-             for (unsigned int i = 0; i < dim+1; i++)
-               data_tables[dim+i](compute_table_indices(line)) = surface_velocity[i];
+            for (unsigned int i = 0; i < dim+1; i++)
+              data_tables[dim+i](compute_table_indices(line)) = surface_velocity[i];
 
             line++;
 
@@ -406,26 +406,26 @@ namespace aspect
 
           const std::string surface_filename (create_surface_filename (current_file_number));
           this->get_pcout() << std::endl << "   Loading BoxPlates data boundary file "
-              << surface_filename << "." << std::endl << std::endl;
+                            << surface_filename << "." << std::endl << std::endl;
 
           if (Utilities::fexists(surface_filename))
             surface_lookup->load_file(surface_filename,0.0);
           else
             AssertThrow(false,
-                ExcMessage (std::string("Ascii data file <")
-                            +
-                            surface_filename
-                            +
-                            "> not found!"));
+                        ExcMessage (std::string("Ascii data file <")
+                                    +
+                                    surface_filename
+                                    +
+                                    "> not found!"));
         }
       if (this->get_geometry_model().translate_id_to_symbol_name(boundary_id) != "top")
         {
           // Load side and bottom boundaries, but only if this is not the top boundary
           lookup.reset(new Utilities::AsciiDataLookup<dim-1> (dim,
-                      scale_factor));
+                                                              scale_factor));
 
           old_lookup.reset(new Utilities::AsciiDataLookup<dim-1> (dim,
-                          scale_factor));
+                                                                  scale_factor));
 
           const std::string filename (create_filename (current_file_number));
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
@@ -436,66 +436,66 @@ namespace aspect
           else
             AssertThrow(false,
                         ExcMessage (std::string("Ascii data file <")
-          +
-          filename
-          +
-          "> not found!"));
+                                    +
+                                    filename
+                                    +
+                                    "> not found!"));
         }
 
-          // If the boundary condition is constant, switch
-          // off time_dependence immediately. This also sets time_weight to 1.0.
-          // If not, also load the second file for interpolation.
-          if (create_filename (current_file_number) == create_filename (current_file_number+1))
-              end_time_dependence ();
-          else
-            {
-              const std::string filename (create_filename (next_file_number));
-              const std::string surface_filename (create_surface_filename (next_file_number));
+      // If the boundary condition is constant, switch
+      // off time_dependence immediately. This also sets time_weight to 1.0.
+      // If not, also load the second file for interpolation.
+      if (create_filename (current_file_number) == create_filename (current_file_number+1))
+        end_time_dependence ();
+      else
+        {
+          const std::string filename (create_filename (next_file_number));
+          const std::string surface_filename (create_surface_filename (next_file_number));
 
-              if (this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "top")
+          if (this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "top")
+            {
+              this->get_pcout() << std::endl << "   Loading BoxPlates data boundary file "
+                                << surface_filename << "." << std::endl << std::endl;
+              if (Utilities::fexists(surface_filename))
                 {
-                  this->get_pcout() << std::endl << "   Loading BoxPlates data boundary file "
-                      << surface_filename << "." << std::endl << std::endl;
-                  if (Utilities::fexists(surface_filename))
-                    {
-                      surface_lookup.swap(old_surface_lookup);
-                      surface_lookup->load_file(surface_filename,
-                                                std::abs(next_file_number-first_data_file_number)*data_file_time_step);
-                    }
-                  else
-                    end_time_dependence();
-                }
-              else if (this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "bottom")
-                {
-                  this->get_pcout() << std::endl << "   Loading Ascii data data boundary file "
-                      << filename << "." << std::endl << std::endl;
-                  if (Utilities::fexists(filename))
-                    {
-                      lookup.swap(old_lookup);
-                      lookup->load_file(filename);
-                    }
-                  else
-                    end_time_dependence();
+                  surface_lookup.swap(old_surface_lookup);
+                  surface_lookup->load_file(surface_filename,
+                                            std::abs(next_file_number-first_data_file_number)*data_file_time_step);
                 }
               else
-                {
-                  this->get_pcout() << std::endl << "   Loading BoxPlates data boundary file "
-                      << surface_filename << "." << std::endl << std::endl;
-                  this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                      << filename << "." << std::endl << std::endl;
-
-                  if (Utilities::fexists(filename) && Utilities::fexists(surface_filename))
-                    {
-                      surface_lookup.swap(old_surface_lookup);
-                      surface_lookup->load_file(surface_filename,
-                                                std::abs(next_file_number-first_data_file_number)*data_file_time_step);
-                      lookup.swap(old_lookup);
-                      lookup->load_file(filename);
-                    }
-                  else
-                    end_time_dependence ();
-                }
+                end_time_dependence();
             }
+          else if (this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "bottom")
+            {
+              this->get_pcout() << std::endl << "   Loading Ascii data data boundary file "
+                                << filename << "." << std::endl << std::endl;
+              if (Utilities::fexists(filename))
+                {
+                  lookup.swap(old_lookup);
+                  lookup->load_file(filename);
+                }
+              else
+                end_time_dependence();
+            }
+          else
+            {
+              this->get_pcout() << std::endl << "   Loading BoxPlates data boundary file "
+                                << surface_filename << "." << std::endl << std::endl;
+              this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
+                                << filename << "." << std::endl << std::endl;
+
+              if (Utilities::fexists(filename) && Utilities::fexists(surface_filename))
+                {
+                  surface_lookup.swap(old_surface_lookup);
+                  surface_lookup->load_file(surface_filename,
+                                            std::abs(next_file_number-first_data_file_number)*data_file_time_step);
+                  lookup.swap(old_lookup);
+                  lookup->load_file(filename);
+                }
+              else
+                end_time_dependence ();
+            }
+        }
     }
 
     template <int dim>
@@ -541,8 +541,8 @@ namespace aspect
           // because we need to catch increasing and decreasing file orders and all
           // possible first_data_file_model_times and first_data_file_numbers.
           const bool need_update =
-              static_cast<int> ((this->get_time() - first_data_file_model_time) / data_file_time_step)
-              > std::abs(current_file_number - first_data_file_number);
+            static_cast<int> ((this->get_time() - first_data_file_model_time) / data_file_time_step)
+            > std::abs(current_file_number - first_data_file_number);
 
           if (need_update)
             {
@@ -550,19 +550,19 @@ namespace aspect
               // number current_file_number +/- 1, because current_file_number
               // is the file older than the current model time
               const int old_file_number =
-                  (decreasing_file_order) ?
-                      current_file_number - 1
-                      :
-                      current_file_number + 1;
+                (decreasing_file_order) ?
+                current_file_number - 1
+                :
+                current_file_number + 1;
 
               //Calculate new file_number
               current_file_number =
-                  (decreasing_file_order) ?
-                      first_data_file_number
-                        - static_cast<unsigned int> ((this->get_time() - first_data_file_model_time) / data_file_time_step)
-                      :
-                      first_data_file_number
-                        + static_cast<unsigned int> ((this->get_time() - first_data_file_model_time) / data_file_time_step);
+                (decreasing_file_order) ?
+                first_data_file_number
+                - static_cast<unsigned int> ((this->get_time() - first_data_file_model_time) / data_file_time_step)
+                :
+                first_data_file_number
+                + static_cast<unsigned int> ((this->get_time() - first_data_file_model_time) / data_file_time_step);
 
               const bool load_both_files = std::abs(current_file_number - old_file_number) >= 1;
 
@@ -585,10 +585,10 @@ namespace aspect
     {
 
       const int next_file_number =
-          (decreasing_file_order) ?
-              current_file_number - 1
-              :
-              current_file_number + 1;
+        (decreasing_file_order) ?
+        current_file_number - 1
+        :
+        current_file_number + 1;
 
       // If the time step was large enough to move forward more
       // then one data file we need to load both current files
@@ -601,12 +601,12 @@ namespace aspect
           if (this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "top")
             {
               this->get_pcout() << std::endl << "   Loading BoxPlates data boundary file "
-                  << surface_filename << "." << std::endl << std::endl;
+                                << surface_filename << "." << std::endl << std::endl;
               if (Utilities::fexists(surface_filename))
                 {
                   surface_lookup.swap(old_surface_lookup);
                   surface_lookup->load_file(surface_filename,
-                      std::abs(next_file_number-first_data_file_number)*data_file_time_step);
+                                            std::abs(next_file_number-first_data_file_number)*data_file_time_step);
                 }
               else
                 end_time_dependence();
@@ -614,7 +614,7 @@ namespace aspect
           else if (this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "bottom")
             {
               this->get_pcout() << std::endl << "   Loading Ascii data data boundary file "
-                  << filename << "." << std::endl << std::endl;
+                                << filename << "." << std::endl << std::endl;
               if (Utilities::fexists(filename))
                 {
                   lookup.swap(old_lookup);
@@ -626,15 +626,15 @@ namespace aspect
           else
             {
               this->get_pcout() << std::endl << "   Loading BoxPlates data boundary file "
-                  << surface_filename << "." << std::endl << std::endl;
+                                << surface_filename << "." << std::endl << std::endl;
               this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                  << filename << "." << std::endl << std::endl;
+                                << filename << "." << std::endl << std::endl;
 
               if (Utilities::fexists(filename) && Utilities::fexists(surface_filename))
                 {
                   surface_lookup.swap(old_surface_lookup);
                   surface_lookup->load_file(surface_filename,
-                      std::abs(next_file_number-first_data_file_number)*data_file_time_step);
+                                            std::abs(next_file_number-first_data_file_number)*data_file_time_step);
                   lookup.swap(old_lookup);
                   lookup->load_file(filename);
                 }
@@ -650,12 +650,12 @@ namespace aspect
       if (this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "top")
         {
           this->get_pcout() << std::endl << "   Loading BoxPlates data boundary file "
-              << surface_filename << "." << std::endl << std::endl;
+                            << surface_filename << "." << std::endl << std::endl;
           if (Utilities::fexists(surface_filename))
             {
               surface_lookup.swap(old_surface_lookup);
               surface_lookup->load_file(surface_filename,
-                  std::abs(next_file_number-first_data_file_number)*data_file_time_step);
+                                        std::abs(next_file_number-first_data_file_number)*data_file_time_step);
             }
           else
             end_time_dependence();
@@ -663,7 +663,7 @@ namespace aspect
       else if (this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "bottom")
         {
           this->get_pcout() << std::endl << "   Loading Ascii data data boundary file "
-              << filename << "." << std::endl << std::endl;
+                            << filename << "." << std::endl << std::endl;
           if (Utilities::fexists(filename))
             {
               lookup.swap(old_lookup);
@@ -675,15 +675,15 @@ namespace aspect
       else
         {
           this->get_pcout() << std::endl << "   Loading BoxPlates data boundary file "
-              << surface_filename << "." << std::endl << std::endl;
+                            << surface_filename << "." << std::endl << std::endl;
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-              << filename << "." << std::endl << std::endl;
+                            << filename << "." << std::endl << std::endl;
 
           if (Utilities::fexists(filename) && Utilities::fexists(surface_filename))
             {
               surface_lookup.swap(old_surface_lookup);
               surface_lookup->load_file(surface_filename,
-                  std::abs(next_file_number-first_data_file_number)*data_file_time_step);
+                                        std::abs(next_file_number-first_data_file_number)*data_file_time_step);
               lookup.swap(old_lookup);
               lookup->load_file(filename);
             }
@@ -714,7 +714,7 @@ namespace aspect
     get_velocity (const Point<dim> position) const
     {
       const std_cxx11::array<unsigned int,dim-1> boundary_dimensions =
-                  get_boundary_dimensions();
+        get_boundary_dimensions();
 
       Point<dim-1> data_position;
       for (unsigned int i = 0; i < dim-1; i++)
@@ -722,7 +722,7 @@ namespace aspect
 
       Tensor<1,dim> velocity,old_velocity;
       for (unsigned int i = 0; i < dim; i++)
-          velocity[i] = lookup->get_data(data_position,i);
+        velocity[i] = lookup->get_data(data_position,i);
 
       if (!time_dependent)
         return velocity;
@@ -744,7 +744,7 @@ namespace aspect
 
       Tensor<1,dim> surface_velocity,old_surface_velocity;
       for (unsigned int i = 0; i < dim; i++)
-          surface_velocity[i] = surface_lookup->get_data(data_position,i);
+        surface_velocity[i] = surface_lookup->get_data(data_position,i);
 
       if (!time_dependent)
         return surface_velocity;
@@ -762,45 +762,45 @@ namespace aspect
       std_cxx11::array<unsigned int,dim-1> boundary_dimensions;
 
       switch (dim)
-      {
-      case 2:
-        if ((boundary_id == 2) || (boundary_id == 3))
-          {
-            boundary_dimensions[0] = 0;
-          }
-        else if ((boundary_id == 0) || (boundary_id == 1))
-          {
-            boundary_dimensions[0] = 1;
-          }
-        else
-          AssertThrow(false,ExcNotImplemented());
+        {
+          case 2:
+            if ((boundary_id == 2) || (boundary_id == 3))
+              {
+                boundary_dimensions[0] = 0;
+              }
+            else if ((boundary_id == 0) || (boundary_id == 1))
+              {
+                boundary_dimensions[0] = 1;
+              }
+            else
+              AssertThrow(false,ExcNotImplemented());
 
-        break;
+            break;
 
-      case 3:
-        if ((boundary_id == 4) || (boundary_id == 5))
-          {
-            boundary_dimensions[0] = 0;
-            boundary_dimensions[1] = 1;
-          }
-        else if ((boundary_id == 0) || (boundary_id == 1))
-          {
-            boundary_dimensions[0] = 1;
-            boundary_dimensions[1] = 2;
-          }
-        else if ((boundary_id == 2) || (boundary_id == 3))
-          {
-            boundary_dimensions[0] = 0;
-            boundary_dimensions[1] = 2;
-          }
-        else
-          AssertThrow(false,ExcNotImplemented());
+          case 3:
+            if ((boundary_id == 4) || (boundary_id == 5))
+              {
+                boundary_dimensions[0] = 0;
+                boundary_dimensions[1] = 1;
+              }
+            else if ((boundary_id == 0) || (boundary_id == 1))
+              {
+                boundary_dimensions[0] = 1;
+                boundary_dimensions[1] = 2;
+              }
+            else if ((boundary_id == 2) || (boundary_id == 3))
+              {
+                boundary_dimensions[0] = 0;
+                boundary_dimensions[1] = 2;
+              }
+            else
+              AssertThrow(false,ExcNotImplemented());
 
-        break;
+            break;
 
-      default:
-        AssertThrow(false,ExcNotImplemented());
-      }
+          default:
+            AssertThrow(false,ExcNotImplemented());
+        }
       return boundary_dimensions;
     }
 
@@ -829,7 +829,7 @@ namespace aspect
                   if (distance_head_to_boundary < head_radius)
                     {
                       current_head_radius = sqrt(head_radius * head_radius
-                          - distance_head_to_boundary * distance_head_to_boundary);
+                                                 - distance_head_to_boundary * distance_head_to_boundary);
                     }
                 }
 
@@ -985,37 +985,37 @@ namespace aspect
       prm.leave_subsection();
 
       prm.enter_subsection("Plume");
-        {
-          prm.declare_entry ("Data directory",
-                             "$ASPECT_SOURCE_DIR/data/boundary-temperature/plume/",
-                             Patterns::DirectoryName (),
-                             "The name of a directory that contains the model data. This path "
-                             "may either be absolute (if starting with a '/') or relative to "
-                             "the current directory. The path may also include the special "
-                             "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
-                             "in which the ASPECT source files were located when ASPECT was "
-                             "compiled. This interpretation allows, for example, to reference "
-                             "files located in the 'data/' subdirectory of ASPECT. ");
-          prm.declare_entry ("Plume position file name", "Tristan.sur",
-                             Patterns::Anything (),
-                             "The file name of the plume position data.");
-          prm.declare_entry ("Inflow velocity", "0",
-                             Patterns::Double (),
-                             "Magnitude of the velocity inflow. Units: m/s or m/yr.");
-          prm.declare_entry ("Radius", "0",
-                             Patterns::Double (),
-                             "Radius of the anomaly. Units: m.");
-          prm.declare_entry ("Head radius", "0",
-                             Patterns::Double (),
-                             "Radius of the plume head velocity anomaly. Units: m.");
-          prm.declare_entry ("Head velocity", "0",
-                             Patterns::Double (),
-                             "Magnitude of the plume head velocity inflow. Units: m/s or m/yr.");
-          prm.declare_entry ("Model time to start plume tail", "0",
-                             Patterns::Double (),
-                             "Time before the start of the plume position data at which "
-                             "the head starts to flow into the model. Units: years or "
-                             "seconds.");
+      {
+        prm.declare_entry ("Data directory",
+                           "$ASPECT_SOURCE_DIR/data/boundary-temperature/plume/",
+                           Patterns::DirectoryName (),
+                           "The name of a directory that contains the model data. This path "
+                           "may either be absolute (if starting with a '/') or relative to "
+                           "the current directory. The path may also include the special "
+                           "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                           "in which the ASPECT source files were located when ASPECT was "
+                           "compiled. This interpretation allows, for example, to reference "
+                           "files located in the 'data/' subdirectory of ASPECT. ");
+        prm.declare_entry ("Plume position file name", "Tristan.sur",
+                           Patterns::Anything (),
+                           "The file name of the plume position data.");
+        prm.declare_entry ("Inflow velocity", "0",
+                           Patterns::Double (),
+                           "Magnitude of the velocity inflow. Units: m/s or m/yr.");
+        prm.declare_entry ("Radius", "0",
+                           Patterns::Double (),
+                           "Radius of the anomaly. Units: m.");
+        prm.declare_entry ("Head radius", "0",
+                           Patterns::Double (),
+                           "Radius of the plume head velocity anomaly. Units: m.");
+        prm.declare_entry ("Head velocity", "0",
+                           Patterns::Double (),
+                           "Magnitude of the plume head velocity inflow. Units: m/s or m/yr.");
+        prm.declare_entry ("Model time to start plume tail", "0",
+                           Patterns::Double (),
+                           "Time before the start of the plume position data at which "
+                           "the head starts to flow into the model. Units: years or "
+                           "seconds.");
       }
       prm.leave_subsection ();
     }
@@ -1071,8 +1071,8 @@ namespace aspect
             std::string::size_type position;
             while (position = surface_data_directory.find (subst_text),  position!=std::string::npos)
               surface_data_directory.replace (surface_data_directory.begin()+position,
-                                      surface_data_directory.begin()+position+subst_text.size(),
-                                      ASPECT_SOURCE_DIR);
+                                              surface_data_directory.begin()+position+subst_text.size(),
+                                              ASPECT_SOURCE_DIR);
           }
 
           surface_velocity_file_name    = prm.get ("Velocity file name");
@@ -1099,32 +1099,32 @@ namespace aspect
       prm.enter_subsection("Plume");
       {
         // Get the path to the data files. If it contains a reference
-         // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
-         // as a #define
-         plume_data_directory        = prm.get ("Data directory");
-         {
-           const std::string      subst_text = "$ASPECT_SOURCE_DIR";
-           std::string::size_type position;
-           while (position = plume_data_directory.find (subst_text),  position!=std::string::npos)
-             plume_data_directory.replace (plume_data_directory.begin()+position,
-                                     plume_data_directory.begin()+position+subst_text.size(),
-                                     ASPECT_SOURCE_DIR);
-         }
+        // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
+        // as a #define
+        plume_data_directory        = prm.get ("Data directory");
+        {
+          const std::string      subst_text = "$ASPECT_SOURCE_DIR";
+          std::string::size_type position;
+          while (position = plume_data_directory.find (subst_text),  position!=std::string::npos)
+            plume_data_directory.replace (plume_data_directory.begin()+position,
+                                          plume_data_directory.begin()+position+subst_text.size(),
+                                          ASPECT_SOURCE_DIR);
+        }
 
-         plume_file_name    = prm.get ("Plume position file name");
-         tail_velocity = prm.get_double ("Inflow velocity");
-         tail_radius = prm.get_double ("Radius");
+        plume_file_name    = prm.get ("Plume position file name");
+        tail_velocity = prm.get_double ("Inflow velocity");
+        tail_radius = prm.get_double ("Radius");
 
-         head_radius = prm.get_double("Head radius");
-         head_velocity = prm.get_double("Head velocity");
-         model_time_to_start_plume_tail = prm.get_double ("Model time to start plume tail");
+        head_radius = prm.get_double("Head radius");
+        head_velocity = prm.get_double("Head velocity");
+        model_time_to_start_plume_tail = prm.get_double ("Model time to start plume tail");
 
-         if (this->convert_output_to_years() == true)
-           {
-             tail_velocity /= year_in_seconds;
-             head_velocity /= year_in_seconds;
-             model_time_to_start_plume_tail *= year_in_seconds;
-           }
+        if (this->convert_output_to_years() == true)
+          {
+            tail_velocity /= year_in_seconds;
+            head_velocity /= year_in_seconds;
+            model_time_to_start_plume_tail *= year_in_seconds;
+          }
       }
       prm.leave_subsection ();
     }
