@@ -96,6 +96,16 @@ namespace aspect
 
       private:
         std::set<types::boundary_id> boundary_ids;
+
+        /**
+         * Crap.
+         */
+        bool use_gplates_rotation_matrix;
+
+        /**
+         * More crap.
+         */
+        Tensor<2,3> rotation_matrix;
     };
   }
 }

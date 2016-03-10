@@ -21,6 +21,7 @@
 
 #include <aspect/global.h>
 #include <aspect/velocity_boundary_conditions/ascii_data.h>
+#include <aspect/velocity_boundary_conditions/gplates.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -64,17 +65,35 @@ namespace aspect
     }
 
 
-    template <int dim>
-    Tensor<1,dim>
-    AsciiData<dim>::
+    template <>
+    Tensor<1,2>
+    AsciiData<2>::
     boundary_velocity (const types::boundary_id ,
-                       const Point<dim> &position) const
+                       const Point<2> &position) const
     {
-      Tensor<1,dim> velocity;
-      for (unsigned int i = 0; i < dim; i++)
-        velocity[i] = Utilities::AsciiDataBoundary<dim>::get_data_component(*(boundary_ids.begin()),
-                                                                            position,
-                                                                            i);
+      Tensor<1,2> velocity;
+      for (unsigned int i = 0; i < 2; i++)
+        velocity[i] = Utilities::AsciiDataBoundary<2>::get_data_component(*(boundary_ids.begin()),
+                                                                          position,
+                                                                          i);
+
+      return velocity;
+    }
+
+    template <>
+    Tensor<1,3>
+    AsciiData<3>::
+    boundary_velocity (const types::boundary_id ,
+                       const Point<3> &position) const
+    {
+      Tensor<1,3> velocity;
+      for (unsigned int i = 0; i < 3; i++)
+        velocity[i] = Utilities::AsciiDataBoundary<3>::get_data_component(*(boundary_ids.begin()),
+                                                                          position,
+                                                                          i);
+      if (use_gplates_rotation_matrix)
+        velocity = rotation_matrix * velocity;
+
       return velocity;
     }
 
@@ -88,6 +107,13 @@ namespace aspect
         Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
                                                               "$ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/ascii-data/test/",
                                                               "box_2d_%s.%d.txt");
+        prm.enter_subsection ("Ascii data model");
+        {
+          prm.declare_entry ("Use gplates rotation matrix", "false",
+                             Patterns::Bool (),
+                             "Crap.");
+        }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -104,6 +130,31 @@ namespace aspect
         if (this->convert_output_to_years() == true)
           {
             this->scale_factor               /= year_in_seconds;
+          }
+
+        prm.enter_subsection ("Ascii data model");
+        {
+          use_gplates_rotation_matrix     = prm.get_bool   ("Use gplates rotation matrix");
+        }
+        prm.leave_subsection();
+
+        if (use_gplates_rotation_matrix)
+          {
+            const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
+            vbcs = this->get_prescribed_velocity_boundary_conditions();
+
+            const types::boundary_id outer_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
+
+            const VelocityBoundaryConditions::Interface<dim> *top_vbc =
+              &(*(vbcs.find(outer_boundary_id)->second));
+
+            const VelocityBoundaryConditions::GPlates<dim> *gplates_bc =
+              dynamic_cast<const VelocityBoundaryConditions::GPlates<dim> *> (top_vbc);
+
+            AssertThrow (gplates_bc != 0,
+                         ExcMessage("You can only use the gplates rotation matrix if the top boundary uses a gplates plugin!"));
+
+            rotation_matrix = gplates_bc->get_rotation_matrix();
           }
 
       }
