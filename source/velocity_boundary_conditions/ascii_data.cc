@@ -92,7 +92,7 @@ namespace aspect
                                                                           position,
                                                                           i);
       if (use_gplates_rotation_matrix)
-        velocity = rotation_matrix * velocity;
+        velocity = transpose(rotation_matrix) * velocity;
 
       return velocity;
     }
