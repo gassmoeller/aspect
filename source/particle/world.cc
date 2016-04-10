@@ -508,6 +508,7 @@ namespace aspect
                       if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
                         {
                           particles.insert(std::make_pair(std::make_pair(child->level(),child->index()),p));
+                          break;
                         }
                     }
                   catch (...)
