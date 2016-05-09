@@ -87,14 +87,35 @@ namespace aspect
 
       const double vis_radial = radial_viscosity_lookup->radial_viscosity(depth);
 
-      // Incorporate dehydration rheology after Ito et al. (1999)
-      // Pre-exponential viscosity factor is 1 below and 50 above the dry solidus of peridotite, respectively
+//      // Incorporate dehydration rheology after Ito et al. (1999)
+//      // Pre-exponential viscosity factor is 1 below and 50 above the dry solidus of peridotite, respectively
+//      // --> this leads to the desired abrupt viscosity increase, but is physically not as solid as the solution implemented further down!!
+//
+//      // T_solidus for peridotite after Katz, 2003
+//      const double T_solidus = A1 + 273.15 + A2 * pressure + A3 * pressure * pressure;
+//
+//      if (use_dehydration_rheology && temperature >= T_solidus && pressure < 1.3e10)
+//        return std::max(std::min(50 * vis_lateral * vis_radial,max_eta),min_eta);
+//      else
+//        return std::max(std::min(vis_lateral * vis_radial,max_eta),min_eta);
 
-      // T_solidus for peridotite after Katz, 2003
-      const double T_solidus = A1 + 273.15 + A2 * pressure + A3 * pressure * pressure;
 
-      if (use_dehydration_rheology && temperature >= T_solidus && pressure < 1.3e10)
-        return std::max(std::min(50 * vis_lateral * vis_radial,max_eta),min_eta);
+      // Incorporate dehydration rheology after Howell et al. (2014), see Appendix A.2
+      // Pre-exponential term depends on the fractional amount of water dissolved in the solid (Hirth&Kohlstedt, 2003)
+
+      // constant bulk partitioning coefficient D_H2O (from Katz et al., 2003, see Table 2)
+      const double D_H2O = 0.01;
+
+      if (this->introspection().compositional_name_exists("maximum_melt_fraction") && use_dehydration_rheology)
+        {
+          // find out which compositional field contains the depletion (= maximum_melt_fraction)
+    	  const double melt_index = this->introspection().compositional_index_for_name("maximum_melt_fraction");
+    	  // Pre-exponential coefficient C/C0 from equation A4 in Howell et al. (2014)
+    	  //  equals X_H2O/X_bulk_H2O in equation 18 from Katz et al. (2003), leading to:
+          const double dehydration_prefactor = D_H2O + compositional_fields[melt_index] * (1 - D_H2O);
+
+          return std::max(std::min(dehydration_prefactor * vis_lateral * vis_radial,max_eta),min_eta);
+        }
       else
         return std::max(std::min(vis_lateral * vis_radial,max_eta),min_eta);
     }
