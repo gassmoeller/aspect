@@ -141,6 +141,12 @@ namespace aspect
 
       lookup.reset(new internal::PlumeLookup<dim>(data_directory+plume_file_name,
                                                   this->get_pcout()));
+
+      if (use_lithosphere_thickness_files)
+        {
+          const std::set<types::boundary_id> boundary_ids = this->get_fixed_temperature_boundary_indicators();
+          lithosphere_thickness_file->initialize(boundary_ids, 1);
+        }
     }
 
     template <int dim>
@@ -150,6 +156,11 @@ namespace aspect
     {
       plume_position = lookup->plume_position(this->get_time()
                                               - model_time_to_start_plume_tail);
+
+      if (use_lithosphere_thickness_files)
+        {
+          lithosphere_thickness_file->update();
+        }
     }
 
     template <int dim>
@@ -163,15 +174,11 @@ namespace aspect
     template <int dim>
     double
     Plume<dim>::
-    adiabatic_temperature (const Point<dim> &position) const
+    adiabatic_temperature (const Point<dim> &position,
+            			   const unsigned int boundary_indicator) const
     {
-      unsigned int bottom = 2;
-      unsigned int top = 3;
-      if (dim == 3)
-        {
-          bottom = 4;
-          top = 5;
-        }
+    	const unsigned int bottom = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+    	const unsigned int top = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
       // then, get the temperature of the adiabatic profile at a representative
       // point at the top and bottom boundary of the model
@@ -197,12 +204,23 @@ namespace aspect
 
       const double kappa = out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0]);
 
+      double lithosphere_age = age_top_boundary_layer;
+
+      if (use_lithosphere_thickness_files)
+      {
+    	  const types::boundary_id boundary_id(boundary_indicator);
+    	  const double lithosphere_thickness = lithosphere_thickness_file->get_data_component(boundary_id, position, 0);
+          // conversion from lithosphere thickness in lithosphere age as required for half-space cooling model equation
+    	  lithosphere_age = lithosphere_thickness * lithosphere_thickness / (4 * kappa);
+      }
+
       // analytical solution for the thermal boundary layer from half-space cooling model
-      const double surface_cooling_temperature = age_top_boundary_layer > 0.0 ?
+      const double surface_cooling_temperature = lithosphere_age > 0.0 ?
                                                  (temperature_[top] - adiabatic_surface_temperature) *
                                                  erfc(this->get_geometry_model().depth(position) /
-                                                      (2 * sqrt(kappa * age_top_boundary_layer)))
+                                                      (2 * sqrt(kappa * lithosphere_age)))
                                                  : 0.0;
+
       const double bottom_heating_temperature = age_bottom_boundary_layer > 0.0 ?
                                                 (temperature_[bottom] - adiabatic_bottom_temperature + subadiabaticity)
                                                 * erfc((this->get_geometry_model().maximal_depth()
@@ -296,7 +314,7 @@ namespace aspect
           else if (side_boundary_type == constant)
             boundary_temperature = temperature_[boundary_indicator];
           else if (side_boundary_type == adiabatic)
-            boundary_temperature = adiabatic_temperature(position);
+            boundary_temperature = adiabatic_temperature(position, boundary_indicator);
           else
             AssertThrow (false, ExcNotImplemented());
         }
@@ -444,6 +462,11 @@ namespace aspect
                                Patterns::Double (),
                                "Temperature at the back boundary (at maximal y-value). Units: K.");
           }
+        prm.declare_entry ("Use lithosphere thickness files", "false",
+        				   Patterns::Bool(),
+						   "Whether to read in time-dependent AsciiData files that contain the "
+						   "lithosphere thickness in km at the side boundaries.");
+
         prm.enter_subsection("Function");
         {
           Functions::ParsedFunction<1>::declare_parameters (prm, 1);
@@ -451,6 +474,9 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection ();
+
+      // member variable lithosphere_thickness_file must be declared before it can be parsed (but does not belong to the Plume class!)
+  	  Utilities::AsciiDataBoundary<2>::declare_parameters(prm,"$ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/","lith_thick_%s_%d");
     }
 
 
@@ -482,6 +508,8 @@ namespace aspect
         head_radius = prm.get_double("Head radius");
         head_velocity = prm.get_double("Head velocity");
         model_time_to_start_plume_tail = prm.get_double ("Model time to start plume tail");
+
+        use_lithosphere_thickness_files = prm.get_bool ("Use lithosphere thickness files");
 
         if (prm.get ("Side boundary type") == "initial")
           side_boundary_type = initial;
@@ -548,6 +576,15 @@ namespace aspect
           }
       }
       prm.leave_subsection ();
+
+      if (use_lithosphere_thickness_files)
+        {
+    	  lithosphere_thickness_file.reset(new Utilities::AsciiDataBoundary<dim> ());
+    	  // manually initialize the simulator here, since this does not happen automatically!
+    	    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(lithosphere_thickness_file.get()))
+    	      sim->initialize (this->get_simulator());
+          lithosphere_thickness_file->parse_parameters(prm);
+        }
     }
   }
 }

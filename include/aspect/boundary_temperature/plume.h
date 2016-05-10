@@ -23,7 +23,9 @@
 #define __aspect__boundary_temperature_plume_h
 
 #include <aspect/boundary_temperature/interface.h>
+#include <aspect/boundary_temperature/ascii_data.h>
 #include <aspect/simulator_access.h>
+
 
 #include <deal.II/base/parsed_function.h>
 
@@ -184,6 +186,7 @@ namespace aspect
 
       private:
         double temperature_[2*dim];
+        bool use_lithosphere_thickness_files;
 
         /**
          * Current plume position. Used to avoid looking up the plume position
@@ -284,7 +287,21 @@ namespace aspect
          * boundary temperature. Slightly adopted to this class.
          */
         double
-        adiabatic_temperature (const Point<dim> &position) const;
+	    adiabatic_temperature (const Point<dim> &position,
+	            			   const unsigned int boundary_indicator) const;
+
+        /**
+         * Pointer to the time-dependent AsciiData files that contain the
+         * lithosphere thickness in km at the side boundaries.
+         * Values get converted to lithosphere age and are used instead
+         * of a constant age_top_boundary_layer. Dimension is 2 for a 3D box,
+         * because the code cannot be compiled with dim-1 here, although we
+         * technically only need a 1D file for each surface boundary. We
+         * kind of trick out the code by prescribing the same values at the
+         * top and corresponding bottom positions, which means 1D input files
+         * become 2D input files.
+         */
+        std_cxx11::shared_ptr<Utilities::AsciiDataBoundary<dim> > lithosphere_thickness_file;
 
     };
   }
