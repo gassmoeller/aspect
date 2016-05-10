@@ -109,9 +109,9 @@ namespace aspect
       if (this->introspection().compositional_name_exists("maximum_melt_fraction") && use_dehydration_rheology)
         {
           // find out which compositional field contains the depletion (= maximum_melt_fraction)
-    	  const double melt_index = this->introspection().compositional_index_for_name("maximum_melt_fraction");
-    	  // Pre-exponential coefficient C/C0 from equation A4 in Howell et al. (2014)
-    	  //  equals X_H2O/X_bulk_H2O in equation 18 from Katz et al. (2003), leading to:
+          const double melt_index = this->introspection().compositional_index_for_name("maximum_melt_fraction");
+          // Pre-exponential coefficient C/C0 from equation A4 in Howell et al. (2014)
+          //  equals X_H2O/X_bulk_H2O in equation 18 from Katz et al. (2003), leading to:
           const double dehydration_prefactor = D_H2O + compositional_fields[melt_index] * (1 - D_H2O);
           // if the depletion is 0, the prefactor is 0.01 and reduces the viscosity everywhere, therefore the final viscosity is divided by D_H2O
           return std::max(std::min(dehydration_prefactor / D_H2O * vis_lateral * vis_radial,max_eta),min_eta);
@@ -299,7 +299,7 @@ namespace aspect
           // fourth, melt fraction dependence
           double melt_dependence = (1.0 - relative_melt_density)
                                    * melt_fraction(temperature, pressure, compositional_fields, position);
-          	  	  	  	  // hier: * compositional_fields[melt_index]
+          // hier: * compositional_fields[melt_index]
 
           // in the end, all the influences are added up
           return get_compressible_density(temperature,pressure,compositional_fields,position)

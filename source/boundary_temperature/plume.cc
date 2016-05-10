@@ -175,10 +175,10 @@ namespace aspect
     double
     Plume<dim>::
     adiabatic_temperature (const Point<dim> &position,
-            			   const unsigned int boundary_indicator) const
+                           const unsigned int boundary_indicator) const
     {
-    	const unsigned int bottom = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
-    	const unsigned int top = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      const unsigned int bottom = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+      const unsigned int top = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
       // then, get the temperature of the adiabatic profile at a representative
       // point at the top and bottom boundary of the model
@@ -207,12 +207,12 @@ namespace aspect
       double lithosphere_age = age_top_boundary_layer;
 
       if (use_lithosphere_thickness_files)
-      {
-    	  const types::boundary_id boundary_id(boundary_indicator);
-    	  const double lithosphere_thickness = lithosphere_thickness_file->get_data_component(boundary_id, position, 0);
+        {
+          const types::boundary_id boundary_id(boundary_indicator);
+          const double lithosphere_thickness = lithosphere_thickness_file->get_data_component(boundary_id, position, 0);
           // conversion from lithosphere thickness in lithosphere age as required for half-space cooling model equation
-    	  lithosphere_age = lithosphere_thickness * lithosphere_thickness / (4 * kappa);
-      }
+          lithosphere_age = lithosphere_thickness * lithosphere_thickness / (4 * kappa);
+        }
 
       // analytical solution for the thermal boundary layer from half-space cooling model
       const double surface_cooling_temperature = lithosphere_age > 0.0 ?
@@ -463,9 +463,9 @@ namespace aspect
                                "Temperature at the back boundary (at maximal y-value). Units: K.");
           }
         prm.declare_entry ("Use lithosphere thickness files", "false",
-        				   Patterns::Bool(),
-						   "Whether to read in time-dependent AsciiData files that contain the "
-						   "lithosphere thickness in km at the side boundaries.");
+                           Patterns::Bool(),
+                           "Whether to read in time-dependent AsciiData files that contain the "
+                           "lithosphere thickness in km at the side boundaries.");
 
         prm.enter_subsection("Function");
         {
@@ -476,7 +476,7 @@ namespace aspect
       prm.leave_subsection ();
 
       // member variable lithosphere_thickness_file must be declared before it can be parsed (but does not belong to the Plume class!)
-  	  Utilities::AsciiDataBoundary<2>::declare_parameters(prm,"$ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/","lith_thick_%s_%d");
+      Utilities::AsciiDataBoundary<2>::declare_parameters(prm,"$ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/","lith_thick_%s_%d");
     }
 
 
@@ -579,10 +579,10 @@ namespace aspect
 
       if (use_lithosphere_thickness_files)
         {
-    	  lithosphere_thickness_file.reset(new Utilities::AsciiDataBoundary<dim> ());
-    	  // manually initialize the simulator here, since this does not happen automatically!
-    	    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(lithosphere_thickness_file.get()))
-    	      sim->initialize (this->get_simulator());
+          lithosphere_thickness_file.reset(new Utilities::AsciiDataBoundary<dim> ());
+          // manually initialize the simulator here, since this does not happen automatically!
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(lithosphere_thickness_file.get()))
+            sim->initialize (this->get_simulator());
           lithosphere_thickness_file->parse_parameters(prm);
         }
     }

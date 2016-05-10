@@ -287,8 +287,8 @@ namespace aspect
          * boundary temperature. Slightly adopted to this class.
          */
         double
-	    adiabatic_temperature (const Point<dim> &position,
-	            			   const unsigned int boundary_indicator) const;
+        adiabatic_temperature (const Point<dim> &position,
+                               const unsigned int boundary_indicator) const;
 
         /**
          * Pointer to the time-dependent AsciiData files that contain the
