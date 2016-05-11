@@ -223,6 +223,7 @@ namespace aspect
         bool compressible;
         bool use_lateral_average_temperature;
         bool use_dehydration_rheology;
+        bool use_depletion_influence_on_density;
         double reference_eta;
         std::vector<double> avg_temp;
         double min_eta;

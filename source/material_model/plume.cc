@@ -294,36 +294,63 @@ namespace aspect
              const std::vector<double> &compositional_fields,
              const Point<dim> &position) const
     {
-      if (!(this->get_adiabatic_conditions().is_initialized()))
+      if (this->introspection().compositional_name_exists("maximum_melt_fraction") && use_depletion_influence_on_density)
         {
-          // fourth, melt fraction dependence
-          double melt_dependence = (1.0 - relative_melt_density)
-                                   * melt_fraction(temperature, pressure, compositional_fields, position);
-          // hier: * compositional_fields[melt_index]
+          // find out which compositional field contains the depletion (= maximum_melt_fraction)
+          const double melt_index = this->introspection().compositional_index_for_name("maximum_melt_fraction");
 
-          // in the end, all the influences are added up
-          return get_compressible_density(temperature,pressure,compositional_fields,position)
-                 * (1.0 - melt_dependence);
-        }
-      if (compressible)
-        {
-          // fourth, melt fraction dependence
-          const double melt_dependence = (1.0 - relative_melt_density)
-                                         * melt_fraction(temperature, this->get_adiabatic_conditions().pressure(position), compositional_fields, position);
+          if (compressible)
+            {
+              // fourth, melt fraction dependence
+              const double relative_depletion_density = (1.0 - relative_melt_density) * compositional_fields[melt_index];
 
-          // in the end, all the influences are added up
-          return get_compressible_density(temperature,pressure,compositional_fields,position)
-                 * (1.0 - melt_dependence);
+              // in the end, all the influences are added up
+              return get_compressible_density(temperature,pressure,compositional_fields,position)
+                     * (1.0 - relative_depletion_density);
+            }
+          else
+            {
+              // fourth, melt fraction dependence
+              const double relative_depletion_density = (1.0 - relative_melt_density) * compositional_fields[melt_index];
+
+              // in the end, all the influences are added up
+              return get_corrected_density(temperature,pressure,compositional_fields,position)
+                     * (1.0 - relative_depletion_density);
+            }
         }
+
       else
         {
-          // fourth, melt fraction dependence
-          const double melt_dependence = (1.0 - relative_melt_density)
-                                         * melt_fraction(temperature, this->get_adiabatic_conditions().pressure(position), compositional_fields, position);
+          if (!(this->get_adiabatic_conditions().is_initialized()))
+            {
+              // fourth, melt fraction dependence
+              double melt_dependence = (1.0 - relative_melt_density)
+                                       * melt_fraction(temperature, pressure, compositional_fields, position);
 
-          // in the end, all the influences are added up
-          return get_corrected_density(temperature,pressure,compositional_fields,position)
-                 * (1.0 - melt_dependence);
+              // in the end, all the influences are added up
+              return get_compressible_density(temperature,pressure,compositional_fields,position)
+                     * (1.0 - melt_dependence);
+            }
+          if (compressible)
+            {
+              // fourth, melt fraction dependence
+              const double melt_dependence = (1.0 - relative_melt_density)
+                                             * melt_fraction(temperature, this->get_adiabatic_conditions().pressure(position), compositional_fields, position);
+
+              // in the end, all the influences are added up
+              return get_compressible_density(temperature,pressure,compositional_fields,position)
+                     * (1.0 - melt_dependence);
+            }
+          else
+            {
+              // fourth, melt fraction dependence
+              const double melt_dependence = (1.0 - relative_melt_density)
+                                             * melt_fraction(temperature, this->get_adiabatic_conditions().pressure(position), compositional_fields, position);
+
+              // in the end, all the influences are added up
+              return get_corrected_density(temperature,pressure,compositional_fields,position)
+                     * (1.0 - melt_dependence);
+            }
         }
     }
 
@@ -866,10 +893,15 @@ namespace aspect
           prm.declare_entry ("Use dehydration rheology", "false",
                              Patterns::Bool (),
                              "Whether to use the dehydration rheology after "
-                             "Ito et al. (1999), which incorporates an abrupt "
-                             "viscosity increase at the dry solidus. The "
-                             "pre-exponential factor applied is 1 below and 50 "
-                             "above the dry solidus of peridotite, respectively. "
+                             "Howell et al. (2014), which incorporates a rapid "
+                             "viscosity increase due to the extraction of water "
+                             "at the base of the melting zone. "
+                             "This behaviour might or might not be desired.");
+          prm.declare_entry ("Use depletion influence on density", "false",
+                             Patterns::Bool (),
+                             "Whether the depletion (maximum_melt_fraction) should "
+                             "influence the density and thus have an influence on "
+                             "the material properties. "
                              "This behaviour might or might not be desired.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
@@ -1047,6 +1079,7 @@ namespace aspect
           lateral_viscosity_file_name  = prm.get ("Lateral viscosity file name");
           use_lateral_average_temperature = prm.get_bool ("Use lateral average temperature for viscosity");
           use_dehydration_rheology = prm.get_bool ("Use dehydration rheology");
+          use_depletion_influence_on_density = prm.get_bool ("Use depletion influence on density");
           interpolation        = prm.get_bool ("Bilinear interpolation");
           latent_heat          = prm.get_bool ("Latent heat");
           compressible         = prm.get_bool ("Compressible");
