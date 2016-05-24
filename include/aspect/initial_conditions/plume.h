@@ -142,11 +142,11 @@ namespace aspect
         std::string data_file_name;
 
         /**
-         * Determines whether the plugin attempts to load a lithosphere
+         * Determines whether the plugin attempts to load an initial lithosphere
          * thickness file with the same file format that the ascii data plugin
          * expects.
          */
-        bool use_lithosphere_file;
+        bool use_initial_lithosphere_file;
     };
   }
 }

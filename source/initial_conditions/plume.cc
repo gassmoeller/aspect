@@ -37,7 +37,7 @@ namespace aspect
     void
     Plume<dim>::initialize ()
     {
-      if (use_lithosphere_file)
+      if (use_initial_lithosphere_file)
         {
           AssertThrow ((dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
                        ExcMessage ("This initial plume plugin can only be used with a lithosphere "
@@ -122,7 +122,7 @@ namespace aspect
 
       double surface_cooling_temperature;
 
-      if (!use_lithosphere_file)
+      if (!use_initial_lithosphere_file)
         {
           // analytical solution for the thermal boundary layer from half-space cooling model
           surface_cooling_temperature = age_top > 0.0 ?
@@ -311,7 +311,7 @@ namespace aspect
                              "lithosphere_test",
                              Patterns::Anything (),
                              "The file name of the lithosphere thickness data.");
-          prm.declare_entry ("Use lithosphere thickness file",
+          prm.declare_entry ("Use initial lithosphere thickness file",
                              "false",
                              Patterns::Bool (),
                              "Determines whether the plugin attempts to load a lithosphere "
@@ -377,7 +377,7 @@ namespace aspect
           }
 
           data_file_name    = prm.get ("Data file name");
-          use_lithosphere_file    = prm.get_bool ("Use lithosphere thickness file");
+          use_initial_lithosphere_file    = prm.get_bool ("Use initial lithosphere thickness file");
 
           if (n_compositional_fields > 0)
             {

@@ -476,8 +476,12 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      prm.enter_subsection("Boundary temperature model");
+      {
       // member variable lithosphere_thickness_file must be declared before it can be parsed (but does not belong to the Plume class!)
       Utilities::AsciiDataBoundary<2>::declare_parameters(prm,"$ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/","lith_thick_%s_%d");
+      }
+      prm.leave_subsection ();
     }
 
 
@@ -584,8 +588,13 @@ namespace aspect
           // manually initialize the simulator here, since this does not happen automatically!
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(lithosphere_thickness_file.get()))
             sim->initialize (this->get_simulator());
+          prm.enter_subsection("Boundary temperature model");
+          {
           lithosphere_thickness_file->parse_parameters(prm);
+          }
+          prm.leave_subsection ();
         }
+
     }
   }
 }
