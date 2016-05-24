@@ -211,7 +211,8 @@ namespace aspect
           const types::boundary_id boundary_id(boundary_indicator);
           const double lithosphere_thickness = lithosphere_thickness_file->get_data_component(boundary_id, position, 0);
           // conversion from lithosphere thickness in lithosphere age as required for half-space cooling model equation
-          lithosphere_age = lithosphere_thickness * lithosphere_thickness / (4 * kappa);
+          // see Turcotte & Schubert (2002) "Geodynamics", p. 287, equation 4.126
+          lithosphere_age = lithosphere_thickness * lithosphere_thickness / (2.32 * 2.32 * kappa);
         }
 
       // analytical solution for the thermal boundary layer from half-space cooling model
