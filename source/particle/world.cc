@@ -1178,8 +1178,15 @@ namespace aspect
           prm.declare_entry ("Load balancing strategy", "none",
                              Patterns::Selection ("none|remove particles|"
                                                   "remove and add particles|repartition"),
-                             "Strategy that is used to balance the computational"
-                             "load across processors for adaptive meshes.");
+                             "Strategy that is used to balance the computational "
+                             "load across processors for adaptive meshes. Available options "
+                             "include 'repartition', which redistributes the mesh according to "
+                             "a weighted sum of particles and cells per process. 'remove particles' "
+                             "enforces a hard upper limit on the number of particles per cell, and "
+                             "particles above this limit are deleted. 'remove and add particles' "
+                             "enforces hard upper and lower limits on the number of particles per "
+                             "cell. In cells with less particles than the lower limit new particles "
+                             "are generated in random positions inside that cell.");
           prm.declare_entry ("Minimum tracers per cell", "0",
                              Patterns::Integer (0),
                              "Lower limit for particle number per cell. This limit is "
