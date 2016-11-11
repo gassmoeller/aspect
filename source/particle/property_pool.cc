@@ -43,7 +43,7 @@ namespace aspect
       if (n_properties == 0)
         return numbers::invalid_unsigned_int;
 
-      if (free_slots.n_elements() == 0)
+      if (free_slots.is_empty())
         reserve(free_slots.size() * 2 + 1);
 
       const Handle handle = free_slots.pop_back();
