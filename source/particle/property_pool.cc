@@ -46,7 +46,7 @@ namespace aspect
       if (free_slots.n_elements() == 0)
         reserve(free_slots.size() * 2 + 1);
 
-      const Handle handle = free_slots.pop_front();
+      const Handle handle = free_slots.pop_back();
       translation_table[handle] = handle * n_properties;
 
       return handle;
