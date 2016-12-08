@@ -246,7 +246,7 @@ namespace aspect
     Particle<dim>::get_properties () const
     {
       Assert(property_pool != NULL,
-          ExcInternalError());
+             ExcInternalError());
 
       return property_pool->get_properties(properties);
     }
@@ -257,7 +257,7 @@ namespace aspect
     Particle<dim>::get_properties ()
     {
       Assert(property_pool != NULL,
-          ExcInternalError());
+             ExcInternalError());
 
       return property_pool->get_properties(properties);
     }

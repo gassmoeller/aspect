@@ -1384,7 +1384,7 @@ namespace aspect
       // even if the Particle do not carry properties, because they need a
       // way to determine the number of properties they carry.
       typename std::multimap<types::LevelInd,Particle <dim> >::iterator particle = particles.begin(),
-          end_particle = particles.end();
+                                                                        end_particle = particles.end();
       for (; particle!=end_particle; ++particle)
         particle->second.set_property_pool(property_manager->get_property_pool());
 

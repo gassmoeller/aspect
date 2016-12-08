@@ -30,11 +30,11 @@ namespace aspect
   namespace Particle
   {
     PropertyPool::PropertyPool (const unsigned int n_properties_per_slot)
-    :
-          n_properties (n_properties_per_slot),
-          memory_pool(),
-          translation_table(),
-          free_slots()
+      :
+      n_properties (n_properties_per_slot),
+      memory_pool(),
+      translation_table(),
+      free_slots()
     {}
 
     PropertyPool::Handle
@@ -66,12 +66,12 @@ namespace aspect
         return ArrayView<double>(NULL,0);
 
       Assert(handle < free_slots.size(),
-          ExcMessage("The particle property pool was asked to access a "
-              "region of memory that is not allocated for particle properties."));
+             ExcMessage("The particle property pool was asked to access a "
+                        "region of memory that is not allocated for particle properties."));
       Assert(!free_slots.is_element(handle),
              ExcMessage("The particle property pool was asked to access a "
-                 "region of memory that is allocated for particle properties, "
-                 " but was reported as not in use."));
+                        "region of memory that is allocated for particle properties, "
+                        " but was reported as not in use."));
 
       // Here we make use of the fact that Handle is nothing else than an index
       // of an IndexSet (i.e. a unsigned number between 0 and free_slots.size())

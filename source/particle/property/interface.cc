@@ -268,7 +268,7 @@ namespace aspect
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
             (*p)->initialize_one_particle_property(particle.get_location(),
-                particle_properties);
+                                                   particle_properties);
           }
 
         Assert(particle_properties.size() == property_information.n_components(),

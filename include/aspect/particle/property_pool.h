@@ -40,7 +40,8 @@ namespace aspect
      * manager that does not need to allocate/deallocate memory every time a
      * particle is constructed/destroyed.
      */
-    class PropertyPool {
+    class PropertyPool
+    {
       public:
         typedef IndexSet::size_type Handle;
 
