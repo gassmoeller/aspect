@@ -43,7 +43,13 @@ namespace aspect
     class PropertyPool
     {
       public:
+#if DEAL_II_VERSION_GTE(8,5,0)
         typedef IndexSet::size_type Handle;
+#else
+        typedef double *Handle;
+#endif
+        static const Handle invalid_handle;
+
 
         PropertyPool (const unsigned int n_properties_per_slot);
 
@@ -59,14 +65,16 @@ namespace aspect
          * Reserves the dynamic memory needed for storing the properties of
          * @p size particles.
          */
-        void reserve(const unsigned int size);
+        void reserve(const std::size_t size);
 
       private:
         unsigned int n_properties;
 
+#if DEAL_II_VERSION_GTE(8,5,0)
         std::vector<double> memory_pool;    // size == n_slots * n_properties_per_slot;
         std::vector<std::vector<double>::size_type> translation_table; // size = n_slots, content: Addresses within memory_pool
         IndexSet free_slots; // size = number_of_slots, n_elements = currently free slots
+#endif
     };
 
   }

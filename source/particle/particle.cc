@@ -31,7 +31,7 @@ namespace aspect
       reference_location(),
       id (0),
       property_pool(NULL),
-      properties(numbers::invalid_unsigned_int)
+      properties(PropertyPool::invalid_handle)
     {
     }
 
@@ -45,7 +45,7 @@ namespace aspect
       reference_location (new_reference_location),
       id (new_id),
       property_pool(NULL),
-      properties (numbers::invalid_unsigned_int)
+      properties (PropertyPool::invalid_handle)
     {
     }
 
@@ -56,7 +56,7 @@ namespace aspect
       reference_location (particle.get_reference_location()),
       id (particle.get_id()),
       property_pool(particle.property_pool),
-      properties ((property_pool != NULL) ? property_pool->allocate_properties_array() : numbers::invalid_unsigned_int)
+      properties ((property_pool != NULL) ? property_pool->allocate_properties_array() : PropertyPool::invalid_handle)
     {
       if (property_pool != NULL)
         {
@@ -107,7 +107,7 @@ namespace aspect
       property_pool(particle.property_pool),
       properties(particle.properties)
     {
-      particle.properties = numbers::invalid_unsigned_int;
+      particle.properties = PropertyPool::invalid_handle;
     }
 
     template <int dim>
@@ -133,7 +133,7 @@ namespace aspect
                 }
             }
           else
-            properties = numbers::invalid_unsigned_int;
+            properties = PropertyPool::invalid_handle;
         }
       return *this;
     }
@@ -149,7 +149,7 @@ namespace aspect
           id = particle.id;
           property_pool = particle.property_pool;
           properties = particle.properties;
-          particle.properties = numbers::invalid_unsigned_int;
+          particle.properties = PropertyPool::invalid_handle;
         }
       return *this;
     }
@@ -158,7 +158,7 @@ namespace aspect
     template <int dim>
     Particle<dim>::~Particle ()
     {
-      if (properties != numbers::invalid_unsigned_int)
+      if (properties != PropertyPool::invalid_handle)
         property_pool->deallocate_properties_array(properties);
     }
 
@@ -233,7 +233,7 @@ namespace aspect
     void
     Particle<dim>::set_properties (const std::vector<double> &new_properties)
     {
-      if (properties == numbers::invalid_unsigned_int)
+      if (properties == PropertyPool::invalid_handle)
         properties = property_pool->allocate_properties_array();
 
       const ArrayView<double> old_properties = property_pool->get_properties(properties);

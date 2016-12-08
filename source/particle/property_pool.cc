@@ -29,17 +29,30 @@ namespace aspect
 {
   namespace Particle
   {
+#if DEAL_II_VERSION_GTE(8,5,0)
+    const PropertyPool::Handle PropertyPool::invalid_handle = numbers::invalid_unsigned_int;
+#else
+    const PropertyPool::Handle PropertyPool::invalid_handle = NULL;
+#endif
+
+
     PropertyPool::PropertyPool (const unsigned int n_properties_per_slot)
       :
-      n_properties (n_properties_per_slot),
+      n_properties (n_properties_per_slot)
+#if DEAL_II_VERSION_GTE(8,5,0)
+      ,
       memory_pool(),
       translation_table(),
       free_slots()
+#endif
     {}
+
+
 
     PropertyPool::Handle
     PropertyPool::allocate_properties_array ()
     {
+#if DEAL_II_VERSION_GTE(8,5,0)
       if (n_properties == 0)
         return numbers::invalid_unsigned_int;
 
@@ -50,18 +63,29 @@ namespace aspect
       translation_table[handle] = handle * n_properties;
 
       return handle;
+#else
+      return new double[n_properties];
+#endif
     }
+
+
 
     void
     PropertyPool::deallocate_properties_array (Handle handle)
     {
+#if DEAL_II_VERSION_GTE(8,5,0)
       free_slots.add_index(handle);
-      return;
+#else
+      delete[] handle;
+#endif
     }
+
+
 
     ArrayView<double>
     PropertyPool::get_properties (const Handle handle)
     {
+#if DEAL_II_VERSION_GTE(8,5,0)
       if (n_properties == 0)
         return ArrayView<double>(NULL,0);
 
@@ -75,12 +99,17 @@ namespace aspect
 
       // Here we make use of the fact that Handle is nothing else than an index
       // of an IndexSet (i.e. a unsigned number between 0 and free_slots.size())
-      return ArrayView<double>(&memory_pool[translation_table[handle]],n_properties);
+      return ArrayView<double>(&memory_pool[translation_table[handle]], n_properties);
+#else
+      return ArrayView<double>(handle, n_properties);
+#endif
     }
 
+
     void
-    PropertyPool::reserve(const Handle size)
+    PropertyPool::reserve(const std::size_t size)
     {
+#if DEAL_II_VERSION_GTE(8,5,0)
       if (size > free_slots.size())
         {
           memory_pool.resize(size * n_properties);
@@ -95,6 +124,9 @@ namespace aspect
           free_slots.add_range(0,size);
           free_slots.subtract_set(old_used_slots);
         }
+#else
+      (void)size;
+#endif
     }
   }
 }
