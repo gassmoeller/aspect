@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015, 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -58,15 +58,16 @@ namespace aspect
       property_pool(particle.property_pool),
       properties ((property_pool != NULL) ? property_pool->allocate_properties_array() : PropertyPool::invalid_handle)
     {
-      if (property_pool != NULL)
+      // copy properties as necessary
+      if ((property_pool != NULL)
+          &&
+          (property_pool->n_properties_per_slot() > 0))
         {
           const ArrayView<const double> their_properties = particle.get_properties();
-
-          if (their_properties.size() != 0)
-            {
-              const ArrayView<double> my_properties = property_pool->get_properties(properties);
-              std::copy(&their_properties[0],&their_properties[0]+their_properties.size(),&my_properties[0]);
-            }
+          const ArrayView<double>       my_properties    = property_pool->get_properties(properties);
+          std::copy(&their_properties[0],
+                    &their_properties[0]+their_properties.size(),
+                    &my_properties[0]);
         }
     }
 
