@@ -67,6 +67,8 @@ namespace aspect
          */
         void reserve(const std::size_t size);
 
+        unsigned int n_properties_per_slot () const;
+
       private:
         unsigned int n_properties;
 
