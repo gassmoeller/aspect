@@ -81,6 +81,22 @@ namespace aspect
        */
       void parse_parameters (ParameterHandler &prm);
 
+      // //added by lev for benchmarking purposes
+      // struct xu
+      // {
+      // double x;
+      // double y;
+      // };
+      // typedef std::vector<xu> displacements_vector;
+      // typedef std::vector<displacements_vector> displacements_matrix;
+      // static displacements_matrix u;
+      // //std::vector<xy> u0;
+      // //std::vector<std::vector<xy>> u;
+
+
+
+
+
     private:
       /**
        * Set the boundary conditions for the solution of the elliptic
@@ -100,6 +116,11 @@ namespace aspect
        */
       void project_velocity_onto_boundary (LinearAlgebra::Vector &output);
 
+      /**
+       * Solve diffusion equation for the surface nodes.
+       * Called by make_constraints()
+       */
+      void diffuse_surface(LinearAlgebra::Vector &output);
       /**
        * Solve vector Laplacian equation for internal mesh displacements.
        */
@@ -222,6 +243,9 @@ namespace aspect
 
       friend class Simulator<dim>;
       friend class SimulatorAccess<dim>;
+
+
+
   };
 }
 
