@@ -40,7 +40,7 @@
 #include <fstream>
 #include <iostream>
 
-
+#include <deal.II/grid/grid_out.h>
 
 
 using namespace dealii;
@@ -283,9 +283,12 @@ namespace aspect
     LinearAlgebra::Vector boundary_velocity;
     boundary_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
 
+    // Extract surface triangulation
+    extract_surface_triangulation();
+
     //Apply hillslope diffusion
-    diffuse_surface(boundary_velocity);
-    //project_velocity_onto_boundary( boundary_velocity );
+    //diffuse_surface(boundary_velocity);
+    project_velocity_onto_boundary( boundary_velocity );
 
     // now insert the relevant part of the solution into the mesh constraints
     IndexSet constrained_dofs;
@@ -315,6 +318,66 @@ namespace aspect
   bool xuCompare(const xu &firstElem, const xu &secondElem)
   {
     return firstElem.x < secondElem.x;
+  }
+
+  template <int dim>
+  void FreeSurfaceHandler<dim>::extract_surface_triangulation()
+  {
+    // extract list of surface faces
+    typename Triangulation<dim>::active_cell_iterator
+    cell = sim.triangulation.begin_active(),
+    endc = sim.triangulation.end();
+
+    std::set<unsigned int> vertex_indices;
+    std::vector<Point<dim-1> > vertex_positions;
+    std::vector<CellData<dim-1> > cells;
+
+    for (; cell!=endc; ++cell)
+      {
+        //We're only interested in boundary cells
+        if (cell->at_boundary() && cell->is_locally_owned())
+          for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+            //...and specifially, in faces lying on the boundary
+            if (cell->face(face_no)->at_boundary() && cell->face(face_no)->boundary_id()==dim*2-1)
+              {
+                CellData<dim-1> surface_cell;
+
+                for (unsigned int v=0; v<GeometryInfo<dim>::vertices_per_face; ++v)
+                  {
+                    const unsigned int vertex_index = cell->face(face_no)->vertex_index(v);
+                    const std::pair<std::set<unsigned int>::iterator,bool> insertion_result =
+                        vertex_indices.insert(vertex_index);
+
+
+                    // if we found a new vertex insert its position in our new vector
+                    if (insertion_result.second == true)
+                      {
+                        const Point<dim> surface_point = cell->face(face_no)->vertex(v);
+                        Point<dim-1> grid_point;
+                        for (unsigned int i = 0; i < dim-1; ++i)
+                          grid_point(i) = surface_point(i);
+
+                        vertex_positions.push_back(grid_point);
+                        surface_cell.vertices[v] = vertex_positions.size()-1;
+                      }
+                    // otherwise just remember which vertex belongs to this face
+                    else
+                      {
+                        surface_cell.vertices[v] = vertex_positions.size()-1; //std::distance(vertex_indices.begin(),insertion_result.first);
+                      }
+                  }
+                cells.push_back(surface_cell);
+              }
+      }
+
+    Triangulation<dim-1> boundary_triangulation;
+          boundary_triangulation.create_triangulation(vertex_positions,cells,SubCellData());
+
+          // output the grid
+          std::ofstream out("boundary_grid.vtu");
+          GridOut gridout;
+          gridout.write_vtu (boundary_triangulation, out);
+    // use z-coordinate of faces-vertices as value for a solution vector (ordering?)
   }
 
   template <int dim>

@@ -117,6 +117,12 @@ namespace aspect
       void project_velocity_onto_boundary (LinearAlgebra::Vector &output);
 
       /**
+       * Extracts the surface and creates a triangulation object with dim-1
+       * dimensions from it, using the dim'th component as values.
+       */
+      void extract_surface_triangulation();
+
+      /**
        * Solve diffusion equation for the surface nodes.
        * Called by make_constraints()
        */
