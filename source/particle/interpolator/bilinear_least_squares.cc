@@ -61,6 +61,8 @@ namespace aspect
 
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
+        Point<dim> approximated_cell_midpoint;
+
         if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
           {
             // We can not simply use one of the points as input for find_active_cell_around_point
