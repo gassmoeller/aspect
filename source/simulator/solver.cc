@@ -201,7 +201,8 @@ namespace aspect
                                   const PreconditionerA                      &Apreconditioner,
                                   const bool                                  do_solve_A,
                                   const double                                A_block_tolerance,
-                                  const double                                S_block_tolerance);
+                                  const double                                S_block_tolerance,
+                                  TimerOutput*                                computing_timer);
 
         /**
          * Matrix vector product with this preconditioner object.
@@ -230,6 +231,8 @@ namespace aspect
         mutable unsigned int n_iterations_S_;
         const double A_block_tolerance;
         const double S_block_tolerance;
+
+        mutable TimerOutput*                 computing_timer;
     };
 
 
@@ -241,7 +244,8 @@ namespace aspect
                               const PreconditionerA                      &Apreconditioner,
                               const bool                                  do_solve_A,
                               const double                                A_block_tolerance,
-                              const double                                S_block_tolerance)
+                              const double                                S_block_tolerance,
+                              TimerOutput*                                computing_timer)
       :
       stokes_matrix     (S),
       stokes_preconditioner_matrix     (Spre),
@@ -251,7 +255,8 @@ namespace aspect
       n_iterations_A_(0),
       n_iterations_S_(0),
       A_block_tolerance(A_block_tolerance),
-      S_block_tolerance(S_block_tolerance)
+      S_block_tolerance(S_block_tolerance),
+      computing_timer(computing_timer)
     {}
 
     template <class PreconditionerA, class PreconditionerMp>
@@ -276,6 +281,8 @@ namespace aspect
     vmult (LinearAlgebra::BlockVector       &dst,
            const LinearAlgebra::BlockVector &src) const
     {
+      computing_timer->enter_section ("   Apply Preconditioner");
+
       LinearAlgebra::Vector utmp(src.block(0));
 
       // first solve with the bottom left block, which we have built
@@ -299,9 +306,13 @@ namespace aspect
             try
               {
                 dst.block(1) = 0.0;
+
+                computing_timer->enter_section ("   Solve S block");
                 solver.solve(stokes_preconditioner_matrix.block(1,1),
                              dst.block(1), src.block(1),
                              mp_preconditioner);
+                computing_timer->exit_section();
+
                 n_iterations_S_ += solver_control.last_step();
               }
             // if the solver fails, report the error from processor 0 with some additional
@@ -344,8 +355,12 @@ namespace aspect
           try
             {
               dst.block(0) = 0.0;
+
+              computing_timer->enter_section ("   Solve expensive A block");
               solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
                            a_preconditioner);
+              computing_timer->exit_section();
+
               n_iterations_A_ += solver_control.last_step();
             }
           // if the solver fails, report the error from processor 0 with some additional
@@ -365,9 +380,13 @@ namespace aspect
         }
       else
         {
+          computing_timer->enter_section ("   Solve cheap A block");
           a_preconditioner.vmult (dst.block(0), utmp);
+          computing_timer->exit_section();
+
           n_iterations_A_ += 1;
         }
+      computing_timer->exit_section();
     }
 
   }
@@ -742,7 +761,8 @@ namespace aspect
                               *Mp_preconditioner, *Amg_preconditioner,
                               false,
                               parameters.linear_solver_A_block_tolerance,
-                              parameters.linear_solver_S_block_tolerance);
+                              parameters.linear_solver_S_block_tolerance,
+                              &computing_timer);
 
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_cheap, mem,
@@ -778,7 +798,8 @@ namespace aspect
                               *Mp_preconditioner, *Amg_preconditioner,
                               true,
                               parameters.linear_solver_A_block_tolerance,
-                              parameters.linear_solver_S_block_tolerance);
+                              parameters.linear_solver_S_block_tolerance,
+                              &computing_timer);
 
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_expensive, mem,
