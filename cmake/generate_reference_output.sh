@@ -13,7 +13,7 @@ echo "Overwriting test output with reference output ..."
 SRC_PATH=`dirname $0`
 SRC_PATH=`cd $SRC_PATH/..;pwd`
 OUT=$PWD/changes.diff
-ASPECT_GENERATE_REFERENCE_OUTPUT=1 ctest -j 4 >/dev/null
+ASPECT_GENERATE_REFERENCE_OUTPUT=1 ctest -j 40 >/dev/null
 
 cd $SRC_PATH
 git diff tests/ >$OUT

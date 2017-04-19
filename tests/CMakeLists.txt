@@ -262,7 +262,7 @@ FOREACH(_test ${_tests})
 	    fi \;
 	  done
 	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${CMAKE_BINARY_DIR}/aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
-	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/log.txt >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND ${PERL_EXECUTABLE} -pi
 		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
 		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
@@ -278,8 +278,8 @@ FOREACH(_test ${_tests})
 	    fi \;
 	  done
 	COMMAND mpirun -np ${_mpi_count} ${CMAKE_BINARY_DIR}/aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
-		> ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
-	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
+	COMMAND	cp ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/log.txt ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
+	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/log.txt >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND ${PERL_EXECUTABLE} -pi
 		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
 		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
