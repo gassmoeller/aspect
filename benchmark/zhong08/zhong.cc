@@ -582,7 +582,7 @@ namespace aspect
       double lateral_perturbation = 0.0;
 
       // In case of spherical shell calculate spherical coordinates
-      const std_cxx1x::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
+      const std_cxx1x::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
       if (dim==2)
         {
