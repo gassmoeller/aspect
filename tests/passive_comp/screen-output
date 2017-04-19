@@ -34,13 +34,13 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 18 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00001
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
-     Temperature min/avg/max:            0 K, 0.0002704 K, 0.002131 K
-     Heat fluxes through boundary parts: -0.1478 W, 0.0888 W
+     Temperature min/avg/max:            0 K, 0.0002703 K, 0.002125 K
+     Heat fluxes through boundary parts: -0.1472 W, 0.08716 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 2:  t=5.6325e+12 seconds
@@ -52,8 +52,8 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00002
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
-     Temperature min/avg/max:            0 K, 0.0005406 K, 0.003556 K
-     Heat fluxes through boundary parts: 0.1136 W, 0.1643 W
+     Temperature min/avg/max:            0 K, 0.0005405 K, 0.003551 K
+     Heat fluxes through boundary parts: 0.1146 W, 0.1618 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 3:  t=8e+12 seconds
@@ -65,8 +65,8 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00003
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
-     Temperature min/avg/max:            0 K, 0.0007657 K, 0.004495 K
-     Heat fluxes through boundary parts: 0.4668 W, 0.2182 W
+     Temperature min/avg/max:            0 K, 0.0007656 K, 0.004491 K
+     Heat fluxes through boundary parts: 0.468 W, 0.2153 W
      Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 Termination requested by criterion: end time

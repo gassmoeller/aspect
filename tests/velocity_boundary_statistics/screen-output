@@ -26,9 +26,9 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
      Writing graphical output:                  output-velocity_boundary_statistics/solution/solution-00000
      RMS, max velocity:                         1.2e-09 m/s, 3.64e-09 m/s
      Temperature min/avg/max:                   0 K, 100.3 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1191 W, -0.2681 W, 7.403e-16 W, 7.146e-16 W
+     Heat fluxes through boundary parts:        -0.1191 W, -0.2681 W, -1.845e-16 W, 2.052e-16 W
      Writing depth average:                     output-velocity_boundary_statistics/depth_average.gnuplot
-     Max and min velocity along boundary parts: 3.629e-09 m/s, 4.252e-12 m/s, 0 m/s, 0 m/s, 1.745e-10 m/s, 2.135e-12 m/s, 1.422e-09 m/s, 1.784e-12 m/s
+     Max and min velocity along boundary parts: 3.629e-09 m/s, 4.252e-12 m/s, 0 m/s, 0 m/s, 1.745e-10 m/s, 2.12e-12 m/s, 1.422e-09 m/s, 1.769e-12 m/s
 
 Number of active cells: 810 (on 6 levels)
 Number of degrees of freedom: 11,188 (6,864+892+3,432)
@@ -45,11 +45,11 @@ Number of degrees of freedom: 12,176 (7,470+971+3,735)
      Writing graphical output:                  output-velocity_boundary_statistics/solution/solution-00001
      RMS, max velocity:                         1.26e-09 m/s, 3.74e-09 m/s
      Temperature min/avg/max:                   -196.8 K, 101.7 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1164 W, -0.2663 W, -1.469e-06 W, -1.074e-05 W
+     Heat fluxes through boundary parts:        -0.1164 W, -0.2663 W, -1.468e-06 W, -1.074e-05 W
      Writing depth average:                     output-velocity_boundary_statistics/depth_average.gnuplot
-     Max and min velocity along boundary parts: 3.721e-09 m/s, 4.364e-12 m/s, 0 m/s, 0 m/s, 1.776e-10 m/s, 2.138e-12 m/s, 1.453e-09 m/s, 1.798e-12 m/s
+     Max and min velocity along boundary parts: 3.721e-09 m/s, 4.364e-12 m/s, 0 m/s, 0 m/s, 1.775e-10 m/s, 2.123e-12 m/s, 1.453e-09 m/s, 1.783e-12 m/s
 
-*** Timestep 2:  t=2.33266e+13 seconds
+*** Timestep 2:  t=2.33265e+13 seconds
    Solving temperature system... 13 iterations.
    Solving Stokes system... 34+0 iterations.
 
@@ -57,12 +57,12 @@ Number of degrees of freedom: 12,176 (7,470+971+3,735)
      Writing graphical output:                  output-velocity_boundary_statistics/solution/solution-00002
      RMS, max velocity:                         1.29e-09 m/s, 3.79e-09 m/s
      Temperature min/avg/max:                   -192.5 K, 102.7 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1142 W, -0.2647 W, -2.698e-06 W, -1.859e-05 W
+     Heat fluxes through boundary parts:        -0.1142 W, -0.2647 W, -2.698e-06 W, -1.86e-05 W
      Writing depth average:                     output-velocity_boundary_statistics/depth_average.gnuplot
-     Max and min velocity along boundary parts: 3.775e-09 m/s, 4.447e-12 m/s, 0 m/s, 0 m/s, 1.796e-10 m/s, 2.14e-12 m/s, 1.469e-09 m/s, 1.809e-12 m/s
+     Max and min velocity along boundary parts: 3.775e-09 m/s, 4.448e-12 m/s, 0 m/s, 0 m/s, 1.796e-10 m/s, 2.125e-12 m/s, 1.469e-09 m/s, 1.795e-12 m/s
 
-Number of active cells: 921 (on 6 levels)
-Number of degrees of freedom: 13,047 (8,004+1,041+4,002)
+Number of active cells: 924 (on 6 levels)
+Number of degrees of freedom: 13,096 (8,034+1,045+4,017)
 
 *** Timestep 3:  t=3.08779e+13 seconds
    Solving temperature system... 12 iterations.
@@ -72,10 +72,10 @@ Number of degrees of freedom: 13,047 (8,004+1,041+4,002)
    Postprocessing:
      Writing graphical output:                  output-velocity_boundary_statistics/solution/solution-00003
      RMS, max velocity:                         1.32e-09 m/s, 3.84e-09 m/s
-     Temperature min/avg/max:                   -191.3 K, 103.7 K, 1613 K
-     Heat fluxes through boundary parts:        -0.112 W, -0.2631 W, -4.015e-06 W, -2.587e-05 W
+     Temperature min/avg/max:                   -192.3 K, 103.7 K, 1613 K
+     Heat fluxes through boundary parts:        -0.112 W, -0.2631 W, -4.014e-06 W, -2.588e-05 W
      Writing depth average:                     output-velocity_boundary_statistics/depth_average.gnuplot
-     Max and min velocity along boundary parts: 3.822e-09 m/s, 4.536e-12 m/s, 0 m/s, 0 m/s, 1.818e-10 m/s, 2.143e-12 m/s, 1.484e-09 m/s, 1.792e-12 m/s
+     Max and min velocity along boundary parts: 3.822e-09 m/s, 4.537e-12 m/s, 0 m/s, 0 m/s, 1.818e-10 m/s, 2.128e-12 m/s, 1.484e-09 m/s, 1.777e-12 m/s
 
 *** Timestep 4:  t=3.83747e+13 seconds
    Solving temperature system... 12 iterations.
@@ -84,28 +84,28 @@ Number of degrees of freedom: 13,047 (8,004+1,041+4,002)
    Postprocessing:
      Writing graphical output:                  output-velocity_boundary_statistics/solution/solution-00004
      RMS, max velocity:                         1.35e-09 m/s, 3.87e-09 m/s
-     Temperature min/avg/max:                   -188.7 K, 104.7 K, 1613 K
-     Heat fluxes through boundary parts:        -0.11 W, -0.2616 W, -5.336e-06 W, -3.213e-05 W
+     Temperature min/avg/max:                   -189.8 K, 104.7 K, 1613 K
+     Heat fluxes through boundary parts:        -0.11 W, -0.2617 W, -5.337e-06 W, -3.214e-05 W
      Writing depth average:                     output-velocity_boundary_statistics/depth_average.gnuplot
-     Max and min velocity along boundary parts: 3.861e-09 m/s, 4.627e-12 m/s, 0 m/s, 0 m/s, 1.84e-10 m/s, 2.145e-12 m/s, 1.499e-09 m/s, 1.804e-12 m/s
+     Max and min velocity along boundary parts: 3.861e-09 m/s, 4.628e-12 m/s, 0 m/s, 0 m/s, 1.84e-10 m/s, 2.13e-12 m/s, 1.499e-09 m/s, 1.79e-12 m/s
 
-Number of active cells: 981 (on 6 levels)
-Number of degrees of freedom: 13,977 (8,574+1,116+4,287)
+Number of active cells: 984 (on 6 levels)
+Number of degrees of freedom: 14,016 (8,598+1,119+4,299)
 
-*** Timestep 5:  t=4.58306e+13 seconds
+*** Timestep 5:  t=4.58304e+13 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+17 iterations.
+   Solving Stokes system... 200+18 iterations.
 
    Postprocessing:
      Writing graphical output:                  output-velocity_boundary_statistics/solution/solution-00005
      RMS, max velocity:                         1.38e-09 m/s, 3.92e-09 m/s
      Temperature min/avg/max:                   -197.2 K, 105.6 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1081 W, -0.2603 W, -6.639e-06 W, -3.671e-05 W
+     Heat fluxes through boundary parts:        -0.1081 W, -0.2604 W, -6.64e-06 W, -3.673e-05 W
      Writing depth average:                     output-velocity_boundary_statistics/depth_average.gnuplot
-     Max and min velocity along boundary parts: 3.902e-09 m/s, 4.719e-12 m/s, 0 m/s, 0 m/s, 1.862e-10 m/s, 2.147e-12 m/s, 1.515e-09 m/s, 6.218e-13 m/s
+     Max and min velocity along boundary parts: 3.902e-09 m/s, 4.719e-12 m/s, 0 m/s, 0 m/s, 1.862e-10 m/s, 2.133e-12 m/s, 1.515e-09 m/s, 6.209e-13 m/s
 
-*** Timestep 6:  t=5.32568e+13 seconds
+*** Timestep 6:  t=5.32566e+13 seconds
    Solving temperature system... 12 iterations.
    Solving Stokes system... 35+0 iterations.
 
@@ -113,42 +113,42 @@ Number of degrees of freedom: 13,977 (8,574+1,116+4,287)
      Writing graphical output:                  output-velocity_boundary_statistics/solution/solution-00006
      RMS, max velocity:                         1.41e-09 m/s, 3.95e-09 m/s
      Temperature min/avg/max:                   -196.3 K, 106.5 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1064 W, -0.2591 W, -7.915e-06 W, -4.026e-05 W
+     Heat fluxes through boundary parts:        -0.1064 W, -0.2591 W, -7.918e-06 W, -4.027e-05 W
      Writing depth average:                     output-velocity_boundary_statistics/depth_average.gnuplot
-     Max and min velocity along boundary parts: 3.937e-09 m/s, 4.81e-12 m/s, 0 m/s, 0 m/s, 1.885e-10 m/s, 2.15e-12 m/s, 1.53e-09 m/s, 6.182e-13 m/s
+     Max and min velocity along boundary parts: 3.937e-09 m/s, 4.811e-12 m/s, 0 m/s, 0 m/s, 1.885e-10 m/s, 2.135e-12 m/s, 1.53e-09 m/s, 6.172e-13 m/s
 
-Number of active cells: 1,041 (on 6 levels)
-Number of degrees of freedom: 14,828 (9,096+1,184+4,548)
+Number of active cells: 1,038 (on 6 levels)
+Number of degrees of freedom: 14,789 (9,072+1,181+4,536)
 
-*** Timestep 7:  t=6.06206e+13 seconds
+*** Timestep 7:  t=6.06204e+13 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+17 iterations.
+   Solving Stokes system... 102+0 iterations.
 
    Postprocessing:
      Writing graphical output:                  output-velocity_boundary_statistics/solution/solution-00007
      RMS, max velocity:                         1.44e-09 m/s, 3.98e-09 m/s
      Temperature min/avg/max:                   -201.8 K, 107.4 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1048 W, -0.258 W, -9.08e-06 W, -4.305e-05 W
+     Heat fluxes through boundary parts:        -0.1048 W, -0.258 W, -9.084e-06 W, -4.306e-05 W
      Writing depth average:                     output-velocity_boundary_statistics/depth_average.gnuplot
-     Max and min velocity along boundary parts: 3.97e-09 m/s, 4.902e-12 m/s, 0 m/s, 0 m/s, 1.908e-10 m/s, 7.281e-13 m/s, 1.546e-09 m/s, 6.142e-13 m/s
+     Max and min velocity along boundary parts: 3.97e-09 m/s, 4.902e-12 m/s, 0 m/s, 0 m/s, 1.908e-10 m/s, 7.274e-13 m/s, 1.546e-09 m/s, 6.134e-13 m/s
 
-*** Timestep 8:  t=6.79188e+13 seconds
+*** Timestep 8:  t=6.79185e+13 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system... 98+0 iterations.
 
    Postprocessing:
      Writing graphical output:                  output-velocity_boundary_statistics/solution/solution-00008
      RMS, max velocity:                         1.47e-09 m/s, 4.01e-09 m/s
      Temperature min/avg/max:                   -201.6 K, 108.2 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1034 W, -0.2569 W, -1.02e-05 W, -4.529e-05 W
+     Heat fluxes through boundary parts:        -0.1034 W, -0.257 W, -1.02e-05 W, -4.53e-05 W
      Writing depth average:                     output-velocity_boundary_statistics/depth_average.gnuplot
-     Max and min velocity along boundary parts: 3.998e-09 m/s, 4.992e-12 m/s, 0 m/s, 0 m/s, 1.93e-10 m/s, 7.275e-13 m/s, 1.561e-09 m/s, 6.106e-13 m/s
+     Max and min velocity along boundary parts: 3.998e-09 m/s, 4.993e-12 m/s, 0 m/s, 0 m/s, 1.93e-10 m/s, 7.268e-13 m/s, 1.561e-09 m/s, 6.098e-13 m/s
 
-Number of active cells: 1,119 (on 6 levels)
-Number of degrees of freedom: 15,972 (9,798+1,275+4,899)
+Number of active cells: 1,110 (on 6 levels)
+Number of degrees of freedom: 15,845 (9,720+1,265+4,860)
 
-*** Timestep 9:  t=7.51656e+13 seconds
+*** Timestep 9:  t=7.51653e+13 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 200+18 iterations.
@@ -157,24 +157,24 @@ Number of degrees of freedom: 15,972 (9,798+1,275+4,899)
      Writing graphical output:                  output-velocity_boundary_statistics/solution/solution-00009
      RMS, max velocity:                         1.49e-09 m/s, 4.05e-09 m/s
      Temperature min/avg/max:                   -201.5 K, 109 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1023 W, -0.256 W, -1.128e-05 W, -4.709e-05 W
+     Heat fluxes through boundary parts:        -0.1023 W, -0.256 W, -1.127e-05 W, -4.71e-05 W
      Writing depth average:                     output-velocity_boundary_statistics/depth_average.gnuplot
-     Max and min velocity along boundary parts: 4.026e-09 m/s, 5.07e-12 m/s, 0 m/s, 0 m/s, 1.948e-10 m/s, 7.275e-13 m/s, 1.576e-09 m/s, 6.075e-13 m/s
+     Max and min velocity along boundary parts: 4.026e-09 m/s, 5.072e-12 m/s, 0 m/s, 0 m/s, 1.949e-10 m/s, 7.267e-13 m/s, 1.576e-09 m/s, 6.067e-13 m/s
 
-*** Timestep 10:  t=8.21915e+13 seconds
+*** Timestep 10:  t=8.21912e+13 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 32+0 iterations.
 
    Postprocessing:
      Writing graphical output:                  output-velocity_boundary_statistics/solution/solution-00010
      RMS, max velocity:                         1.52e-09 m/s, 4.08e-09 m/s
      Temperature min/avg/max:                   -201.4 K, 109.6 K, 1613 K
-     Heat fluxes through boundary parts:        -0.1016 W, -0.255 W, -1.231e-05 W, -4.855e-05 W
+     Heat fluxes through boundary parts:        -0.1015 W, -0.2551 W, -1.229e-05 W, -4.856e-05 W
      Writing depth average:                     output-velocity_boundary_statistics/depth_average.gnuplot
-     Max and min velocity along boundary parts: 4.051e-09 m/s, 5.139e-12 m/s, 0 m/s, 0 m/s, 1.963e-10 m/s, 7.268e-13 m/s, 1.59e-09 m/s, 6.04e-13 m/s
+     Max and min velocity along boundary parts: 4.051e-09 m/s, 5.143e-12 m/s, 0 m/s, 0 m/s, 1.964e-10 m/s, 7.26e-13 m/s, 1.59e-09 m/s, 6.032e-13 m/s
 
-Number of active cells: 1,197 (on 6 levels)
-Number of degrees of freedom: 17,109 (10,496+1,365+5,248)
+Number of active cells: 1,188 (on 6 levels)
+Number of degrees of freedom: 16,982 (10,418+1,355+5,209)
 
 Termination requested by criterion: end step
 *** Snapshot created!

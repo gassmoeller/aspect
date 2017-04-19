@@ -10,11 +10,11 @@ Number of degrees of freedom: 400 (240+40+120)
    Postprocessing:
      Writing graphical output: output-cells_in_circumference/solution/solution-00000
 
-Number of active cells: 20 (on 1 levels)
-Number of degrees of freedom: 400 (240+40+120)
+Number of active cells: 26 (on 2 levels)
+Number of degrees of freedom: 505 (304+49+152)
 
-Number of active cells: 20 (on 1 levels)
-Number of degrees of freedom: 400 (240+40+120)
+Number of active cells: 32 (on 2 levels)
+Number of degrees of freedom: 610 (368+58+184)
 
 Termination requested by criterion: end time
 *** Snapshot created!
