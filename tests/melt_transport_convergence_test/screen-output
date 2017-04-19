@@ -1,6 +1,4 @@
 
-Loading shared library <./libmelt_transport_convergence_test.so>
-
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
 
@@ -10,7 +8,7 @@ Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+18 iterations.
    Solving for u_f in 11 iterations.
-      Relative nonlinear residuals: 0, 1.48546e-16, 1
+      Relative nonlinear residuals: 0, 1.6773e-16, 1
       Total relative residual after nonlinear iteration 1: 1
 
 
@@ -19,7 +17,7 @@ Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 11 iterations.
-      Relative nonlinear residuals: 0, 1.48546e-16, 9.85471e-07
+      Relative nonlinear residuals: 0, 1.6773e-16, 9.85471e-07
       Total relative residual after nonlinear iteration 2: 9.85471e-07
 
 

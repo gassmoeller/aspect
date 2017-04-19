@@ -1,7 +1,4 @@
 
-Loading shared library <./libsolitary_wave.so>
-
-Initialize solitary wave solution
 Number of active cells: 2,560 (on 4 levels)
 Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
 
@@ -11,7 +8,7 @@ Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+23 iterations.
    Solving for u_f in 10 iterations.
-      Relative nonlinear residuals: 0, 1.49047e-16, 0.999786
+      Relative nonlinear residuals: 0, 1.47307e-16, 0.999786
       Total relative residual after nonlinear iteration 1: 0.999786
 
 
@@ -20,8 +17,8 @@ Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 10 iterations.
-      Relative nonlinear residuals: 0, 1.49047e-16, 9.53538e-11
-      Total relative residual after nonlinear iteration 2: 9.53538e-11
+      Relative nonlinear residuals: 0, 1.47307e-16, 9.53531e-11
+      Total relative residual after nonlinear iteration 2: 9.53531e-11
 
 
 
@@ -29,7 +26,7 @@ Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
      Writing graphical output:    output-solitary_wave/solution/solution-00000
      Compositions min/max/mass:   0.001/0.01/13.3
      RMS, max velocity:           0.000166 m/year, 0.000167 m/year
-     Errors e_f, e_p, e_c, delta: 2.539743e-05, 2.204725e-02, 0.000000e+00, 4.386066e-17
+     Errors e_f, e_p, e_c, delta: 2.539743e-05, 2.204725e-02, 0.000000e+00, 6.140493e-17
 
 *** Timestep 1:  t=3738.96 years
    Skipping temperature solve because RHS is zero.

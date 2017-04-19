@@ -1,3 +1,4 @@
+down.math.colostate.edu.134604hfi_wait_for_device: The /dev/hfi1_0 device failed to appear after 15.0 seconds: Connection timed out
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_3d_left.0.txt.
@@ -47,7 +48,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1369 K, 1913 K
      Heat fluxes through boundary parts: -1.034e+08 W, -1.034e+08 W, -1.034e+08 W, -1.034e+08 W, 3.188e+10 W, 3.002e+10 W
-     Compositions min/max/mass:          -3.552e-16/1/6.189e+16
+     Compositions min/max/mass:          -3.004e-16/1/6.189e+16
 
 *** Timestep 1:  t=10000 years
    Solving temperature system... 8 iterations.

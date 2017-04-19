@@ -1,3 +1,4 @@
+down.math.colostate.edu.137120hfi_wait_for_device: The /dev/hfi1_0 device failed to appear after 15.0 seconds: Connection timed out
 
 
    Loading Ascii data initial file ASPECT_DIR/data/prescribed-stokes-solution/box_2d.txt.
@@ -10,8 +11,8 @@ Number of degrees of freedom: 84 (50+9+25)
 
    Postprocessing:
      RMS, max velocity:                  40.8 m/s, 88.7 m/s
-     Temperature min/avg/max:            -2.954e-17 K, 0.08333 K, 1 K
-     Heat fluxes through boundary parts: 4.99e-17 W, -7.469e-19 W, -6 W, -4.619e-17 W
+     Temperature min/avg/max:            -8.538e-18 K, 0.08333 K, 1 K
+     Heat fluxes through boundary parts: -7.618e-17 W, -5.729e-17 W, -6 W, -6.765e-17 W
 
 *** Timestep 1:  t=0.0025 seconds
    Solving temperature system... 8 iterations.

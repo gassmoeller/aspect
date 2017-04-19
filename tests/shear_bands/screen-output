@@ -1,6 +1,4 @@
 
-Loading shared library <./libshear_bands.so>
-
 Number of active cells: 1,024 (on 5 levels)
 Number of degrees of freedom: 28,857 (8,514+2,210+8,514+1,105+4,257+4,257)
 
@@ -10,7 +8,7 @@ Number of degrees of freedom: 28,857 (8,514+2,210+8,514+1,105+4,257+4,257)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 29+0 iterations.
    Solving for u_f in 11 iterations.
-      Relative nonlinear residuals: 0, 1.49666e-16, 1
+      Relative nonlinear residuals: 0, 1.44861e-16, 1
       Total relative residual after nonlinear iteration 1: 1
 
 
@@ -19,7 +17,7 @@ Number of degrees of freedom: 28,857 (8,514+2,210+8,514+1,105+4,257+4,257)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
    Solving for u_f in 11 iterations.
-      Relative nonlinear residuals: 0, 1.12416e-16, 0.0299352
+      Relative nonlinear residuals: 0, 1.12357e-16, 0.0299352
       Total relative residual after nonlinear iteration 2: 0.0299352
 
 
@@ -28,7 +26,7 @@ Number of degrees of freedom: 28,857 (8,514+2,210+8,514+1,105+4,257+4,257)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
    Solving for u_f in 11 iterations.
-      Relative nonlinear residuals: 0, 1.05541e-16, 0.0183978
+      Relative nonlinear residuals: 0, 1.05506e-16, 0.0183978
       Total relative residual after nonlinear iteration 3: 0.0183978
 
 
@@ -37,7 +35,7 @@ Number of degrees of freedom: 28,857 (8,514+2,210+8,514+1,105+4,257+4,257)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
    Solving for u_f in 11 iterations.
-      Relative nonlinear residuals: 0, 1.02832e-16, 0.0133444
+      Relative nonlinear residuals: 0, 1.04718e-16, 0.0133444
       Total relative residual after nonlinear iteration 4: 0.0133444
 
 
@@ -46,7 +44,7 @@ Number of degrees of freedom: 28,857 (8,514+2,210+8,514+1,105+4,257+4,257)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
    Solving for u_f in 11 iterations.
-      Relative nonlinear residuals: 0, 1.01659e-16, 0.0100444
+      Relative nonlinear residuals: 0, 1.03805e-16, 0.0100444
       Total relative residual after nonlinear iteration 5: 0.0100444
 
 

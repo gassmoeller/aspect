@@ -1,6 +1,4 @@
 
-Loading shared library <./libmelting_rate.so>
-
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
 
@@ -10,7 +8,7 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
    Solving peridotite system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals: 1.63037e-16, 1.18813e-16, 1.18813e-16, 1
+      Relative nonlinear residuals: 1.64801e-16, 1.20288e-16, 1.20288e-16, 1
       Total relative residual after nonlinear iteration 1: 1
 
 
@@ -19,8 +17,8 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
    Solving peridotite system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals: 1.63037e-16, 1.18813e-16, 1.18813e-16, 2.03318e-14
-      Total relative residual after nonlinear iteration 2: 2.03318e-14
+      Relative nonlinear residuals: 1.64801e-16, 1.20288e-16, 1.20288e-16, 2.1144e-14
+      Total relative residual after nonlinear iteration 2: 2.1144e-14
 
 
 
@@ -85,7 +83,7 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
    Solving peridotite system ... 2 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Relative nonlinear residuals: 9.01415e-12, 9.61468e-09, 3.53146e-10, 3.53203e-08
+      Relative nonlinear residuals: 9.01413e-12, 9.61468e-09, 3.53146e-10, 3.53203e-08
       Total relative residual after nonlinear iteration 3: 3.53203e-08
 
 

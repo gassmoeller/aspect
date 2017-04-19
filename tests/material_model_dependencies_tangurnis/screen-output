@@ -1,6 +1,4 @@
 
-Loading shared library <./libmaterial_model_dependencies_tangurnis.so>
-
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
@@ -28,12 +26,6 @@ Number of degrees of freedom: 268 (162+25+81)
       Relative Stokes residual after nonlinear iteration 10: 0.160352
 
    Postprocessing:
-viscosity depends on
-density depends on
-compressibility depends on
-specific_heat depends on
-thermal_conductivity depends on
-model is compressible
 
 Termination requested by criterion: end time
 

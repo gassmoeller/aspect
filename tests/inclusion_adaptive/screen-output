@@ -1,6 +1,4 @@
 
-Loading shared library <./libinclusion_adaptive.so>
-
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
@@ -47,7 +45,7 @@ Number of degrees of freedom: 2,664 (1,634+213+817)
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution/solution-00003
-     Errors u_L1, p_L1, u_L2, p_L2: 3.406467e-02, 5.739119e-01, 1.825218e-02, 1.110507e+00
+     Errors u_L1, p_L1, u_L2, p_L2: 3.406467e-02, 5.739120e-01, 1.825218e-02, 1.110507e+00
 
 Number of active cells: 292 (on 7 levels)
 Number of degrees of freedom: 4,484 (2,754+353+1,377)

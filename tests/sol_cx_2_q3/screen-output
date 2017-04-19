@@ -1,6 +1,4 @@
 
-Loading shared library <./libsol_cx_2_q3.so>
-
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 500 (338+81+81)
 
@@ -9,10 +7,10 @@ Number of degrees of freedom: 500 (338+81+81)
    Solving Stokes system... 22+0 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
    Solving Stokes system... 0+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 8.78524e-08
+      Relative Stokes residual after nonlinear iteration 2: 7.59012e-08
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 6.425271e-06, 1.103958e-01, 8.407109e-06, 1.110898e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 6.425270e-06, 1.103958e-01, 8.407108e-06, 1.110898e-01
 
 Termination requested by criterion: end time
 

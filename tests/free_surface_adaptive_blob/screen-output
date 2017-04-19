@@ -1,3 +1,6 @@
+down.math.colostate.edu.144570hfi_wait_for_device: The /dev/hfi1_0 device failed to appear after 15.0 seconds: Connection timed out
+down.math.colostate.edu.144569hfi_wait_for_device: The /dev/hfi1_0 device failed to appear after 15.0 seconds: Connection timed out
+down.math.colostate.edu.144568hfi_wait_for_device: The /dev/hfi1_0 device failed to appear after 15.0 seconds: Connection timed out
 
 Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 8,716 (5,346+697+2,673)
@@ -45,7 +48,7 @@ Number of free surface degrees of freedom: 1522
      Reference thermal diffusivity (m^2/s):         1.13939e-06
      Rayleigh number:                               0
 
-     Topography min/max: 0 m, 0 m, 
+     Topography min/max: 0 m, 0 m
      RMS, max velocity:  0.000714 m/year, 0.00231 m/year
 
 *** Timestep 1:  t=675302 years
@@ -55,7 +58,7 @@ Number of free surface degrees of freedom: 1522
    Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -393.6 m, 876.5 m, 
+     Topography min/max: -393.6 m, 876.5 m
      RMS, max velocity:  0.000764 m/year, 0.00216 m/year
 
 *** Timestep 2:  t=2.10723e+06 years
@@ -65,7 +68,7 @@ Number of free surface degrees of freedom: 1522
    Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -2260 m, 1102 m, 
+     Topography min/max: -2260 m, 1102 m
      RMS, max velocity:  0.00121 m/year, 0.00303 m/year
 
 *** Timestep 3:  t=2.68801e+06 years
@@ -75,7 +78,7 @@ Number of free surface degrees of freedom: 1522
    Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -480.7 m, 226.6 m, 
+     Topography min/max: -480.7 m, 226.6 m
      RMS, max velocity:  0.000781 m/year, 0.00211 m/year
 
 *** Timestep 4:  t=3.42897e+06 years
@@ -85,7 +88,7 @@ Number of free surface degrees of freedom: 1522
    Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -340.1 m, 715.8 m, 
+     Topography min/max: -340.1 m, 715.8 m
      RMS, max velocity:  0.000601 m/year, 0.0016 m/year
 
 *** Timestep 5:  t=5.35396e+06 years
@@ -95,7 +98,7 @@ Number of free surface degrees of freedom: 1522
    Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
-     Topography min/max: -2420 m, 1242 m, 
+     Topography min/max: -2420 m, 1242 m
      RMS, max velocity:  0.001 m/year, 0.00243 m/year
 
 Number of active cells: 736 (on 5 levels)
@@ -115,7 +118,7 @@ Number of free surface degrees of freedom: 1612
    Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
-     Topography min/max: -603.2 m, 304.9 m, 
+     Topography min/max: -603.2 m, 304.9 m
      RMS, max velocity:  0.000761 m/year, 0.00184 m/year
 
 *** Timestep 7:  t=6.93888e+06 years
@@ -125,7 +128,7 @@ Number of free surface degrees of freedom: 1612
    Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
-     Topography min/max: -383.7 m, 755.3 m, 
+     Topography min/max: -383.7 m, 755.3 m
      RMS, max velocity:  0.000567 m/year, 0.00151 m/year
 
 *** Timestep 8:  t=8.89272e+06 years
@@ -135,7 +138,7 @@ Number of free surface degrees of freedom: 1612
    Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -2246 m, 1219 m, 
+     Topography min/max: -2246 m, 1219 m
      RMS, max velocity:  0.00094 m/year, 0.00223 m/year
 
 *** Timestep 9:  t=9.69837e+06 years
@@ -145,7 +148,7 @@ Number of free surface degrees of freedom: 1612
    Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
-     Topography min/max: -426.8 m, 227.5 m, 
+     Topography min/max: -426.8 m, 227.5 m
      RMS, max velocity:  0.000578 m/year, 0.00139 m/year
 
 *** Timestep 10:  t=1.08214e+07 years
@@ -155,7 +158,7 @@ Number of free surface degrees of freedom: 1612
    Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
-     Topography min/max: -406.5 m, 771.9 m, 
+     Topography min/max: -406.5 m, 771.9 m
      RMS, max velocity:  0.000464 m/year, 0.0012 m/year
 
 Number of active cells: 817 (on 6 levels)

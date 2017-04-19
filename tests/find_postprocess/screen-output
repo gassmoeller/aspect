@@ -1,3 +1,4 @@
+down.math.colostate.edu.145208hfi_wait_for_device: The /dev/hfi1_0 device failed to appear after 15.0 seconds: Connection timed out
 
 Loading shared library <./libfind_postprocess.so>
 

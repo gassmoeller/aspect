@@ -1,3 +1,4 @@
+down.math.colostate.edu.139660hfi_wait_for_device: The /dev/hfi1_0 device failed to appear after 15.0 seconds: Connection timed out
 
 Number of active cells: 1 (on 1 levels)
 Number of degrees of freedom: 49 (18+4+9+9+9)

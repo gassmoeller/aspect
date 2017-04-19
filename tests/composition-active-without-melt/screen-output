@@ -1,3 +1,4 @@
+down.math.colostate.edu.140227hfi_wait_for_device: The /dev/hfi1_0 device failed to appear after 15.0 seconds: Connection timed out
 
 Loading shared library <./libcomposition-active-without-melt.so>
 

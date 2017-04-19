@@ -1,7 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
-
-Loading shared library <./libpostprocess_iterations_Stokes_only.so>
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (9,539+4,225)

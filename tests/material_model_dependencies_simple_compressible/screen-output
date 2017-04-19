@@ -1,6 +1,4 @@
 
-Loading shared library <./libmaterial_model_dependencies_simple_compressible.so>
-
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
@@ -9,15 +7,9 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 14+0 iterations.
       Relative Stokes residual after nonlinear iteration 1: 1
    Solving Stokes system... 4+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 5.7538e-08
+      Relative Stokes residual after nonlinear iteration 2: 5.7539e-08
 
    Postprocessing:
-viscosity depends on
-density depends on pressure temperature
-compressibility depends on
-specific_heat depends on
-thermal_conductivity depends on
-model is compressible
 
 Termination requested by criterion: end time
 

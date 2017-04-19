@@ -1,6 +1,4 @@
 
-Loading shared library <./libmaterial_model_dependencies_diffusion_dislocation.so>
-
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
@@ -10,15 +8,9 @@ Number of degrees of freedom: 268 (162+25+81)
       Relative Stokes residual after nonlinear iteration 1: 1
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative Stokes residual after nonlinear iteration 2: 3.36442e-08
+      Relative Stokes residual after nonlinear iteration 2: 3.36413e-08
 
    Postprocessing:
-viscosity depends on pressure temperature strainrate composition
-density depends on pressure temperature composition
-compressibility depends on
-specific_heat depends on
-thermal_conductivity depends on pressure temperature composition
-model is incompressible
 
 Termination requested by criterion: end time
 

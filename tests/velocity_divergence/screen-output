@@ -1,6 +1,4 @@
 
-Loading shared library <./libvelocity_divergence.so>
-
 Number of active cells: 8,192 (on 7 levels)
 Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
 
@@ -9,7 +7,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+8 iterations.
-      Relative nonlinear residuals: 2.13333e-16, 2.34662e-16, 1
+      Relative nonlinear residuals: 2.26451e-16, 2.31216e-16, 1
       Total relative residual after nonlinear iteration 1: 1
 
 
@@ -17,7 +15,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 2.13333e-16, 2.34662e-16, 4.16982e-08
+      Relative nonlinear residuals: 2.26451e-16, 2.31216e-16, 4.16982e-08
       Total relative residual after nonlinear iteration 2: 4.16982e-08
 
 
@@ -41,7 +39,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 3.19914e-13, 8.55517e-11, 4.16921e-08
+      Relative nonlinear residuals: 3.19915e-13, 8.55517e-11, 4.16921e-08
       Total relative residual after nonlinear iteration 2: 4.16921e-08
 
 
@@ -113,7 +111,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals: 9.07893e-13, 8.83623e-11, 4.16921e-08
+      Relative nonlinear residuals: 9.07894e-13, 8.83622e-11, 4.16921e-08
       Total relative residual after nonlinear iteration 2: 4.16921e-08
 
 

@@ -27,17 +27,3 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
      RMS, max velocity:        0.0102 m/year, 0.0103 m/year
 
 *** Timestep 1:  t=48350 years
-
-
-Exception on processing: 
-
-An error occurred in file <solver.cc> in function
-(line in output replaced by default.sh script)
-The violated condition was: 
-    system_matrix.block(block_idx, block_idx).linfty_norm() > std::numeric_limits<double>::min()
-The name and call sequence of the exception was:
-    ExcMessage ("The " + field_name + " equation can not be solved, because the matrix is zero, " "but the right-hand side is nonzero.")
-Additional Information: 
-The temperature equation can not be solved, because the matrix is zero, but the right-hand side is nonzero.
-
-Aborting!

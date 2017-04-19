@@ -1,3 +1,4 @@
+down.math.colostate.edu.134024hfi_wait_for_device: The /dev/hfi1_0 device failed to appear after 15.0 seconds: Connection timed out
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/chunk_2d_inner.0.txt.

@@ -1,12 +1,4 @@
 
-Loading shared library <./libglobal_refine_amr.so>
-
-plugin is called!
-plugin is called!
-plugin is called!
-plugin is called!
-plugin is called!
-plugin is called!
 Number of active cells: 2,140 (on 7 levels)
 Number of degrees of freedom: 28,711 (17,646+2,242+8,823)
 

@@ -1,3 +1,4 @@
+down.math.colostate.edu.134624hfi_wait_for_device: The /dev/hfi1_0 device failed to appear after 15.0 seconds: Connection timed out
 
 
    Loading Ascii data initial file ASPECT_DIR/data/compositional-initial-conditions/ascii-data/test/box_2d.txt.

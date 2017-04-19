@@ -1,8 +1,4 @@
 
-Loading shared library <./libplugin.so>
-srcdir='ASPECT_DIR'
-N6dealii13TriangulationILi2ELi2EEE N6aspect9SimulatorILi2EEE
-
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
