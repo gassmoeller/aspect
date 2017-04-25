@@ -727,6 +727,8 @@ namespace aspect
          * use.
          */
         NonlinearDependence::ModelDependence model_dependence;
+
+        static std::string model_name;
     };
 
 

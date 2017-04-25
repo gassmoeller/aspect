@@ -135,6 +135,7 @@ namespace aspect
     {
       Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                                       "Material model::Model name");
+      plugin->model_name = model_name;
       return plugin;
     }
 
