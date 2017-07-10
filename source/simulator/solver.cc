@@ -109,15 +109,15 @@ namespace aspect
       system_matrix.block(1,0).vmult(dst.block(1), src.block(0));
       system_matrix.block(1,1).vmult_add(dst.block(1), src.block(1));
 
-            if (false && nullspace.size()>0)
-              {
-                // subtract nullspace vector from destination
-                const double len = nullspace.block(1).l2_norm();
-                const double s = dst.block(1)*nullspace.block(1)/(len*len);
-                dst.block(1).add(-s, nullspace.block(1));
-                std::cout << "adjusted nullspace in StokesBlock by " << s << " " << dst.block(1)*nullspace.block(1)
-                          << " len=" << len << std::endl;
-              }
+      if (false && nullspace.size()>0)
+        {
+          // subtract nullspace vector from destination
+          const double len = nullspace.block(1).l2_norm();
+          const double s = dst.block(1)*nullspace.block(1)/(len*len);
+          dst.block(1).add(-s, nullspace.block(1));
+          std::cout << "adjusted nullspace in StokesBlock by " << s << " " << dst.block(1)*nullspace.block(1)
+                    << " len=" << len << std::endl;
+        }
 
     }
 
@@ -216,7 +216,8 @@ namespace aspect
                                   const bool                                  do_solve_A,
                                   const bool                                  use_real_schur_complement,
                                   const double                                A_block_tolerance,
-                                  const double                                S_block_tolerance);
+                                  const double                                S_block_tolerance,
+                                  TimerOutput                                *computing_timer);
 
         /**
          * Matrix vector product with this preconditioner object.
@@ -247,8 +248,9 @@ namespace aspect
         const double A_block_tolerance;
         const double S_block_tolerance;
 
-    public:
+      public:
         LinearAlgebra::BlockVector nullspace;
+        mutable TimerOutput                 *computing_timer;
     };
 
 
@@ -261,7 +263,8 @@ namespace aspect
                               const bool                                  do_solve_A,
                               const bool                                  use_real_schur_complement,
                               const double                                A_block_tolerance,
-                              const double                                S_block_tolerance)
+                              const double                                S_block_tolerance,
+                              TimerOutput                                *computing_timer)
       :
       stokes_matrix     (S),
       stokes_preconditioner_matrix     (Spre),
@@ -272,7 +275,8 @@ namespace aspect
       n_iterations_A_(0),
       n_iterations_S_(0),
       A_block_tolerance(A_block_tolerance),
-      S_block_tolerance(S_block_tolerance)
+      S_block_tolerance(S_block_tolerance),
+      computing_timer(computing_timer)
     {}
 
     template <class PreconditionerA, class PreconditionerMp>
@@ -293,19 +297,19 @@ namespace aspect
     template <class Preconditioner>
     class SchurComplement : public Subscriptor
     {
-    public:
-      SchurComplement (const LinearAlgebra::BlockSparseMatrix &system_matrix,
-                       const Preconditioner &A_inverse);
+      public:
+        SchurComplement (const LinearAlgebra::BlockSparseMatrix &system_matrix,
+                         const Preconditioner &A_inverse);
 
-      void vmult (LinearAlgebra::Vector &dst,
-                  const LinearAlgebra::Vector &src) const;
+        void vmult (LinearAlgebra::Vector &dst,
+                    const LinearAlgebra::Vector &src) const;
 
-    private:
-      const LinearAlgebra::BlockSparseMatrix &system_matrix;
-                             const Preconditioner &A_inverse;
-    public:
-                             mutable LinearAlgebra::Vector tmp1, tmp2;
-                             LinearAlgebra::Vector nullspace;
+      private:
+        const LinearAlgebra::BlockSparseMatrix &system_matrix;
+        const Preconditioner &A_inverse;
+      public:
+        mutable LinearAlgebra::Vector tmp1, tmp2;
+        LinearAlgebra::Vector nullspace;
 
     };
 
@@ -314,7 +318,7 @@ namespace aspect
     template <class Preconditioner>
     SchurComplement<Preconditioner>::
     SchurComplement( const LinearAlgebra::BlockSparseMatrix &system_matrix,
-    const Preconditioner &A_inverse)
+                     const Preconditioner &A_inverse)
       :
       system_matrix (system_matrix),
       A_inverse (A_inverse)
@@ -331,7 +335,7 @@ namespace aspect
       system_matrix.block(1,0).vmult (dst, tmp2);
       dst *= -1.0;
       system_matrix.block(1,1).vmult_add (dst, src);
-  //    std::cout << "schur end " << dst*nullspace << std::endl;
+      //    std::cout << "schur end " << dst*nullspace << std::endl;
       if (false && nullspace.size()>0)
         {
           // subtract nullspace vector from destination
@@ -354,6 +358,8 @@ namespace aspect
     vmult (LinearAlgebra::BlockVector       &dst,
            const LinearAlgebra::BlockVector &src) const
     {
+      computing_timer->enter_section ("   Apply Preconditioner");
+
       LinearAlgebra::Vector utmp(src.block(0));
 
       // first solve with the bottom left block, which we have built
@@ -361,6 +367,8 @@ namespace aspect
       if (do_solve_S)
         {
           dst.block(1) = 0.0;
+          computing_timer->enter_section ("   Solve expensive S block");
+
           SolverControl solver_control(10000, src.block(1).l2_norm() * S_block_tolerance, true, true);
 
           SchurComplement<PreconditionerA> schur_complement (stokes_matrix, a_preconditioner);
@@ -387,63 +395,69 @@ namespace aspect
 //           SolverFGMRES<LinearAlgebra::Vector> solver(solver_control
 //           ,
 //                                                     SolverFGMRES<LinearAlgebra::Vector>::AdditionalData(1000,true));
-           SolverBicgstab<LinearAlgebra::Vector> solver(solver_control);
-           solver.solve(schur_complement,
-                        dst.block(1),
-                        rhs2,
-                      //  PreconditionIdentity()
-                mp_preconditioner
-                 );
-           n_iterations_S_ += solver_control.last_step();
-           std::cout << "SCHUR: " << solver_control.last_step() << std::endl;
+          SolverBicgstab<LinearAlgebra::Vector> solver(solver_control);
+          solver.solve(schur_complement,
+                       dst.block(1),
+                       rhs2,
+                       //  PreconditionIdentity()
+                       mp_preconditioner
+                      );
+          n_iterations_S_ += solver_control.last_step();
+          std::cout << "SCHUR: " << solver_control.last_step() << std::endl;
+
+          computing_timer->exit_section();
 
           //dst.block(1) *= -1.0; // do not do this
         }
       else
-      {
-        SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
+        {
+          SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
 
 #ifdef ASPECT_USE_PETSC
-        SolverCG<LinearAlgebra::Vector> solver(solver_control);
+          SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
-        TrilinosWrappers::SolverCG solver(solver_control);
+          TrilinosWrappers::SolverCG solver(solver_control);
 #endif
-        // Trilinos reports a breakdown
-        // in case src=dst=0, even
-        // though it should return
-        // convergence without
-        // iterating. We simply skip
-        // solving in this case.
-        if (src.block(1).l2_norm() > 1e-50)
-          {
-            try
-              {
-                dst.block(1) = 0.0;
-                solver.solve(stokes_preconditioner_matrix.block(1,1),
-                             dst.block(1), src.block(1),
-                             mp_preconditioner);
-                n_iterations_S_ += solver_control.last_step();
-              }
-            // if the solver fails, report the error from processor 0 with some additional
-            // information about its location, and throw a quiet exception on all other
-            // processors
-            catch (const std::exception &exc)
-              {
-                if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
-                  AssertThrow (false,
-                               ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurPreconditioner::vmult "
-                                                       "did not converge to a tolerance of "
-                                                       + Utilities::to_string(solver_control.tolerance()) +
-                                                       ". It reported the following error:\n\n")
-                                           +
-                                           exc.what()))
-                  else
-                    throw QuietException();
-              }
-          }
+          // Trilinos reports a breakdown
+          // in case src=dst=0, even
+          // though it should return
+          // convergence without
+          // iterating. We simply skip
+          // solving in this case.
+          if (src.block(1).l2_norm() > 1e-50)
+            {
+              try
+                {
+                  dst.block(1) = 0.0;
 
-        dst.block(1) *= -1.0;
-      }
+                  computing_timer->enter_section ("   Solve cheap S block");
+                  solver.solve(stokes_preconditioner_matrix.block(1,1),
+                               dst.block(1), src.block(1),
+                               mp_preconditioner);
+                  computing_timer->exit_section();
+
+                  n_iterations_S_ += solver_control.last_step();
+                }
+              // if the solver fails, report the error from processor 0 with some additional
+              // information about its location, and throw a quiet exception on all other
+              // processors
+              catch (const std::exception &exc)
+                {
+                  if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
+                    AssertThrow (false,
+                                 ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurPreconditioner::vmult "
+                                                         "did not converge to a tolerance of "
+                                                         + Utilities::to_string(solver_control.tolerance()) +
+                                                         ". It reported the following error:\n\n")
+                                             +
+                                             exc.what()))
+                    else
+                      throw QuietException();
+                }
+            }
+
+          dst.block(1) *= -1.0;
+        }
 
       // apply the top right block
       {
@@ -466,8 +480,12 @@ namespace aspect
           try
             {
               dst.block(0) = 0.0;
+
+              computing_timer->enter_section ("   Solve expensive A block");
               solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
                            a_preconditioner);
+              computing_timer->exit_section();
+
               n_iterations_A_ += solver_control.last_step();
             }
           // if the solver fails, report the error from processor 0 with some additional
@@ -489,20 +507,24 @@ namespace aspect
         }
       else
         {
+          computing_timer->enter_section ("   Solve cheap A block");
           a_preconditioner.vmult (dst.block(0), utmp);
+          computing_timer->exit_section();
+
           n_iterations_A_ += 1;
         }
 
-            if (false && nullspace.size()>0)
-              {
-                // subtract nullspace vector from destination
-                const double len = nullspace.l2_norm();
-                const double s = dst*nullspace/(len*len);
-                dst.add(-s, nullspace);
-                std::cout << "adjusted nullspace in prec by " << s << " " << dst*nullspace
-                          << " len=" << len << std::endl;
-              }
+      if (false && nullspace.size()>0)
+        {
+          // subtract nullspace vector from destination
+          const double len = nullspace.l2_norm();
+          const double s = dst*nullspace/(len*len);
+          dst.add(-s, nullspace);
+          std::cout << "adjusted nullspace in prec by " << s << " " << dst *nullspace
+                    << " len=" << len << std::endl;
+        }
 
+      computing_timer->exit_section();
     }
 
   }
@@ -852,21 +874,23 @@ namespace aspect
 
         // create a cheap preconditioner that consists of only a single V-cycle
         internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
-              preconditioner_cheap (system_matrix, system_preconditioner_matrix,
-                                    *Mp_preconditioner, *Amg_preconditioner,
-                                    false, parameters.solve_real_schur_complement,
-                                    parameters.linear_solver_A_block_tolerance,
-                                    parameters.linear_solver_S_block_tolerance);
+                 LinearAlgebra::PreconditionILU>
+                 preconditioner_cheap (system_matrix, system_preconditioner_matrix,
+                                       *Mp_preconditioner, *Amg_preconditioner,
+                                       false, parameters.solve_real_schur_complement,
+                                       parameters.linear_solver_A_block_tolerance,
+                                       parameters.linear_solver_S_block_tolerance,
+                                       &computing_timer);
 
         // create an expensive preconditioner that solves for the A block with CG
         internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
-              LinearAlgebra::PreconditionILU>
-              preconditioner_expensive (system_matrix, system_preconditioner_matrix,
-                                        *Mp_preconditioner, *Amg_preconditioner,
-                                        true, parameters.solve_real_schur_complement,
-                                        parameters.linear_solver_A_block_tolerance,
-                                        parameters.linear_solver_S_block_tolerance);
+                 LinearAlgebra::PreconditionILU>
+                 preconditioner_expensive (system_matrix, system_preconditioner_matrix,
+                                           *Mp_preconditioner, *Amg_preconditioner,
+                                           true, parameters.solve_real_schur_complement,
+                                           parameters.linear_solver_A_block_tolerance,
+                                           parameters.linear_solver_S_block_tolerance,
+                                           &computing_timer);
 
         // step 1a: try if the simple and fast solver
         // succeeds in n_cheap_stokes_solver_steps steps or less.
@@ -883,20 +907,20 @@ namespace aspect
                 cell = dof_handler.begin_active(),
                 endc = dof_handler.end();
                 if (parameters.include_melt_transport)
-                for (; cell != endc; ++cell)
-                  if (cell->is_locally_owned())
-                    {
-                      cell->get_dof_indices (local_dof_indices);
-                      for (unsigned int j=0; j < finite_element.dofs_per_cell; ++j)
-                        {
-                          const unsigned int comp = finite_element.system_to_component_index(j).first;
-                          if (comp == introspection.variable("fluid pressure").first_component_index
-                              &&
-                              !current_constraints.is_constrained(local_dof_indices[j])
-                          )
-                            preconditioner_cheap.nullspace(local_dof_indices[j]) = 1.0;
-                        }
-                    }
+                  for (; cell != endc; ++cell)
+                    if (cell->is_locally_owned())
+                      {
+                        cell->get_dof_indices (local_dof_indices);
+                        for (unsigned int j=0; j < finite_element.dofs_per_cell; ++j)
+                          {
+                            const unsigned int comp = finite_element.system_to_component_index(j).first;
+                            if (comp == introspection.variable("fluid pressure").first_component_index
+                                &&
+                                !current_constraints.is_constrained(local_dof_indices[j])
+                               )
+                              preconditioner_cheap.nullspace(local_dof_indices[j]) = 1.0;
+                          }
+                      }
                 preconditioner_cheap.nullspace.compress(VectorOperation::insert);
 
                 //preconditioner.nullspace = 0;
@@ -923,7 +947,7 @@ namespace aspect
         // the simple solver failed and attempt solving
         // it in n_expensive_stokes_solver_steps steps or less.
         catch (SolverControl::NoConvergence)
-        {
+          {
             if (true)
               {
                 pcout << "attaching nullspace to preconditioner" << std::endl;
@@ -935,20 +959,20 @@ namespace aspect
                 cell = dof_handler.begin_active(),
                 endc = dof_handler.end();
                 if (parameters.include_melt_transport)
-                for (; cell != endc; ++cell)
-                  if (cell->is_locally_owned())
-                    {
-                      cell->get_dof_indices (local_dof_indices);
-                      for (unsigned int j=0; j < finite_element.dofs_per_cell; ++j)
-                        {
-                          const unsigned int comp = finite_element.system_to_component_index(j).first;
-                          if (comp == introspection.variable("fluid pressure").first_component_index
-                              &&
-                              !current_constraints.is_constrained(local_dof_indices[j])
-                          )
-                            preconditioner_expensive.nullspace(local_dof_indices[j]) = 1.0;
-                        }
-                    }
+                  for (; cell != endc; ++cell)
+                    if (cell->is_locally_owned())
+                      {
+                        cell->get_dof_indices (local_dof_indices);
+                        for (unsigned int j=0; j < finite_element.dofs_per_cell; ++j)
+                          {
+                            const unsigned int comp = finite_element.system_to_component_index(j).first;
+                            if (comp == introspection.variable("fluid pressure").first_component_index
+                                &&
+                                !current_constraints.is_constrained(local_dof_indices[j])
+                               )
+                              preconditioner_expensive.nullspace(local_dof_indices[j]) = 1.0;
+                          }
+                      }
                 preconditioner_expensive.nullspace.compress(VectorOperation::insert);
 
                 //preconditioner.nullspace = 0;
@@ -962,7 +986,7 @@ namespace aspect
                 const double s = distributed_stokes_rhs.block(1)*stokes_block.nullspace.block(1)/(len*len);
                 distributed_stokes_rhs.block(1).add(-s, stokes_block.nullspace.block(1));
                 std::cout << "adjusted rhs nullspace by " << s << " " << distributed_stokes_rhs.block(1)*stokes_block.nullspace.block(1)
-                                                        << " len=" << len << std::endl;
+                          << " len=" << len << std::endl;
 
               }
 
@@ -1003,7 +1027,6 @@ namespace aspect
 
                         f << "\n";
                       }
-
 
                     for (unsigned int i=0; i<solver_control_expensive.get_history_data().size(); ++i)
                       f << i << " " << solver_control_expensive.get_history_data()[i] << "\n";

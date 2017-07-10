@@ -283,9 +283,9 @@ namespace aspect
                        "this block preconditioner for the Stokes equation can be found in "
                        "\\cite{KHB12}.");
 
-        prm.declare_entry ("Do solve real Schur complement", "false",
-                           Patterns::Bool(),
-                           "do solve the real schur complement within the stokes solve.");
+    prm.declare_entry ("Do solve real Schur complement", "false",
+                       Patterns::Bool(),
+                       "do solve the real schur complement within the stokes solve.");
 
     prm.declare_entry ("Number of cheap Stokes solver steps", "200",
                        Patterns::Integer(0),
