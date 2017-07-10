@@ -214,7 +214,7 @@ namespace aspect
                                   const PreconditionerMp                     &Mppreconditioner,
                                   const PreconditionerA                      &Apreconditioner,
                                   const bool                                  do_solve_A,
-                                  const bool use_real_schur_complement,
+                                  const bool                                  use_real_schur_complement,
                                   const double                                A_block_tolerance,
                                   const double                                S_block_tolerance);
 
@@ -259,7 +259,7 @@ namespace aspect
                               const PreconditionerMp                     &Mppreconditioner,
                               const PreconditionerA                      &Apreconditioner,
                               const bool                                  do_solve_A,
-                              const bool use_real_schur_complement,
+                              const bool                                  use_real_schur_complement,
                               const double                                A_block_tolerance,
                               const double                                S_block_tolerance)
       :
@@ -268,7 +268,7 @@ namespace aspect
       mp_preconditioner (Mppreconditioner),
       a_preconditioner  (Apreconditioner),
       do_solve_A        (do_solve_A),
-      do_solve_S (use_real_schur_complement),
+      do_solve_S        (use_real_schur_complement),
       n_iterations_A_(0),
       n_iterations_S_(0),
       A_block_tolerance(A_block_tolerance),
@@ -376,10 +376,13 @@ namespace aspect
             {
               // subtract nullspace vector from destination
               const double len = nullspace.block(1).l2_norm();
-              const double s = rhs2*nullspace.block(1)/(len*len);
-              rhs2.add(-s, nullspace.block(1));
-//              std::cout << "adjusted nullspace in prec by " << s << " " << rhs2*nullspace.block(1)
-//                        << " len=" << len << std::endl;
+              if (len != 0.0)
+                {
+                  const double s = rhs2*nullspace.block(1)/(len*len);
+                  rhs2.add(-s, nullspace.block(1));
+                  //              std::cout << "adjusted nullspace in prec by " << s << " " << rhs2*nullspace.block(1)
+                  //                        << " len=" << len << std::endl;
+                }
             }
 //           SolverFGMRES<LinearAlgebra::Vector> solver(solver_control
 //           ,
@@ -852,7 +855,7 @@ namespace aspect
               LinearAlgebra::PreconditionILU>
               preconditioner_cheap (system_matrix, system_preconditioner_matrix,
                                     *Mp_preconditioner, *Amg_preconditioner,
-                                    false, false,
+                                    false, parameters.solve_real_schur_complement,
                                     parameters.linear_solver_A_block_tolerance,
                                     parameters.linear_solver_S_block_tolerance);
 
@@ -869,6 +872,37 @@ namespace aspect
         // succeeds in n_cheap_stokes_solver_steps steps or less.
         try
           {
+            if (true)
+              {
+                pcout << "attaching nullspace to preconditioner" << std::endl;
+                preconditioner_cheap.nullspace.reinit(introspection.index_sets.stokes_partitioning);
+
+                preconditioner_cheap.nullspace = 0;
+                std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+                typename DoFHandler<dim>::active_cell_iterator
+                cell = dof_handler.begin_active(),
+                endc = dof_handler.end();
+                if (parameters.include_melt_transport)
+                for (; cell != endc; ++cell)
+                  if (cell->is_locally_owned())
+                    {
+                      cell->get_dof_indices (local_dof_indices);
+                      for (unsigned int j=0; j < finite_element.dofs_per_cell; ++j)
+                        {
+                          const unsigned int comp = finite_element.system_to_component_index(j).first;
+                          if (comp == introspection.variable("fluid pressure").first_component_index
+                              &&
+                              !current_constraints.is_constrained(local_dof_indices[j])
+                          )
+                            preconditioner_cheap.nullspace(local_dof_indices[j]) = 1.0;
+                        }
+                    }
+                preconditioner_cheap.nullspace.compress(VectorOperation::insert);
+
+                //preconditioner.nullspace = 0;
+                stokes_block.nullspace = preconditioner_cheap.nullspace;
+              }
+
             // if this cheaper solver is not desired, then simply short-cut
             // the attempt at solving with the cheaper preconditioner
             if (parameters.n_cheap_stokes_solver_steps == 0)
