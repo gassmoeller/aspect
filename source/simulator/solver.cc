@@ -25,6 +25,7 @@
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/solver_gmres.h>
+#include <deal.II/lac/solver_bicgstab.h>
 #include <deal.II/lac/constraint_matrix.h>
 
 #ifdef ASPECT_USE_PETSC
@@ -83,6 +84,9 @@ namespace aspect
                          const LinearAlgebra::BlockVector &b) const;
 
 
+        LinearAlgebra::BlockVector nullspace;
+
+
       private:
 
         /**
@@ -104,6 +108,17 @@ namespace aspect
 
       system_matrix.block(1,0).vmult(dst.block(1), src.block(0));
       system_matrix.block(1,1).vmult_add(dst.block(1), src.block(1));
+
+            if (false && nullspace.size()>0)
+              {
+                // subtract nullspace vector from destination
+                const double len = nullspace.block(1).l2_norm();
+                const double s = dst.block(1)*nullspace.block(1)/(len*len);
+                dst.block(1).add(-s, nullspace.block(1));
+                std::cout << "adjusted nullspace in StokesBlock by " << s << " " << dst.block(1)*nullspace.block(1)
+                          << " len=" << len << std::endl;
+              }
+
     }
 
 
@@ -199,6 +214,7 @@ namespace aspect
                                   const PreconditionerMp                     &Mppreconditioner,
                                   const PreconditionerA                      &Apreconditioner,
                                   const bool                                  do_solve_A,
+                                  const bool use_real_schur_complement,
                                   const double                                A_block_tolerance,
                                   const double                                S_block_tolerance);
 
@@ -225,10 +241,14 @@ namespace aspect
          * or to just apply a single preconditioner step with it.
          **/
         const bool do_solve_A;
+        const bool do_solve_S;
         mutable unsigned int n_iterations_A_;
         mutable unsigned int n_iterations_S_;
         const double A_block_tolerance;
         const double S_block_tolerance;
+
+    public:
+        LinearAlgebra::BlockVector nullspace;
     };
 
 
@@ -239,6 +259,7 @@ namespace aspect
                               const PreconditionerMp                     &Mppreconditioner,
                               const PreconditionerA                      &Apreconditioner,
                               const bool                                  do_solve_A,
+                              const bool use_real_schur_complement,
                               const double                                A_block_tolerance,
                               const double                                S_block_tolerance)
       :
@@ -247,6 +268,7 @@ namespace aspect
       mp_preconditioner (Mppreconditioner),
       a_preconditioner  (Apreconditioner),
       do_solve_A        (do_solve_A),
+      do_solve_S (use_real_schur_complement),
       n_iterations_A_(0),
       n_iterations_S_(0),
       A_block_tolerance(A_block_tolerance),
@@ -268,6 +290,63 @@ namespace aspect
     {
       return n_iterations_S_;
     }
+    template <class Preconditioner>
+    class SchurComplement : public Subscriptor
+    {
+    public:
+      SchurComplement (const LinearAlgebra::BlockSparseMatrix &system_matrix,
+                       const Preconditioner &A_inverse);
+
+      void vmult (LinearAlgebra::Vector &dst,
+                  const LinearAlgebra::Vector &src) const;
+
+    private:
+      const LinearAlgebra::BlockSparseMatrix &system_matrix;
+                             const Preconditioner &A_inverse;
+    public:
+                             mutable LinearAlgebra::Vector tmp1, tmp2;
+                             LinearAlgebra::Vector nullspace;
+
+    };
+
+
+
+    template <class Preconditioner>
+    SchurComplement<Preconditioner>::
+    SchurComplement( const LinearAlgebra::BlockSparseMatrix &system_matrix,
+    const Preconditioner &A_inverse)
+      :
+      system_matrix (system_matrix),
+      A_inverse (A_inverse)
+    {}
+
+
+    template <class Preconditioner>
+    void SchurComplement<Preconditioner>::vmult (LinearAlgebra::Vector &dst,
+                                                 const LinearAlgebra::Vector &src) const
+    {
+//      std::cout << "schur begin " << src*nullspace << std::endl;
+      system_matrix.block(0,1).vmult (tmp1, src);
+      A_inverse.vmult (tmp2, tmp1);
+      system_matrix.block(1,0).vmult (dst, tmp2);
+      dst *= -1.0;
+      system_matrix.block(1,1).vmult_add (dst, src);
+  //    std::cout << "schur end " << dst*nullspace << std::endl;
+      if (false && nullspace.size()>0)
+        {
+          // subtract nullspace vector from destination
+          const double len = nullspace.l2_norm();
+          const double s = dst*nullspace/(len*len);
+          dst.add(-s, nullspace);
+//          std::cout << "adjusted nullspace in SchurComplement by " << s << " " << dst*nullspace
+//                    << " len=" << len << std::endl;
+
+          // r = dst*ns - dst*ns/l/l * ns*ns
+        }
+
+
+    }
+
 
     template <class PreconditionerA, class PreconditionerMp>
     void
@@ -279,6 +358,45 @@ namespace aspect
 
       // first solve with the bottom left block, which we have built
       // as a mass matrix with the inverse of the viscosity
+      if (do_solve_S)
+        {
+          dst.block(1) = 0.0;
+          SolverControl solver_control(10000, src.block(1).l2_norm() * S_block_tolerance, true, true);
+
+          SchurComplement<PreconditionerA> schur_complement (stokes_matrix, a_preconditioner);
+          schur_complement.tmp1 = src.block(0);
+          schur_complement.tmp2 = schur_complement.tmp1;
+          schur_complement.nullspace = this->nullspace.block(1);
+
+//          std::cout << "prec SCHUR rhs: " << src.block(1).l2_norm()
+//                    << " " << src.block(1)*schur_complement.nullspace << std::endl;
+
+          LinearAlgebra::Vector rhs2 = src.block(1);
+          if (true && nullspace.size()>0)
+            {
+              // subtract nullspace vector from destination
+              const double len = nullspace.block(1).l2_norm();
+              const double s = rhs2*nullspace.block(1)/(len*len);
+              rhs2.add(-s, nullspace.block(1));
+//              std::cout << "adjusted nullspace in prec by " << s << " " << rhs2*nullspace.block(1)
+//                        << " len=" << len << std::endl;
+            }
+//           SolverFGMRES<LinearAlgebra::Vector> solver(solver_control
+//           ,
+//                                                     SolverFGMRES<LinearAlgebra::Vector>::AdditionalData(1000,true));
+           SolverBicgstab<LinearAlgebra::Vector> solver(solver_control);
+           solver.solve(schur_complement,
+                        dst.block(1),
+                        rhs2,
+                      //  PreconditionIdentity()
+                mp_preconditioner
+                 );
+           n_iterations_S_ += solver_control.last_step();
+           std::cout << "SCHUR: " << solver_control.last_step() << std::endl;
+
+          //dst.block(1) *= -1.0; // do not do this
+        }
+      else
       {
         SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
 
@@ -371,6 +489,17 @@ namespace aspect
           a_preconditioner.vmult (dst.block(0), utmp);
           n_iterations_A_ += 1;
         }
+
+            if (false && nullspace.size()>0)
+              {
+                // subtract nullspace vector from destination
+                const double len = nullspace.l2_norm();
+                const double s = dst*nullspace/(len*len);
+                dst.add(-s, nullspace);
+                std::cout << "adjusted nullspace in prec by " << s << " " << dst*nullspace
+                          << " len=" << len << std::endl;
+              }
+
     }
 
   }
@@ -649,7 +778,7 @@ namespace aspect
         Assert(!parameters.include_melt_transport
                || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
 
-        const internal::StokesBlock stokes_block(system_matrix);
+        internal::StokesBlock stokes_block(system_matrix);
 
         // create a completely distributed vector that will be used for
         // the scaled and denormalized solution and later used as a
@@ -719,20 +848,20 @@ namespace aspect
         solver_control_expensive.enable_history_data();
 
         // create a cheap preconditioner that consists of only a single V-cycle
-        const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
+        internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               LinearAlgebra::PreconditionILU>
               preconditioner_cheap (system_matrix, system_preconditioner_matrix,
                                     *Mp_preconditioner, *Amg_preconditioner,
-                                    false,
+                                    false, false,
                                     parameters.linear_solver_A_block_tolerance,
                                     parameters.linear_solver_S_block_tolerance);
 
         // create an expensive preconditioner that solves for the A block with CG
-        const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
+        internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               LinearAlgebra::PreconditionILU>
               preconditioner_expensive (system_matrix, system_preconditioner_matrix,
                                         *Mp_preconditioner, *Amg_preconditioner,
-                                        true,
+                                        true, parameters.solve_real_schur_complement,
                                         parameters.linear_solver_A_block_tolerance,
                                         parameters.linear_solver_S_block_tolerance);
 
@@ -760,7 +889,50 @@ namespace aspect
         // the simple solver failed and attempt solving
         // it in n_expensive_stokes_solver_steps steps or less.
         catch (SolverControl::NoConvergence)
-          {
+        {
+            if (true)
+              {
+                pcout << "attaching nullspace to preconditioner" << std::endl;
+                preconditioner_expensive.nullspace.reinit(introspection.index_sets.stokes_partitioning);
+
+                preconditioner_expensive.nullspace = 0;
+                std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+                typename DoFHandler<dim>::active_cell_iterator
+                cell = dof_handler.begin_active(),
+                endc = dof_handler.end();
+                if (parameters.include_melt_transport)
+                for (; cell != endc; ++cell)
+                  if (cell->is_locally_owned())
+                    {
+                      cell->get_dof_indices (local_dof_indices);
+                      for (unsigned int j=0; j < finite_element.dofs_per_cell; ++j)
+                        {
+                          const unsigned int comp = finite_element.system_to_component_index(j).first;
+                          if (comp == introspection.variable("fluid pressure").first_component_index
+                              &&
+                              !current_constraints.is_constrained(local_dof_indices[j])
+                          )
+                            preconditioner_expensive.nullspace(local_dof_indices[j]) = 1.0;
+                        }
+                    }
+                preconditioner_expensive.nullspace.compress(VectorOperation::insert);
+
+                //preconditioner.nullspace = 0;
+                stokes_block.nullspace = preconditioner_expensive.nullspace;
+              }
+
+            if (false && stokes_block.nullspace.size()>0)
+              {
+                // subtract nullspace vector from rhs
+                const double len = stokes_block.nullspace.block(1).l2_norm();
+                const double s = distributed_stokes_rhs.block(1)*stokes_block.nullspace.block(1)/(len*len);
+                distributed_stokes_rhs.block(1).add(-s, stokes_block.nullspace.block(1));
+                std::cout << "adjusted rhs nullspace by " << s << " " << distributed_stokes_rhs.block(1)*stokes_block.nullspace.block(1)
+                                                        << " len=" << len << std::endl;
+
+              }
+
+
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_expensive, mem,
                    SolverFGMRES<LinearAlgebra::BlockVector>::

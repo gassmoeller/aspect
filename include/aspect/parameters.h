@@ -322,6 +322,7 @@ namespace aspect
     unsigned int                   AMG_smoother_sweeps;
     double                         AMG_aggregation_threshold;
     bool                           AMG_output_details;
+    bool                           solve_real_schur_complement;
     unsigned int                   max_nonlinear_iterations;
     unsigned int                   max_nonlinear_iterations_in_prerefinement;
     unsigned int                   n_cheap_stokes_solver_steps;

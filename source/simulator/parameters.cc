@@ -283,6 +283,10 @@ namespace aspect
                        "this block preconditioner for the Stokes equation can be found in "
                        "\\cite{KHB12}.");
 
+        prm.declare_entry ("Do solve real Schur complement", "false",
+                           Patterns::Bool(),
+                           "do solve the real schur complement within the stokes solve.");
+
     prm.declare_entry ("Number of cheap Stokes solver steps", "200",
                        Patterns::Integer(0),
                        "As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, "
@@ -1079,6 +1083,7 @@ namespace aspect
     linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
     linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
     linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
+    solve_real_schur_complement     = prm.get_bool("Do solve real Schur complement");
     n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
     n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
     temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
