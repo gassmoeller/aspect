@@ -566,6 +566,12 @@ namespace aspect
        */
       void resume_from_snapshot();
 
+
+      void serialize_solution();
+      void deserialize_solution();
+
+
+
       /**
        * Save a number of variables using BOOST serialization mechanism.
        *
