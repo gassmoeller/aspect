@@ -152,15 +152,6 @@ namespace aspect
         connect_to_signals(aspect::SimulatorSignals<dim> &signals);
 
         /**
-         * Called by listener functions from Triangulation for every cell
-         * before a refinement step. A weight is attached to every cell
-         * depending on the number of contained particles.
-         */
-        unsigned int
-        cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                    const typename parallel::distributed::Triangulation<dim>::CellStatus status);
-
-        /**
          * Update the particle properties if necessary.
          */
         void update_particles();
@@ -206,18 +197,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
-        struct ParticleLoadBalancing
-        {
-          enum Kind
-          {
-            no_balancing = 0x0,
-            remove_particles = 0x1,
-            add_particles = 0x2,
-            repartition = 0x4,
-            remove_and_add_particles = remove_particles | add_particles
-          };
-        };
-
         /**
          * Generation scheme for creating particles in this world
          */
@@ -252,48 +231,6 @@ namespace aspect
         std_cxx11::unique_ptr<ParticleHandler<dim> > particle_handler;
 
         /**
-         * Strategy for particle load balancing.
-         */
-        typename ParticleLoadBalancing::Kind particle_load_balancing;
-
-        /**
-         * Lower limit for particle number per cell. This limit is
-         * useful for adaptive meshes to prevent fine cells from being empty
-         * of particles. It will be checked and enforced after mesh
-         * refinement and after particle movement. If there are
-         * n_number_of_particles < min_particles_per_cell
-         * particles in one cell then
-         * min_particles_per_cell - n_number_of_particles particles are
-         * generated and randomly placed in this cell. If the particles carry
-         * properties the individual property plugins control how the
-         * properties of the new particles are initialized.
-         */
-        unsigned int min_particles_per_cell;
-
-        /**
-         * Upper limit for particle number per cell. This limit is
-         * useful for adaptive meshes to prevent coarse cells from slowing down
-         * the whole model. It will be checked and enforced after mesh
-         * refinement, after MPI transfer of particles and after particle
-         * movement. If there are
-         * n_number_of_particles > max_particles_per_cell
-         * particles in one cell then
-         * n_number_of_particles - max_particles_per_cell
-         * particles in this cell are randomly chosen and destroyed.
-         */
-        unsigned int max_particles_per_cell;
-
-        /**
-         * The computational cost of a single particle. This is an input
-         * parameter that is set during initialization and is only used if the
-         * particle load balancing strategy 'repartition' is used. This value
-         * determines how costly the computation of a single particle is compared
-         * to the computation of a whole cell, which is arbitrarily defined
-         * to represent a cost of 1000.
-         */
-        unsigned int particle_weight;
-
-        /**
          * Some particle interpolation algorithms require knowledge
          * about particles in neighboring cells. To allow this,
          * particles in ghost cells need to be exchanged between the
@@ -313,8 +250,11 @@ namespace aspect
 
         /**
          * Apply the bounds for the maximum and minimum number of particles
-         * per cell, if the appropriate @p particle_load_balancing strategy
-         * has been selected.
+         * per cell, if the appropriate particle load balancing strategy
+         * has been selected. The core of this work is done by the
+         * ParticleHandler::apply_particle_per_cell_bounds function, which is
+         * called by this function. Afterwards we still need to correctly
+         * initialize the created particles.
          */
         void
         apply_particle_per_cell_bounds();

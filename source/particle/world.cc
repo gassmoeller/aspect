@@ -47,12 +47,6 @@ namespace aspect
     void
     World<dim>::initialize()
     {
-      if (particle_load_balancing & ParticleLoadBalancing::repartition)
-        this->get_triangulation().signals.cell_weight.connect(std_cxx11::bind(&aspect::Particle::World<dim>::cell_weight,
-                                                                              std_cxx11::ref(*this),
-                                                                              std_cxx11::_1,
-                                                                              std_cxx11::_2));
-
       // Create a particle handler that stores the future particles.
       // If we restarted from a checkpoint we will fill this particle handler
       // later with its serialized variables and stored particles
@@ -180,154 +174,29 @@ namespace aspect
     void
     World<dim>::apply_particle_per_cell_bounds()
     {
-      // If any load balancing technique is selected that creates/destroys particles
-      if (particle_load_balancing & ParticleLoadBalancing::remove_and_add_particles)
+      std::vector<typename ParticleHandler<dim>::particle_iterator> created_particles =
+          particle_handler->apply_particle_per_cell_bounds();
+
+      // If any particles were created, initialize them
+      for (unsigned int i = 0; i < created_particles.size(); ++i)
         {
-          // First do some preparation for particle generation in poorly
-          // populated areas. For this we need to know which particle ids to
-          // generate so that they are globally unique.
-          // Ensure this by communicating the number of particles that every
-          // process is going to generate.
-          types::particle_index local_next_particle_index = particle_handler->next_free_particle_index;
-          if (particle_load_balancing & ParticleLoadBalancing::add_particles)
-            {
-              types::particle_index particles_to_add_locally = 0;
+          std::pair<aspect::Particle::types::LevelInd,Particle<dim> > new_particle = generator->generate_particle(created_particles[i]->get_surrounding_cell(),
+              local_next_particle_index);
 
-              // Loop over all cells and determine the number of particles to generate
-              typename DoFHandler<dim>::active_cell_iterator
-              cell = this->get_dof_handler().begin_active(),
-              endc = this->get_dof_handler().end();
+          created_particles[i]->set_location = new_particle->get_location();
+          created_particles[i]->set_reference_location = new_particle->get_reference_location();
 
-              for (; cell!=endc; ++cell)
-                if (cell->is_locally_owned())
-                  {
-                    const unsigned int particles_in_cell = particle_handler->n_particles_in_cell(cell);
+          // WARNING: There might be uninitialized particles in the particle handler!
+          const std::vector<double> particle_properties =
+              property_manager->initialize_late_particle(created_particles[i]->get_location(),
+                  *particle_handler,
+                  *interpolator,
+                  created_particles[i]->get_surrounding_cell());
 
-                    if (particles_in_cell < min_particles_per_cell)
-                      particles_to_add_locally += static_cast<types::particle_index> (min_particles_per_cell - particles_in_cell);
-                  }
-
-              // Determine the starting particle index of this process, which
-              // is the highest currently existing particle index plus the sum
-              // of the number of newly generated particles of all
-              // processes with a lower rank.
-
-              types::particle_index local_start_index = 0.0;
-              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, ASPECT_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
-              local_start_index -= particles_to_add_locally;
-              local_next_particle_index += local_start_index;
-
-              const types::particle_index globally_generated_particles =
-                dealii::Utilities::MPI::sum(particles_to_add_locally,this->get_mpi_communicator());
-
-              AssertThrow (particle_handler->next_free_particle_index
-                           <= std::numeric_limits<types::particle_index>::max() - globally_generated_particles,
-                           ExcMessage("There is no free particle index left to generate a new particle id. Please check if your "
-                                      "model generates unusually many new particles (by repeatedly deleting and regenerating particles), or "
-                                      "recompile deal.II with the DEAL_II_WITH_64BIT_INDICES option enabled, to use 64-bit integers for "
-                                      "particle ids."));
-
-              particle_handler->next_free_particle_index += globally_generated_particles;
-            }
-
-          boost::mt19937 random_number_generator;
-
-          // Loop over all cells and generate or remove the particles cell-wise
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-
-          for (; cell!=endc; ++cell)
-            if (cell->is_locally_owned())
-              {
-                const types::LevelInd found_cell(cell->level(),cell->index());
-                const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-
-                // Add particles if necessary
-                if ((particle_load_balancing & ParticleLoadBalancing::add_particles) &&
-                    (n_particles_in_cell < min_particles_per_cell))
-                  {
-                    for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
-                      {
-                        std::pair<aspect::Particle::types::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
-
-                        const std::vector<double> particle_properties =
-                          property_manager->initialize_late_particle(new_particle.second.get_location(),
-                                                                     *particle_handler,
-                                                                     *interpolator,
-                                                                     cell);
-
-                        typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
-                                                                                    typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
-                                                                                        new_particle.first.first,
-                                                                                        new_particle.first.second));
-                        particle->set_properties(particle_properties);
-                      }
-                  }
-
-                // Remove particles if necessary
-                else if ((particle_load_balancing & ParticleLoadBalancing::remove_particles) &&
-                         (n_particles_in_cell > max_particles_per_cell))
-                  {
-                    const boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> particles_in_cell
-                      = particle_handler->particles_in_cell(cell);
-
-                    const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
-
-                    std::set<unsigned int> particle_ids_to_remove;
-                    while (particle_ids_to_remove.size() < n_particles_to_remove)
-                      particle_ids_to_remove.insert(random_number_generator() % n_particles_in_cell);
-
-                    std::list<typename ParticleHandler<dim>::particle_iterator> particles_to_remove;
-
-                    for (std::set<unsigned int>::const_iterator id = particle_ids_to_remove.begin();
-                         id != particle_ids_to_remove.end(); ++id)
-                      {
-                        typename ParticleHandler<dim>::particle_iterator particle_to_remove = particles_in_cell.begin();
-                        std::advance(particle_to_remove,*id);
-
-                        particles_to_remove.push_back(particle_to_remove);
-                      }
-
-                    for (typename std::list<typename ParticleHandler<dim>::particle_iterator>::iterator particle = particles_to_remove.begin();
-                         particle != particles_to_remove.end(); ++particle)
-                      {
-                        particle_handler->remove_particle(*particle);
-                      }
-                  }
-              }
-
-          particle_handler->update_n_global_particles();
+          particle->set_properties(particle_properties);
         }
     }
 
-    template <int dim>
-    unsigned int
-    World<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                            const typename parallel::distributed::Triangulation<dim>::CellStatus status)
-    {
-      if (cell->active() && !cell->is_locally_owned())
-        return 0;
-
-      if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST
-          || status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
-        {
-          const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-          return n_particles_in_cell * particle_weight;
-        }
-      else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
-        {
-          unsigned int n_particles_in_cell = 0;
-
-          for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
-            n_particles_in_cell += particle_handler->n_particles_in_cell(cell->child(child_index));
-
-          return n_particles_in_cell * particle_weight;
-        }
-
-      Assert (false, ExcInternalError());
-      return 0;
-    }
 
 
     template <int dim>

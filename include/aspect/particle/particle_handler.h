@@ -47,6 +47,24 @@ namespace aspect
     template <int> class World;
 
     /**
+     * This enum describes the different particle load balancing techniques
+     * that are currently implemented in the ParticleHandler class. Note that
+     * these techniques are not mutually exclusive and are described in detail
+     * in the particle paper.
+     */
+    struct ParticleLoadBalancing
+    {
+      enum Kind
+      {
+        no_balancing = 0x0,
+        remove_particles = 0x1,
+        add_particles = 0x2,
+        repartition = 0x4,
+        remove_and_add_particles = remove_particles | add_particles
+      };
+    };
+
+    /**
      * This class manages the storage and handling of particles. It provides
      * the data structures necessary to store particles efficiently, accessor
      * functions to iterate over particles and find particles, and algorithms
@@ -82,7 +100,8 @@ namespace aspect
         ParticleHandler(const parallel::distributed::Triangulation<dim,spacedim> &tria,
                         const Mapping<dim,spacedim> &mapping,
                         const MPI_Comm mpi_communicator,
-                        const unsigned int n_properties = 0);
+                        const unsigned int n_properties = 0,
+                        const ParticleLoadBalancing &load_balancing = ParticleLoadBalancing::no_balancing);
 
         /**
          * Destructor.
@@ -97,7 +116,8 @@ namespace aspect
         void initialize(const parallel::distributed::Triangulation<dim,spacedim> &tria,
                         const Mapping<dim,spacedim> &mapping,
                         const MPI_Comm mpi_communicator,
-                        const unsigned int n_properties = 0);
+                        const unsigned int n_properties = 0,
+                        const ParticleLoadBalancing &load_balancing = ParticleLoadBalancing::no_balancing);
 
         /**
          * Clear all particle related data.
@@ -387,6 +407,49 @@ namespace aspect
          */
         unsigned int data_offset;
 
+
+        /**
+         * Strategy for particle load balancing.
+         */
+        typename ParticleLoadBalancing::Kind particle_load_balancing;
+
+        /**
+         * Lower limit for particle number per cell. This limit is
+         * useful for adaptive meshes to prevent fine cells from being empty
+         * of particles. It will be checked and enforced after mesh
+         * refinement and after particle movement. If there are
+         * n_number_of_particles < min_particles_per_cell
+         * particles in one cell then
+         * min_particles_per_cell - n_number_of_particles particles are
+         * generated and randomly placed in this cell. If the particles carry
+         * properties the individual property plugins control how the
+         * properties of the new particles are initialized.
+         */
+        unsigned int min_particles_per_cell;
+
+        /**
+         * Upper limit for particle number per cell. This limit is
+         * useful for adaptive meshes to prevent coarse cells from slowing down
+         * the whole model. It will be checked and enforced after mesh
+         * refinement, after MPI transfer of particles and after particle
+         * movement. If there are
+         * n_number_of_particles > max_particles_per_cell
+         * particles in one cell then
+         * n_number_of_particles - max_particles_per_cell
+         * particles in this cell are randomly chosen and destroyed.
+         */
+        unsigned int max_particles_per_cell;
+
+        /**
+         * The computational cost of a single particle. This is an input
+         * parameter that is set during initialization and is only used if the
+         * particle load balancing strategy 'repartition' is used. This value
+         * determines how costly the computation of a single particle is compared
+         * to the computation of a whole cell, which is arbitrarily defined
+         * to represent a cost of 1000.
+         */
+        unsigned int particle_weight;
+
         /**
          * Calculates the number of particles in the global model domain.
          */
@@ -484,6 +547,27 @@ namespace aspect
          */
         std::map<types::subdomain_id, unsigned int>
         get_subdomain_id_to_neighbor_map() const;
+
+        /**
+         * Called by listener functions from Triangulation for every cell
+         * before a refinement step. A weight is attached to every cell
+         * depending on the number of contained particles.
+         */
+        unsigned int
+        cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                    const typename parallel::distributed::Triangulation<dim>::CellStatus status);
+
+        /**
+         * Apply the bounds for the maximum and minimum number of particles
+         * per cell, if the appropriate @p particle_load_balancing strategy
+         * has been selected. Note that this function does not initialize the
+         * particle position or properties correctly (it does not know how).
+         * Instead it returns iterators to the created particles. Thus it is
+         * the responsibility of the user code to initialize the returned
+         * particles properly.
+         */
+        std::vector<particle_iterator>
+        apply_particle_per_cell_bounds();
 
         /**
          * Make World a friend to access private functions while we transition
