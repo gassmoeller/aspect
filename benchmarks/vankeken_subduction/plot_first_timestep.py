@@ -145,7 +145,7 @@ def process_file( viz_file ):
         for j in range(9,i+1):
             tmp+=a_Tu[j,i]**2
     Twedge=np.sqrt(tmp/78.)
-    if viz_file == viz_files[-1]:
+    if viz_file == viz_files[0]:
         fn = method(coords,vx)
         a_vx = fn(xx,yy)
         fn = method(coords,vy)
@@ -165,10 +165,10 @@ Twedge = np.array([x[7] for x in results])
 Tslab = np.array([x[6] for x in results])
 T1111 = np.array([x[5] for x in results])
 
-a_vx = results[-1][2]
-a_vy = results[-1][3]
-a_T = results[-1][1]
-a_P = results[-1][4]
+a_vx = results[0][2]
+a_vy = results[0][3]
+a_T = results[0][1]
+a_P = results[0][4]
 
 # In[5]:
 
@@ -207,7 +207,7 @@ f.tight_layout()
 f.colorbar(cs3,ax=ax3)
 
 f.savefig('figures/' + output_dir + '_aspect_vankeken_difference.png')
-#f.savefig('figures/' + output_dir + '_aspect_vankeken_difference.eps')
+f.savefig('figures/' + output_dir + '_aspect_vankeken_difference.eps')
 # In[6]:
 
 print('Making the graphical plots')
@@ -227,7 +227,7 @@ f.colorbar(cs2,ax=ax2)
 vlim = np.abs(a_T-273.).max()
 cs3=ax3.pcolormesh(xx/1e3,yy/1e3,a_T-273.,vmin=0.,vmax=vlim,cmap='bwr')
 ax3.set_xlabel('(km)')
-ax3.set_title('Temperature difference')
+ax3.set_title('Temperature')
 f.tight_layout()
 f.colorbar(cs3,ax=ax3)
 
@@ -241,7 +241,7 @@ ax4.streamplot(xx/1e3,yy/1e3,a_vx,a_vy)
 f.colorbar(cs4,ax=ax4)
 
 f.savefig('figures/' + output_dir + '_aspect_solution.png')
-#f.savefig('figures/' + output_dir + '_aspect_solution.eps')
+f.savefig('figures/' + output_dir + '_aspect_solution.eps')
 #plt.show()
 plt.close()
 

@@ -1,5 +1,5 @@
 set Dimension   = 2
-set Output directory = output1
+set Output directory = output_case4
 
 set Maximum number of expensive Stokes solver steps = 10000
 set Linear solver tolerance = 1.0e-7
@@ -7,8 +7,12 @@ set Linear solver tolerance = 1.0e-7
 set Use years in output instead of seconds = true
 
 subsection Discretization
-  set Stokes velocity polynomial degree = 1
-  set Use locally conservative discretization = true
+  set Stokes velocity polynomial degree = 2
+  set Use locally conservative discretization = false
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
 end
 
 set Use direct solver for Stokes system = false
@@ -34,7 +38,7 @@ set End time = 3.4e8
 
 set Resume computation = false
 subsection Termination criteria
-  set End step = 0
+  set End step = 1
   set Termination criteria = end step
   set Checkpoint on termination = true
 end
@@ -85,19 +89,7 @@ subsection Gravity model
 end
 
 subsection Material model
-  set Model name = depth dependent
-  subsection Depth dependent model
-    set Base model = simple
-    set Depth dependence method = Function
-    subsection Viscosity depth function
-      set Coordinate system = cartesian
-      set Variable names = x,y,t
-      set Function constants = H=6.0e5
-      set Function expression = if( x<=(H-y) | y>(H-5.0e4), 1.0e26, 1.0e21)
-    end
-
-  end
-  
+  set Model name = simple
   subsection Simple model
     set Viscosity = 1e21
     set Thermal conductivity = 3.0
@@ -112,22 +104,11 @@ subsection Mesh refinement
   set Initial adaptive refinement = 0
   set Time steps between mesh refinement = 50
   set Run postprocessors on initial refinement = true
-  set Strategy = thermal energy density, minimum refinement function
-  set Additional refinement times = 2.0e8, 2.2e8, 2.4e8, 2.6e8, 2.8e8, 3.0e8, 3.2e8
-
-  subsection Minimum refinement function
-     set Coordinate system = cartesian
-     set Variable names = x, y
-     set Function constants = H=6.0e5, pad=2.0e4
-     set Function expression = if( (x>=(H-y-pad) & x<=(H-y+pad) & y>=(H-3.5e5)) | \
-     	 	  	       (y<=(5.5e5+pad) & y>=(5.5e5-pad)), 7, 0 )
-  end
 end
 
 # Turn prescribed velocities and pressure on
 set Prescribe internal velocities = true
-set Prescribe internal pressure  = true
-
+set Prescribe internal pressure  =  true
 
 subsection Prescribed fields
   set Use x velocity indicator for pressure indicator = true
@@ -138,7 +119,7 @@ subsection Prescribed fields
    # (last one only used if dimension = 3)
    # 1 if velocity should be prescribed, 0 otherwise
 
-    set Function constants = pi=3.14159, H=6.0e5, W=6.6e5, eps=1.0
+    set Function constants = pi=3.14159, H=6.0e5, W=6.6e5
     set Function expression =  if( x<=(H-y) | (  y>=5.5e5  ), 1, 0); \
                                if( x<=(H-y) | (  y>=5.5e5  ), 1, 0)
 
