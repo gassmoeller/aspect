@@ -488,7 +488,7 @@ namespace aspect
         for (; it!=end_particle; ++it)
           {
             // The cell the particle is in
-            Point<spacedim> current_reference_position;
+            Point<dim> current_reference_position;
             bool found_cell = false;
 
             // Check if the particle is in one of the old cell's neighbors
@@ -520,7 +520,7 @@ namespace aspect
               {
                 try
                   {
-                    typename std::set<typename Triangulation<dim>::active_cell_iterator>::const_iterator cell = vertex_to_cells[closest_vertex_index].begin();
+                    typename std::set<typename Triangulation<dim,spacedim>::active_cell_iterator>::const_iterator cell = vertex_to_cells[closest_vertex_index].begin();
                     std::advance(cell,neighbor_permutation[i]);
                     const Point<dim> p_unit = mapping->transform_real_to_unit_cell(*cell,
                                                                                    (*it)->get_location());
@@ -543,7 +543,7 @@ namespace aspect
                 // This case is rare.
                 try
                   {
-                    const std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
+                    const std::pair<const typename parallel::distributed::Triangulation<dim,spacedim>::active_cell_iterator,
                           Point<dim> > current_cell_and_position =
                             GridTools::find_active_cell_around_point<> (*mapping,
                                                                         *triangulation,
