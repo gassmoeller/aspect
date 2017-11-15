@@ -5,6 +5,7 @@ set Additional shared libraries            = ./code/libtangurnis.so
 
 set Dimension                              = 2
 set CFL number                             = 1.0
+set Use conduction timestep                = false
 
 # We only need a single time step.
 set Start time                             = 0

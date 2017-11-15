@@ -569,18 +569,21 @@ namespace aspect
                   const double rho = out.densities[q];
                   const double c_p = out.specific_heat[q];
 
-                  Assert(rho * c_p > 0,
-                         ExcMessage ("The product of density and c_P needs to be a "
-                                     "non-negative quantity."));
+                  // For models without diffusion, there is no conduction timestep.
+                  // Purely mechanical models might have C_p == 0,
+                  // and synthetic benchmarks sometimes have rho <= 0
+                  // in parts of the domain. Furthermore, backwards-
+                  // convection models might have k == 0
+                  if ((k <= 0.0) ||
+                      (rho <= 0.0) ||
+                      (c_p <= 0.0))
+                    continue;
 
-                  const double thermal_diffusivity = k/(rho*c_p);
+                  const double thermal_diffusivity =  k/(rho*c_p);
 
-                  if (thermal_diffusivity > 0)
-                    {
                       min_local_conduction_timestep = std::min(min_local_conduction_timestep,
                                                                parameters.CFL_number*pow(cell->minimum_vertex_distance(),2)
                                                                / thermal_diffusivity);
-                    }
                 }
             }
         }
