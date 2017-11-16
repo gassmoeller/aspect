@@ -1,7 +1,7 @@
 
 set Dimension                              = 2
 set Use years in output instead of seconds = false
-set End time                               = 0.01
+set End time                               = 0.0025
 set Output directory                       = output
 
 set Pressure normalization                 = surface
@@ -85,7 +85,7 @@ subsection Postprocess
 
   subsection Visualization
     set List of output variables      = heat flux map
-    set Time between graphical output = 0.01
+    set Time between graphical output = 0.0025
     set Output format                 = gnuplot
   end
 end

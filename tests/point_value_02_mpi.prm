@@ -8,7 +8,7 @@
 
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 0.001
+set End time                               = 0.0001
 set Use years in output instead of seconds = true
 
 set Linear solver tolerance                = 1e-7

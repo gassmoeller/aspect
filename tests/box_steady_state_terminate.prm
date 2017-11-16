@@ -71,7 +71,7 @@ subsection Termination criteria
   set Termination criteria      = steady state velocity
 
   subsection Steady state velocity
-    set Maximum relative deviation = 0.05
+    set Maximum relative deviation = 0.1
     set Time in steady state       = 5e6
   end
 end

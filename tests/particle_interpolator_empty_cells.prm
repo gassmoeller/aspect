@@ -2,7 +2,7 @@
 # does not crash when single cells do not contain particles.
 
 set Dimension                               = 2
-set End time                                = 7e9
+set End time                                = 3e5
 
 subsection Geometry model
   set Model name = box

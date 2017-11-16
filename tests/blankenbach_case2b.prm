@@ -1,6 +1,6 @@
 # blankenbach case 2b using the nondimensional material model
 
-set End time                               = 0.006
+set End time                               = 0.0035
 set Use years in output instead of seconds = false
 set CFL number = 5.0
 

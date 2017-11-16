@@ -1,7 +1,7 @@
 # Like blankenbach.prm but with the BA approximation, so we can rescale
 # parameters however we want.
 
-set End time                               = 0.002 # 1.0 for full benchmark
+set End time                               = 0.00025 # 1.0 for full benchmark
 set Use years in output instead of seconds = false
 
 
