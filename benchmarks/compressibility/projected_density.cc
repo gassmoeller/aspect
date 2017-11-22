@@ -89,13 +89,13 @@ namespace aspect
               ++i;
             }
 
-          const double one_over_rho = 1.0/scratch.reference_densities[q];
           const double JxW = scratch.finite_element_values.JxW(q);
+          const Tensor<1,dim> density_prefactor = (1.0/density_values[q]) * density_gradients[q];
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
               data.local_matrix(i,j) += -(pressure_scaling *
-                  (1.0/density_values[j]) * density_gradients[j] * scratch.phi_u[j] * scratch.phi_p[i])
+                  density_prefactor * scratch.phi_u[j] * scratch.phi_p[i])
                                         * JxW;
         }
     }
@@ -113,7 +113,7 @@ namespace aspect
       * @ingroup MaterialModels
       */
      template <int dim>
-     class ProjectedDensity : public MaterialModel::SimpleCompressible<dim>, public ::aspect::SimulatorAccess<dim>
+     class ProjectedDensity : public MaterialModel::SimpleCompressible<dim>
      {
        public:
          virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -137,7 +137,7 @@ namespace aspect
             // change in compositional field c at point i.
             for (unsigned int c=0; c<in.composition[i].size(); ++c)
               if (c == projected_density_index)
-                out.reaction_terms[i][c] = out.densities[i][c] - in.composition[i][c];
+                out.reaction_terms[i][c] = out.densities[i] - in.composition[i][c];
               else
                 out.reaction_terms[i][c] = 0.0;
           }
