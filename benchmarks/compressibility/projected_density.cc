@@ -20,8 +20,10 @@
 
 
 #include <aspect/simulator/assemblers/interface.h>
+#include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/material_model/simple_compressible.h>
 #include <aspect/simulator_access.h>
+#include <aspect/simulator_signals.h>
 
 namespace aspect
 {
@@ -103,45 +105,81 @@ namespace aspect
   namespace MaterialModel
   {
     /**
-      * A material model that consists of globally constant values for all
-      * material parameters except density and viscosity.
-      *
-      * The model is considered incompressible, following the definition
-      * described in Interface::is_compressible. This is essentially the
-      * material model used in the step-32 tutorial program.
-      *
-      * @ingroup MaterialModels
-      */
-     template <int dim>
-     class ProjectedDensity : public MaterialModel::SimpleCompressible<dim>
-     {
-       public:
-         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                               MaterialModel::MaterialModelOutputs<dim> &out) const;
-     };
+     * A material model that consists of globally constant values for all
+     * material parameters except density and viscosity.
+     *
+     * The model is considered incompressible, following the definition
+     * described in Interface::is_compressible. This is essentially the
+     * material model used in the step-32 tutorial program.
+     *
+     * @ingroup MaterialModels
+     */
+    template <int dim>
+    class ProjectedDensity : public MaterialModel::SimpleCompressible<dim>
+    {
+      public:
+        void initialize();
 
-     template <int dim>
-      void
-      ProjectedDensity<dim>::
-      evaluate(const MaterialModelInputs<dim> &in,
-               MaterialModelOutputs<dim> &out) const
-      {
-        this->evaluate(in,out);
+        void connect_signals(const SimulatorAccess<dim> &,
+                             Assemblers::Manager<dim> &assemblers);
 
-        const unsigned int projected_density_index = this->introspection().compositional_index_for_name("projected density");
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+    };
 
-       for (unsigned int i=0; i < in.temperature.size(); ++i)
-          {
-            // Change in composition due to chemical reactions at the
-            // given positions. The term reaction_terms[i][c] is the
-            // change in compositional field c at point i.
-            for (unsigned int c=0; c<in.composition[i].size(); ++c)
-              if (c == projected_density_index)
-                out.reaction_terms[i][c] = out.densities[i] - in.composition[i][c];
-              else
-                out.reaction_terms[i][c] = 0.0;
-          }
-      }
+
+
+    template <int dim>
+    void
+    ProjectedDensity<dim>::
+    connect_signals(const SimulatorAccess<dim> &,
+                    Assemblers::Manager<dim> &assemblers)
+    {
+      for (unsigned int i=0; i<assemblers.stokes_system.size(); ++i)
+        {
+          if (dynamic_cast<Assemblers::StokesIsothermalCompressionTerm<dim> *> (assemblers.stokes_system[i].get()))
+            {
+              Assemblers::StokesProjectedDensityCompressibility<dim> *assembler = new Assemblers::StokesProjectedDensityCompressibility<dim>();
+              assemblers.stokes_system[i] = std_cxx11::unique_ptr<Assemblers::StokesProjectedDensityCompressibility<dim> > (assembler);
+            }
+        }
+    }
+
+
+
+    template <int dim>
+    void
+    ProjectedDensity<dim>::
+    initialize()
+    {
+      this->get_signals().set_assemblers.connect (std_cxx11::bind(&ProjectedDensity<dim>::connect_signals,
+                                                                  std_cxx11::ref(*this),
+                                                                  std_cxx11::_1,
+                                                                  std_cxx11::_2));
+    }
+
+    template <int dim>
+    void
+    ProjectedDensity<dim>::
+    evaluate(const MaterialModelInputs<dim> &in,
+        MaterialModelOutputs<dim> &out) const
+        {
+      this->evaluate(in,out);
+
+      const unsigned int projected_density_index = this->introspection().compositional_index_for_name("projected density");
+
+      for (unsigned int i=0; i < in.temperature.size(); ++i)
+        {
+          // Change in composition due to chemical reactions at the
+          // given positions. The term reaction_terms[i][c] is the
+          // change in compositional field c at point i.
+          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+            if (c == projected_density_index)
+              out.reaction_terms[i][c] = out.densities[i] - in.composition[i][c];
+            else
+              out.reaction_terms[i][c] = 0.0;
+        }
+        }
   }
 }
 
