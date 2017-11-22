@@ -56,9 +56,9 @@ namespace aspect
 
       // assemble compressibility term of:
       //  - div u - 1/rho * drho/dz g/||g||* u = 0
-      Assert(this->get_parameters().formulation_mass_conservation ==
+      /*Assert(this->get_parameters().formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile,
-             ExcInternalError());
+             ExcInternalError());*/
 
       if (!scratch.rebuild_stokes_matrix)
         return;
@@ -68,7 +68,7 @@ namespace aspect
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
-      const unsigned int projected_density_index = introspection.compositional_index_for_name("projected density");
+      const unsigned int projected_density_index = introspection.compositional_index_for_name("projected_density");
 
       std::vector<double> density_values (n_q_points);
       std::vector<Tensor<1,dim> > density_gradients (n_q_points);
@@ -134,6 +134,11 @@ namespace aspect
     connect_signals(const SimulatorAccess<dim> &,
                     Assemblers::Manager<dim> &assemblers)
     {
+      AssertThrow(this->get_parameters().formulation_mass_conservation ==
+                      Parameters<dim>::Formulation::MassConservation::isothermal_compression,
+                      ExcMessage("The melt implementation currently only supports the isothermal compression "
+                                 "approximation of the mass conservation equation."));
+
       for (unsigned int i=0; i<assemblers.stokes_system.size(); ++i)
         {
           if (dynamic_cast<Assemblers::StokesIsothermalCompressionTerm<dim> *> (assemblers.stokes_system[i].get()))
@@ -162,10 +167,10 @@ namespace aspect
     ProjectedDensity<dim>::
     evaluate(const MaterialModelInputs<dim> &in,
              MaterialModelOutputs<dim> &out) const
-    {
+        {
       SimpleCompressible<dim>::evaluate(in,out);
 
-      const unsigned int projected_density_index = this->introspection().compositional_index_for_name("projected density");
+      const unsigned int projected_density_index = this->introspection().compositional_index_for_name("projected_density");
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
