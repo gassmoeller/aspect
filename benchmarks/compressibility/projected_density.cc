@@ -30,7 +30,7 @@ namespace aspect
   namespace Assemblers
   {
     /**
-     * A class containing the functions to assemble the Stokes preconditioner.
+     * A class containing the functions to assemble the Stokes compression terms.
      */
     template <int dim>
     class StokesProjectedDensityCompressibility : public Assemblers::Interface<dim>,
@@ -74,9 +74,9 @@ namespace aspect
       std::vector<Tensor<1,dim> > density_gradients (n_q_points);
 
       scratch.finite_element_values[introspection.extractors.compositional_fields[projected_density_index]]
-                                    .get_function_values(this->get_current_linearization_point(),density_values);
+      .get_function_values(this->get_current_linearization_point(),density_values);
       scratch.finite_element_values[introspection.extractors.compositional_fields[projected_density_index]]
-                                    .get_function_gradients(this->get_current_linearization_point(),density_gradients);
+      .get_function_gradients(this->get_current_linearization_point(),density_gradients);
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -84,7 +84,6 @@ namespace aspect
             {
               if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                 {
-                  scratch.phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].value (i,q);
                   scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i,q);
                   ++i_stokes;
                 }
@@ -92,25 +91,25 @@ namespace aspect
             }
 
           const double JxW = scratch.finite_element_values.JxW(q);
-          const Tensor<1,dim> density_prefactor = (1.0/density_values[q]) * density_gradients[q];
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-            for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-              data.local_matrix(i,j) += -(pressure_scaling *
-                  density_prefactor * scratch.phi_u[j] * scratch.phi_p[i])
-                                        * JxW;
+            data.local_rhs(i) += (
+                                   // add the term that results from the compressibility.
+                                   (pressure_scaling *
+                                    (density_gradients[q] / density_values[q]) *
+                                    scratch.velocity_values[q] *
+                                    scratch.phi_p[i])
+                                 )
+                                 * JxW;
         }
     }
   }
   namespace MaterialModel
   {
     /**
-     * A material model that consists of globally constant values for all
-     * material parameters except density and viscosity.
-     *
-     * The model is considered incompressible, following the definition
-     * described in Interface::is_compressible. This is essentially the
-     * material model used in the step-32 tutorial program.
+     * A material model that is identical to the simple compressible model,
+     * except that the density is tracked in a compositional field using
+     * the reactions.
      *
      * @ingroup MaterialModels
      */
@@ -162,9 +161,9 @@ namespace aspect
     void
     ProjectedDensity<dim>::
     evaluate(const MaterialModelInputs<dim> &in,
-        MaterialModelOutputs<dim> &out) const
-        {
-      this->evaluate(in,out);
+             MaterialModelOutputs<dim> &out) const
+    {
+      SimpleCompressible<dim>::evaluate(in,out);
 
       const unsigned int projected_density_index = this->introspection().compositional_index_for_name("projected density");
 
@@ -179,7 +178,7 @@ namespace aspect
             else
               out.reaction_terms[i][c] = 0.0;
         }
-        }
+    }
   }
 }
 
@@ -190,7 +189,7 @@ namespace aspect
   namespace Assemblers
   {
 #define INSTANTIATE(dim) \
-    template class StokesProjectedDensityCompressibility<dim>;
+  template class StokesProjectedDensityCompressibility<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
@@ -204,15 +203,15 @@ namespace aspect
   namespace MaterialModel
   {
     ASPECT_REGISTER_MATERIAL_MODEL(ProjectedDensity,
-        "projected density",
-        "A material model that implements a simple formulation of the "
-        "material parameters required for the modelling of melt transport, "
-        "including a source term for the porosity according to a simplified "
-        "linear melting model similar to \\cite{schmeling2006}:\n"
-        "$\\phi_\\text{equilibrium} = \\frac{T-T_\\text{sol}}{T_\\text{liq}-T_\\text{sol}}$\n"
-        "with "
-        "$T_\\text{sol} = T_\\text{sol,0} + \\Delta T_p \\, p + \\Delta T_c \\, C$ \n"
-        "$T_\\text{liq} = T_\\text{sol}  + \\Delta T_\\text{sol-liq}$.")
+                                   "projected density",
+                                   "A material model that implements a simple formulation of the "
+                                   "material parameters required for the modelling of melt transport, "
+                                   "including a source term for the porosity according to a simplified "
+                                   "linear melting model similar to \\cite{schmeling2006}:\n"
+                                   "$\\phi_\\text{equilibrium} = \\frac{T-T_\\text{sol}}{T_\\text{liq}-T_\\text{sol}}$\n"
+                                   "with "
+                                   "$T_\\text{sol} = T_\\text{sol,0} + \\Delta T_p \\, p + \\Delta T_c \\, C$ \n"
+                                   "$T_\\text{liq} = T_\\text{sol}  + \\Delta T_\\text{sol-liq}$.")
   }
 }
 
