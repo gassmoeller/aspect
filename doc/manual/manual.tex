@@ -7191,6 +7191,33 @@ Some ideas for adapting the model setup:
 \end{itemize}
 
 
+\subsubsection{Mantle plume dynamics in a model with prescribed plate motions and global mantle flow}
+
+\textit{This section was contributed by Eva Bredow, Rene Gassmoeller and Juliane Dannberg and is based on a section in \cite{bredow2017plume} by Eva Bredow, Bernhard Steinberger, Rene Gassmoeller and Juliane Dannberg.}
+
+The following cookbook will explain how to use \aspect{} to set up a mantle convection model with prescribed plate motions that features a rising plume in the upper mantle interacting with the global mantle convection flow field. 
+The model  setup is described in detail in \cite{bredow2017plume}, which can be found \href{http://dx.doi.org/10.1002/2017GC006875}{here},  
+and in the following we will go over a slightly simplified version in lower resolution. 
+
+We will go over all the additions that are necessary to implement such a model in detail, in particular
+\begin{enumerate}
+\item how to read in ascii data files that describe global mantle flow velocities, 
+\item how to prescribe velocity boundary conditions that use a combination of plate velocities at the surface (as described in Section~\ref{sec:cookbooks-gplates}) and global mantle flow velocities, 
+\item how to add material inflow corresponding to a mantle plume with a variable inflow position, 
+\item how to prescribe a temperature field corresponding to realistic lithosphere thicknesses as initial and boundary conditions and
+\item how to model the hot spot track that would be produced by such a plume. 
+\end{enumerate}
+
+A movie that shows the evolution of the plume, the lithospheric thickness and the amount of melt present in the model in higher resolution can be found 
+\href{http://onlinelibrary.wiley.com/store/10.1002/2017GC006875/asset/supinfo/ggge21362-sup-0002-2017GC006875-movs01.mp4?v=1&s=54136cf6fd2e05a05198e34e97bf87d824d6adf9}{online}. 
+
+TODO: modify below:
+The model setup is a 3D box with dimensions of $2900 \times 8700$\,km, and it is heated from the bottom and 
+cooled from the top. A full description can be found in Section~4.7 ``Influence of melt migration on a global-scale 
+convection model'' in \cite{dannberg_melt}.
+In the first model we will look at, melting and freezing is only included passively: We use the \texttt{melt fraction} visualization postprocessor to compute how much melt is present for a given temperature and pressure at every given point in time and space in our model, but the presence of melt does not influence material properties like density or viscosity, and melt does not move relative to the solid. This also means that because melt is not extracted, the bulk composition of the material always stays the same, and melt only freezes again once advection or conduction causes the temperature of the solid rock to be below the solidus. 
+The following input file (which can be found in \url{cookbooks/global_no_melt.prm}) contains a detailed description of the 
+different options required to set up such a model:
 
 
 \subsection{Benchmarks}
