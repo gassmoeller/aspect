@@ -22,26 +22,20 @@
 
 
 
-if [ -z "$BUILDS" ]; then
-  echo 'Please specify list of builds to do in the ENV variable $BUILDS.'
-  echo "Separate build with spaces. Valid options: gcc gccpetsc clang clangpetsc"
-  exit 0
-fi
-
 mkdir -p ~/log
 
 if [ -s ~/source/CMakeLists.txt ]; then
   touch ~/source/VERSION 2>/dev/null || { echo "~/source needs to be mounted R/W, aborting."; exit 1; }
-else
-  if [ -s /source/CMakeLists.txt ]; then
-    cp -r /source ~/source
-    rm -rf ~/source/CMakeCache.txt
-  else
-    echo "ERROR, no ASPECT mounted under ~/source/ or /source/"
-    exit 1
-  fi
 fi
 
+git clone --depth=1 https://github.com/geodynamics/aspect.git ~/source
+
+if [ -z "$PULL_REQUEST" ]; then
+  cd ~/source
+  git fetch --depth=1 origin pull/${PULL_REQUEST}/head:branch
+  git checkout branch
+  cd ..
+fi
 
 submit="OFF"
 
@@ -70,24 +64,20 @@ main()
 #clean contents:
 > $summary
 
-for build in $BUILDS;
-do
-  echo "BUILD $build:" |tee -a $summary
-  logfile=~/log/log-$build
-  mkdir -p build-$build
-  cd build-$build
-  eval run $build $build$name $submit 2>&1 | tee $logfile
-  if [ -s changes.diff ]; then
-    cp changes.diff ~/log/changes-$build.diff
-    echo "DIFFS: changes-$build.diff" | tee -a $logfile
-  fi
-  cd ..
+echo "BUILD $build:" |tee -a $summary
+logfile=~/log/log-$build
+mkdir -p build-$build
+cd build-$build
+eval run $build $build$name $submit 2>&1 | tee $logfile
+if [ -s changes.diff ]; then
+  cp changes.diff ~/log/changes-$build.diff
+  echo "DIFFS: changes-$build.diff" | tee -a $logfile
+fi
+cd ..
+rep "FAILED" $logfile | grep -v "FAILED: /" | grep -v "The following tests FAILED" | grep -v "FAILED: cd /" | tee -a $summary
 
-  grep "FAILED" $logfile | grep -v "FAILED: /" | grep -v "The following tests FAILED" | grep -v "FAILED: cd /" | tee -a $summary
-
-  grep "^ok$" $logfile | tee -a $summary
-  grep "tests passed" $logfile | tee -a $summary
-done
+grep "^ok$" $logfile | tee -a $summary
+grep "tests passed" $logfile | tee -a $summary
 
 sed -i 's/[[:space:]]*0 Compiler errors/ok/' $summary
 sed -i 's/\([0-9]*\)% tests passed, 0 tests failed out of \([0-9]*\)/tests: \2 passed/' $summary 
