@@ -2,22 +2,26 @@
 
 # Automated script to compile&test ASPECT in different configurations
 
-# Mounts:
-# writable log dir: /home/bob/log/
-# ASPECT source repo: /home/bob/source/ (writeable) or /source (can be read-only)
+# Mounts (optional):
+# writable log dir: /home/dealii/log/
+# if this directory is mounted it will be filled with the test results
+# if this directory is not mounted, it will be created internally and destroyed after the run
 
 # settings from ENV variables:
 # BUILDS:
-#  (gcc|clang)[petsc]|astyle
+#  (gcc|clang)[petsc]
 # QUIET=1 (default, not) -- only print summary
+# PULL_REQUEST: if set, will trigger a test of this pull request number
+# USER, BRANCH: [not yet implemented] if set, will trigger a test of this branch of this github user
+# ASPECT_DIR: [not yet implemented] if set, will trigger a test of this aspect directory (has to be mounted in the container
+# if neither PULL_REQUEST nor USER, BRANCH is set, it will test current master
 
 # example usage:
-# 1) mount readonly, you need to copy results out (prefered):
-#      docker run -it --rm -v "$(pwd):/source:ro" tjhei/aspect-tester-8.4.1 /bin/bash
-#      BUILDS="gcc" ./script.sh
-#      docker cp CONTAINER:/home/bob/log/changes-BUILD.diff . # from outside
+# 1) test pull request
+#      docker run -it --rm -v "$(pwd):/home/dealii/log" -e BUILDS='gcc' gassmoeller/aspect-tester:8.5.0
+#
 # 2) mount writeable, this will modify your files outside the container
-#      docker run -it --rm -v "$(pwd):/home/bob/source" tjhei/aspect-tester-8.4.1 /bin/bash
+#      docker run -it --rm -v "$(pwd):/home/bob/source" gassmoeller/aspect-tester:8.5.0 /bin/bash
 #      BUILDS="clang" ./script.sh
 
 
@@ -32,9 +36,9 @@ mkdir -p ~/log
 
 git clone --depth=1 https://github.com/geodynamics/aspect.git ~/source
 
-if [ -z "$DRONE_PULL_REQUEST" ]; then
+if [ -z "$PULL_REQUEST" ]; then
   cd ~/source
-  git fetch --depth=1 origin pull/${DRONE_PULL_REQUEST}/head:branch
+  git fetch --depth=1 origin pull/${PULL_REQUEST}/head:branch
   git checkout branch
   cd ..
 fi
