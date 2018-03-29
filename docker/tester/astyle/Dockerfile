@@ -5,8 +5,5 @@ MAINTAINER rene.gassmoeller@mailbox.org
 USER root
 ADD script.sh script.sh
 
-RUN chown $USER:$USER *.sh
-USER $USER
-
 RUN chmod u+x *.sh
 CMD /home/dealii/script.sh
