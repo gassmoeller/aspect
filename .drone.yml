@@ -14,4 +14,7 @@ pipeline:
     image: gassmoeller/aspect-tester:astyle
     pull: true
     commands:
+
+branches: 
+  include: master
       
