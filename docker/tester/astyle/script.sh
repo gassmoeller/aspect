@@ -35,7 +35,6 @@ main()
 #clean contents:
 > $summary
 
-echo "BUILD $build:" |tee -a $summary
 logfile=~/log/log-astyle
 LOGFILE="`pwd`/changes.diff"
 cd ~/source
