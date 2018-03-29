@@ -9,4 +9,4 @@ RUN chown $USER:$USER *.sh
 USER $USER
 
 RUN chmod u+x *.sh
-CMD ./script.sh
+CMD /home/dealii/script.sh
