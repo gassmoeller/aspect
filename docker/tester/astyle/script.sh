@@ -2,50 +2,28 @@
 
 # Automated script to compile&test ASPECT in different configurations
 
-# Mounts:
-# writable log dir: /home/bob/log/
-# ASPECT source repo: /home/bob/source/ (writeable) or /source (can be read-only)
-
-# settings from ENV variables:
-# BUILDS:
-#  (gcc|clang)[petsc]|astyle
-# QUIET=1 (default, not) -- only print summary
-
-# example usage:
-# 1) mount readonly, you need to copy results out (prefered):
-#      docker run -it --rm -v "$(pwd):/source:ro" tjhei/aspect-tester-8.4.1 /bin/bash
-#      BUILDS="gcc" ./script.sh
-#      docker cp CONTAINER:/home/bob/log/changes-BUILD.diff . # from outside
-# 2) mount writeable, this will modify your files outside the container
-#      docker run -it --rm -v "$(pwd):/home/bob/source" tjhei/aspect-tester-8.4.1 /bin/bash
-#      BUILDS="clang" ./script.sh
-
-
-
-cd ~
-git clone /drone/src/github.com/gassmoeller/aspect ~/source
+cd /drone/src/github.com/gassmoeller/aspect
 
 submit="OFF"
-mkdir -p ~/log
-summary=~/log/summary
-indexhtml=~/log/index.html
+mkdir -p /drone/log
+summary=/drone/log/summary
+indexhtml=/drone/log/index.html
 
 main()
 {
 #clean contents:
 > $summary
 
-logfile=~/log/log-astyle
+logfile=drone/log/log-astyle
 LOGFILE="`pwd`/changes.diff"
-cd ~/source
-./doc/indent || { echo "indent FAILED"; return; }
+./doc/indent || { echo "indent FAILED"; return 1; }
 git diff >$LOGFILE
 echo "git diff >$LOGFILE"
-git diff --exit-code --name-only || { echo "FAILED: `git diff --name-only`"; return; }
+git diff --exit-code --name-only || { echo "FAILED:"; echo `git diff`; return 1; }
 echo "ok"
 
 if [ -s changes.diff ]; then
-  cp changes.diff ~/log/changes-astyle.diff
+  cp changes.diff /drone/log/changes-astyle.diff
   echo "DIFFS: changes-astyle.diff" | tee -a $logfile
 fi
 cd ..
@@ -54,14 +32,9 @@ rep "FAILED" $logfile | grep -v "FAILED: /" | grep -v "The following tests FAILE
 grep "^ok$" $logfile | tee -a $summary
 grep "tests passed" $logfile | tee -a $summary
 
-sed -i 's/[[:space:]]*0 Compiler errors/ok/' $summary
-sed -i 's/\([0-9]*\)% tests passed, 0 tests failed out of \([0-9]*\)/tests: \2 passed/' $summary 
-
-sed -i 's/\([0-9]*\)% tests passed, \([0-9]*\) tests failed out of \([0-9]*\)/tests: \2 \/ \3 FAILED/' $summary 
-
 cp $summary $indexhtml
 
-grep -h "DIFFS: changes-" ~/log/log-* | tee -a $indexhtml
+grep -h "DIFFS: changes-" /drone/log/log-* | tee -a $indexhtml
 sed -i 's#$# <br/>#' $indexhtml
 sed -i 's#^BUILD \(.*\):#<a href="log-\1">BUILD \1:</a>#' $indexhtml
 sed -i 's#^DIFFS: \(.*diff\)#DIFFS: <a href="\1">\1</a>#' $indexhtml
