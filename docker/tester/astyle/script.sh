@@ -19,7 +19,7 @@ LOGFILE="`pwd`/changes.diff"
 ./doc/indent || { echo "indent FAILED"; return 1; }
 git diff >$LOGFILE
 echo "git diff >$LOGFILE"
-git diff --exit-code --name-only || { echo "FAILED:"; echo `git diff`; return 1; }
+git diff --exit-code --name-only || { echo "FAILED:"; git diff; return 1; }
 echo "ok"
 
 if [ -s changes.diff ]; then
