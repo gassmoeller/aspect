@@ -1,9 +1,14 @@
 pipeline {
-  agent any
+  agent {
+      docker { image 'gassmoeller/aspect-tester:astyle' }
+  }
   stages {
     stage('astyle') {
       steps {
-        sh 'make indent'
+        echo "I am alive"
+        sh 'pwd'
+        sh 'whoami'
+        sh 'ls /home/dealii/script.sh'
       }
     }
   }
