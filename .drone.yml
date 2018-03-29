@@ -1,15 +1,15 @@
 pipeline:
   build:
-#    group: build
-#    image: gassmoeller/aspect-tester:8.5.0
-#    commands:
-#      - bash script.sh
+    group: build
+    image: gassmoeller/aspect-tester:8.5.0
+    commands:
 
 #    group: build
 #    image: gassmoeller/aspect-tester:dev
 #    commands:
 #      - bash script.sh
 
+  astyle:
     group: build
     image: gassmoeller/aspect-tester:astyle
     pull: true

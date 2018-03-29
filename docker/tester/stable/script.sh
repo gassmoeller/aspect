@@ -25,6 +25,7 @@
 #      BUILDS="clang" ./script.sh
 
 
+BUILDS=gcc
 
 if [ -z "$BUILDS" ]; then
   echo 'Please specify list of builds to do in the ENV variable $BUILDS.'
@@ -33,19 +34,6 @@ if [ -z "$BUILDS" ]; then
 fi
 
 mkdir -p ~/log
-
-git clone --depth=1 https://github.com/geodynamics/aspect.git ~/source
-
-if [ -z "$PULL_REQUEST" ]; then
-  cd ~/source
-  git fetch --depth=1 origin pull/${PULL_REQUEST}/head:branch
-  git checkout branch
-  cd ..
-fi
-
-if [ -s ~/source/CMakeLists.txt ]; then
-  touch ~/source/VERSION 2>/dev/null || { echo "~/source needs to be mounted R/W, aborting."; exit 1; }
-fi
 
 submit="OFF"
 
