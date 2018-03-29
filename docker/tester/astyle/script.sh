@@ -24,18 +24,7 @@
 
 mkdir -p ~/log
 
-if [ -s ~/source/CMakeLists.txt ]; then
-  touch ~/source/VERSION 2>/dev/null || { echo "~/source needs to be mounted R/W, aborting."; exit 1; }
-fi
-
-git clone --depth=1 https://github.com/geodynamics/aspect.git ~/source
-
-if [ -z "$PULL_REQUEST" ]; then
-  cd ~/source
-  git fetch --depth=1 origin pull/${PULL_REQUEST}/head:branch
-  git checkout branch
-  cd ..
-fi
+git clone --depth=1 /drone/src/github.com/gassmoeller/aspect ~/source
 
 submit="OFF"
 
@@ -45,6 +34,7 @@ build=$1
 desc=$2
 submit=$3
 
+cd ~
 LOGFILE="`pwd`/changes.diff"
 cd ~/source
 ./doc/indent || { echo "indent FAILED"; return; }
