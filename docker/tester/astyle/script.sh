@@ -22,30 +22,11 @@
 
 
 
-mkdir -p ~/log
-
-git clone --depth=1 /drone/src/github.com/gassmoeller/aspect ~/source
+cd ~
+git clone /drone/src/github.com/gassmoeller/aspect ~/source
 
 submit="OFF"
-
-run()
-{
-build=$1
-desc=$2
-submit=$3
-
-cd ~
-LOGFILE="`pwd`/changes.diff"
-cd ~/source
-./doc/indent || { echo "indent FAILED"; return; }
-git diff >$LOGFILE
-echo "git diff >$LOGFILE"
-git diff --exit-code --name-only || { echo "FAILED: `git diff --name-only`"; return; }
-echo "ok"
-return
-}
-
-
+mkdir -p ~/log
 summary=~/log/summary
 indexhtml=~/log/index.html
 
@@ -55,13 +36,18 @@ main()
 > $summary
 
 echo "BUILD $build:" |tee -a $summary
-logfile=~/log/log-$build
-mkdir -p build-$build
-cd build-$build
-eval run $build $build$name $submit 2>&1 | tee $logfile
+logfile=~/log/log-astyle
+LOGFILE="`pwd`/changes.diff"
+cd ~/source
+./doc/indent || { echo "indent FAILED"; return; }
+git diff >$LOGFILE
+echo "git diff >$LOGFILE"
+git diff --exit-code --name-only || { echo "FAILED: `git diff --name-only`"; return; }
+echo "ok"
+
 if [ -s changes.diff ]; then
-  cp changes.diff ~/log/changes-$build.diff
-  echo "DIFFS: changes-$build.diff" | tee -a $logfile
+  cp changes.diff ~/log/changes-astyle.diff
+  echo "DIFFS: changes-astyle.diff" | tee -a $logfile
 fi
 cd ..
 rep "FAILED" $logfile | grep -v "FAILED: /" | grep -v "The following tests FAILED" | grep -v "FAILED: cd /" | tee -a $summary
