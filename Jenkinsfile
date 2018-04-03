@@ -6,8 +6,8 @@ pipeline {
     stage('astyle') {
       steps {
         sh './doc/indent'
-        sh 'git diff | tee logfile'
-        archiveArtifacts artifacts: 'logfile', fingerprint: true
+        sh 'git diff | tee astyle-changes.diff'
+        archiveArtifacts artifacts: 'astyle-changes.diff', fingerprint: true
         sh 'git diff --exit-code --name-only'
       }
     }
