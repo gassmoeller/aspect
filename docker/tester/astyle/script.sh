@@ -2,42 +2,42 @@
 
 # Automated script to compile&test ASPECT in different configurations
 
-cd /drone/src/github.com/gassmoeller/aspect
+source_folder=$1
+
+cd $source_folder
+
+log_folder=$source_folder/log
+mkdir -p $log_folder
 
 submit="OFF"
-mkdir -p /drone/log
-summary=/drone/log/summary
-indexhtml=/drone/log/index.html
+
+logfile=${log_folder}/log
+touch $logfile
+summary=${log_folder}/summary
+touch $summary
+diff=${log_folder}/diff
+touch $diff
+
+indexhtml=${log_folder}/index.html
 
 main()
 {
 #clean contents:
 > $summary
 
-logfile=drone/log/log-astyle
-LOGFILE="`pwd`/changes.diff"
 ./doc/indent || { echo "indent FAILED"; return 1; }
-git diff >$LOGFILE
-echo "git diff >$LOGFILE"
+echo "git diff >$diff"
+git diff >$diff
+
 git diff --exit-code --name-only || { echo "FAILED:"; git diff; return 1; }
 echo "ok"
 
 if [ -s changes.diff ]; then
-  cp changes.diff /drone/log/changes-astyle.diff
   echo "DIFFS: changes-astyle.diff" | tee -a $logfile
 fi
 cd ..
-rep "FAILED" $logfile | grep -v "FAILED: /" | grep -v "The following tests FAILED" | grep -v "FAILED: cd /" | tee -a $summary
-
-grep "^ok$" $logfile | tee -a $summary
-grep "tests passed" $logfile | tee -a $summary
 
 cp $summary $indexhtml
-
-grep -h "DIFFS: changes-" /drone/log/log-* | tee -a $indexhtml
-sed -i 's#$# <br/>#' $indexhtml
-sed -i 's#^BUILD \(.*\):#<a href="log-\1">BUILD \1:</a>#' $indexhtml
-sed -i 's#^DIFFS: \(.*diff\)#DIFFS: <a href="\1">\1</a>#' $indexhtml
 }
 
 if [ "$QUIET" == "1" ];
