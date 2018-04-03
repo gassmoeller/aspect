@@ -13,10 +13,15 @@ pipeline {
     }
     stage('build') {
       steps {
-        sh 'ls'
-        sh 'cmake .'
-        sh 'make -j'
+        sh 'cmake -G "Ninja" gcc -D ASPECT_TEST_GENERATOR=Ninja -D ASPECT_USE_PETSC=off -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_PRECOMPILE_HEADERS=ON .'
+        sh 'ninja'
       } 
+    }
+    stage('test') {
+      steps {
+        sh 'ctest --output-on-failure -j4 || { echo "test FAILED"; }'
+        sh 'ninja generate_reference_output'
+      }
     }
   }
 }
