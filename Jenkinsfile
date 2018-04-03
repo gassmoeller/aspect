@@ -11,5 +11,12 @@ pipeline {
         sh 'git diff --exit-code --name-only'
       }
     }
+    stage('build') {
+      steps {
+        sh 'ls'
+        sh 'cmake .'
+        sh 'make -j'
+      } 
+    }
   }
 }
