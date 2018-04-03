@@ -5,10 +5,10 @@ pipeline {
   stages {
     stage('astyle') {
       steps {
-        echo "I am alive"
-        sh 'pwd'
-        sh 'whoami'
-        sh 'ls /home/dealii/script.sh'
+        sh './doc/indent'
+        sh 'git diff | tee logfile'
+        archiveArtifacts artifacts: 'logfile', fingerprint: true
+        sh 'git diff --exit-code --name-only'
       }
     }
   }
