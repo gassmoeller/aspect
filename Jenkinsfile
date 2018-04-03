@@ -11,18 +11,27 @@ pipeline {
         sh 'git diff --exit-code --name-only'
       }
     }
-    stage('build') {
+    stage('build-gcc-fast') {
       steps {
-        sh 'cmake -G "Ninja" gcc -D ASPECT_TEST_GENERATOR=Ninja -D ASPECT_USE_PETSC=OFF -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_PRECOMPILE_HEADERS=ON .'
-        sh 'ninja'
+        sh '''
+          mkdir -p build-gcc-fast
+          cd build-gcc-fast
+          cmake -G "Ninja" gcc -D ASPECT_TEST_GENERATOR=Ninja -D ASPECT_USE_PETSC=OFF -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_PRECOMPILE_HEADERS=ON ..
+          ninja
+        '''
       } 
     }
     stage('test') {
       steps {
-        sh './cmake/generate_reference_output.sh'
+        sh 'cd build-gcc-fast && ../cmake/generate_reference_output.sh'
         archiveArtifacts artifacts: 'changes.diff', fingerprint: true
         sh 'git diff --exit-code --name-only'
       }
     }
+  }
+  post {
+        always {
+            deleteDir() /* clean up our workspace */
+        }
   }
 }
