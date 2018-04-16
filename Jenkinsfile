@@ -7,7 +7,6 @@ kubernetes {
         name 'dealii'
         image 'dealii/dealii:v8.5.0-gcc-mpi-fulldepscandi-debugrelease'
         ttyEnabled true
-        command 'cat'
       }
 }
   }
@@ -15,6 +14,8 @@ kubernetes {
     stage('astyle') {
       steps {
         container('dealii'){
+        sh 'id'
+        sh 'ls -la'
         sh './doc/indent'
         sh 'git diff | tee astyle-changes.diff'
         archiveArtifacts artifacts: 'astyle-changes.diff', fingerprint: true
@@ -43,10 +44,5 @@ kubernetes {
         }
       }
     }
-  }
-  post {
-        always {
-            deleteDir() /* clean up our workspace */
-        }
   }
 }
