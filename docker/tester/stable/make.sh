@@ -1,4 +1,4 @@
 #!/bin/bash
-id="gassmoeller/aspect-tester:8.5.0"
+id="gassmoeller/aspect-tester:stable"
 echo "building: $id"
 docker build -t $id .

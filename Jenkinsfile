@@ -5,7 +5,7 @@ kubernetes {
       label 'mypod'
       containerTemplate {
         name 'aspect-tester'
-        image 'gassmoeller/aspect-tester:astyle'
+        image 'gassmoeller/aspect-tester:stable'
         ttyEnabled true
         command 'cat'
       }
@@ -37,7 +37,7 @@ kubernetes {
     stage('test') {
       steps {
         container('aspect-tester'){
-        sh 'cd build-gcc-fast && ASPECT_TESTS_VERBOSE=1 ../cmake/generate_reference_output.sh'
+        sh 'cd build-gcc-fast && ASPECT_TESTS_VERBOSE=2 ../cmake/generate_reference_output.sh'
         archiveArtifacts artifacts: 'build-gcc-fast/changes.diff', fingerprint: true
         sh 'git diff --exit-code --name-only'
         }
