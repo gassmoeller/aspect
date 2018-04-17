@@ -15,6 +15,9 @@ kubernetes {
     stage('astyle') {
       steps {
         container('aspect-tester'){
+        sh 'ls -la'
+        sh 'pwd'
+        sh 'cd && mkdir aspect-build'
         sh './doc/indent'
         sh 'git diff | tee astyle-changes.diff'
         archiveArtifacts artifacts: 'astyle-changes.diff', fingerprint: true

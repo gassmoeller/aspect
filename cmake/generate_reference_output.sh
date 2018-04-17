@@ -31,3 +31,4 @@ fi
 
 if [ "$RESULT" != "0" ]; then
   exit $RESULT
+fi
