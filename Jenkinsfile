@@ -5,7 +5,7 @@ kubernetes {
       label 'mypod'
       containerTemplate {
         name 'dealii'
-        image 'dealii/dealii:v8.5.0-gcc-mpi-fulldepscandi-debugrelease'
+        image 'ubuntu/ubuntu'
         ttyEnabled true
         command 'cat'
       }
@@ -14,12 +14,14 @@ kubernetes {
   stages {
     stage('astyle') {
       steps {
+        container('dealii'){
         sh 'id'
         sh 'ls -la'
         sh './doc/indent'
         sh 'git diff | tee astyle-changes.diff'
         archiveArtifacts artifacts: 'astyle-changes.diff', fingerprint: true
         sh 'git diff --exit-code --name-only'
+        }
       }
     }
     stage('build-gcc-fast') {
