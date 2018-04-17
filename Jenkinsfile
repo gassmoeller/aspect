@@ -17,6 +17,7 @@ kubernetes {
         container('aspect-tester'){
         sh 'ls -la'
         sh 'pwd'
+        sh 'id'
         sh 'cd && mkdir aspect-build'
         sh './doc/indent'
         sh 'git diff | tee astyle-changes.diff'
