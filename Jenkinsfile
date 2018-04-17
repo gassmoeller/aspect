@@ -4,7 +4,7 @@ kubernetes {
       //cloud 'kubernetes'
       label 'mypod'
       containerTemplate {
-        name 'dealii'
+        name 'aspect-tester'
         image 'gassmoeller/aspect-tester:astyle'
         ttyEnabled true
         command 'cat'
@@ -14,9 +14,7 @@ kubernetes {
   stages {
     stage('astyle') {
       steps {
-        container('dealii'){
-        sh 'id'
-        sh 'ls -la'
+        container('aspect-tester'){
         sh './doc/indent'
         sh 'git diff | tee astyle-changes.diff'
         archiveArtifacts artifacts: 'astyle-changes.diff', fingerprint: true
@@ -26,7 +24,7 @@ kubernetes {
     }
     stage('build-gcc-fast') {
       steps {
-        container('dealii'){
+        container('aspect-tester'){
         sh '''
           mkdir -p build-gcc-fast
           cd build-gcc-fast
@@ -38,12 +36,17 @@ kubernetes {
     }
     stage('test') {
       steps {
-        container('dealii'){
-        sh 'cd build-gcc-fast && ../cmake/generate_reference_output.sh'
-        archiveArtifacts artifacts: 'changes.diff', fingerprint: true
+        container('aspect-tester'){
+        sh 'cd build-gcc-fast && ASPECT_TESTS_VERBOSE=1 ../cmake/generate_reference_output.sh'
+        archiveArtifacts artifacts: 'build-gcc-fast/changes.diff', fingerprint: true
         sh 'git diff --exit-code --name-only'
         }
       }
+    }
+  }
+  post {
+    always {
+      deleteDir() /* clean up our workspace */
     }
   }
 }
