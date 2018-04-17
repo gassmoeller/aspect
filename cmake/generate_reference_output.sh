@@ -13,9 +13,9 @@ SRC_PATH=`dirname $0`
 SRC_PATH=`cd $SRC_PATH/..;pwd`
 OUT=$PWD/changes.diff
 
-export OMPI_MCA_btl_base_warn_component_unused=0
-
-if [ "$ASPECT_TESTS_VERBOSE" == "1" ]; then
+if [ "$ASPECT_TESTS_VERBOSE" == "2" ]; then
+  ASPECT_GENERATE_REFERENCE_OUTPUT=1 ctest -j 4 -V
+elif [ "$ASPECT_TESTS_VERBOSE" == "1" ]; then
   ASPECT_GENERATE_REFERENCE_OUTPUT=1 ctest -j 4
 else
   ASPECT_GENERATE_REFERENCE_OUTPUT=1 ctest -j 4 >/dev/null
