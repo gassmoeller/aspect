@@ -5,7 +5,7 @@ kubernetes {
       label 'mypod'
       containerTemplate {
         name 'dealii'
-        image 'ubuntu/ubuntu'
+        image 'ubuntu'
         ttyEnabled true
         command 'cat'
       }
