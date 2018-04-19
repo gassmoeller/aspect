@@ -5,7 +5,7 @@ kubernetes {
       label 'mypod'
       containerTemplate {
         name 'aspect-tester'
-        image 'gassmoeller/aspect-tester:stable'
+        image 'gassmoeller/aspect-tester:stable2'
         ttyEnabled true
         command 'cat'
       }
@@ -19,7 +19,7 @@ kubernetes {
         sh 'ls -la /home/jenkins/workspace/'
         sh 'pwd'
         sh 'id'
-        sh 'su jenkins && id'
+        sh 'su - jenkins && id && exit'
         sh 'cd && mkdir aspect-build'
         sh './doc/indent'
         sh 'git diff | tee astyle-changes.diff'
