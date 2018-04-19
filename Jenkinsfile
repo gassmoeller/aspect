@@ -5,7 +5,7 @@ kubernetes {
       label 'mypod'
       containerTemplate {
         name 'aspect-tester'
-        image 'gassmoeller/aspect-tester:stable'
+        image 'gassmoeller/aspect-tester:astyle'
         ttyEnabled true
         command 'cat'
       }
@@ -16,6 +16,7 @@ kubernetes {
       steps {
         container('aspect-tester'){
         sh 'ls -la'
+        sh 'ls -la /home/jenkins/workspace/'
         sh 'pwd'
         sh 'id'
         sh 'cd && mkdir aspect-build'
