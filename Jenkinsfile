@@ -19,7 +19,7 @@ kubernetes {
         sh 'ls -la /home/jenkins/workspace/'
         sh 'pwd'
         sh 'id'
-        sh 'su - jenkins && id && exit'
+        sh 'exec su - jenkins && id'
         sh 'cd && mkdir aspect-build'
         sh './doc/indent'
         sh 'git diff | tee astyle-changes.diff'
