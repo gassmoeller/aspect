@@ -5,7 +5,7 @@ kubernetes {
       label 'mypod'
       containerTemplate {
         name 'aspect-tester'
-        image 'gassmoeller/aspect-tester:astyle'
+        image 'gassmoeller/aspect-tester:stable'
         ttyEnabled true
         command 'cat'
       }
