@@ -44,6 +44,7 @@ kubernetes {
         container('aspect-tester'){
         sh '''
           sed -i 's/mpirun/mpirun --allow-run-as-root/' tests/CMakeLists.txt
+          git add tests/CMakeLists.txt && git commit -m 'tester specific changes'
           cd build-gcc-fast
           ASPECT_TESTS_VERBOSE=1 ../cmake/generate_reference_output.sh
         '''
