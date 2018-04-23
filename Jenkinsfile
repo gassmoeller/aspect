@@ -19,7 +19,6 @@ kubernetes {
         sh 'ls -la /home/jenkins/workspace/'
         sh 'pwd'
         sh 'id'
-        sh 'exec su - jenkins && id'
         sh 'cd && mkdir aspect-build'
         sh './doc/indent'
         sh 'git diff | tee astyle-changes.diff'
@@ -32,7 +31,6 @@ kubernetes {
       steps {
         container('aspect-tester'){
         sh '''
-          su jenkins
           mkdir -p build-gcc-fast
           cd build-gcc-fast
           cmake -G "Ninja" gcc -D ASPECT_TEST_GENERATOR=Ninja -D ASPECT_USE_PETSC=OFF -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_PRECOMPILE_HEADERS=ON ..
@@ -44,7 +42,11 @@ kubernetes {
     stage('test') {
       steps {
         container('aspect-tester'){
-        sh 'su jenkins && cd build-gcc-fast && ASPECT_TESTS_VERBOSE=1 ../cmake/generate_reference_output.sh'
+        sh '''
+          sed -i 's/mpirun/mpirun --allow-run-as-root/' tests/CMakeLists.txt
+          cd build-gcc-fast
+          ASPECT_TESTS_VERBOSE=1 ../cmake/generate_reference_output.sh
+        '''
         archiveArtifacts artifacts: 'build-gcc-fast/changes.diff', fingerprint: true
         sh 'git diff --exit-code --name-only'
         }
