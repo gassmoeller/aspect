@@ -12,7 +12,7 @@ pipeline {
   }
 
   stages {
-    stage("pre") {
+    stage("Debug") {
       steps {
           echo "Running build ${env.BUILD_ID} on ${env.NODE_NAME}, env=${env.NODE_ENV}"
           sh 'printenv'
@@ -22,27 +22,18 @@ pipeline {
       }
     }
 
-    stage ("check") {
+    stage ("Check execution") {
       when {
 	expression { return ! ( "${env.TRUST_BUILD}" == "true" || "${env.BRANCH_NAME}" == "master" || ["a@b.com", "heister@clemson.edu"].contains("${env.CHANGE_AUTHOR_EMAIL}") )
 	    }
       }
       steps {
-	  echo "please ask an admin to rerun on jenkins with TRUST_BUILD=true"
+	  echo "Please ask an admin to rerun jenkins with TRUST_BUILD=true"
 	    sh "exit 1"
       }
     }
 
-    stage("conf") {
-      steps {
-	echo "Running build ${env.BUILD_ID} on ${env.NODE_NAME}, env=${env.NODE_ENV}"
-	  sh 'printenv'
-	  sh 'ls -al'
-	  sh 'cmake .'
-      }
-    }
-
-    stage('astyle') {
+    stage('Check indentation') {
       steps {
         sh './doc/indent'
         sh 'git diff | tee astyle-changes.diff'
@@ -50,7 +41,7 @@ pipeline {
         sh 'git diff --exit-code --name-only'
         }
     }
-    stage('build-gcc-fast') {
+    stage('Build') {
       steps {
         sh '''
           mkdir -p build-gcc-fast
@@ -60,7 +51,7 @@ pipeline {
         '''
       } 
     }
-    stage('test') {
+    stage('Run tests') {
       steps {
         sh '''
           cd build-gcc-fast
