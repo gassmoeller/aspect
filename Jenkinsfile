@@ -22,6 +22,26 @@ pipeline {
       }
     }
 
+    stage ("check") {
+      when {
+	expression { return ! ( "${env.TRUST_BUILD}" == "true" || "${env.BRANCH_NAME}" == "master" || ["a@b.com", "heister@clemson.edu"].contains("${env.CHANGE_AUTHOR_EMAIL}") )
+	    }
+      }
+      steps {
+	  echo "please ask an admin to rerun on jenkins with TRUST_BUILD=true"
+	    sh "exit 1"
+      }
+    }
+
+    stage("conf") {
+      steps {
+	echo "Running build ${env.BUILD_ID} on ${env.NODE_NAME}, env=${env.NODE_ENV}"
+	  sh 'printenv'
+	  sh 'ls -al'
+	  sh 'cmake .'
+      }
+    }
+
     stage('astyle') {
       steps {
         sh './doc/indent'
@@ -43,8 +63,6 @@ pipeline {
     stage('test') {
       steps {
         sh '''
-          sed -i 's/mpirun/mpirun --allow-run-as-root/' tests/CMakeLists.txt
-          git add tests/CMakeLists.txt && git commit -m 'tester specific changes' --author 'tester <tester@tester.com>'
           cd build-gcc-fast
           ASPECT_TESTS_VERBOSE=1 ../cmake/generate_reference_output.sh
         '''
