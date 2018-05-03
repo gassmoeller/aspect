@@ -5,20 +5,20 @@ pipeline {
     docker {
         image 'dealii/dealii:v8.5.1-gcc-mpi-fulldepscandi-debugrelease'
 	label 'has-docker'
-	args '-v /home/docker/jenkins:/home/dealii/jenkins'
     }
   }
 
   parameters {
-    booleanParam(defaultValue: false, description: 'do we trust this user to run the testsuite?', name: 'TRUST_BUILD')
+    booleanParam(defaultValue: false, description: 'Is the pull request approved for testing?', name: 'TRUST_BUILD')
   }
 
-  stages {
-    stage("Debug") {
+    stage('Check indentation') {
       steps {
-          echo "Running build ${env.BUILD_ID} on ${env.NODE_NAME}, env=${env.NODE_ENV}"
-          sh 'printenv'
-      }
+        sh './doc/indent'
+        sh 'git diff | tee astyle-changes.diff'
+        archiveArtifacts artifacts: 'astyle-changes.diff', fingerprint: true
+        sh 'git diff --exit-code --name-only'
+        }
     }
 
     stage ("Check execution") {
@@ -42,14 +42,6 @@ pipeline {
       }
     }
 
-    stage('Check indentation') {
-      steps {
-        sh './doc/indent'
-        sh 'git diff | tee astyle-changes.diff'
-        archiveArtifacts artifacts: 'astyle-changes.diff', fingerprint: true
-        sh 'git diff --exit-code --name-only'
-        }
-    }
     stage('Build') {
       steps {
         sh '''
@@ -60,6 +52,7 @@ pipeline {
         '''
       } 
     }
+
     stage('Run tests') {
       steps {
         sh '''
@@ -71,6 +64,7 @@ pipeline {
       }
     }
   }
+
   post {
     always {
       deleteDir()
