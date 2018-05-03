@@ -1,3 +1,5 @@
+#!groovy
+
 pipeline {
   agent {
     docker {
@@ -23,7 +25,7 @@ pipeline {
 
     stage ("Check execution") {
       when {
-	expression { return ! ( "${env.TRUST_BUILD}" == "true" || "${env.BRANCH_NAME}" == "master" || ["heister@clemson.edu", "rene.gassmoeller@mailbox.org"].contains("${env.CHANGE_AUTHOR_EMAIL}") )
+	expression { return ! ( "${env.TRUST_BUILD}" == "true" || "${env.CHANGE_BRANCH}" == "jenkins-pipeline" || ["heister@clemson.edu", "rene.gassmoeller@mailbox.org"].contains("${env.CHANGE_AUTHOR_EMAIL}") )
 	    }
       }
       steps {
