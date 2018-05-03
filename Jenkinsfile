@@ -18,14 +18,22 @@ pipeline {
       steps {
           echo "Running build ${env.BUILD_ID} on ${env.NODE_NAME}, env=${env.NODE_ENV}"
           sh 'printenv'
-          sh 'echo $CHANGE_AUTHOR_EMAIL'
-          sh "echo ${env.CHANGE_AUTHOR_EMAIL}"
       }
     }
 
     stage ("Check execution") {
       when {
-	expression { return ! ( "${env.TRUST_BUILD}" == "true" || "${env.CHANGE_BRANCH}" == "jenkins-pipeline" || ["heister@clemson.edu", "rene.gassmoeller@mailbox.org"].contains("${env.CHANGE_AUTHOR_EMAIL}") )
+	allOf {
+            environment name: 'TRUST_BUILD', value: 'false' 
+            not {branch 'master'}
+            not {changeRequest authorEmail: "rene.gassmoeller@mailbox.org"}
+            not {changeRequest authorEmail: "timo.heister@gmail.com"}
+            not {changeRequest authorEmail: "bangerth@colostate.edu"}
+            not {changeRequest authorEmail: "judannberg@gmail.com"}
+            not {changeRequest authorEmail: "ja3170@columbia.edu"}
+            not {changeRequest authorEmail: "john.naliboff@gmail.com"}
+            not {changeRequest authorEmail: "menno.fraters@outlook.com"}
+            not {changeRequest authorEmail: "acglerum@gfz-potsdam.de"}
 	    }
       }
       steps {
