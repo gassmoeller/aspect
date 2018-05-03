@@ -16,15 +16,14 @@ pipeline {
       steps {
           echo "Running build ${env.BUILD_ID} on ${env.NODE_NAME}, env=${env.NODE_ENV}"
           sh 'printenv'
-          echo '${params.TRUST_BUILD}'
-          echo '${TRUST_BUILD}'
-          echo '${env.TRUST_BUILD}'
+          sh 'echo $CHANGE_AUTHOR_EMAIL'
+          sh "echo ${env.CHANGE_AUTHOR_EMAIL}"
       }
     }
 
     stage ("Check execution") {
       when {
-	expression { return ! ( "${env.TRUST_BUILD}" == "true" || "${env.BRANCH_NAME}" == "master" || ["a@b.com", "heister@clemson.edu"].contains("${env.CHANGE_AUTHOR_EMAIL}") )
+	expression { return ! ( "${env.TRUST_BUILD}" == "true" || "${env.BRANCH_NAME}" == "master" || ["heister@clemson.edu", "rene.gassmoeller@mailbox.org"].contains("${env.CHANGE_AUTHOR_EMAIL}") )
 	    }
       }
       steps {
