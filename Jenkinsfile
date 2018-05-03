@@ -12,11 +12,12 @@ pipeline {
     booleanParam(defaultValue: false, description: 'Is the pull request approved for testing?', name: 'TRUST_BUILD')
   }
 
+  stages {
     stage('Check indentation') {
       steps {
         sh './doc/indent'
-        sh 'git diff | tee astyle-changes.diff'
-        archiveArtifacts artifacts: 'astyle-changes.diff', fingerprint: true
+        sh 'git diff | tee changes-astyle.diff'
+        archiveArtifacts artifacts: 'changes-astyle.diff', fingerprint: true
         sh 'git diff --exit-code --name-only'
         }
     }
