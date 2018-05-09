@@ -12,14 +12,17 @@
 # sed -i "" -f update_source_files_to_2.0.0.sed FILENAME
 
 # Rename compositional initial conditions
-s/subsection Compositional initial conditions/Initial composition model/g
+s/subsection Compositional initial conditions/subsection Initial composition model/g
 
 # Rename initial (temperature) conditions
-s/subsection Initial conditions/Initial temperature model/g
+s/subsection Initial conditions/subsection Initial temperature model/g
 
 # Rename adiabatic conditions plugin initial profile
 s/subsection Initial profile/subsection Compute profile/g
 s/set Model name = initial profile/set Model name = compute profile/g
+
+# Recover previous behavior of the 'Radial linear' gravity model
+s/subsection Radial linear/subsection Radial linear\n    set Magnitude at bottom = 0.0/g
 
 # Replace the 'model name' parameter by 'List of model names'
 # in all subsections that now use the new parameter.
@@ -66,3 +69,6 @@ s/boussinesq/Boussinesq/g
 
 # Rename Dynamic topography subsection
 s/subsection Dynamic Topography/subsection Dynamic topography/g
+
+# Remove all instances of `melt transport threshold`
+/Melt transport threshold/d

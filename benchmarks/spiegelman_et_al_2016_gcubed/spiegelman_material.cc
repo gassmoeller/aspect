@@ -79,14 +79,14 @@ namespace aspect
      */
 
     template <int dim>
-    class DruckerPragerCompositions : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class SpiegelmanMaterial : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         std::vector<double> compute_volume_fractions( const std::vector<double> &compositional_fields) const;
 
         double compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const;
 
-        double compute_viscosity(const double edot_ii,const double pressure,const int comp, const double constant_viscosity,const bool regularize, const double min_visc, const double max_visc) const;
+        double compute_viscosity(const double edot_ii,const double pressure,const int comp, const double constant_viscosity,const bool compute_full_viscosity, const double min_visc, const double max_visc) const;
 
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const;
@@ -203,7 +203,7 @@ namespace aspect
   {
     template <int dim>
     std::vector<double>
-    DruckerPragerCompositions<dim>::
+    SpiegelmanMaterial<dim>::
     compute_volume_fractions( const std::vector<double> &compositional_fields) const
     {
       std::vector<double> volume_fractions( compositional_fields.size()+1);
@@ -235,7 +235,7 @@ namespace aspect
 
     template <int dim>
     double
-    DruckerPragerCompositions<dim>::
+    SpiegelmanMaterial<dim>::
     compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const
     {
       const double edot_ii_strict = std::sqrt(strain_rate*strain_rate);
@@ -245,16 +245,17 @@ namespace aspect
 
     template <int dim>
     double
-    DruckerPragerCompositions<dim>::
+    SpiegelmanMaterial<dim>::
     compute_viscosity(const double edot_ii,
                       const double pressure,
                       const int comp,
                       const double constant_viscosity,
-                      const bool regularize,
+                      const bool compute_full_viscosity,
                       const double min_visc,
                       const double max_visc) const
     {
       double viscosity;
+
       if (constant_viscosity == 0)
         {
           const double strength = ( (dim==3)
@@ -269,20 +270,24 @@ namespace aspect
             viscosity = strength / ( 2.0 * std::sqrt(0.5) * edot_ii );
           else
             viscosity = ref_visc;
-          if (regularize == true)
-            viscosity = ref_visc*viscosity / (ref_visc + viscosity);
+
+          if (compute_full_viscosity == true)
+            viscosity = ref_visc * viscosity / (ref_visc + viscosity);
         }
       else
         {
           viscosity = constant_viscosity;
         }
 
-      return std::max(std::min(viscosity,max_visc),min_visc);
+      if (compute_full_viscosity == true)
+        return std::max(std::min(viscosity, max_visc), min_visc);
+      else
+        return viscosity;
     }
 
     template <int dim>
     void
-    DruckerPragerCompositions<dim>::
+    SpiegelmanMaterial<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
@@ -292,7 +297,6 @@ namespace aspect
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          // const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];
 
@@ -362,7 +366,10 @@ namespace aspect
                           //analytic
                           if (constant_viscosity[c] == 0  && composition_viscosities[c] <= max_visc[c] && composition_viscosities[c] >= min_visc[c])
                             {
-                              const double drucker_prager_viscosity = compute_viscosity(edot_ii,pressure,c,constant_viscosity[c],false,min_visc[c],max_visc[c]);
+                              // we only want the pure durcker prager here, so the regularization should be off and the min and max values should not be used.
+                              // Therefore we set the compute_full_viscosity flag to flase. The min and max viscosity values  won't be used with this flag,
+                              // so we enter dummy values.
+                              const double drucker_prager_viscosity = compute_viscosity(edot_ii,pressure,c,constant_viscosity[c],false,std::numeric_limits<double>::min(),std::numeric_limits<double>::max());
                               const double regularization_adjustment = (ref_visc * ref_visc)
                                                                        / (ref_visc * ref_visc + 2.0 * ref_visc * drucker_prager_viscosity
                                                                           + drucker_prager_viscosity * drucker_prager_viscosity);
@@ -479,7 +486,7 @@ namespace aspect
 
     template <int dim>
     double
-    DruckerPragerCompositions<dim>::
+    SpiegelmanMaterial<dim>::
     reference_viscosity () const
     {
       return ref_visc;
@@ -487,7 +494,7 @@ namespace aspect
 
     template <int dim>
     double
-    DruckerPragerCompositions<dim>::
+    SpiegelmanMaterial<dim>::
     reference_density () const
     {
       return densities[0];
@@ -495,7 +502,7 @@ namespace aspect
 
     template <int dim>
     bool
-    DruckerPragerCompositions<dim>::
+    SpiegelmanMaterial<dim>::
     is_compressible () const
     {
       return (reference_compressibility != 0);
@@ -503,7 +510,7 @@ namespace aspect
 
     template <int dim>
     void
-    DruckerPragerCompositions<dim>::declare_parameters (ParameterHandler &prm)
+    SpiegelmanMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Compositional fields");
       {
@@ -601,7 +608,7 @@ namespace aspect
 
     template <int dim>
     void
-    DruckerPragerCompositions<dim>::parse_parameters (ParameterHandler &prm)
+    SpiegelmanMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
       using namespace Utilities;
       // can't use this->n_compositional_fields(), because some
@@ -697,7 +704,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(DruckerPragerCompositions,
+    ASPECT_REGISTER_MATERIAL_MODEL(SpiegelmanMaterial,
                                    "spiegelman 2016",
                                    "An implementation of the spiegelman 2016 benchmark paper in gcubed "
                                    "(doi:10.1002/ 2015GC006228). It implements a regularized Drucker Prager "
