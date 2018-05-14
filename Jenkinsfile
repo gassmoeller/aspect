@@ -66,16 +66,17 @@ pipeline {
         sh '''
           cd /home/dealii/build-gcc-fast/tests
           echo "prebuilding tests..."
-          ninja -k 0 tests >/dev/null 2>&1
+          ninja -k 0 sol_cx_2 >/dev/null 2>&1
           cd ..
-          echo "+ ctest --output-on-failure -j $NPROC"
-          ctest --output-on-failure -j $NPROC || { echo "test FAILED"; }
+          echo "+ ctest"
+          ctest -R sol_cx_2 || { echo "test FAILED"; }
 
           echo "+ ninja generate_reference_output"
           ninja generate_reference_output
           echo "ok"
         '''
-        archiveArtifacts artifacts: '/home/dealii/build-gcc-fast/changes.diff', fingerprint: true
+        sh 'git diff tests > changes.diff'
+        archiveArtifacts artifacts: 'changes.diff', fingerprint: true
         sh 'git diff --exit-code --name-only'
       }
     }
