@@ -51,7 +51,6 @@ pipeline {
       options {timeout(time: 15, unit: 'MINUTES')}
       steps {
         sh '''
-          env
           mkdir -p /home/dealii/build-gcc-fast
           cd /home/dealii/build-gcc-fast
           cmake -G "Ninja" gcc -D ASPECT_TEST_GENERATOR=Ninja -D ASPECT_USE_PETSC=OFF -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_PRECOMPILE_HEADERS=ON $WORKSPACE/
@@ -64,19 +63,20 @@ pipeline {
       options {timeout(time: 45, unit: 'MINUTES')}
       steps {
         sh '''
+          rm -f /home/dealii/build-gcc-fast/FAILED
           cd /home/dealii/build-gcc-fast/tests
           echo "Prebuilding tests..."
-          ninja -k 0 sol_cx_2 >/dev/null || { echo; }
+          ninja -k 0 sol_cx_2 >/dev/null || { touch /home/dealii/build-gcc-fast/FAILED; }
           cd ..
           echo "Checking for test failures..."
           ctest --output-on-failure -j4 -R sol_cx_2 || { echo "At least one test FAILED"; }
 
           echo "Generating reference output..."
           ninja generate_reference_output
-          echo "ok"
         '''
         sh 'git diff tests > changes_test_results.diff'
         archiveArtifacts artifacts: 'changes_test_results.diff', fingerprint: true
+        sh '[ -f "/home/dealii/build-gcc-fast/FAILED" ] && exit 1'
         sh 'git diff --exit-code --name-only'
       }
     }
