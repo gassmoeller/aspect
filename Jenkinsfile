@@ -17,7 +17,7 @@ pipeline {
   }
 
   stages {
-    stage ("Check execution") {
+    stage ("Check permissions") {
       when {
 	allOf {
             environment name: 'TRUST_BUILD', value: 'false' 
@@ -65,18 +65,18 @@ pipeline {
       steps {
         sh '''
           cd /home/dealii/build-gcc-fast/tests
-          echo "prebuilding tests..."
-          ninja -k 0 sol_cx_2 >/dev/null
+          echo "Prebuilding tests..."
+          ninja -k 0 sol_cx_2 >/dev/null || { echo; }
           cd ..
-          echo "+ ctest"
-          ctest -R sol_cx_2 || { echo "test FAILED"; }
+          echo "Checking for test failures..."
+          ctest --output-on-failure -j4 -R sol_cx_2 || { echo "At least one test FAILED"; }
 
-          echo "+ ninja generate_reference_output"
+          echo "Generating reference output..."
           ninja generate_reference_output
           echo "ok"
         '''
-        sh 'git diff tests > changes.diff'
-        archiveArtifacts artifacts: 'changes.diff', fingerprint: true
+        sh 'git diff tests > changes_test_results.diff'
+        archiveArtifacts artifacts: 'changes_test_results.diff', fingerprint: true
         sh 'git diff --exit-code --name-only'
       }
     }
