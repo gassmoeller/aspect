@@ -66,7 +66,7 @@ pipeline {
         sh '''
           cd /home/dealii/build-gcc-fast/tests
           echo "prebuilding tests..."
-          ninja -k 0 sol_cx_2 >/dev/null 2>&1
+          ninja -k 0 sol_cx_2 >/dev/null
           cd ..
           echo "+ ctest"
           ctest -R sol_cx_2 || { echo "test FAILED"; }
