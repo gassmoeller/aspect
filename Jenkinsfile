@@ -66,16 +66,16 @@ pipeline {
           rm -f /home/dealii/build-gcc-fast/FAILED
           cd /home/dealii/build-gcc-fast/tests
           echo "Prebuilding tests..."
-          ninja -k 0 sol_cx_2 >/dev/null || { touch /home/dealii/build-gcc-fast/FAILED; }
+          ninja -k 0 tests >/dev/null || { touch /home/dealii/build-gcc-fast/FAILED; }
           cd ..
           echo "Checking for test failures..."
-          ctest --output-on-failure -j4 -R sol_cx_2 || { echo "At least one test FAILED"; }
+          ctest --output-on-failure -j4 || { echo "At least one test FAILED"; }
 
           echo "Generating reference output..."
           ninja generate_reference_output
         '''
-        sh 'git diff tests > changes_test_results.diff'
-        archiveArtifacts artifacts: 'changes_test_results.diff', fingerprint: true
+        sh 'git diff tests > changes-test-results.diff'
+        archiveArtifacts artifacts: 'changes-test-results.diff', fingerprint: true
         sh '[ -f "/home/dealii/build-gcc-fast/FAILED" ] && exit 1'
         sh 'git diff --exit-code --name-only'
       }

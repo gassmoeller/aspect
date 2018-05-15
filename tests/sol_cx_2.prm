@@ -10,7 +10,7 @@ set CFL number                             = 1.0
 set End time                               = 0
 
 
-set Resume computation                     = ffalse
+set Resume computation                     = false
 
 set Start time                             = 0
 
