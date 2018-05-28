@@ -800,16 +800,20 @@ namespace aspect
       {
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Sort");
 
-        this->get_computing_timer().enter_section("Particles: Sort - Cell-Vertex association");
+        this->get_computing_timer().enter_section("Particles: Sort - Vertex to cells");
 
         // Create a map from vertices to adjacent cells
         const std::vector<std::set<typename Triangulation<dim>::active_cell_iterator> >
         vertex_to_cells(GridTools::vertex_to_cell_map(this->get_triangulation()));
+        this->get_computing_timer().exit_section("Particles: Sort - Vertex to cells");
+
+        this->get_computing_timer().enter_section("Particles: Sort - Vertex to centers");
 
         // Create a corresponding map of vectors from vertex to cell center
         const std::vector<std::vector<Tensor<1,dim> > > vertex_to_cell_centers(vertex_to_cell_centers_directions(vertex_to_cells));
 
-        this->get_computing_timer().exit_section("Particles: Sort - Cell-Vertex association");
+        this->get_computing_timer().exit_section("Particles: Sort - Vertex to centers");
+
         this->get_computing_timer().enter_section("Particles: Sort - Find new cell");
 
         std::vector<unsigned int> neighbor_permutation;
