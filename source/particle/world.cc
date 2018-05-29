@@ -778,12 +778,14 @@ namespace aspect
         typename Triangulation<dim,spacedim>::active_cell_iterator cell = triangulation.begin_active(),
                                                                    endc = triangulation.end();
         for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned() || cell->is_ghost())
           for (unsigned int i=0; i<GeometryInfo<dim>::vertices_per_cell; ++i)
             vertex_to_cell_map[cell->vertex_index(i)].insert(cell);
 
         // Take care of hanging nodes
         cell = triangulation.begin_active();
         for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned() || cell->is_ghost())
           {
             for (unsigned int i=0; i<GeometryInfo<dim>::faces_per_cell; ++i)
               {
