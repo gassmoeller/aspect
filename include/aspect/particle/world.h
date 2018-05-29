@@ -431,7 +431,7 @@ namespace aspect
          * respective cell center.
          */
         std::vector<std::vector<Tensor<1,dim> > >
-        vertex_to_cell_centers_directions(const std::vector<std::set<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> > &vertex_to_cells) const;
+        vertex_to_cell_centers_directions(const std::vector<std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> > &vertex_to_cells) const;
 
         /**
          * Finds the cells containing each particle for all particles in

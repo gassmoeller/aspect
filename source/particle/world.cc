@@ -745,10 +745,18 @@ namespace aspect
 
     template <int dim>
     std::vector<std::vector<Tensor<1,dim> > >
-    World<dim>::vertex_to_cell_centers_directions(const std::vector<std::set<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> > &vertex_to_cells) const
+    World<dim>::vertex_to_cell_centers_directions(const std::vector<std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> > &vertex_to_cells) const
     {
       const std::vector<Point<dim> > &vertices = this->get_triangulation().get_vertices();
       const unsigned int n_vertices = vertex_to_cells.size();
+
+      std::vector<Point<dim> > cell_centers(this->get_triangulation().n_active_cells());
+
+      typename Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active(),
+                                                                 endc = this->get_triangulation().end();
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned() || cell->is_ghost())
+          cell_centers[cell->active_cell_index()] = cell->center();
 
       std::vector<std::vector<Tensor<1,dim> > > vertex_to_cell_centers(n_vertices);
       for (unsigned int vertex=0; vertex<n_vertices; ++vertex)
@@ -757,10 +765,9 @@ namespace aspect
             const unsigned int n_neighbor_cells = vertex_to_cells[vertex].size();
             vertex_to_cell_centers[vertex].resize(n_neighbor_cells);
 
-            typename std::set<typename Triangulation<dim>::active_cell_iterator>::iterator it = vertex_to_cells[vertex].begin();
-            for (unsigned int cell=0; cell<n_neighbor_cells; ++cell,++it)
+            for (unsigned int cell=0; cell<n_neighbor_cells; ++cell)
               {
-                vertex_to_cell_centers[vertex][cell] = (*it)->center() - vertices[vertex];
+                vertex_to_cell_centers[vertex][cell] = cell_centers[vertex_to_cells[vertex][cell]->active_cell_index()] - vertices[vertex];
                 vertex_to_cell_centers[vertex][cell] /= vertex_to_cell_centers[vertex][cell].norm();
               }
           }
@@ -770,17 +777,21 @@ namespace aspect
     namespace
     {
       template <int dim, int spacedim>
-      std::vector<std::set<typename Triangulation<dim,spacedim>::active_cell_iterator> >
+      std::vector<std::vector<typename Triangulation<dim,spacedim>::active_cell_iterator> >
       vertex_to_cell_map(const Triangulation<dim,spacedim> &triangulation)
       {
-        std::vector<std::set<typename Triangulation<dim,spacedim>::active_cell_iterator> >
+        std::vector<std::vector<typename Triangulation<dim,spacedim>::active_cell_iterator> >
         vertex_to_cell_map(triangulation.n_vertices());
+
+        for (unsigned int i=0; i<vertex_to_cell_map.size(); ++i)
+          vertex_to_cell_map[i].reserve(GeometryInfo<dim>::vertices_per_cell);
+
         typename Triangulation<dim,spacedim>::active_cell_iterator cell = triangulation.begin_active(),
                                                                    endc = triangulation.end();
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned() || cell->is_ghost())
           for (unsigned int i=0; i<GeometryInfo<dim>::vertices_per_cell; ++i)
-            vertex_to_cell_map[cell->vertex_index(i)].insert(cell);
+            vertex_to_cell_map[cell->vertex_index(i)].push_back(cell);
 
         // Take care of hanging nodes
         cell = triangulation.begin_active();
@@ -789,12 +800,19 @@ namespace aspect
           {
             for (unsigned int i=0; i<GeometryInfo<dim>::faces_per_cell; ++i)
               {
-                if ((cell->at_boundary(i)==false) && (cell->neighbor(i)->active()))
+                if (cell->at_boundary(i)==false && cell->neighbor(i)->active())
                   {
                     typename Triangulation<dim,spacedim>::active_cell_iterator adjacent_cell =
-                      cell->neighbor(i);
-                    for (unsigned int j=0; j<GeometryInfo<dim>::vertices_per_face; ++j)
-                      vertex_to_cell_map[cell->face(i)->vertex_index(j)].insert(adjacent_cell);
+                        cell->neighbor(i);
+
+                    if (adjacent_cell->level() < cell->level())
+                      for (unsigned int j=0; j<GeometryInfo<dim>::vertices_per_face; ++j)
+                        {
+                          std::vector<typename Triangulation<dim,spacedim>::active_cell_iterator> &neighbor_cells
+                          = vertex_to_cell_map[cell->face(i)->vertex_index(j)];
+                          if (std::find(neighbor_cells.begin(),neighbor_cells.end(),adjacent_cell) == neighbor_cells.end())
+                            neighbor_cells.push_back(adjacent_cell);
+                        }
                   }
               }
 
@@ -803,10 +821,16 @@ namespace aspect
               {
                 for (unsigned int i=0; i<GeometryInfo<dim>::lines_per_cell; ++i)
                   if (cell->line(i)->has_children())
-                    // the only place where this vertex could have been
-                    // hiding is on the mid-edge point of the edge we
-                    // are looking at
-                    vertex_to_cell_map[cell->line(i)->child(0)->vertex_index(1)].insert(cell);
+                    {
+                      // the only place where this vertex could have been
+                      // hiding is on the mid-edge point of the edge we
+                      // are looking at
+                      const unsigned int vertex_index = cell->line(i)->child(0)->vertex_index(1);
+                      std::vector<typename Triangulation<dim,spacedim>::active_cell_iterator> &neighbor_cells
+                      = vertex_to_cell_map[vertex_index];
+                      if (std::find(neighbor_cells.begin(),neighbor_cells.end(),cell) == neighbor_cells.end())
+                        vertex_to_cell_map[vertex_index].push_back(cell);
+                    }
               }
           }
 
@@ -850,7 +874,7 @@ namespace aspect
         this->get_computing_timer().enter_section("Particles: Sort - Vertex to cells");
 
         // Create a map from vertices to adjacent cells
-        const std::vector<std::set<typename Triangulation<dim>::active_cell_iterator> >
+        const std::vector<std::vector<typename Triangulation<dim>::active_cell_iterator> >
         vertex_to_cells(vertex_to_cell_map(this->get_triangulation()));
         this->get_computing_timer().exit_section("Particles: Sort - Vertex to cells");
 
@@ -908,13 +932,12 @@ namespace aspect
                   {
                     try
                       {
-                        typename std::set<typename Triangulation<dim>::active_cell_iterator>::const_iterator cell = vertex_to_cells[closest_vertex_index].begin();
-                        std::advance(cell,neighbor_permutation[i]);
-                        const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(*cell,
+                        const typename Triangulation<dim>::active_cell_iterator &cell = vertex_to_cells[closest_vertex_index][neighbor_permutation[i]];
+                        const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell,
                                                                                                   it->second.get_location());
                         if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
                           {
-                            current_cell = *cell;
+                            current_cell = cell;
                             current_reference_position = p_unit;
                             found_cell = true;
                             break;
