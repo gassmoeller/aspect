@@ -871,21 +871,21 @@ namespace aspect
       {
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Sort");
 
-        this->get_computing_timer().enter_section("Particles: Sort - Vertex to cells");
+        this->get_computing_timer().enter_section("Particles: Vertex to cells");
 
         // Create a map from vertices to adjacent cells
         const std::vector<std::vector<typename Triangulation<dim>::active_cell_iterator> >
         vertex_to_cells(vertex_to_cell_map(this->get_triangulation()));
-        this->get_computing_timer().exit_section("Particles: Sort - Vertex to cells");
+        this->get_computing_timer().exit_section("Particles: Vertex to cells");
 
-        this->get_computing_timer().enter_section("Particles: Sort - Vertex to centers");
+        this->get_computing_timer().enter_section("Particles: Vertex to centers");
 
         // Create a corresponding map of vectors from vertex to cell center
         const std::vector<std::vector<Tensor<1,dim> > > vertex_to_cell_centers(vertex_to_cell_centers_directions(vertex_to_cells));
 
-        this->get_computing_timer().exit_section("Particles: Sort - Vertex to centers");
+        this->get_computing_timer().exit_section("Particles: Vertex to centers");
 
-        this->get_computing_timer().enter_section("Particles: Sort - Find new cell");
+        this->get_computing_timer().enter_section("Particles: Find new cell");
 
         std::vector<unsigned int> neighbor_permutation;
 
@@ -991,8 +991,8 @@ namespace aspect
               }
           }
 
-        this->get_computing_timer().exit_section("Particles: Sort - Find new cell");
-        this->get_computing_timer().enter_section("Particles: Sort - Move back in mesh");
+        this->get_computing_timer().exit_section("Particles: Find new cell");
+        this->get_computing_timer().enter_section("Particles: Move back in mesh");
 
 
         // If particles fell out of the mesh, put them back in if they have crossed
@@ -1001,18 +1001,18 @@ namespace aspect
         move_particles_back_into_mesh(lost_particles,
                                       sorted_particles,
                                       moved_particles_domain);
-        this->get_computing_timer().exit_section("Particles: Sort - Move back in mesh");
+        this->get_computing_timer().exit_section("Particles: Move back in mesh");
 
 
       }
       // Exchange particles between processors if we have more than one process
       if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
         {
-          TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Sort - Communicate");
+          TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Communicate");
           send_recv_particles(moved_particles_domain,sorted_particles);
         }
 
-      this->get_computing_timer().enter_section("Particles: Sort - Reinsert particles");
+      this->get_computing_timer().enter_section("Particles: Reinsert particles");
 
       // Sort the updated particles. This pre-sort speeds up inserting
       // them into particles to O(N) complexity.
@@ -1021,7 +1021,7 @@ namespace aspect
 
       particles.insert(sorted_particles_map.begin(),sorted_particles_map.end());
 
-      this->get_computing_timer().exit_section("Particles: Sort - Reinsert particles");
+      this->get_computing_timer().exit_section("Particles: Reinsert particles");
 
     }
 
