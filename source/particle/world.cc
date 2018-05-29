@@ -767,6 +767,51 @@ namespace aspect
       return vertex_to_cell_centers;
     }
 
+    namespace
+    {
+      template <int dim, int spacedim>
+      std::vector<std::set<typename Triangulation<dim,spacedim>::active_cell_iterator> >
+      vertex_to_cell_map(const Triangulation<dim,spacedim> &triangulation)
+      {
+        std::vector<std::set<typename Triangulation<dim,spacedim>::active_cell_iterator> >
+        vertex_to_cell_map(triangulation.n_vertices());
+        typename Triangulation<dim,spacedim>::active_cell_iterator cell = triangulation.begin_active(),
+                                                                   endc = triangulation.end();
+        for (; cell!=endc; ++cell)
+          for (unsigned int i=0; i<GeometryInfo<dim>::vertices_per_cell; ++i)
+            vertex_to_cell_map[cell->vertex_index(i)].insert(cell);
+
+        // Take care of hanging nodes
+        cell = triangulation.begin_active();
+        for (; cell!=endc; ++cell)
+          {
+            for (unsigned int i=0; i<GeometryInfo<dim>::faces_per_cell; ++i)
+              {
+                if ((cell->at_boundary(i)==false) && (cell->neighbor(i)->active()))
+                  {
+                    typename Triangulation<dim,spacedim>::active_cell_iterator adjacent_cell =
+                      cell->neighbor(i);
+                    for (unsigned int j=0; j<GeometryInfo<dim>::vertices_per_face; ++j)
+                      vertex_to_cell_map[cell->face(i)->vertex_index(j)].insert(adjacent_cell);
+                  }
+              }
+
+            // in 3d also loop over the edges
+            if (dim==3)
+              {
+                for (unsigned int i=0; i<GeometryInfo<dim>::lines_per_cell; ++i)
+                  if (cell->line(i)->has_children())
+                    // the only place where this vertex could have been
+                    // hiding is on the mid-edge point of the edge we
+                    // are looking at
+                    vertex_to_cell_map[cell->line(i)->child(0)->vertex_index(1)].insert(cell);
+              }
+          }
+
+        return vertex_to_cell_map;
+      }
+    }
+
     template <int dim>
     void
     World<dim>::sort_particles_in_subdomains_and_cells(const std::vector<std::pair<types::LevelInd, Particle<dim> > > &particles_to_sort)
@@ -804,7 +849,7 @@ namespace aspect
 
         // Create a map from vertices to adjacent cells
         const std::vector<std::set<typename Triangulation<dim>::active_cell_iterator> >
-        vertex_to_cells(GridTools::vertex_to_cell_map(this->get_triangulation()));
+        vertex_to_cells(vertex_to_cell_map(this->get_triangulation()));
         this->get_computing_timer().exit_section("Particles: Sort - Vertex to cells");
 
         this->get_computing_timer().enter_section("Particles: Sort - Vertex to centers");
