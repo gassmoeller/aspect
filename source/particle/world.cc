@@ -783,15 +783,17 @@ namespace aspect
         std::vector<std::vector<typename Triangulation<dim,spacedim>::active_cell_iterator> >
         vertex_to_cell_map(triangulation.n_vertices());
 
-        for (unsigned int i=0; i<vertex_to_cell_map.size(); ++i)
-          vertex_to_cell_map[i].reserve(GeometryInfo<dim>::vertices_per_cell);
-
         typename Triangulation<dim,spacedim>::active_cell_iterator cell = triangulation.begin_active(),
                                                                    endc = triangulation.end();
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned() || cell->is_ghost())
-          for (unsigned int i=0; i<GeometryInfo<dim>::vertices_per_cell; ++i)
-            vertex_to_cell_map[cell->vertex_index(i)].push_back(cell);
+            for (unsigned int i=0; i<GeometryInfo<dim>::vertices_per_cell; ++i)
+              {
+                if (vertex_to_cell_map[cell->vertex_index(i)].capacity() < GeometryInfo<dim>::vertices_per_cell)
+                  vertex_to_cell_map[cell->vertex_index(i)].reserve(GeometryInfo<dim>::vertices_per_cell);
+
+                vertex_to_cell_map[cell->vertex_index(i)].push_back(cell);
+              }
 
         // Take care of hanging nodes
         cell = triangulation.begin_active();
