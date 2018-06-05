@@ -891,6 +891,9 @@ namespace aspect
 
         std::vector<unsigned int> neighbor_permutation;
 
+        // Counter for sort statistics
+        std::vector<unsigned int> count_statistics (GeometryInfo<dim>::vertices_per_cell+1,0);
+
         // Find the cells that the particles moved to.
         typename std::vector<std::pair<types::LevelInd, Particle<dim> > >::const_iterator it = particles_to_sort.begin(),
                                                                                           end_particle = particles_to_sort.end();
@@ -939,6 +942,7 @@ namespace aspect
                                                                                                   it->second.get_location());
                         if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
                           {
+                            ++count_statistics[i];
                             current_cell = cell;
                             current_reference_position = p_unit;
                             found_cell = true;
@@ -952,6 +956,7 @@ namespace aspect
 
             if (!found_cell)
               {
+                ++count_statistics[GeometryInfo<dim>::vertices_per_cell];
                 // The particle is not in a neighbor of the old cell.
                 // Look for the new cell in the whole local domain.
                 // This case is rare.
@@ -992,6 +997,16 @@ namespace aspect
                 .set_reference_location(current_reference_position);
               }
           }
+
+        std::vector<unsigned int> global_search_statistics(GeometryInfo<dim>::vertices_per_cell+1,0);
+        Utilities::MPI::sum (count_statistics, this->get_mpi_communicator(), global_search_statistics);
+
+        this->get_pcout() << "Total searches: " << particles_to_sort.size() << std::endl;
+        this->get_pcout() << "Search statistics:";
+        for (unsigned int i=0; i<GeometryInfo<dim>::vertices_per_cell+1; ++i)
+          this->get_pcout() << " " << global_search_statistics[i];
+
+        this->get_pcout() << std::endl;
 
         this->get_computing_timer().exit_section("Particles: Find new cell");
         this->get_computing_timer().enter_section("Particles: Move back in mesh");
