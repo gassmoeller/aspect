@@ -38,12 +38,140 @@ namespace aspect
 
     namespace internal
     {
+    /**
+     * GPlatesLookup handles all kinds of tasks around looking up a certain
+     * velocity boundary condition from a gplates .gpml file.
+     */
+    template <int dim>
+    class GPlatesLookup
+    {
+      public:
+
+        /**
+         * Initialize all members and calculates any necessary rotation
+         * parameters for a 2D model.
+         */
+        GPlatesLookup(const Tensor<1,2> &pointone,
+                      const Tensor<1,2> &pointtwo);
+
+        /**
+         * Outputs the GPlates module information at model start.
+         */
+        std::string
+        screen_output(const Tensor<1,2> &surface_point_one,
+                      const Tensor<1,2> &surface_point_two) const;
+
+        /**
+         * Loads a gplates .gpml velocity file. Throws an exception if the
+         * file does not exist.
+         */
+        void load_file(const std::string &filename,
+                       const MPI_Comm &comm);
+
+        /**
+         * Returns the computed surface velocity in cartesian coordinates.
+         * Takes as input the position. Actual velocity interpolation is
+         * performed in spherical coordinates.
+         *
+         * @param position The current position to compute velocity
+         */
+        Tensor<1,dim> surface_velocity(const Point<dim> &position) const;
+
+      private:
+        /**
+         * Interpolation functions to access the velocities.
+         */
+        std_cxx11::array<std_cxx11::unique_ptr<typename Functions::InterpolatedUniformGridData<2> >, 2> velocities;
+
+        /**
+         * Distances between adjacent point in the Lat/Long grid
+         */
+        double delta_phi, delta_theta;
+
+        /**
+         * The matrix, which describes the rotation by which a 2D model
+         * needs to be transformed to a plane that contains the origin and
+         * the two user prescribed points. Is not necessary and therefore
+         * not used for 3D models.
+         */
+        Tensor<2,3> rotation_matrix;
+
+        /**
+         * A function that returns the corresponding paraview angles for a
+         * rotation described by a rotation matrix. These differ from the
+         * usually used euler angles by assuming a rotation around the
+         * coordinate axes in the order y-x-z (instead of the often used
+         * z-x-z)
+         */
+        std_cxx11::array<double,3>
+        angles_from_matrix (const Tensor<2,3> &rotation_matrix) const;
+
+        /**
+         * A function that returns the corresponding rotation axis/angle for
+         * a rotation described by a rotation matrix.
+         */
+        double
+        rotation_axis_from_matrix (Tensor<1,3> &rotation_axis,
+                                   const Tensor<2,3> &rotation_matrix) const;
+
+        /**
+         * A function that returns the corresponding euler angles for a
+         * rotation described by rotation axis and angle.
+         */
+        Tensor<2,3>
+        rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
+                                   const double rotation_angle) const;
+
+        /**
+         * Convert a tensor of rank 1 and dimension in to rank 1 and
+         * dimension out. If $out < in$ the last elements will be discarded,
+         * if $out > in$ zeroes will be appended to fill the tensor.
+         */
+        template <int in, int out>
+        Tensor<1,out> convert_tensor (const Tensor<1,in> &old_tensor) const;
+
+        /**
+         * Return the cartesian coordinates of a spherical surface position
+         * defined by theta (polar angle, not geographical latitude) and
+         * phi.
+         */
+        Tensor<1,3>
+        cartesian_surface_coordinates(const Tensor<1,3> &sposition) const;
+
+        /**
+         * This function looks up the north- and east-velocities at a given
+         * position and converts them to cartesian velocities.
+         */
+        Tensor<1,dim>
+        cartesian_velocity_at_surface_point(const std_cxx11::array<double,3> &spherical_point) const;
+
+        /**
+         * Returns cartesian velocities calculated from surface velocities
+         * and position in spherical coordinates
+         *
+         * @param s_velocities Surface velocities in spherical coordinates
+         * (theta, phi)
+         * @param s_position Position in spherical coordinates
+         * (radius,phi,theta)
+         */
+        Tensor<1,3> sphere_to_cart_velocity(const Tensor<1,2> &s_velocities,
+                                            const std_cxx11::array<double,3> &s_position) const;
+
+        /**
+         * Check whether the gpml file was created by GPlates1.4 or later.
+         * We need to know this, because the mesh has changed its longitude
+         * origin from 0 to -180 degrees and we need to correct for this.
+         */
+        bool
+        gplates_1_4_or_higher(const boost::property_tree::ptree &pt) const;
+    };
+
       /**
        * GPlatesLookup handles all kinds of tasks around looking up a certain
        * velocity boundary condition from a gplates .gpml file.
        */
       template <int dim>
-      class GPlatesLookup
+      class GPlatesAgeLookup
       {
         public:
 
@@ -51,7 +179,7 @@ namespace aspect
            * Initialize all members and calculates any necessary rotation
            * parameters for a 2D model.
            */
-          GPlatesLookup(const Tensor<1,2> &pointone,
+          GPlatesAgeLookup(const Tensor<1,2> &pointone,
                         const Tensor<1,2> &pointtwo);
 
           /**
@@ -69,19 +197,17 @@ namespace aspect
                          const MPI_Comm &comm);
 
           /**
-           * Returns the computed surface velocity in cartesian coordinates.
-           * Takes as input the position. Actual velocity interpolation is
-           * performed in spherical coordinates.
+           * Returns the computed plate age at the given location.
            *
-           * @param position The current position to compute velocity
+           * @param position The current position to compute the age
            */
-          Tensor<1,dim> surface_velocity(const Point<dim> &position) const;
+          double surface_age(const Point<dim> &position) const;
 
         private:
           /**
            * Interpolation functions to access the velocities.
            */
-          std_cxx11::array<std_cxx11::unique_ptr<typename Functions::InterpolatedUniformGridData<2> >, 2> velocities;
+          std_cxx11::array<std_cxx11::unique_ptr<typename Functions::InterpolatedUniformGridData<2> >, 2> ages;
 
           /**
            * Distances between adjacent point in the Lat/Long grid
