@@ -185,7 +185,7 @@ namespace aspect
                                                "iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|"
                                                "single Advection, no Stokes|IMPES|iterated IMPES|"
                                                "iterated Stokes|Newton Stokes|Stokes only|Advection only|"
-                                               "first timestep only, single Stokes|no Advection, no Stokes";
+                                               "first timestep only|Stokes adjoint, single Stokes|no Advection, no Stokes";
 
     prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
                        Patterns::Selection (allowed_solver_schemes),
@@ -229,7 +229,8 @@ namespace aspect
                        "The `Advection only' scheme is deprecated and only allowed for reasons of "
                        "backwards compatibility. It is the same as `single Advection, no Stokes'. "
                        "The `Newton Stokes' scheme is deprecated and only allowed for reasons of "
-                       "backwards compatibility. It is the same as `iterated Advection and Newton Stokes'.");
+                       "backwards compatibility. It is the same as `iterated Advection and Newton Stokes'."
+                       "The `Stokes adjoint' scheme solves the forward and adjoint stokes equation");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0., 1.),
@@ -1266,6 +1267,26 @@ namespace aspect
     // declare the VolumeOfFluid parameters
     VolumeOfFluidHandler<dim>::declare_parameters(prm);
 
+
+    prm.enter_subsection("Adjoint problem");
+    {
+      prm.declare_entry ("Input filename for ajoint points", "/Users/jackyaustermann/Desktop/Aspect_code/aspect/data/adjoint-observations/dynamic_topography_observations.txt",
+                         Patterns::Anything(),
+                         "");
+      prm.declare_entry ("Read points in from file", "false",
+                         Patterns::Bool (),
+                         "");
+      prm.declare_entry ("Do iterations for inversion", "false",
+                         Patterns::Bool (),
+                         "");
+      prm.declare_entry ("Use fixed surface value", "false",
+                         Patterns::Bool (),
+                         "");
+    }
+    prm.leave_subsection();
+
+
+
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed
     // to the relevant signals
@@ -1323,6 +1344,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::first_timestep_only_single_Stokes;
       else if (solver_scheme == "no Advection, no Stokes")
         nonlinear_solver = NonlinearSolver::no_Advection_no_Stokes;
+      else if (solver_scheme == "Stokes adjoint")
+        nonlinear_solver = NonlinearSolver::Stokes_adjoint;
       else
         AssertThrow (false, ExcNotImplemented());
     }
@@ -1921,6 +1944,15 @@ namespace aspect
       material_averaging
         = MaterialModel::MaterialAveraging::parse_averaging_operation_name
           (prm.get ("Material averaging"));
+    }
+    prm.leave_subsection ();
+
+    prm.enter_subsection("Adjoint problem");
+    {
+      adjoint_input_file              = prm.get ("Input filename for ajoint points");
+      read_in_points                  = prm.get_bool ("Read points in from file");
+      do_iteration                    = prm.get_bool ("Do iterations for inversion");
+      use_fixed_surface_value         = prm.get_bool ("Use fixed surface value");
     }
     prm.leave_subsection ();
 

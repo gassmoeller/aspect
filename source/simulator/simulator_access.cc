@@ -750,6 +750,20 @@ namespace aspect
             ExcMessage("You can not call this function if the matrix-free Stokes solver is not used."));
     return *(simulator->stokes_matrix_free);
   }
+
+
+  template <int dim>
+  bool SimulatorAccess<dim>::get_adjoint_problem () const
+  {
+    return simulator->adjoint_problem;
+  }
+
+  template <int dim>
+  const LinearAlgebra::BlockVector &
+  SimulatorAccess<dim>::get_current_adjoint_solution () const
+  {
+    return simulator->current_adjoint_solution;
+  }
 }
 
 

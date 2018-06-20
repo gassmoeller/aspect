@@ -240,6 +240,16 @@ namespace aspect
             assemblers->advection_system_assembler_on_face_properties[i].need_face_finite_element_evaluation = true;
           }
       }
+
+    // adjoint RHS
+    // this is set to zero within the adjoint assembler if it's not in adjoint mode
+    assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points | update_normal_vectors | update_gradients | update_JxW_values);
+
+    assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
+    assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity = true;
+
+    assemblers->stokes_system_on_boundary_face.push_back(
+      std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
   }
 
   template <int dim>
