@@ -691,6 +691,7 @@ namespace aspect
     bool               read_in_points;
     bool               do_iteration;
     bool          use_fixed_surface_value;
+    double        update_factor;
 
   };
 

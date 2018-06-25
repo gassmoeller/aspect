@@ -1123,6 +1123,30 @@ namespace aspect
         if (introspection.block_indices.velocities != introspection.block_indices.pressure)
           solution.block(introspection.block_indices.pressure)
             = current_linearization_point.block(introspection.block_indices.pressure);
+
+        // -------------------------------------------------------------
+        // COMPUTE UPDATES FOR ETA AND RHO
+
+        // check if we even want to do an iteration or if we're just interested in the kernels
+        if (parameters.do_iteration == true)
+          {
+            // the inversion only works with a specific material model
+            // this doesn't actually check the material model yet just the number of comp fields, but okay
+            Assert(introspection.n_compositional_fields == 2,
+                   ExcMessage ("You're not using the right material model for the adjoint problem. "
+                               "The only model that is consistent is the additive material model."));
+
+            // set up rhs and mass matrix
+            // solve system for gradients in eta and rho
+            compute_parameter_update();
+
+
+            // update initial density and viscosity guess
+            const double  alpha = 0.1;
+
+            //in.composition[i][density_idx];
+            //in.composition[i][viscosity_idx];
+          }
       }
   }
 
