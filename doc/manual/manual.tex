@@ -10419,6 +10419,77 @@ obtained with a resolution of $32\times 32$ elements. (a) Gravity field, (b) pre
 
 
 
+\subsubsection{The N-sinker problem}
+
+{\it This section was contributed by Cedric Thieulot, Rene Gassm\"{o}ller and Wolfgang Bangerth.}
+
+In order to investigate the solver robustness, we have implemented the $N$-sinker test 
+presented by \citet{May2015496} as implemented in \citet{rudi2017weighted}. In this benchmark the unit cube is filled with a Newtonian 
+fluid and is populated with up to $N=75$ randomly-placed 
+non-intersecting sinking spheres of radius $R=0.05$.
+The flow is driven by the density of the sinkers in a vertical unit gravity field
+($\rho_{fluid}=0$, $\rho_{sinker}=1$). 
+The boundary conditions are free-slip on all sides with the exception of the top 
+boundary which is open to flow crossing the boundary (stress-free).
+The viscosity of the fluid is set to $1/\sqrt{\mu_R}$ and the viscosity of the sinkers to 
+$\sqrt{\mu_R}$ so that the total viscosity contrast is $\mu_R\in [10^4,10^10]$.
+Since this setup does not admit an analytical solution, the 
+accuracy of the solution can not be assessed. However, the convergence behavior of the Stokes solver in dependence of number of sinkers and viscosity contrast gives important information about the quality of the preconditioner and the robustness of the Solver to difficult problems.
+
+For simplicity and to better compare results with the published results we here use a uniform mesh, which is refined globally 3 times to keep runtimes reasonable. The following is a reproduction of Table 1 of \citet{rudi2017weighted} for similar \aspect{} solver parameters obtained with the benchmark setup in ``benchmarks/nsinker'', but for a significantly coarser resolution.
+
+\paragraph{Influence of averaging} As highlighted in subsection 6.2.8, averaging can have a 
+large effect on the iteration count, the pressure field and the overal wall time.
+\begin{verbatim}
+set Material averaging = arithmetic/geometric/harmonic average
+\end{verbatim}
+
+The following results are obtained for $m=2$.
+
+\begin{tabular}{lllll}
+\hline
+$m$ & solve time & Iterations for  & Velocity iter.   &  Schur complement iter.  \\
+    &   (s)      & Stokes solver   & Stokes precond.  &  in Stokes precond.     \\
+\hline
+\hline
+arithmetic & 416s & 29\\
+geometric  & 308s & 23\\ 
+harmonic   & 285s & 20 & 440 & 237 \\
+no avrg    & 562s & 33\\
+\hline
+\end{tabular}
+
+\paragraph{Influence of sinkers viscosity}
+Ideally, the number of outer 
+iterations should not vary too much with a ten-fold increase in sinker viscosity,
+while the number of inner-iterations is expected to grow.
+
+The following results are obtained with the harmonic averaging for the level 8 grid
+with 2505469 (1817745+81809+605915) degrees of freedom.
+
+\begin{tabular}{lllll}
+\hline
+$m$ & solve time & Iterations for  & Velocity iterations    &  Schur complement iterations  \\
+    &  (s)       & Stokes solver   & Stokes preconditioner  &  in Stokes preconditioner     \\
+\hline
+\hline
+1 & 129 & 16 & 181  & 189 \\
+2 & 285 & 20 & 440  & 237 \\
+3 & 893 & 25 & 1567 & 300 \\
+4 & \\
+5 & \\ 
+6 & \\
+\hline
+\end{tabular}
+
+\begin{figure}
+\centering
+%\includegraphics[width=14cm]{nsinkers2.png}
+%\includegraphics[width=8cm]{305_balls}
+\caption{ Need a better figure !! 
+\label{nsinkers1}}
+\end{figure}
+
 \section{Extending and contributing to \aspect}
 \label{sec:extending}
 
