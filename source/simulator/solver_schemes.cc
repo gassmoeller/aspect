@@ -469,6 +469,9 @@ namespace aspect
 
     assemble_and_solve_composition();
 
+    if (parameters.use_operator_splitting)
+    	compute_reactions ();
+
     // ...and then iterate the solution of the Stokes system
     double initial_stokes_residual = 0;
 

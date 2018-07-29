@@ -470,13 +470,16 @@ namespace aspect
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+        ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
+
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
           // We are only asked to give viscosities if strain_rate.size() > 0.
           if (in.strain_rate.size() > 0)
             out.viscosities[i]                  = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
-          out.densities[i]                      = density                       (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.densities[i] = density (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+
           if (!latent_heat)
             {
               out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
@@ -488,6 +491,29 @@ namespace aspect
           out.entropy_derivative_temperature[i] = 0;
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c]            = 0;
+
+          if (this->get_parameters().use_operator_splitting)
+              if (reaction_rate_out != NULL)
+                {
+                  const unsigned int density_idx = this->introspection().compositional_index_for_name("reaction_density");
+                  const double old_density = in.composition[i][density_idx];
+                  const double equilibrium_density = density (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+
+                  if (this->get_timestep_number() != 0 && this->get_timestep_number() != numbers::invalid_unsigned_int)
+                    out.densities[i] = old_density;
+                  else
+                    out.densities[i] = equilibrium_density;
+
+                  // fill reaction rate outputs if the model uses operator splitting
+                  {
+                    {
+                      if (this->get_timestep_number() > 0)
+                        reaction_rate_out->reaction_rates[i][density_idx] = (equilibrium_density - old_density) / reaction_timescale;
+                      else
+                        reaction_rate_out->reaction_rates[i][density_idx] = 0;
+                    }
+                  }
+                }
 
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
@@ -541,6 +567,7 @@ namespace aspect
             }
         }
     }
+
 
 
     template <int dim>
@@ -639,6 +666,10 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
                              "Units: $W/m/K$.");
+          prm.declare_entry ("Reaction timescale", "5e4",
+                             Patterns::Double (0),
+                             "The timescale for phase transitions."
+                             "Units: $yr$ or $s$ depending on ....");
           prm.leave_subsection();
         }
         prm.leave_subsection();
@@ -669,6 +700,10 @@ namespace aspect
           max_eta              = prm.get_double ("Maximum viscosity");
           max_lateral_eta_variation    = prm.get_double ("Maximum lateral viscosity variation");
           thermal_conductivity_value = prm.get_double ("Thermal conductivity");
+          reaction_timescale = prm.get_double("Reaction timescale");
+
+          if (this->convert_output_to_years())
+            reaction_timescale *= constants::year_in_seconds;
 
           prm.leave_subsection();
         }
@@ -707,6 +742,15 @@ namespace aspect
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
             std::make_shared<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+        }
+
+      if (this->get_parameters().use_operator_splitting
+          && out.template get_additional_output<ReactionRateOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::ReactionRateOutputs<dim> (n_points, this->n_compositional_fields())));
         }
     }
 
