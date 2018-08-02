@@ -530,6 +530,7 @@ namespace aspect
       prm.declare_entry ("Mass conservation", "ask material model",
                          Patterns::Selection ("incompressible|isothermal compression|hydrostatic compression|"
                                               "reference density profile|implicit reference density profile|"
+                                              "compositional field density gradient|"
                                               "ask material model"),
                          "Possible approximations for the density derivatives in the mass "
                          "conservation equation. Note that this parameter is only evaluated "
