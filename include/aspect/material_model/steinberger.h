@@ -33,9 +33,105 @@ namespace aspect
 
     namespace internal
     {
-      class MaterialLookup;
-      class LateralViscosityLookup;
-      class RadialViscosityLookup;
+      class MaterialLookup
+      {
+        public:
+          MaterialLookup(const std::string &filename,
+                         const bool interpol);
+
+          double
+          specific_heat(double temperature,
+                        double pressure) const;
+
+          double
+          density(double temperature,
+                  double pressure) const;
+
+          double
+          thermal_expansivity(const double temperature,
+                              const double pressure) const;
+
+          double
+          seismic_Vp(const double temperature,
+                     const double pressure) const;
+
+          double
+          seismic_Vs(const double temperature,
+                     const double pressure) const;
+
+          double
+          dHdT (const double temperature,
+                const double pressure) const;
+
+          double
+          dHdp (const double temperature,
+                const double pressure) const;
+
+          double
+          dRhodp (const double temperature,
+                  const double pressure) const;
+
+          double
+          value (const double temperature,
+                 const double pressure,
+                 const dealii::Table<2,
+                 double> &values,
+                 bool interpol) const;
+
+        private:
+
+          double get_nT(double temperature) const;
+
+          double get_np(double pressure) const;
+
+          dealii::Table<2,double> density_values;
+          dealii::Table<2,double> thermal_expansivity_values;
+          dealii::Table<2,double> specific_heat_values;
+          dealii::Table<2,double> vp_values;
+          dealii::Table<2,double> vs_values;
+          dealii::Table<2,double> enthalpy_values;
+
+          double delta_press;
+          double min_press;
+          double max_press;
+          double delta_temp;
+          double min_temp;
+          double max_temp;
+          unsigned int numtemp;
+          unsigned int numpress;
+          bool interpolation;
+      };
+
+      class LateralViscosityLookup
+      {
+        public:
+          LateralViscosityLookup(const std::string &filename);
+
+          double lateral_viscosity(double depth);
+
+          int get_nslices() const;
+
+        private:
+          std::vector<double> values;
+          double min_depth;
+          double delta_depth;
+          double max_depth;
+
+      };
+
+      class RadialViscosityLookup
+      {
+        public:
+          RadialViscosityLookup(const std::string &filename);
+
+          double radial_viscosity(double depth);
+
+        private:
+          std::vector<double> values;
+          double min_depth;
+          double delta_depth;
+          double max_depth;
+      };
     }
     /**
      * A variable viscosity material model that reads the essential values of

@@ -58,6 +58,12 @@ namespace aspect
         Point<dim> get_origin () const;
 
         /**
+         * Return the number of repetitions of the coarse mesh in every
+         * coordinate dimension.
+         */
+        std::vector<unsigned int> get_repetitions () const;
+
+        /**
          * Return the typical length scale one would expect of features in
          * this geometry, assuming realistic parameters.
          *
@@ -155,7 +161,7 @@ namespace aspect
         /**
          * The number of cells in each coordinate direction
          */
-        unsigned int repetitions[dim];
+        std::vector<unsigned int> repetitions;
 
     };
   }

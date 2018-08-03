@@ -81,6 +81,13 @@ namespace aspect
   }
 
 
+  template <int dim>
+  double SimulatorAccess<dim>::get_old_timestep () const
+  {
+    return simulator->old_time_step;
+  }
+
+
 
   template <int dim>
   unsigned int SimulatorAccess<dim>::get_timestep_number () const
@@ -176,6 +183,14 @@ namespace aspect
   SimulatorAccess<dim>::get_surface_pressure () const
   {
     return simulator->parameters.surface_pressure;
+  }
+
+  template <int dim>
+  unsigned int
+  SimulatorAccess<dim>::get_max_refinement_level () const
+  {
+    return simulator->parameters.initial_global_refinement +
+        simulator->parameters.initial_adaptive_refinement;
   }
 
   template <int dim>

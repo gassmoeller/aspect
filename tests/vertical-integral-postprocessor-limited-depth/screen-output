@@ -1,0 +1,29 @@
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,770 (2,187+125+729+729)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving composition system 1... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29 iterations.
+
+   Postprocessing:
+     Writing vertical integral file:  vertically_integrated_Lithosphere.00000.gnuplot
+
+*** Timestep 1:  t=0.1 seconds
+   Solving temperature system... 10 iterations.
+   Solving composition system 1... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15 iterations.
+
+   Postprocessing:
+     Writing vertical integral file:  vertically_integrated_Lithosphere.00001.gnuplot
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

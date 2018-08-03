@@ -1,0 +1,115 @@
+# This model tests the parameters to prescribe an
+# inflowing plume head by changing the boundary
+# conditions over time
+
+set Dimension                              = 2
+
+set Use years in output instead of seconds = true
+set End time                               = 6e6
+
+set Adiabatic surface temperature          = 1613.0
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 3300000
+    set Y extent = 660000
+    set X repetitions = 5
+  end
+end
+
+subsection Initial conditions
+  set Model name = adiabatic
+end
+
+
+subsection Boundary temperature model
+  set Model name = plume
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0,1,2,3
+
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators = bottom:plume box, right:function
+
+  set Tangential velocity boundary indicators = left
+
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 0.0;-0.15
+  end
+
+  subsection Box plates model
+    set Data directory           = $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/box-plates/test/
+    set Id file names            = plates_2d_%d
+    set Velocity file name       = velocities_2d
+    set Scale factor             = 0.01
+  end
+
+  subsection Ascii data model
+    set Data file name       = box_2d_%s.%d.csv
+    set Data directory = $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/plume-box/test/
+    set First data file model time = 0e6
+    set Data file time step = 1e6
+    set First data file number = 2
+    set Decreasing file order = true
+    set Scale factor = 0.01
+  end
+end
+
+subsection Plume
+    set Radius = 130000
+    set Amplitude = 200.0
+    set Head amplitude = 300.0
+    set Head radius = 300000
+    set Head velocity = 0.15
+    set Model time to start plume tail = 5e6
+    set Inflow velocity = 0.15
+    set Age top boundary layer = 0
+    set Side boundary type = initial
+    set Bottom temperature = 1613
+    set Left temperature   = 1613
+    set Right temperature  = 1613
+    set Top temperature    = 1613
+    subsection Plume refinement
+      set Plume refinement level = 3
+      set Plume refinement radius = 200000
+    end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.8
+  end
+end
+
+
+subsection Material model
+  set Model name = simpler
+  subsection Simpler model
+    set Viscosity = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = velocity,plume
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
+end
+

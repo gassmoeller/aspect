@@ -114,6 +114,10 @@ namespace aspect
           // for the melt-fraction dependence of productivity
           double E1;
           double E2;
+
+          // If one wants to calculate the melt fraction with a fixed fraction
+          // of pyroxenite this indicates the fraction
+          double fixed_pyroxenite_fraction;
       };
     }
   }

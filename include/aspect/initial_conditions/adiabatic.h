@@ -85,13 +85,18 @@ namespace aspect
          * bottom of the model domain.
          */
         double amplitude;
-        /*
+        /**
          * Position of the initial temperature perturbation (in the
          * center or at the boundary of the model domain).
          */
         std::string perturbation_position;
+        /**
+         * Midpoint coordinates of the initial temperature perturbation (if not
+         * at the center or at the boundary of the model domain).
+         */
+        Point<dim> midpoint_coordinates;
 
-        /*
+        /**
          * Deviation from adiabaticity in a subadiabatic mantle
          * temperature profile. 0 for an adiabatic temperature
          * profile.

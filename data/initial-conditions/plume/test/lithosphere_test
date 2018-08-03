@@ -1,0 +1,13 @@
+# Test lithosphere thickness data for plume initial conditions.
+# Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
+# POINTS: 3 3
+# Columns: x y lithosphere_thickness [m] 
+0.      0.      0.
+1650000 0.      330000.
+3300000 0.      0.
+0.      1650000 330000.
+1650000 1650000 330000.
+3300000 1650000 330000.
+0.      3300000 0.
+1650000 3300000 330000.
+3300000 3300000 0.

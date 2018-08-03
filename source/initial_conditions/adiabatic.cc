@@ -153,6 +153,12 @@ namespace aspect
                          ExcMessage ("Not a valid geometry model for the initial conditions model"
                                      "adiabatic."));
         }
+      else if (perturbation_position == "coordinates")
+        {
+          mid_point = midpoint_coordinates;
+        }
+      else
+        AssertThrow(false, ExcNotImplemented());
 
       const double perturbation = (mid_point.distance(position) < radius) ? amplitude
                                   : 0.0;
@@ -214,13 +220,20 @@ namespace aspect
                              "boundary layer. Instead, the maximum of the perturbation and the bottom "
                              "boundary layer temperature will be used.");
           prm.declare_entry ("Position", "center",
-                             Patterns::Selection ("center"),
+                             Patterns::Selection ("center|coordinates"),
                              "Where the initial temperature perturbation should be placed. If 'center' is "
                              "given, then the perturbation will be centered along a 'midpoint' of some "
                              "sort of the bottom boundary. For example, in the case of a box geometry, "
                              "this is the center of the bottom face; in the case of a spherical shell "
                              "geometry, it is along the inner surface halfway between the bounding "
-                             "radial lines.");
+                             "radial lines. If 'coordinates' is given, then the perturbation "
+                             "will be centered around the given coordinates in 'Midpoint coordinates'.");
+          prm.declare_entry ("Midpoint coordinates", "",
+                             Patterns::List(Patterns::Double()),
+                             "Where the initial temperature perturbation should be placed. The list is "
+                             "enforced to have dim entries if 'coordinates is selected for 'Position' "
+                             "nd is interpreted to be the cartesian coordinates of the center of the "
+                             "anomaly.");
           prm.declare_entry ("Subadiabaticity", "0e0",
                              Patterns::Double (0),
                              "If this value is larger than 0, the initial temperature profile will "
@@ -267,6 +280,15 @@ namespace aspect
           radius = prm.get_double ("Radius");
           amplitude = prm.get_double ("Amplitude");
           perturbation_position = prm.get("Position");
+          if (perturbation_position == "coordinates")
+            {
+              std::vector<double> coordinates = Utilities::string_to_double(
+                  Utilities::split_string_list(prm.get("Midpoint coordinates")));
+
+              for (unsigned int i = 0; i < dim; i++)
+              midpoint_coordinates(i) = coordinates[i];
+            }
+
           subadiabaticity = prm.get_double ("Subadiabaticity");
           if (n_compositional_fields > 0)
             {
