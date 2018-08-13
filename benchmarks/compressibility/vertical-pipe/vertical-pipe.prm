@@ -23,6 +23,12 @@ end
 
 subsection Discretization
   set Use locally conservative discretization = true
+  set Use discontinuous composition discretization = true
+end
+
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
 end
 
 subsection Compositional fields
@@ -92,7 +98,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0 
-  set Initial global refinement          = 2
+  set Initial global refinement          = 0
   set Time steps between mesh refinement = 0
 end
 

@@ -2,13 +2,13 @@
 
 # Run all combinations of models in this folder
 
-for resolution in 0 1 2 3; do
+for resolution in 1; do #0 1 2 3
   echo "subsection Mesh refinement" > resolution.prm
   echo "set Initial global refinement = $resolution" >> resolution.prm
   echo "end" >> resolution.prm
 
-  for temperature in sub-adiabatic adiabatic super-adiabatic; do #sub-adiabatic adiabatic super-adiabatic
-    for formulation in isothermal; do #ala isothermal hydrostatic projected-density
+  for temperature in adiabatic; do #sub-adiabatic adiabatic super-adiabatic
+    for formulation in projected-density; do #ala isothermal hydrostatic projected-density
       output_folder=output-compressibility-resolution-${resolution}-${formulation}-${temperature}
       echo "set Output directory = ${output_folder}" > output.prm
       cat vertical-pipe.prm ${temperature}.prm ${formulation}.prm resolution.prm output.prm | mpirun -np 6 aspect --

@@ -21,14 +21,9 @@ subsection Adiabatic conditions model
   end
 end
 
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Use direct solver for Stokes system = true 
-  end
-end
-
 subsection Discretization
   set Use locally conservative discretization = true
+  set Use discontinuous composition discretization = true
 end
 
 subsection Compositional fields
