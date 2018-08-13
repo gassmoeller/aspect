@@ -152,6 +152,9 @@ namespace aspect
           if (this->get_parameters().free_surface_enabled)
             current_u -= scratch.mesh_velocity_values[q];
 
+          if (!advection_field_is_temperature)
+            current_u = 0.0;
+
           const double JxW = scratch.finite_element_values.JxW(q);
 
           // For the diffusion constant, use the larger of the physical
