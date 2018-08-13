@@ -532,7 +532,7 @@ namespace aspect
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
-      const unsigned int density_idx = this->introspection().compositional_index_for_name("reaction_density");
+      const unsigned int density_idx = this->introspection().compositional_index_for_name("projected_density");
 
       std::vector<Tensor<1,dim> > density_gradients(n_q_points);
       scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_gradients (this->get_current_linearization_point(),
