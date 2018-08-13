@@ -1,0 +1,4 @@
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
+end

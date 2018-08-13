@@ -1,0 +1,3 @@
+subsection Mesh refinement
+set Initial global refinement = 3
+end
