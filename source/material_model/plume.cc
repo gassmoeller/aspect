@@ -180,8 +180,10 @@ namespace aspect
       double effective_viscosity;
       if (use_composite_rheology && std::abs(second_strain_rate_invariant) > 1e-30)
         {
+          this->get_pcout() << second_strain_rate_invariant << std::endl;
           const double disl_viscosity = dislocation_viscosity(temperature, pressure, composition, strain_rate, position, diff_viscosity);
           effective_viscosity = disl_viscosity * diff_viscosity / (disl_viscosity + diff_viscosity);
+          effective_viscosity = disl_viscosity;
         }
       else
         effective_viscosity = diff_viscosity;
