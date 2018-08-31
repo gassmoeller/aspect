@@ -258,7 +258,7 @@ namespace aspect
     double
     Plume<dim>::
     boundary_temperature (const types::boundary_id boundary_indicator,
-                 const Point<dim>         &position) const
+                          const Point<dim>         &position) const
     {
 
       Assert (boundary_indicator<2*dim, ExcMessage ("Unknown boundary indicator."));
@@ -479,8 +479,8 @@ namespace aspect
 
       prm.enter_subsection("Boundary temperature model");
       {
-      // member variable lithosphere_thickness_file must be declared before it can be parsed (but does not belong to the Plume class!)
-      Utilities::AsciiDataBoundary<2>::declare_parameters(prm,"$ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/","lith_thick_%s_%d");
+        // member variable lithosphere_thickness_file must be declared before it can be parsed (but does not belong to the Plume class!)
+        Utilities::AsciiDataBoundary<2>::declare_parameters(prm,"$ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/","lith_thick_%s_%d");
       }
       prm.leave_subsection ();
     }
@@ -591,7 +591,7 @@ namespace aspect
             sim->initialize_simulator (this->get_simulator());
           prm.enter_subsection("Boundary temperature model");
           {
-          lithosphere_thickness_file->parse_parameters(prm);
+            lithosphere_thickness_file->parse_parameters(prm);
           }
           prm.leave_subsection ();
         }

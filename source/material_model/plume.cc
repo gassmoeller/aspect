@@ -64,7 +64,7 @@ namespace aspect
 
     template <int dim>
     double
-	Plume<dim>::
+    Plume<dim>::
     dislocation_viscosity (const double      temperature,
                            const double      pressure,
                            const std::vector<double> &/*composition*/,
@@ -100,7 +100,7 @@ namespace aspect
 
     template <int dim>
     double
-	Plume<dim>::
+    Plume<dim>::
     dislocation_viscosity_fixed_strain_rate (const double      temperature,
                                              const double      pressure,
                                              const std::vector<double> &,
@@ -180,7 +180,6 @@ namespace aspect
       double effective_viscosity;
       if (use_composite_rheology && std::abs(second_strain_rate_invariant) > 1e-30)
         {
-          this->get_pcout() << second_strain_rate_invariant << std::endl;
           const double disl_viscosity = dislocation_viscosity(temperature, pressure, composition, strain_rate, position, diff_viscosity);
           effective_viscosity = disl_viscosity * diff_viscosity / (disl_viscosity + diff_viscosity);
           effective_viscosity = disl_viscosity;

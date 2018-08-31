@@ -1,22 +1,38 @@
 # This model has a box geometry where simple shear is induced by constant velocity
-# along the bottom and top boundaries. Diffusion dislocation creep laws corresponding
-# to the model of Hirth and Kohlstedt for dry olivine are used, and the viscosity is
+# along the bottom and top boundaries. Diffusion dislocation creep laws are used, 
+# and the viscosity is
 # calculated at the first time step for a constant temperature of 1600 K.
 # Since the strain rate is fixed, and diffusion viscosity is also fixed at 1e21Pas
 # it is possible to compute the corresponding dislocation and effective viscosity and
 # check the model for correctness. However there are several pitfalls:
 # - The strain-rate visualization plugins computes a different norm for the strain
 #   rate than what is used in the material model. The internal strain rate was determined
-#   to be 6.33775e-14
-# - Even using this viscosity in the accompanying python script gives a deviation by
-#   about one percent to the analytical viscosity, source so far unknown.
+#   to be 6.33775e-14, of which the dislocation strain rate makes up
+#   6.2839e-14.
 #
-#   Analytically (python script) computed dislocation viscosity: 8.51786311699e+18
-#   Numerically (ASPECT) computed dislocation viscosity: 8.57e18
+#   Analytically (python script) computed dislocation viscosity: 8.56993808508e+18
+#   Numerically (ASPECT) computed dislocation viscosity: 8.56994e+18
 #
-#   This is about the same difference as between pure dislocation viscosity and
-#   effective (disl + diffusion) viscosity, but I was careful to only compare
-#   dislocation viscosities. 
+# The analytic viscosity was computed using the following python program:
+#
+# import numpy as np
+# dislocation_activation_energy = 5.3e5
+# dislocation_activation_volume = 1.4e-5
+# dislocation_creep_prefactor = 1.1e-16
+# adiabatic_pressure = 0.0
+
+# dislocation_creep_exponent = 3.5
+# gas_constant = 8.3144621
+# temperature = 1600.0
+# second_strain_rate_invariant = 6.2839e-14
+#
+# energy_term = np.exp((dislocation_activation_energy + dislocation_activation_volume * adiabatic_pressure) / (dislocation_creep_exponent * gas_constant * temperature))
+#
+# strain_rate_dependence = (1.0 - dislocation_creep_exponent) / dislocation_creep_exponent;
+#
+# dislocation_viscosity = dislocation_creep_prefactor**(-1.0/dislocation_creep_exponent) * second_strain_rate_invariant**strain_rate_dependence * energy_term
+#
+# print (dislocation_viscosity)
 #
 # Note that the strain rate output by aspect is the *norm*, but the model itself uses
 # the square root of the second invariant. For reference, edot_norm = sqrt(2*edot_ii).

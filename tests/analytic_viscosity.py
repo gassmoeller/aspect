@@ -10,7 +10,11 @@ adiabatic_pressure = 0.0
 dislocation_creep_exponent = 3.5
 gas_constant = 8.3144621
 temperature = 1600.0
+
+
 second_strain_rate_invariant = 6.33775e-14
+
+second_strain_rate_invariant = 6.2839e-14
 
 energy_term = np.exp((dislocation_activation_energy + dislocation_activation_volume * adiabatic_pressure) / (dislocation_creep_exponent * gas_constant * temperature))
 

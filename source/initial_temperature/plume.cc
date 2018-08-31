@@ -416,9 +416,9 @@ namespace aspect
   namespace InitialTemperature
   {
     ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(Plume,
-                                       "plume",
-                                       "Temperature is prescribed as an adiabatic "
-                                       "profile with upper and lower thermal boundary layers, "
-                                       "whose ages are given as input parameters or as a data file.")
+                                              "plume",
+                                              "Temperature is prescribed as an adiabatic "
+                                              "profile with upper and lower thermal boundary layers, "
+                                              "whose ages are given as input parameters or as a data file.")
   }
 }

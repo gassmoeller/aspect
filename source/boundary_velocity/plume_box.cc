@@ -808,7 +808,7 @@ namespace aspect
     Tensor<1,dim>
     PlumeBox<dim>::
     boundary_velocity (const types::boundary_id ,
-        const Point<dim> &position) const
+                       const Point<dim> &position) const
     {
       if (this->get_time() - first_data_file_model_time >= 0.0)
         {
@@ -1139,14 +1139,14 @@ namespace aspect
   namespace BoundaryVelocity
   {
     ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(PlumeBox,
-                                                 "plume box",
-                                                 "This is a velocity plugin that is a combination "
-                                                 "of the Ascii data, Box plates and Plume plugins. "
-                                                 "It is specifically designed for modelling a box "
-                                                 "of the mantle with prescribed velocities at every "
-                                                 "boundary with a plume influx at the bottom, a plate "
-                                                 "velocity at the top, side and bottom velocities from "
-                                                 "a different geodynamic model and interpolation "
-                                                 "between these constraints.")
+                                            "plume box",
+                                            "This is a velocity plugin that is a combination "
+                                            "of the Ascii data, Box plates and Plume plugins. "
+                                            "It is specifically designed for modelling a box "
+                                            "of the mantle with prescribed velocities at every "
+                                            "boundary with a plume influx at the bottom, a plate "
+                                            "velocity at the top, side and bottom velocities from "
+                                            "a different geodynamic model and interpolation "
+                                            "between these constraints.")
   }
 }
