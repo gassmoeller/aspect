@@ -93,16 +93,19 @@ namespace aspect
       // This implementation assumes that the top and bottom boundaries have
       // prescribed temperatures and minimal_temperature() returns the value
       // at the surface and maximal_temperature() the value at the bottom.
-      const double T_surface = (&this->get_boundary_temperature() != 0)
+      const std::set<types::boundary_id> &fixed_temperature_boundary_indicators =
+        this->get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators();
+
+      const double T_surface = (fixed_temperature_boundary_indicators.size() != 0)
                                ?
-                               this->get_boundary_temperature().minimal_temperature(
-                                 this->get_fixed_temperature_boundary_indicators())
+                               this->get_boundary_temperature_manager().minimal_temperature(
+                                 fixed_temperature_boundary_indicators)
                                :
                                adiabatic_surface_temperature;
-      const double T_bottom = (&this->get_boundary_temperature() != 0)
+      const double T_bottom = (fixed_temperature_boundary_indicators.size() != 0)
                               ?
-                              this->get_boundary_temperature().maximal_temperature(
-                                this->get_fixed_temperature_boundary_indicators())
+                              this->get_boundary_temperature_manager().maximal_temperature(
+                                fixed_temperature_boundary_indicators)
                               :
                               adiabatic_bottom_temperature;
 

@@ -119,8 +119,9 @@ namespace aspect
                                       const double time)
       {
         const double time_until_end = velocity_values.back().first - time;
-        unsigned int old_index,next_index;
-        double velocity_time_weight;
+        unsigned int old_index = numbers::invalid_unsigned_int;
+        unsigned int next_index = numbers::invalid_unsigned_int;
+        double velocity_time_weight = numbers::signaling_nan<double>();
 
         if (time_until_end >= velocity_values.back().first)
           {
@@ -136,7 +137,7 @@ namespace aspect
           }
         else
           {
-            for (unsigned int i = velocity_values.size() - 2; i >= 0; i--)
+            for (unsigned int i = velocity_values.size() - 2; ; i--)
               if (time_until_end > velocity_values[i].first)
                 {
                   old_index = i + 1;
@@ -214,7 +215,6 @@ namespace aspect
 
         // Read data lines
         unsigned int line = 0;
-        double temp_data;
 
         while (!in.eof())
           {
@@ -369,14 +369,17 @@ namespace aspect
       plume_lookup.reset(new BoundaryTemperature::internal::PlumeLookup<dim>(plume_data_directory+plume_file_name,
                                                                              this->get_pcout()));
 
-      const std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >
-      bvs = this->get_prescribed_boundary_velocity();
-      for (typename std::map<types::boundary_id,std::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
+      const std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >
+      bvs = this->get_boundary_velocity_manager().get_active_boundary_velocity_conditions();
+      for (typename std::map<types::boundary_id,std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator
            p = bvs.begin();
            p != bvs.end(); ++p)
         {
-          if (p->second.get() == this)
-            boundary_id = p->first;
+          for (typename std::vector<std::shared_ptr<BoundaryVelocity::Interface<dim> > >::const_iterator
+               boundary_plugin = p->second.begin();
+               boundary_plugin != p->second.end(); ++boundary_plugin)
+            if ((*boundary_plugin).get() == this)
+              boundary_id = p->first;
         }
       AssertThrow(boundary_id != numbers::invalid_boundary_id,
                   ExcMessage("Did not find the boundary indicator for the prescribed data plugin."));

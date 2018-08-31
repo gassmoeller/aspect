@@ -38,15 +38,14 @@ namespace aspect
     {
       // verify that the we have a plume boundary temperature model
       // which will give us the plume position
-      Assert (dynamic_cast<const BoundaryTemperature::Plume<dim> *>(&this->get_boundary_temperature())
-              != 0,
+      Assert (this->get_boundary_temperature_manager().template has_matching_boundary_temperature_model<BoundaryTemperature::Plume<dim> >(),
               ExcMessage ("This refinement parameter is only implemented if the boundary "
                           "temperature plugin is the 'plume' model."));
 
-      const BoundaryTemperature::Plume<dim> *boundary_temperature =
-        dynamic_cast<const BoundaryTemperature::Plume<dim> *> (&this->get_boundary_temperature());
+      const BoundaryTemperature::Plume<dim> &boundary_temperature =
+        this->get_boundary_temperature_manager().template get_matching_boundary_temperature_model<BoundaryTemperature::Plume<dim> >();
 
-      const Point <dim> plume_position = boundary_temperature->get_plume_position();
+      const Point <dim> plume_position = boundary_temperature.get_plume_position();
 
       for (typename Triangulation<dim>::active_cell_iterator
            cell = this->get_triangulation().begin_active();
