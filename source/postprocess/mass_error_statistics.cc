@@ -76,6 +76,9 @@ namespace aspect
       MaterialModel::MaterialModelInputs<dim> in(support_points.size(), this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(support_points.size(), this->n_compositional_fields());
 
+      MaterialModel::MaterialModelInputs<dim> in_old(support_points.size(), this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out_old(support_points.size(), this->n_compositional_fields());
+
       double local_integral_mass_error = 0;
       double local_norm_mass_error = 0;
 
@@ -89,35 +92,11 @@ namespace aspect
             fe_values_support.reinit (cell);
             fe_values_density.reinit(typename Triangulation<dim>::active_cell_iterator(cell));
 
-            fe_values_support[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                in.velocity);
-            fe_values_support[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                in.temperature);
-            fe_values_support[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                in.pressure);
-            fe_values_support[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
-                in.pressure_gradient);
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              fe_values_support[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-                  composition_values[c]);
-
-            in.position = fe_values_support.get_quadrature_points();
-
-            // since we are not reading the viscosity and the viscosity
-            // is the only coefficient that depends on the strain rate,
-            // we need not compute the strain rate. set the corresponding
-            // array to empty, to prevent accidental use and skip the
-            // evaluation of the strain rate in evaluate().
-            in.strain_rate.resize(0);
-
-            for (unsigned int i=0; i<support_points.size(); ++i)
-              {
-                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                  in.composition[i][c] = composition_values[c][i];
-              }
-            in.cell = &cell;
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution());
+            in_old.reinit(fe_values, cell, this->introspection(), this->get_old_solution());
 
             this->get_material_model().evaluate(in, out);
+            this->get_material_model().evaluate(in_old, out_old);
 
             std::vector<Tensor<1,dim> > velocity(n_q_points);
             std::vector<double>         velocity_divergence(n_q_points);
@@ -128,14 +107,23 @@ namespace aspect
               {
                 Tensor<1,dim> density_gradient = Tensor<1,dim>();
                 double        density = 0.0;
+                double        old_density = 0.0;
+
                 for (unsigned int i = 0; i < support_points.size(); ++i)
                   {
                     density_gradient += out.densities[i] * fe_values_density.shape_grad(i,q);
                     density += out.densities[i] * fe_values_density.shape_value(i,q);
+                    old_density += out_old.densities[i] * fe_values_density.shape_value(i,q);
                   }
 
+                const double drho_dt = (this->get_timestep() > 0)
+                    ?
+                        (density-old_density) / this->get_timestep()
+                        :
+                        0.0;
+
                 const double point_error = (density * velocity_divergence[q]
-                                            + velocity[q] * density_gradient);
+                                            + velocity[q] * density_gradient + drho_dt);
 
                 local_integral_mass_error += point_error * fe_values.JxW(q);
                 local_norm_mass_error += point_error * point_error * fe_values.JxW(q);

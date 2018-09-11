@@ -22,6 +22,8 @@
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 
+#include <aspect/material_model/interface.h>
+
 #include <deal.II/base/signaling_nan.h>
 
 namespace aspect
@@ -516,6 +518,9 @@ namespace aspect
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
 
+      MaterialModel::MaterialModelInputs<dim> in_old(scratch.finite_element_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out_old(scratch.finite_element_values.n_quadrature_points, this->n_compositional_fields());
+
       // assemble RHS of:
       //   $ - \nabla \cdot \mathbf{u} = \frac{1}{\rho} \nabla \rho \cdot \mathbf{u}$
 
@@ -535,8 +540,18 @@ namespace aspect
       const unsigned int density_idx = this->introspection().compositional_index_for_name("projected_density");
 
       std::vector<Tensor<1,dim> > density_gradients(n_q_points);
+      std::vector<double> density(n_q_points);
+      std::vector<double> density_old(n_q_points);
+
       scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_gradients (this->get_current_linearization_point(),
           density_gradients);
+      scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_current_linearization_point(),
+          density);
+      scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_old_solution(),
+          density_old);
+
+      in_old.reinit(scratch.finite_element_values, scratch.cell, this->introspection(), this->get_old_solution());
+      this->get_material_model().evaluate(in_old,out_old);
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -550,16 +565,22 @@ namespace aspect
               ++i;
             }
 
-          const double density = scratch.material_model_outputs.densities[q];
+          const double drho_dt = (this->get_timestep() > 0.0)
+              ?
+                  (scratch.material_model_outputs.densities[q] - density_old[q]) / this->get_timestep()
+                  :
+                  0.0;
+
           const double JxW = scratch.finite_element_values.JxW(q);
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             data.local_rhs(i) += (
                                    (pressure_scaling *
-                                       (1.0 / density) *
+                                       (1.0 / scratch.material_model_outputs.densities[q]) *
                                     (density_gradients[q] *
                                     scratch.velocity_values[q]) *
                                     scratch.phi_p[i])
+                                    + pressure_scaling * (1.0 / scratch.material_model_outputs.densities[q]) * drho_dt * scratch.phi_p[i]
                                  )
                                  * JxW;
         }
