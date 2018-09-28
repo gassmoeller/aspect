@@ -228,6 +228,7 @@ namespace aspect
                       // TODO: Consider operator splitting terms
                       // TODO: For cells that border on both Dirichlet and non-zero Neumann BCs we need to add heat flux BC terms
                       // TODO: Check that the terms are correct for dimensional models
+                      // TODO: Check how expensive this calculation is
                     }
                 }
 
