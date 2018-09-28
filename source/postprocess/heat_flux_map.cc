@@ -23,6 +23,7 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/heating_model/interface.h>
+#include <aspect/boundary_temperature/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -53,15 +54,15 @@ namespace aspect
         // The CBF method involves both boundary and volume integrals on the
         // cells at the boundary. Construct FEValues objects for each of these integrations.
         FEValues<dim> fe_volume_values (simulator_access.get_mapping(),
-            simulator_access.get_fe(),
-            quadrature_formula,
+                                        simulator_access.get_fe(),
+                                        quadrature_formula,
                                         update_values |
                                         update_gradients |
                                         update_q_points |
                                         update_JxW_values);
 
         FEFaceValues<dim> fe_face_values (simulator_access.get_mapping(),
-            simulator_access.get_fe(),
+                                          simulator_access.get_fe(),
                                           quadrature_formula_face,
                                           update_JxW_values |
                                           update_values |
@@ -88,12 +89,12 @@ namespace aspect
         for (unsigned int i = 0; i < n_boundaries; ++i)
           {
             mass_matrix[i].reinit(simulator_access.introspection().index_sets.system_partitioning,
-                simulator_access.get_mpi_communicator());
+                                  simulator_access.get_mpi_communicator());
             distributed_heat_flux_vector[i].reinit(simulator_access.introspection().index_sets.system_partitioning,
-                                                                    simulator_access.get_mpi_communicator());
+                                                   simulator_access.get_mpi_communicator());
             heat_flux_vector[i].reinit(simulator_access.introspection().index_sets.system_partitioning,
-                simulator_access.introspection().index_sets.system_relevant_partitioning,
-                simulator_access.get_mpi_communicator());
+                                       simulator_access.introspection().index_sets.system_relevant_partitioning,
+                                       simulator_access.get_mpi_communicator());
 
             distributed_heat_flux_vector[i] = 0.;
             heat_flux_vector[i] = 0.;
@@ -103,8 +104,17 @@ namespace aspect
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_volume_values.n_quadrature_points, simulator_access.n_compositional_fields());
         typename HeatingModel::HeatingModelOutputs heating_out(fe_volume_values.n_quadrature_points, simulator_access.n_compositional_fields());
 
+        std::vector<double> temperatures (n_q_points);
+        std::vector<double> old_temperatures (n_q_points);
+        std::vector<double> old_old_temperatures (n_q_points);
         std::vector<Tensor<1,dim> > temperature_gradients (n_q_points);
         std::vector<Tensor<1,dim> > velocities (n_q_points);
+
+        const double time_step = simulator_access.get_timestep();
+        const double old_time_step = simulator_access.get_old_timestep();
+
+        const std::set<types::boundary_id> &fixed_temperature_boundaries =
+            simulator_access.get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators();
 
         // loop over all of the surface cells and evaluate the heat flux
         typename DoFHandler<dim>::active_cell_iterator
@@ -114,6 +124,25 @@ namespace aspect
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned() && cell->at_boundary())
             {
+              // First check if we need to compute heat flux for this cell at all,
+              // that is if it has a face on a boundary with prescribed temperatures
+              bool has_face_on_fixed_temperature_boundary = false;
+              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                {
+                  if (!cell->at_boundary(f))
+                    continue;
+
+                  const unsigned int boundary_id = cell->face(f)->boundary_id();
+                  if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
+                    {
+                      has_face_on_fixed_temperature_boundary = true;
+                      break;
+                    }
+                }
+
+              if (has_face_on_fixed_temperature_boundary == false)
+                continue;
+
               fe_volume_values.reinit (cell);
               in.reinit(fe_volume_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
               simulator_access.get_material_model().evaluate(in, out);
@@ -141,35 +170,74 @@ namespace aspect
               // computed by the material model.
               fe_volume_values[simulator_access.introspection().extractors.temperature].get_function_gradients (simulator_access.get_solution(), temperature_gradients);
               fe_volume_values[simulator_access.introspection().extractors.velocities].get_function_values (simulator_access.get_solution(), velocities);
+              fe_volume_values[simulator_access.introspection().extractors.temperature].get_function_values (simulator_access.get_solution(), temperatures);
+              fe_volume_values[simulator_access.introspection().extractors.temperature].get_function_values (simulator_access.get_old_solution(), old_temperatures);
+              fe_volume_values[simulator_access.introspection().extractors.temperature].get_function_values (simulator_access.get_old_old_solution(), old_old_temperatures);
 
               // Compute volume integrals on RHS of the CBF system
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
+                  double temperature_time_derivative;
+
+                  if (simulator_access.get_timestep_number() > 1)
+                    temperature_time_derivative = (1.0/time_step) *
+                                                  (temperatures[q] *
+                                                   (2*time_step + old_time_step) / (time_step + old_time_step)
+                                                   -
+                                                   old_temperatures[q] *
+                                                   (1 + time_step/old_time_step)
+                                                   +
+                                                   old_old_temperatures[q] *
+                                                   (time_step * time_step) / (old_time_step * (time_step + old_time_step)));
+                  else if (simulator_access.get_timestep_number() == 1)
+                    temperature_time_derivative =
+                      (temperatures[q] - old_temperatures[q]) / time_step;
+                  else
+                    temperature_time_derivative = 0.0;
+
+                  const double JxW = fe_volume_values.JxW(q);
+
+                  const double density_c_P = out.densities[q] * out.specific_heat[q];
+                  const double latent_heat_LHS =heating_out.lhs_latent_heat_terms[q];
+                  const double material_prefactor = density_c_P + latent_heat_LHS;
+
                   for (unsigned int i = 0; i<dofs_per_cell; ++i)
                     {
                       // thermal conduction part
                       local_vector(i) += -out.thermal_conductivities[q] *
-                          (fe_volume_values[simulator_access.introspection().extractors.temperature].gradient(i,q)
-                              * temperature_gradients[q])
-                          * fe_volume_values.JxW(q);
+                                         (fe_volume_values[simulator_access.introspection().extractors.temperature].gradient(i,q)
+                                          * temperature_gradients[q])
+                                         * JxW;
 
                       // advection part
-                      local_vector(i) += -(temperature_gradients[q] * velocities[q]) *
-                          fe_volume_values[simulator_access.introspection().extractors.temperature].value(i,q) *
-                          fe_volume_values.JxW(q);
+                      local_vector(i) += -material_prefactor * (temperature_gradients[q] * velocities[q]) *
+                                         fe_volume_values[simulator_access.introspection().extractors.temperature].value(i,q) *
+                                         JxW;
 
                       // source terms
                       local_vector(i) += heating_out.heating_source_terms[q] *
-                          fe_volume_values[simulator_access.introspection().extractors.temperature].value(i,q) *
-                          fe_volume_values.JxW(q);
+                                         fe_volume_values[simulator_access.introspection().extractors.temperature].value(i,q) *
+                                         JxW;
 
-                      // TODO: still missing units and latent heat LHS terms as well as stabilization and heat flux BC terms
+                      // time variation terms
+                      local_vector(i) += -material_prefactor * temperature_time_derivative *
+                                         fe_volume_values[simulator_access.introspection().extractors.temperature].value(i,q) *
+                                         JxW;
+
+                      // TODO: Do we need stabilization terms?
+                      // TODO: Consider operator splitting terms
+                      // TODO: For cells that border on both Dirichlet and non-zero Neumann BCs we need to add heat flux BC terms
+                      // TODO: Check that the terms are correct for dimensional models
                     }
                 }
 
               for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
                 {
                   if (!cell->at_boundary(f))
+                    continue;
+
+                  const unsigned int boundary_id = cell->face(f)->boundary_id();
+                  if (fixed_temperature_boundaries.find(boundary_id) == fixed_temperature_boundaries.end())
                     continue;
 
                   local_mass_matrix = 0.;
@@ -181,10 +249,9 @@ namespace aspect
                   for (unsigned int q=0; q < n_face_q_points; ++q)
                     for (unsigned int i=0; i<dofs_per_cell; ++i)
                       local_mass_matrix(i) += fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
-                      fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
-                      fe_face_values.JxW(q);
+                                              fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
+                                              fe_face_values.JxW(q);
 
-                  const unsigned int boundary_id = cell->face(f)->boundary_id();
                   cell->distribute_local_to_global(local_mass_matrix, mass_matrix[boundary_id]);
                 }
 
@@ -214,22 +281,22 @@ namespace aspect
         for (cell = simulator_access.get_dof_handler().begin_active(); cell!=endc; ++cell)
           if (cell->is_locally_owned() && cell->at_boundary())
             {
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-              if (cell->at_boundary(f))
-                {
-                  const unsigned int boundary_id = cell->face(f)->boundary_id();
-                  fe_face_values.reinit (cell, f);
+              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                if (cell->at_boundary(f))
+                  {
+                    const unsigned int boundary_id = cell->face(f)->boundary_id();
+                    fe_face_values.reinit (cell, f);
 
-                  fe_face_values[simulator_access.introspection().extractors.temperature].get_function_values(heat_flux_vector[boundary_id], heat_flux_values);
+                    fe_face_values[simulator_access.introspection().extractors.temperature].get_function_values(heat_flux_vector[boundary_id], heat_flux_values);
 
-                  // Integrate the normal conductive heat flux
-                  for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                    {
-                      heat_flux_and_area[cell->active_cell_index()][f].first += heat_flux_values[q] *
-                                                                                fe_face_values.JxW(q);
-                      heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
-                    }
-                }
+                    // Integrate the normal conductive heat flux
+                    for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                      {
+                        heat_flux_and_area[cell->active_cell_index()][f].first += heat_flux_values[q] *
+                                                                                  fe_face_values.JxW(q);
+                        heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
+                      }
+                  }
             }
         return heat_flux_and_area;
       }
