@@ -114,7 +114,7 @@ namespace aspect
         const double old_time_step = simulator_access.get_old_timestep();
 
         const std::set<types::boundary_id> &fixed_temperature_boundaries =
-            simulator_access.get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators();
+          simulator_access.get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators();
 
         // loop over all of the surface cells and evaluate the heat flux
         typename DoFHandler<dim>::active_cell_iterator
