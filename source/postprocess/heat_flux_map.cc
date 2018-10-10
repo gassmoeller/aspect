@@ -41,7 +41,7 @@ namespace aspect
       {
         std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area(simulator_access.get_triangulation().n_active_cells(),
                                                                                  std::vector<std::pair<double, double> >(GeometryInfo<dim>::faces_per_cell,
-                                                                                     std::pair<double,double>()));
+                                                                                     std::pair<double,double>(0.0,0.0)));
 
         // create a quadrature formula based on the temperature element alone.
         const unsigned int quadrature_degree = simulator_access.get_fe().base_element(simulator_access.introspection().base_elements.temperature).degree+1;
@@ -79,29 +79,21 @@ namespace aspect
         // Vectors for solving CBF system.
         Vector<double> local_vector(dofs_per_cell);
         Vector<double> local_mass_matrix(dofs_per_cell);
-        std::vector<Vector<double> > local_vector_boundary_terms(n_boundaries,Vector<double>(dofs_per_cell));
+        Vector<double> local_vector_boundary_terms(dofs_per_cell);
 
         // The mass matrix may be stored in a vector as it is a diagonal matrix.
-        std::vector<LinearAlgebra::BlockVector> mass_matrix(n_boundaries);
-        std::vector<LinearAlgebra::BlockVector> distributed_heat_flux_vector(n_boundaries);
-        std::vector<LinearAlgebra::BlockVector> heat_flux_vector(n_boundaries);
-        std::vector<LinearAlgebra::BlockVector> rhs_vector(n_boundaries);
+        LinearAlgebra::BlockVector mass_matrix(simulator_access.introspection().index_sets.system_partitioning,
+                                               simulator_access.get_mpi_communicator());
+        LinearAlgebra::BlockVector distributed_heat_flux_vector(simulator_access.introspection().index_sets.system_partitioning,
+                                                                simulator_access.get_mpi_communicator());
+        LinearAlgebra::BlockVector heat_flux_vector(simulator_access.introspection().index_sets.system_partitioning,
+                                                    simulator_access.introspection().index_sets.system_relevant_partitioning,
+                                                    simulator_access.get_mpi_communicator());
+        LinearAlgebra::BlockVector rhs_vector(simulator_access.introspection().index_sets.system_partitioning,
+                                              simulator_access.get_mpi_communicator());
 
-        for (unsigned int i = 0; i < n_boundaries; ++i)
-          {
-            rhs_vector[i].reinit(simulator_access.introspection().index_sets.system_partitioning,
-                                                          simulator_access.get_mpi_communicator());
-            mass_matrix[i].reinit(simulator_access.introspection().index_sets.system_partitioning,
-                                  simulator_access.get_mpi_communicator());
-            distributed_heat_flux_vector[i].reinit(simulator_access.introspection().index_sets.system_partitioning,
-                                                   simulator_access.get_mpi_communicator());
-            heat_flux_vector[i].reinit(simulator_access.introspection().index_sets.system_partitioning,
-                                       simulator_access.introspection().index_sets.system_relevant_partitioning,
-                                       simulator_access.get_mpi_communicator());
-
-            distributed_heat_flux_vector[i] = 0.;
-            heat_flux_vector[i] = 0.;
-          }
+        distributed_heat_flux_vector = 0.;
+        heat_flux_vector = 0.;
 
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_volume_values.n_quadrature_points, simulator_access.n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_volume_values.n_quadrature_points, simulator_access.n_compositional_fields());
@@ -180,8 +172,7 @@ namespace aspect
               simulator_access.get_heating_model_manager().evaluate(in, out, heating_out);
 
               local_vector = 0.;
-              for (unsigned int i=0; i<local_vector_boundary_terms.size(); ++i)
-                local_vector_boundary_terms[i] = 0.;
+              local_vector_boundary_terms = 0.;
 
               fe_volume_values[simulator_access.introspection().extractors.temperature].get_function_gradients (simulator_access.get_solution(), temperature_gradients);
               fe_volume_values[simulator_access.introspection().extractors.temperature].get_function_values (simulator_access.get_old_solution(), old_temperatures);
@@ -250,8 +241,7 @@ namespace aspect
 
                   const unsigned int boundary_id = cell->face(f)->boundary_id();
 
-                  if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end() ||
-                      fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end())
+                  if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
                     {
                       local_mass_matrix = 0.;
 
@@ -265,16 +255,17 @@ namespace aspect
                                                   fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
                                                   fe_face_values.JxW(q);
 
-                      cell->distribute_local_to_global(local_mass_matrix, mass_matrix[boundary_id]);
+                      cell->distribute_local_to_global(local_mass_matrix, mass_matrix);
                     }
 
-                  if (fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end())
+                  // For Neumann boundaries: Integrate the heat flux directly, but still assemble the
+                  // boundary terms for the Dirichlet boundary computations
+                  else if (fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end())
                     {
                       fe_face_values.reinit (cell, f);
                       face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
                       simulator_access.get_material_model().evaluate(face_in, face_out);
 
-                      // We are in the case of a Neumann temperature boundary.
                       std::vector<Tensor<1,dim> > heat_flux(n_face_q_points);
                       heat_flux = simulator_access.get_boundary_heat_flux().heat_flux(
                                     boundary_id,
@@ -288,57 +279,43 @@ namespace aspect
                                   );
 
                       for (unsigned int q=0; q < n_face_q_points; ++q)
-                        for (unsigned int i = 0; i<dofs_per_cell; ++i)
-                          {
-                            // heat flux boundary condition terms
-                            local_vector_boundary_terms[boundary_id](i) += fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
-                                                (heat_flux[q] * fe_face_values.normal_vector(q))
-                                                *
-                                                fe_face_values.JxW(q);
-                          }
+                        {
+                          const double normal_heat_flux = heat_flux[q] * fe_face_values.normal_vector(q);
+                          const double JxW = fe_face_values.JxW(q);
+                          heat_flux_and_area[cell->active_cell_index()][f].first += normal_heat_flux * JxW;
+                          heat_flux_and_area[cell->active_cell_index()][f].second += JxW;
+
+                          for (unsigned int i = 0; i<dofs_per_cell; ++i)
+                            {
+                              // heat flux boundary condition terms
+                              local_vector_boundary_terms(i) += fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
+                                                                             normal_heat_flux * JxW;
+                            }
+                        }
                     }
                   else
                     continue;
                 }
 
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                {
-                  if (!cell->at_boundary(f))
-                    continue;
-
-                  const unsigned int boundary_id = cell->face(f)->boundary_id();
-
-                  if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
-                    {
                       Vector<double> local_vector_tmp = local_vector;
-                      for (unsigned int i=0; i<local_vector_boundary_terms.size(); ++i)
-                        local_vector_tmp -= local_vector_boundary_terms[i];
+                      local_vector_tmp -= local_vector_boundary_terms;
 
-                      cell->distribute_local_to_global(local_vector_tmp, rhs_vector[boundary_id]);
-                    }
-                  else if (fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end())
-                    {
-                      cell->distribute_local_to_global(local_vector_boundary_terms[boundary_id], rhs_vector[boundary_id]);
-                    }
-                }
+                      cell->distribute_local_to_global(local_vector_tmp, rhs_vector);
             }
 
-        for (unsigned int i = 0; i < n_boundaries; ++i)
-          {
-            mass_matrix[i].compress(VectorOperation::add);
-            rhs_vector[i].compress(VectorOperation::add);
+        mass_matrix.compress(VectorOperation::add);
+        rhs_vector.compress(VectorOperation::add);
 
-            // Since the mass matrix is diagonal, we can just solve for the stress vector by dividing.
-            const IndexSet local_elements = mass_matrix[i].locally_owned_elements();
-            for (unsigned int k=0; k<local_elements.n_elements(); ++k)
-              {
-                const unsigned int global_index = local_elements.nth_index_in_set(k);
-                if (mass_matrix[i][global_index] > 1.e-15)
-                  distributed_heat_flux_vector[i][global_index] = rhs_vector[i][global_index] / mass_matrix[i][global_index];
-              }
-            distributed_heat_flux_vector[i].compress(VectorOperation::insert);
-            heat_flux_vector[i] = distributed_heat_flux_vector[i];
+        // Since the mass matrix is diagonal, we can just solve for the stress vector by dividing.
+        const IndexSet local_elements = mass_matrix.locally_owned_elements();
+        for (unsigned int k=0; k<local_elements.n_elements(); ++k)
+          {
+            const unsigned int global_index = local_elements.nth_index_in_set(k);
+            if (mass_matrix[global_index] > 1.e-15)
+              distributed_heat_flux_vector[global_index] = rhs_vector[global_index] / mass_matrix[global_index];
           }
+        distributed_heat_flux_vector.compress(VectorOperation::insert);
+        heat_flux_vector = distributed_heat_flux_vector;
 
         std::vector<double> heat_flux_values(n_face_q_points);
 
@@ -349,16 +326,25 @@ namespace aspect
                 if (cell->at_boundary(f))
                   {
                     const unsigned int boundary_id = cell->face(f)->boundary_id();
-                    fe_face_values.reinit (cell, f);
 
-                    fe_face_values[simulator_access.introspection().extractors.temperature].get_function_values(heat_flux_vector[boundary_id], heat_flux_values);
-
-                    // Integrate the normal conductive heat flux
-                    for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                    // Only fill output vector for non-Neumann boundaries (Neumann boundaries have been filled above)
+                    if (fixed_heat_flux_boundaries.find(boundary_id) == fixed_heat_flux_boundaries.end())
                       {
-                        heat_flux_and_area[cell->active_cell_index()][f].first += heat_flux_values[q] *
-                                                                                  fe_face_values.JxW(q);
-                        heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
+                        fe_face_values.reinit (cell, f);
+
+                        if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
+                          fe_face_values[simulator_access.introspection().extractors.temperature].get_function_values(heat_flux_vector, heat_flux_values);
+                        else
+                          for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                            heat_flux_values[q] = 0.0;
+
+                        // Integrate the normal conductive heat flux
+                        for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                          {
+                            heat_flux_and_area[cell->active_cell_index()][f].first += heat_flux_values[q] *
+                                                                                      fe_face_values.JxW(q);
+                            heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
+                          }
                       }
                   }
             }

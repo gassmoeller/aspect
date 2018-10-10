@@ -1,0 +1,1448 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 31 (18+4+9)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 90 K, 90 K
+     Heat fluxes through boundary parts: 666.7 W, 0 W, -4000 W, -4.185e-14 W
+
+*** Timestep 1:  t=1.60248e+14 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 190 K, 369.3 K
+     Heat fluxes through boundary parts: 661.3 W, 0 W, -4000 W, 2148 W
+
+*** Timestep 2:  t=3.19605e+14 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 228 K, 446.1 K
+     Heat fluxes through boundary parts: 736.5 W, 0 W, -4000 W, 3177 W
+
+*** Timestep 3:  t=4.78716e+14 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 233.9 K, 455.7 K
+     Heat fluxes through boundary parts: 745.6 W, 0 W, -4000 W, 3374 W
+
+*** Timestep 4:  t=6.37796e+14 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 232.1 K, 452 K
+     Heat fluxes through boundary parts: 741.3 W, 0 W, -4000 W, 3326 W
+
+*** Timestep 5:  t=7.96888e+14 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230.6 K, 449 K
+     Heat fluxes through boundary parts: 738.3 W, 0 W, -4000 W, 3279 W
+
+*** Timestep 6:  t=9.5599e+14 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448.1 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3263 W
+
+*** Timestep 7:  t=1.11509e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 229.9 K, 447.9 K
+     Heat fluxes through boundary parts: 737.4 W, 0 W, -4000 W, 3261 W
+
+*** Timestep 8:  t=1.2742e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 9:  t=1.43331e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 10:  t=1.59241e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 11:  t=1.75152e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3263 W
+
+*** Timestep 12:  t=1.91062e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3263 W
+
+*** Timestep 13:  t=2.06972e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 14:  t=2.22883e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 15:  t=2.38793e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 16:  t=2.54704e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 17:  t=2.70614e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 18:  t=2.86525e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 19:  t=3.02435e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 20:  t=3.18346e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 21:  t=3.34256e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 22:  t=3.50167e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 23:  t=3.66077e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 24:  t=3.81988e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 25:  t=3.97898e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 26:  t=4.13809e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 27:  t=4.29719e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 28:  t=4.4563e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 29:  t=4.6154e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 30:  t=4.77451e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 31:  t=4.93361e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 32:  t=5.09272e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 33:  t=5.25182e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 34:  t=5.41093e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 35:  t=5.57003e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 36:  t=5.72914e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 37:  t=5.88824e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 38:  t=6.04735e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 39:  t=6.20645e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 40:  t=6.36556e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 41:  t=6.52466e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 42:  t=6.68377e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 43:  t=6.84287e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 44:  t=7.00198e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 45:  t=7.16108e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 46:  t=7.32019e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 47:  t=7.47929e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 48:  t=7.6384e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 49:  t=7.7975e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 50:  t=7.95661e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 51:  t=8.11571e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 52:  t=8.27482e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 53:  t=8.43392e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 54:  t=8.59303e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 55:  t=8.75213e+15 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 56:  t=8.91124e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 57:  t=9.07034e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 58:  t=9.22945e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 59:  t=9.38855e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 60:  t=9.54766e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 61:  t=9.70676e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 62:  t=9.86587e+15 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 63:  t=1.0025e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 64:  t=1.01841e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 65:  t=1.03432e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 66:  t=1.05023e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 67:  t=1.06614e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 68:  t=1.08205e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 69:  t=1.09796e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 70:  t=1.11387e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 71:  t=1.12978e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 72:  t=1.14569e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 73:  t=1.1616e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 74:  t=1.17751e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 75:  t=1.19342e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 76:  t=1.20933e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 77:  t=1.22524e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 78:  t=1.24115e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 79:  t=1.25706e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 80:  t=1.27298e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 81:  t=1.28889e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 82:  t=1.3048e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 83:  t=1.32071e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 84:  t=1.33662e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 85:  t=1.35253e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 86:  t=1.36844e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 87:  t=1.38435e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 88:  t=1.40026e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 89:  t=1.41617e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 90:  t=1.43208e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 91:  t=1.44799e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 92:  t=1.4639e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 93:  t=1.47981e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 94:  t=1.49572e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 95:  t=1.51163e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 96:  t=1.52754e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 97:  t=1.54345e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 98:  t=1.55936e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 99:  t=1.57527e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 100:  t=1.59119e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+*** Timestep 101:  t=1.6071e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 102:  t=1.62301e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 103:  t=1.63892e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 104:  t=1.65483e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 105:  t=1.67074e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 106:  t=1.68665e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 107:  t=1.70256e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 108:  t=1.71847e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 109:  t=1.73438e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 110:  t=1.75029e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 111:  t=1.7662e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 112:  t=1.78211e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 113:  t=1.79802e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 114:  t=1.81393e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 115:  t=1.82984e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 116:  t=1.84575e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 117:  t=1.86166e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 118:  t=1.87757e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 119:  t=1.89348e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 120:  t=1.9094e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 121:  t=1.92531e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 122:  t=1.94122e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 123:  t=1.95713e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 124:  t=1.97304e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 125:  t=1.98895e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 126:  t=2.00486e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 127:  t=2.02077e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 128:  t=2.03668e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 129:  t=2.05259e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 130:  t=2.0685e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 131:  t=2.08441e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 132:  t=2.10032e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 133:  t=2.11623e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 134:  t=2.13214e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 135:  t=2.14805e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 136:  t=2.16396e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 137:  t=2.17987e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 138:  t=2.19578e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 139:  t=2.21169e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 140:  t=2.2276e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 141:  t=2.24352e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 142:  t=2.25943e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 143:  t=2.27534e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 144:  t=2.29125e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 145:  t=2.30716e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 146:  t=2.32307e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 147:  t=2.33898e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 148:  t=2.35489e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 149:  t=2.3708e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 150:  t=2.38671e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 151:  t=2.40262e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 152:  t=2.41853e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 153:  t=2.43444e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 154:  t=2.45035e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 155:  t=2.46626e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 156:  t=2.48217e+16 seconds
+   Solving temperature system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 157:  t=2.49808e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+*** Timestep 158:  t=2.5e+16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            90 K, 230 K, 448 K
+     Heat fluxes through boundary parts: 737.5 W, 0 W, -4000 W, 3262 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
