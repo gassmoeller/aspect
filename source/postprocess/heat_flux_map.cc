@@ -130,6 +130,9 @@ namespace aspect
         const std::set<types::boundary_id> &fixed_heat_flux_boundaries =
           simulator_access.get_parameters().fixed_heat_flux_boundary_indicators;
 
+        Vector<float> artificial_viscosity(simulator_access.get_triangulation().n_active_cells());
+        simulator_access.get_artificial_viscosity(artificial_viscosity, true);
+
         // loop over all of the surface cells and evaluate the heat flux
         typename DoFHandler<dim>::active_cell_iterator
         cell = simulator_access.get_dof_handler().begin_active(),
@@ -218,11 +221,15 @@ namespace aspect
                   const double latent_heat_LHS =heating_out.lhs_latent_heat_terms[q];
                   const double material_prefactor = density_c_P + latent_heat_LHS;
 
+                  const double artificial_viscosity_cell = static_cast<double>(artificial_viscosity(cell->active_cell_index()));
+                  const double diffusion_constant = std::max(out.thermal_conductivities[q],
+                                                             artificial_viscosity_cell);
+
                   for (unsigned int i = 0; i<dofs_per_cell; ++i)
                     {
                       local_vector(i) +=
                         // conduction term
-                        (-out.thermal_conductivities[q] *
+                        (-diffusion_constant *
                          (fe_volume_values[simulator_access.introspection().extractors.temperature].gradient(i,q)
                           * temperature_gradients[q])
                          +

@@ -151,6 +151,6 @@ namespace aspect
                                   "quantity as the one here, but not divided by the area of "
                                   "the surface. In other words, it computes the "
                                   "\\textit{total} heat flux through each boundary."
-    )
+                                 )
   }
 }
