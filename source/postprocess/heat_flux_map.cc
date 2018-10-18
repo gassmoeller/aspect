@@ -244,7 +244,6 @@ namespace aspect
 
                   if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
                     {
-
                       fe_face_values.reinit (cell, f);
 
                       // Assemble the mass matrix for cell face. Since we are using GLL
@@ -266,15 +265,9 @@ namespace aspect
                         {
                           for (unsigned int q=0; q<n_q_points; ++q)
                             {
-                              out.densities[q] = simulator_access.get_adiabatic_conditions().density(in.position[q]);
+                              face_out.densities[q] = simulator_access.get_adiabatic_conditions().density(face_in.position[q]);
                             }
                         }
-
-                      MaterialModel::MaterialAveraging::average (simulator_access.get_parameters().material_averaging,
-                                                                 cell,
-                                                                 fe_volume_values.get_quadrature(),
-                                                                 fe_volume_values.get_mapping(),
-                                                                 out);
 
                       std::vector<Tensor<1,dim> > heat_flux(n_face_q_points);
                       heat_flux = simulator_access.get_boundary_heat_flux().heat_flux(
