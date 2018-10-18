@@ -115,11 +115,9 @@ namespace aspect
         typename MaterialModel::Interface<dim>::MaterialModelInputs face_in(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs face_out(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
 
-        std::vector<double> temperatures (n_q_points);
         std::vector<double> old_temperatures (n_q_points);
         std::vector<double> old_old_temperatures (n_q_points);
         std::vector<Tensor<1,dim> > temperature_gradients (n_q_points);
-        std::vector<Tensor<1,dim> > velocities (n_q_points);
 
         const double time_step = simulator_access.get_timestep();
         const double old_time_step = simulator_access.get_old_timestep();
@@ -316,14 +314,17 @@ namespace aspect
         mass_matrix.compress(VectorOperation::add);
         rhs_vector.compress(VectorOperation::add);
 
-        // Since the mass matrix is diagonal, we can just solve for the stress vector by dividing.
         const IndexSet local_elements = mass_matrix.locally_owned_elements();
         for (unsigned int k=0; k<local_elements.n_elements(); ++k)
           {
             const unsigned int global_index = local_elements.nth_index_in_set(k);
+
+            // Since the mass matrix is diagonal, we can just solve for the heat flux vector by dividing the
+            // right-hand side by the mass matrix entry
             if (mass_matrix[global_index] > 1.e-15)
               distributed_heat_flux_vector[global_index] = rhs_vector[global_index] / mass_matrix[global_index];
           }
+
         distributed_heat_flux_vector.compress(VectorOperation::insert);
         heat_flux_vector = distributed_heat_flux_vector;
 
@@ -360,9 +361,6 @@ namespace aspect
                   }
             }
         return heat_flux_and_area;
-
-        // TODO: Check first timestep sign errors in gplates_3d
-        // TODO: Check correctness for spherical shell
       }
     }
 
