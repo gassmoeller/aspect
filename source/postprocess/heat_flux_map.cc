@@ -60,7 +60,11 @@ namespace aspect
                                                                                  std::vector<std::pair<double, double> >(GeometryInfo<dim>::faces_per_cell,
                                                                                      std::pair<double,double>(0.0,0.0)));
 
-        const unsigned int quadrature_degree = simulator_access.get_fe().base_element(simulator_access.introspection().base_elements.temperature).degree+1;
+        // Quadrature degree for assembling the consistent boundary flux equation, see Simulator::assemble_advection_system()
+        // for a justification of the chosen quadrature degree.
+        const unsigned int quadrature_degree = simulator_access.get_parameters().temperature_degree
+                                               +
+                                               (simulator_access.get_parameters().stokes_velocity_degree+1)/2;
 
         // Gauss quadrature in the interior for best accuracy.
         const QGauss<dim> quadrature_formula(quadrature_degree);
@@ -216,7 +220,7 @@ namespace aspect
                   const double JxW = fe_volume_values.JxW(q);
 
                   const double density_c_P = out.densities[q] * out.specific_heat[q];
-                  const double latent_heat_LHS =heating_out.lhs_latent_heat_terms[q];
+                  const double latent_heat_LHS = heating_out.lhs_latent_heat_terms[q];
                   const double material_prefactor = density_c_P + latent_heat_LHS;
 
                   const double artificial_viscosity_cell = static_cast<double>(artificial_viscosity(cell->active_cell_index()));
