@@ -237,7 +237,8 @@ namespace aspect
   void
   Simulator<dim>::
   get_artificial_viscosity (Vector<T> &viscosity_per_cell,
-                            const AdvectionField &advection_field) const
+                            const AdvectionField &advection_field,
+                            const bool skip_interior_cells) const
   {
     Assert(viscosity_per_cell.size()==triangulation.n_active_cells(), ExcInternalError());
 
@@ -296,6 +297,12 @@ namespace aspect
             ||
             (cell->is_ghost() &&
              parameters.use_artificial_viscosity_smoothing == false))
+          {
+            viscosity_per_cell[cell->active_cell_index()] = -1;
+            continue;
+          }
+
+        if (skip_interior_cells && !cell->at_boundary())
           {
             viscosity_per_cell[cell->active_cell_index()] = -1;
             continue;
@@ -482,9 +489,11 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::get_artificial_viscosity (Vector<double> &viscosity_per_cell,  \
-                                                          const AdvectionField &advection_field) const; \
+                                                          const AdvectionField &advection_field, \
+                                                          const bool skip_interior_cells) const; \
   template void Simulator<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,  \
-                                                          const AdvectionField &advection_field) const; \
+                                                          const AdvectionField &advection_field, \
+                                                          const bool skip_interior_cells) const; \
    
 
   ASPECT_INSTANTIATE(INSTANTIATE)
