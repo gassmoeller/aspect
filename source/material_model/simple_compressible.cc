@@ -34,7 +34,6 @@ namespace aspect
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];
 

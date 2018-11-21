@@ -518,9 +518,6 @@ namespace aspect
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
 
-      MaterialModel::MaterialModelInputs<dim> in_old(scratch.finite_element_values.n_quadrature_points, this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs<dim> out_old(scratch.finite_element_values.n_quadrature_points, this->n_compositional_fields());
-
       // assemble RHS of:
       //   $ - \nabla \cdot \mathbf{u} = \frac{1}{\rho} \nabla \rho \cdot \mathbf{u}$
 
@@ -539,9 +536,13 @@ namespace aspect
       const double pressure_scaling = this->get_pressure_scaling();
       const unsigned int density_idx = this->introspection().compositional_index_for_name("projected_density");
 
+      const double time_step = this->get_timestep();
+      const double old_time_step = this->get_old_timestep();
+
       std::vector<Tensor<1,dim> > density_gradients(n_q_points);
       std::vector<double> density(n_q_points);
       std::vector<double> density_old(n_q_points);
+      std::vector<double> density_old_old(n_q_points);
 
       scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_gradients (this->get_current_linearization_point(),
           density_gradients);
@@ -549,9 +550,8 @@ namespace aspect
           density);
       scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_old_solution(),
           density_old);
-
-      in_old.reinit(scratch.finite_element_values, scratch.cell, this->introspection(), this->get_old_solution());
-      this->get_material_model().evaluate(in_old,out_old);
+      scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_old_solution(),
+          density_old_old);
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -565,22 +565,34 @@ namespace aspect
               ++i;
             }
 
-          const double drho_dt = (this->get_timestep() > 0.0)
-              ?
-                  (scratch.material_model_outputs.densities[q] - density_old[q]) / this->get_timestep()
-                  :
-                  0.0;
+          double drho_dt;
+
+          if (this->get_timestep_number() > 1)
+            drho_dt = (1.0/time_step) *
+                                          (density[q] *
+                                           (2*time_step + old_time_step) / (time_step + old_time_step)
+                                           -
+                                           density_old[q] *
+                                           (1 + time_step/old_time_step)
+                                           +
+                                           density_old_old[q] *
+                                           (time_step * time_step) / (old_time_step * (time_step + old_time_step)));
+          else if (this->get_timestep_number() == 1)
+            drho_dt =
+              (density[q] - density_old[q]) / time_step;
+          else
+            drho_dt = 0.0;
 
           const double JxW = scratch.finite_element_values.JxW(q);
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             data.local_rhs(i) += (
                                    (pressure_scaling *
-                                       (1.0 / scratch.material_model_outputs.densities[q]) *
+                                       (1.0 / density[q]) *
                                     (density_gradients[q] *
                                     scratch.velocity_values[q]) *
                                     scratch.phi_p[i])
-                                    + pressure_scaling * (1.0 / scratch.material_model_outputs.densities[q]) * drho_dt * scratch.phi_p[i]
+                                    + pressure_scaling * (1.0 / density[q]) * drho_dt * scratch.phi_p[i]
                                  )
                                  * JxW;
         }

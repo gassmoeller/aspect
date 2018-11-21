@@ -117,7 +117,7 @@ namespace aspect
                   for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
-              in.cell = &cell;
+              in.current_cell = cell;
 
               this->get_material_model().evaluate(in, out);
 
@@ -126,7 +126,6 @@ namespace aspect
               fe_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(),velocity);
               fe_values[this->introspection().extractors.velocities].get_function_divergences(this->get_solution(),velocity_divergence);
 
-              double rho_div_u = 0.0;
               double u_grad_rho = 0.0;
 
               for (unsigned int q = 0; q < n_q_points; ++q)
