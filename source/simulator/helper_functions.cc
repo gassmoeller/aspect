@@ -1831,7 +1831,7 @@ namespace aspect
 
     // We also want to copy the values into the old solution, because it might
     // be used in other parts of the code.
-    old_solution.block(block_c) = distributed_vector.block(block_c);
+    // old_solution.block(block_c) = distributed_vector.block(block_c);
   }
 
 

@@ -35,7 +35,7 @@ namespace aspect
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
           const double temperature = in.temperature[i];
-          const double pressure = in.pressure[i];
+          const Point<dim> position = in.position[i];
 
           out.viscosities[i] = eta;
           out.specific_heat[i] = reference_specific_heat;
