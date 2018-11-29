@@ -550,7 +550,7 @@ namespace aspect
           density);
       scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_old_solution(),
           density_old);
-      scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_old_solution(),
+      scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_old_old_solution(),
           density_old_old);
 
       for (unsigned int q=0; q<n_q_points; ++q)
