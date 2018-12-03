@@ -150,7 +150,8 @@ namespace aspect
         enum CompositionProfile
         {
           initial_composition,
-          reference_function
+          reference_function,
+          ignore_composition
         };
 
         /**

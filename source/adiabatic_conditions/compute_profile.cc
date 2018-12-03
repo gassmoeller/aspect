@@ -152,6 +152,11 @@ namespace aspect
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 in.composition[0][c] = composition_function->value(p, c);
             }
+          else if (reference_composition == ignore_composition)
+            {
+              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                in.composition[0][c] = 0.0;
+            }
           else
             AssertThrow(false,ExcNotImplemented());
 
@@ -295,11 +300,14 @@ namespace aspect
         {
           Functions::ParsedFunction<1>::declare_parameters (prm, 1);
           prm.declare_entry("Composition reference profile","initial composition",
-                            Patterns::Selection("initial composition|function"),
+                            Patterns::Selection("initial composition|function|ignore composition"),
                             "Select how the reference profile for composition "
                             "is computed. This profile is used to evaluate the "
-                            "material model, when computing the pressure and "
-                            "temperature profile.");
+                            "material model, when computing the pressure, temperature, "
+                            "and density profile. Note that if the temperature equation "
+                            "uses a reference density profile (such as for the "
+                            "Boussinesq Approximation or Anelastic Liquid Approximation) "
+                            "the composition will always be assumed to be 0 for all fields.");
           prm.declare_entry ("Number of points", "1000",
                              Patterns::Integer (5),
                              "The number of points we use to compute the adiabatic "
@@ -342,8 +350,13 @@ namespace aspect
             reference_composition = initial_composition;
           else if (composition_profile == "function")
             reference_composition = reference_function;
+          else if (composition_profile == "ignore composition")
+            reference_composition = ignore_composition;
           else
             AssertThrow(false, ExcNotImplemented());
+
+          if (this->get_parameters().formulation_temperature_equation == Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+            reference_composition = ignore_composition;
 
           if ((this->n_compositional_fields() > 0) && (reference_composition == reference_function))
             {
