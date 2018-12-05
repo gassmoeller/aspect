@@ -1075,7 +1075,8 @@ namespace aspect
   {
 
     // TODO iterate
-    for (unsigned int i=0; i<1; ++i)
+    // todo make number of interations a parameter and change Do iterations for inversion parameter
+    for (unsigned int i=0; i<2; ++i)
       {
         // -------------------------------------------------------------
         // SOLVE FORWARD PROBLEM
@@ -1139,10 +1140,6 @@ namespace aspect
             // set up rhs and mass matrix
             // solve system for gradients in eta and rho
             compute_parameter_update();
-
-
-            // update initial density and viscosity guess
-            const double  alpha = 0.1;
 
             //in.composition[i][density_idx];
             //in.composition[i][viscosity_idx];

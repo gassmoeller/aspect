@@ -1312,9 +1312,11 @@ namespace aspect
 
     // Gauss quadrature in the interior for best accuracy.
     const QGauss<dim> quadrature_formula(quadrature_degree);
-    const QGauss<dim-1> quadrature_formula_face(quadrature_degree);
     const unsigned int dofs_per_cell = finite_element.dofs_per_cell;
     const unsigned int n_q_points = quadrature_formula.size();
+
+    const QGauss<dim-1> quadrature_formula_face(quadrature_degree);
+    const unsigned int n_q_face_points = quadrature_formula_face.size();
 
     FEValues<dim> fe_values (*mapping,
                              finite_element,
@@ -1333,7 +1335,7 @@ namespace aspect
                                      update_JxW_values);
 
     FEFaceValues<dim> fe_face_values (*mapping,
-            						  finite_element,
+                                     finite_element,
                                       quadrature_formula_face,
                                       update_values |
                                       update_gradients |
@@ -1439,17 +1441,17 @@ namespace aspect
 
           if (top_face_idx != numbers::invalid_unsigned_int)
             {
-              fe_values.reinit (cell); //(cell,top_face_idx);
+              //fe_values.reinit (cell); //(cell,top_face_idx);
               fe_face_values.reinit (cell,top_face_idx);
 
               // Evaluate the material properties and the solution within the cell
-           //   MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, introspection, solution);
-           //   MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
-           //   material_model->evaluate(in_face, out_face);
+              //MaterialModel::MaterialModelInputs<dim> in(fe_values, cell, introspection, solution);
+              //MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, introspection.n_compositional_fields);
+              //material_model->evaluate(in, out);
 
-              MaterialModel::MaterialModelInputs<dim> in(fe_values, cell, introspection, solution);
-              MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, introspection.n_compositional_fields);
-              material_model->evaluate(in, out);
+              MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, introspection, solution);
+              MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
+              material_model->evaluate(in_face, out_face);
 
               // initiate in a way that they work if no points are read in
               bool calc_RHS = false;
@@ -1481,11 +1483,11 @@ namespace aspect
                   double dynamic_topography_surface_average = 0;
                   double cell_surface_area = 0;
 
-                  fe_values[introspection.extractors.temperature].get_function_values(topo_vector, topo_values);
+                  fe_face_values[introspection.extractors.temperature].get_function_values(topo_vector, topo_values);
 
                   // todo this calculates DT and all the respective things within the upper cell, not surface. figure that out
                   // todo this should be delta function (here and RHS). figure this out.
-                  for (unsigned int q=0; q<quadrature_formula_face.size(); ++q)
+                  for (unsigned int q=0; q<n_q_face_points; ++q)
                     {
                 	  dynamic_topography_surface_average += topo_values[q] * fe_face_values.JxW(q);
                 	  cell_surface_area += fe_face_values.JxW(q);
@@ -1494,7 +1496,7 @@ namespace aspect
                   dynamic_topography_surface_average /= cell_surface_area;
 
 
-                  for (unsigned int q=0; q<n_q_points; ++q)
+                  for (unsigned int q=0; q<n_q_face_points; ++q)
                     {
 
                       const double surface_difference = parameters.use_fixed_surface_value
@@ -1503,16 +1505,16 @@ namespace aspect
                                                         :
                                                         (dynamic_topography_surface_average - DT_obs)/DT_sigma;
 
-                      Point<dim> location = fe_values.quadrature_point(q);
+                      Point<dim> location = fe_face_values.quadrature_point(q);
 
                       // -------- to calculate sensitivity to specific degree
                       //const std_cxx11::array<double, dim> spherical_point = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(location);
                       //const double surface_difference = std::sin(4*spherical_point[1]);
 
-                      const double viscosity = out.viscosities[q];
-                      const double density   = out.densities[q];
+                      const double viscosity = out_face.viscosities[q];
+                      const double density   = out_face.densities[q];
 
-                      const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
+                      const SymmetricTensor<2,dim> strain_rate = in_face.strain_rate[q] - 1./3 * trace(in_face.strain_rate[q]) * unit_symmetric_tensor<dim>();
                       const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
 
                       const Tensor<1,dim> gravity = gravity_model->gravity_vector(location);
@@ -1527,25 +1529,13 @@ namespace aspect
                       for (unsigned int i = 0; i<dofs_per_cell; ++i)
                         {
                           // density kernel
-                          local_rhs(i) += - surface_difference * topo_values[q] / (density - density_above) * phi_rho[i] * fe_values.JxW(q);
+                          local_rhs(i) += surface_difference * topo_values[q] / (density - density_above) * phi_eta[i] * fe_face_values.JxW(q);
 
                           // viscosity kernel
-                          local_rhs(i) += surface_difference * radial_direction * (shear_stress * radial_direction)
-                                          / gravity.norm() / (density - density_above) * phi_eta[i] * fe_values.JxW(q);
+                          local_rhs(i) += -surface_difference * radial_direction * (shear_stress * radial_direction)
+                                          / gravity.norm() / (density - density_above) * phi_eta[i] * fe_face_values.JxW(q);
                           // it's fine to add both  of them because only one of them at a time is nonzero
 
-                          for (unsigned int j = 0; j<dofs_per_cell; j++)
-                            {
-                              // Assemble Mass Matrix for the first compositional field. the mass
-                              // matrix for the second compositional field would look exactly the
-                              // same, so we can avoid building it for efficiency. (in fact we
-                              // also would have to deal with the fact that no sparsity pattern
-                              // and memory is allocated for the second compositional field; but
-                              // because we don't build the matrix, we don't care here.)
-                              local_mass_matrix(i,j) += fe_values[introspection.extractors.compositional_fields[0]].value(i,q) *
-                                                        fe_values[introspection.extractors.compositional_fields[0]].value(j,q) *
-                                                        fe_values.JxW(q);
-                            }
                         }
                     }
                 }
