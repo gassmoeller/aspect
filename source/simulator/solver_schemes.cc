@@ -1076,7 +1076,7 @@ namespace aspect
 
     // TODO iterate
     // todo make number of interations a parameter and change Do iterations for inversion parameter
-    for (unsigned int i=0; i<2; ++i)
+    for (unsigned int i=0; i<parameters.num_it_adjoint; ++i)
       {
         // -------------------------------------------------------------
         // SOLVE FORWARD PROBLEM
@@ -1128,9 +1128,6 @@ namespace aspect
         // -------------------------------------------------------------
         // COMPUTE UPDATES FOR ETA AND RHO
 
-        // check if we even want to do an iteration or if we're just interested in the kernels
-        if (parameters.do_iteration == true)
-          {
             // the inversion only works with a specific material model
             // this doesn't actually check the material model yet just the number of comp fields, but okay
             Assert(introspection.n_compositional_fields == 2,
@@ -1143,7 +1140,6 @@ namespace aspect
 
             //in.composition[i][density_idx];
             //in.composition[i][viscosity_idx];
-          }
       }
   }
 

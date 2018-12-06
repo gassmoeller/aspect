@@ -131,16 +131,20 @@ namespace aspect
         public:
           virtual
           void
-          compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
-                                             const std::vector<std::vector<Tensor<1,dim> > > &,
-                                             const std::vector<std::vector<Tensor<2,dim> > > &,
-                                             const std::vector<Point<dim> > &,
-                                             const std::vector<Point<dim> > &,
-                                             std::vector<Vector<double> >                    &computed_quantities) const
+//          compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
+//                                             const std::vector<std::vector<Tensor<1,dim> > > &,
+//                                             const std::vector<std::vector<Tensor<2,dim> > > &,
+//                                             const std::vector<Point<dim> > &,
+//                                             const std::vector<Point<dim> > &,
+//                                             std::vector<Vector<double> >                    &computed_quantities) const
+          evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                std::vector<Vector<double> > &computed_quantities) const
+
+ 
           {
             const double velocity_scaling_factor =
               this->convert_output_to_years() ? year_in_seconds : 1.0;
-            const unsigned int n_q_points = solution_values.size();
+            const unsigned int n_q_points = input_data.solution_values.size();
             for (unsigned int q=0; q<n_q_points; ++q)
               for (unsigned int i=0; i<computed_quantities[q].size(); ++i)
                 {
@@ -148,9 +152,9 @@ namespace aspect
                   if (this->introspection().component_masks.velocities[i] ||
                       (this->include_melt_transport()
                        && this->introspection().variable("fluid velocity").component_mask[i]))
-                    computed_quantities[q][i]=solution_values[q][i] * velocity_scaling_factor;
+                    computed_quantities[q][i]=input_data.solution_values[q][i] * velocity_scaling_factor;
                   else
-                    computed_quantities[q][i]=solution_values[q][i];
+                    computed_quantities[q][i]=input_data.solution_values[q][i];
                 }
           }
 
@@ -162,14 +166,14 @@ namespace aspect
             if (this->include_melt_transport())
               {
                 solution_names.push_back ("p_f");
-                solution_names.push_back ("p_c");
+                solution_names.push_back ("p_c_bar");
                 for (unsigned int i=0; i<dim; ++i)
                   solution_names.push_back ("u_f");
               }
             solution_names.push_back ("adjoint_p");
             solution_names.push_back ("adjoint_T");
-            //    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            //      solution_names.push_back (this->introspection().name_for_compositional_index(c));
+//             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+//                 solution_names.push_back (this->introspection().name_for_compositional_index(c));
 
             return solution_names;
           }
@@ -191,8 +195,8 @@ namespace aspect
               }
             interpretation.push_back (DataComponentInterpretation::component_is_scalar); // p
             interpretation.push_back (DataComponentInterpretation::component_is_scalar); // T
-            //    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            //      interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+  //            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+  //               interpretation.push_back (DataComponentInterpretation::component_is_scalar);
 
             return interpretation;
           }

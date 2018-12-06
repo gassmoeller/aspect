@@ -32,14 +32,14 @@ namespace aspect
     Additive<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                             typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      const unsigned int density_idx = this->introspection().compositional_index_for_name("density_term");
+//      const unsigned int density_idx = this->introspection().compositional_index_for_name("density_term");
       const unsigned int viscosity_idx = this->introspection().compositional_index_for_name("viscosity_factor");
 
       base_model -> evaluate(in,out);
 
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
-         // out.densities[i] += in.composition[i][density_idx];
+//          out.densities[i] += in.composition[i][density_idx];
           out.viscosities[i] *= in.composition[i][viscosity_idx];
         }
 
