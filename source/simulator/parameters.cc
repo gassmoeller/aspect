@@ -1282,7 +1282,10 @@ namespace aspect
       prm.declare_entry ("Use fixed surface value", "false",
                          Patterns::Bool (),
                          "");
-      prm.declare_entry ("Factor to update the material properties", "0.1",
+      prm.declare_entry ("Factor to update the density properties", "0.",
+                         Patterns::Double (),
+                         "");
+      prm.declare_entry ("Factor to update the viscosity properties", "0.",
                          Patterns::Double (),
                          "");
     }
@@ -1956,7 +1959,8 @@ namespace aspect
       read_in_points                  = prm.get_bool ("Read points in from file");
       num_it_adjoint                  = prm.get_integer ("Number of iterations in adjoint inversion");
       use_fixed_surface_value         = prm.get_bool ("Use fixed surface value");
-      update_factor             = prm.get_double ("Factor to update the material properties");
+      update_factor_rho               = prm.get_double ("Factor to update the density properties");
+      update_factor_eta               = prm.get_double ("Factor to update the viscosity properties");
     }
     prm.leave_subsection ();
 

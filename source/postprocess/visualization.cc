@@ -131,16 +131,8 @@ namespace aspect
         public:
           virtual
           void
-//          compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
-//                                             const std::vector<std::vector<Tensor<1,dim> > > &,
-//                                             const std::vector<std::vector<Tensor<2,dim> > > &,
-//                                             const std::vector<Point<dim> > &,
-//                                             const std::vector<Point<dim> > &,
-//                                             std::vector<Vector<double> >                    &computed_quantities) const
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                                 std::vector<Vector<double> > &computed_quantities) const
-
- 
           {
             const double velocity_scaling_factor =
               this->convert_output_to_years() ? year_in_seconds : 1.0;
@@ -620,6 +612,11 @@ namespace aspect
     std::pair<std::string,std::string>
     Visualization<dim>::execute (TableHandler &statistics)
     {
+
+      // do this otherwise there is no graphical output after the first iteration
+      if (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Stokes_adjoint) {}
+      else { 
+
       // if this is the first time we get here, set the last output time
       // to the current time - output_interval. this makes sure we
       // always produce data during the first time step
@@ -642,11 +639,13 @@ namespace aspect
           && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
           && (this->get_timestep_number() != 0))
         return std::pair<std::string,std::string>();
+      }
 
       // up the counter of the number of the file by one, but not in
       // the very first output step. if we run postprocessors on all
       // iterations, only increase file number in the first nonlinear iteration
       const bool increase_file_number = (this->get_nonlinear_iteration() == 0) || (!this->get_parameters().run_postprocessors_on_nonlinear_iterations);
+
       if (output_file_number == numbers::invalid_unsigned_int)
         output_file_number = 0;
       else if (increase_file_number)
