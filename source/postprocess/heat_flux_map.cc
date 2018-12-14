@@ -48,9 +48,9 @@ namespace aspect
        *
        * In summary, the method solves the temperature equation again on the boundary faces, with known
        * temperatures and solving for the boundary fluxes that satisfy the equation. Since the
-       * equation is only formed on the faces and it can be solved using only diagonal matrices it is cheap,
-       * and conceptually simpler methods like evaluating the temperature gradient on the face are
-       * significantly less accurate.
+       * equation is only formed on the faces and it can be solved using only diagonal matrices,
+       * the computation is cheap. Conceptually simpler methods like evaluating the temperature
+       * gradient on the face are significantly less accurate.
        */
       template <int dim>
       std::vector<std::vector<std::pair<double, double> > >
@@ -95,7 +95,7 @@ namespace aspect
         const unsigned int n_face_q_points = quadrature_formula_face.size();
 
         // Vectors for solving CBF system.
-        Vector<double> local_vector(dofs_per_cell);
+        Vector<double> local_rhs(dofs_per_cell);
         Vector<double> local_mass_matrix(dofs_per_cell);
 
         // The mass matrix may be stored in a vector as it is a diagonal matrix.
@@ -189,7 +189,7 @@ namespace aspect
 
               simulator_access.get_heating_model_manager().evaluate(in, out, heating_out);
 
-              local_vector = 0.;
+              local_rhs = 0.;
               local_mass_matrix = 0.;
 
               fe_volume_values[simulator_access.introspection().extractors.temperature].get_function_gradients (simulator_access.get_solution(), temperature_gradients);
@@ -202,6 +202,13 @@ namespace aspect
                   double temperature_time_derivative;
 
                   if (simulator_access.get_timestep_number() > 1)
+                    {
+                      Assert(time_step > 0.0 && old_time_step > 0.0,
+                             ExcMessage("The heat flux postprocessor found a time step length of 0. "
+                                 "This is not supported, because it needs to compute the time derivative of the "
+                                 "temperature. Either use a positive timestep, or modify the postprocessor to "
+                                 "ignore the time derivative."));
+
                     temperature_time_derivative = (1.0/time_step) *
                                                   (in.temperature[q] *
                                                    (2*time_step + old_time_step) / (time_step + old_time_step)
@@ -211,9 +218,18 @@ namespace aspect
                                                    +
                                                    old_old_temperatures[q] *
                                                    (time_step * time_step) / (old_time_step * (time_step + old_time_step)));
+                    }
                   else if (simulator_access.get_timestep_number() == 1)
+                    {
                     temperature_time_derivative =
                       (in.temperature[q] - old_temperatures[q]) / time_step;
+
+                    Assert(time_step > 0.0,
+                           ExcMessage("The heat flux postprocessor found a time step length of 0. "
+                               "This is not supported, because it needs to compute the time derivative of the "
+                               "temperature. Either use a positive timestep, or modify the postprocessor to "
+                               "ignore the time derivative."));
+                    }
                   else
                     temperature_time_derivative = 0.0;
 
@@ -229,15 +245,15 @@ namespace aspect
 
                   for (unsigned int i = 0; i<dofs_per_cell; ++i)
                     {
-                      local_vector(i) +=
-                        // conduction term
+                      local_rhs(i) +=
+                        // conduction term (term 2 in equation (30) of Gresho et al.)
                         (-diffusion_constant *
                          (fe_volume_values[simulator_access.introspection().extractors.temperature].gradient(i,q)
                           * temperature_gradients[q])
                          +
-                         // advection term and time derivative
+                         // advection term and time derivative (term 1 in equation (30) of Gresho et al.)
                          (- material_prefactor * (temperature_gradients[q] * in.velocity[q] + temperature_time_derivative)
-                          // source terms
+                          // source terms (term 4 in equation (30) of Gresho et al.)
                           + heating_out.heating_source_terms[q])
                          * fe_volume_values[simulator_access.introspection().extractors.temperature].value(i,q))
                         * JxW;
@@ -290,8 +306,11 @@ namespace aspect
 #endif
                                   );
 
-                      // For Neumann boundaries: Integrate the heat flux for the face, but still assemble the
-                      // boundary terms for the Dirichlet boundary computations on this cell
+                      // For inhomogeneous Neumann boundaries we know the heat flux across the boundary at each point,
+                      // and can thus simply integrate it for each cell. However, we still need to assemble the
+                      // boundary terms for the CBF method, because there could be Dirichlet boundaries on the
+                      // same cell (e.g. a different face in a corner). Therefore, do the integration into
+                      // heat_flux_and_area, and assemble the CBF term into local_rhs.
                       for (unsigned int q=0; q < n_face_q_points; ++q)
                         {
                           const double normal_heat_flux = heat_flux[q] * fe_face_values.normal_vector(q);
@@ -301,8 +320,8 @@ namespace aspect
 
                           for (unsigned int i = 0; i<dofs_per_cell; ++i)
                             {
-                              // heat flux boundary condition terms
-                              local_vector(i) += - fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
+                              // Neumann boundary condition term (term 3 in equation (30) of Gresho et al.)
+                              local_rhs(i) += - fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
                                                  normal_heat_flux * JxW;
                             }
                         }
@@ -312,7 +331,7 @@ namespace aspect
                 }
 
               cell->distribute_local_to_global(local_mass_matrix, mass_matrix);
-              cell->distribute_local_to_global(local_vector, rhs_vector);
+              cell->distribute_local_to_global(local_rhs, rhs_vector);
             }
 
         mass_matrix.compress(VectorOperation::add);
