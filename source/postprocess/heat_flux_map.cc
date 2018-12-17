@@ -25,6 +25,7 @@
 #include <aspect/heating_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/boundary_heat_flux/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -132,6 +133,9 @@ namespace aspect
         const std::set<types::boundary_id> &fixed_heat_flux_boundaries =
           simulator_access.get_parameters().fixed_heat_flux_boundary_indicators;
 
+        const std::set<types::boundary_id> &tangential_velocity_boundaries =
+          simulator_access.get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
+
         Vector<float> artificial_viscosity(simulator_access.get_triangulation().n_active_cells());
         simulator_access.get_artificial_viscosity(artificial_viscosity, true);
 
@@ -143,31 +147,6 @@ namespace aspect
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned() && cell->at_boundary())
             {
-              // First check if we need to compute heat flux for this cell at all,
-              // that is if it has a face on a boundary with prescribed temperatures
-              // or prescribed heat fluxes
-              bool compute_heat_flux = false;
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                {
-                  if (!cell->at_boundary(f))
-                    continue;
-
-                  const unsigned int boundary_id = cell->face(f)->boundary_id();
-                  if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
-                    {
-                      compute_heat_flux = true;
-                      break;
-                    }
-                  if (fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end())
-                    {
-                      compute_heat_flux = true;
-                      break;
-                    }
-                }
-
-              if (compute_heat_flux == false)
-                continue;
-
               fe_volume_values.reinit (cell);
               in.reinit(fe_volume_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
               simulator_access.get_material_model().evaluate(in, out);
@@ -205,30 +184,30 @@ namespace aspect
                     {
                       Assert(time_step > 0.0 && old_time_step > 0.0,
                              ExcMessage("The heat flux postprocessor found a time step length of 0. "
-                                 "This is not supported, because it needs to compute the time derivative of the "
-                                 "temperature. Either use a positive timestep, or modify the postprocessor to "
-                                 "ignore the time derivative."));
+                                        "This is not supported, because it needs to compute the time derivative of the "
+                                        "temperature. Either use a positive timestep, or modify the postprocessor to "
+                                        "ignore the time derivative."));
 
-                    temperature_time_derivative = (1.0/time_step) *
-                                                  (in.temperature[q] *
-                                                   (2*time_step + old_time_step) / (time_step + old_time_step)
-                                                   -
-                                                   old_temperatures[q] *
-                                                   (1 + time_step/old_time_step)
-                                                   +
-                                                   old_old_temperatures[q] *
-                                                   (time_step * time_step) / (old_time_step * (time_step + old_time_step)));
+                      temperature_time_derivative = (1.0/time_step) *
+                                                    (in.temperature[q] *
+                                                     (2*time_step + old_time_step) / (time_step + old_time_step)
+                                                     -
+                                                     old_temperatures[q] *
+                                                     (1 + time_step/old_time_step)
+                                                     +
+                                                     old_old_temperatures[q] *
+                                                     (time_step * time_step) / (old_time_step * (time_step + old_time_step)));
                     }
                   else if (simulator_access.get_timestep_number() == 1)
                     {
-                    temperature_time_derivative =
-                      (in.temperature[q] - old_temperatures[q]) / time_step;
+                      Assert(time_step > 0.0,
+                             ExcMessage("The heat flux postprocessor found a time step length of 0. "
+                                        "This is not supported, because it needs to compute the time derivative of the "
+                                        "temperature. Either use a positive timestep, or modify the postprocessor to "
+                                        "ignore the time derivative."));
 
-                    Assert(time_step > 0.0,
-                           ExcMessage("The heat flux postprocessor found a time step length of 0. "
-                               "This is not supported, because it needs to compute the time derivative of the "
-                               "temperature. Either use a positive timestep, or modify the postprocessor to "
-                               "ignore the time derivative."));
+                      temperature_time_derivative =
+                        (in.temperature[q] - old_temperatures[q]) / time_step;
                     }
                   else
                     temperature_time_derivative = 0.0;
@@ -247,9 +226,8 @@ namespace aspect
                     {
                       local_rhs(i) +=
                         // conduction term (term 2 in equation (30) of Gresho et al.)
-                        (-diffusion_constant *
-                         (fe_volume_values[simulator_access.introspection().extractors.temperature].gradient(i,q)
-                          * temperature_gradients[q])
+                        (-diffusion_constant * temperature_gradients[q] *
+                         fe_volume_values[simulator_access.introspection().extractors.temperature].gradient(i,q)
                          +
                          // advection term and time derivative (term 1 in equation (30) of Gresho et al.)
                          (- material_prefactor * (temperature_gradients[q] * in.velocity[q] + temperature_time_derivative)
@@ -288,7 +266,7 @@ namespace aspect
                       if (simulator_access.get_parameters().formulation_temperature_equation ==
                           Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
                         {
-                          for (unsigned int q=0; q<n_q_points; ++q)
+                          for (unsigned int q=0; q<n_face_q_points; ++q)
                             {
                               face_out.densities[q] = simulator_access.get_adiabatic_conditions().density(face_in.position[q]);
                             }
@@ -322,7 +300,7 @@ namespace aspect
                             {
                               // Neumann boundary condition term (term 3 in equation (30) of Gresho et al.)
                               local_rhs(i) += - fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
-                                                 normal_heat_flux * JxW;
+                                              normal_heat_flux * JxW;
                             }
                         }
                     }
@@ -362,16 +340,11 @@ namespace aspect
                   {
                     const unsigned int boundary_id = cell->face(f)->boundary_id();
 
-                    // Only fill output vector for non-Neumann boundaries (Neumann boundaries have been filled above)
-                    if (fixed_heat_flux_boundaries.find(boundary_id) == fixed_heat_flux_boundaries.end())
+                    // Only fill output vector for Dirichlet boundaries (Neumann boundaries have been filled above)
+                    if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
                       {
                         fe_face_values.reinit (cell, f);
-
-                        if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
-                          fe_face_values[simulator_access.introspection().extractors.temperature].get_function_values(heat_flux_vector, heat_flux_values);
-                        else
-                          for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                            heat_flux_values[q] = 0.0;
+                        fe_face_values[simulator_access.introspection().extractors.temperature].get_function_values(heat_flux_vector, heat_flux_values);
 
                         // Integrate the consistent heat flux and face area
                         for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
@@ -379,6 +352,32 @@ namespace aspect
                             heat_flux_and_area[cell->active_cell_index()][f].first += heat_flux_values[q] *
                                                                                       fe_face_values.JxW(q);
                             heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
+                          }
+                      }
+
+                    // Add advective heat flux for boundaries that are non-tangential
+                    if (tangential_velocity_boundaries.find(boundary_id) == tangential_velocity_boundaries.end())
+                      {
+                        fe_face_values.reinit (cell, f);
+                        face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
+                        simulator_access.get_material_model().evaluate(face_in, face_out);
+
+                        if (simulator_access.get_parameters().formulation_temperature_equation ==
+                            Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                          {
+                            for (unsigned int q=0; q<n_face_q_points; ++q)
+                              {
+                                face_out.densities[q] = simulator_access.get_adiabatic_conditions().density(face_in.position[q]);
+                              }
+                          }
+
+                        // Integrate the consistent heat flux and face area
+                        for (unsigned int q=0; q<n_face_q_points; ++q)
+                          {
+                            heat_flux_and_area[cell->active_cell_index()][f].first += face_out.densities[q] *
+                                                                                      face_out.specific_heat[q] * face_in.temperature[q] *
+                                                                                      face_in.velocity[q] * fe_face_values.normal_vector(q) *
+                                                                                      fe_face_values.JxW(q);
                           }
                       }
                   }
