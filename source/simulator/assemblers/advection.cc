@@ -210,6 +210,11 @@ namespace aspect
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       std::vector<double> residuals(n_q_points);
 
+      const double artificial_viscosity = this->get_artificial_viscosity_cell(scratch.cell);
+      const double old_artificial_viscosity = this->get_old_artificial_viscosity_cell(scratch.cell);
+
+      const double averaged_artificial_viscosity = (artificial_viscosity + old_artificial_viscosity) / 2.0;
+
       if (advection_field.is_temperature())
         this->get_heating_model_manager().evaluate(scratch.material_model_inputs,
                                                    scratch.material_model_outputs,
@@ -232,8 +237,10 @@ namespace aspect
               const double density       = scratch.material_model_outputs.densities[q];
               const double conductivity  = scratch.material_model_outputs.thermal_conductivities[q];
               const double c_P           = scratch.material_model_outputs.specific_heat[q];
-              const double k_Delta_field = conductivity * (scratch.old_field_laplacians[q] +
-                                                           scratch.old_old_field_laplacians[q]) / 2;
+              const double diffusion_constant = std::max(conductivity,0.0);
+
+              const double k_Delta_field = diffusion_constant *
+                  (scratch.old_field_laplacians[q] + scratch.old_old_field_laplacians[q]) / 2;
 
               const double gamma           = scratch.heating_model_outputs.heating_source_terms[q];
               const double latent_heat_LHS = scratch.heating_model_outputs.lhs_latent_heat_terms[q];

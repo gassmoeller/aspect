@@ -260,6 +260,21 @@ namespace aspect
   {
     const typename Simulator<dim>::AdvectionField advection_field = Simulator<dim>::AdvectionField::temperature();
     simulator->get_artificial_viscosity(viscosity_per_cell, advection_field, skip_interior_cells);
+
+  }
+
+  template <int dim>
+  double
+  SimulatorAccess<dim>::get_artificial_viscosity_cell (typename DoFHandler<dim>::active_cell_iterator &cell) const
+  {
+    return simulator->artificial_viscosity(cell->active_cell_index());
+  }
+
+  template <int dim>
+  double
+  SimulatorAccess<dim>::get_old_artificial_viscosity_cell (typename DoFHandler<dim>::active_cell_iterator &cell) const
+  {
+    return simulator->old_artificial_viscosity(cell->active_cell_index());
   }
 
   template <int dim>

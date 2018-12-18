@@ -1717,6 +1717,9 @@ namespace aspect
         timestep_number           = 0;
         time_step = old_time_step = 0;
 
+        artificial_viscosity.reinit(triangulation.n_active_cells());
+        old_artificial_viscosity.reinit(triangulation.n_active_cells());
+
         if (! parameters.skip_setup_initial_conditions_on_initial_refinement
             ||
             ! (pre_refinement_step < parameters.initial_adaptive_refinement))

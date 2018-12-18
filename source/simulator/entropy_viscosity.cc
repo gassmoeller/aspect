@@ -320,6 +320,7 @@ namespace aspect
 
         const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
+        scratch.cell = cell;
         scratch.finite_element_values.reinit (cell);
 
         // get all dof indices on the current cell, then extract those

@@ -1101,6 +1101,9 @@ namespace aspect
     viscosity_per_cell.reinit(triangulation.n_active_cells());
     get_artificial_viscosity(viscosity_per_cell, advection_field);
 
+    old_artificial_viscosity = artificial_viscosity;
+    artificial_viscosity = viscosity_per_cell;
+
     // We have to assemble the term u.grad phi_i * phi_j, which is
     // of total polynomial degree
     //   stokes_deg + 2*temp_deg -1

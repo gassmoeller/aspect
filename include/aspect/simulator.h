@@ -1750,6 +1750,8 @@ namespace aspect
       LinearAlgebra::BlockVector                                system_rhs;
 
       LinearAlgebra::BlockVector                                current_linearization_point;
+      Vector<double>                                            artificial_viscosity;
+      Vector<double>                                            old_artificial_viscosity;
 
       // only used if is_compressible()
       LinearAlgebra::BlockVector                                pressure_shape_function_integrals;

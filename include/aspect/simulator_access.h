@@ -402,6 +402,32 @@ namespace aspect
 
       /**
        * Returns the entropy viscosity on each locally owned cell as it is
+       * used to stabilize the temperature equation.
+       *
+       * @param viscosity_per_cell Output vector with as many entries as
+       * active cells. Each entry corresponding to a locally owned active
+       * cell index will contain the artificial viscosity for this cell.
+       * @param skip_interior_cells A boolean flag. If set to true the function
+       * will only compute the artificial viscosity in cells at boundaries.
+       */
+      double
+      get_artificial_viscosity_cell(typename DoFHandler<dim>::active_cell_iterator &cell) const;
+
+      /**
+       * Returns the entropy viscosity on each locally owned cell as it is
+       * used to stabilize the temperature equation.
+       *
+       * @param viscosity_per_cell Output vector with as many entries as
+       * active cells. Each entry corresponding to a locally owned active
+       * cell index will contain the artificial viscosity for this cell.
+       * @param skip_interior_cells A boolean flag. If set to true the function
+       * will only compute the artificial viscosity in cells at boundaries.
+       */
+      double
+      get_old_artificial_viscosity_cell(typename DoFHandler<dim>::active_cell_iterator &cell) const;
+
+      /**
+       * Returns the entropy viscosity on each locally owned cell as it is
        * used to stabilize the composition equation.
        */
       void
