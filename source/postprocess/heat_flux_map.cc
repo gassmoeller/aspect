@@ -36,23 +36,6 @@ namespace aspect
   {
     namespace internal
     {
-      /**
-       * This function computes the consistent heat flux through each boundary face.
-       * For reflecting boundaries the integrated heat flux is 0, for boundaries with prescribed heat flux
-       * (Neumann boundary conditions) it is simply the integral of the prescribed heat flux over
-       * the face, but for boundaries with prescribed temperature (Dirichlet boundary conditions) it
-       * is computed using the consistent boundary flux method. The method is described in
-       *
-       * Gresho, P. M., Lee, R. L., Sani, R. L., Maslanik, M. K., & Eaton, B. E. (1987).
-       * The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids
-       * problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.
-       *
-       * In summary, the method solves the temperature equation again on the boundary faces, with known
-       * temperatures and solving for the boundary fluxes that satisfy the equation. Since the
-       * equation is only formed on the faces and it can be solved using only diagonal matrices,
-       * the computation is cheap. Conceptually simpler methods like evaluating the temperature
-       * gradient on the face are significantly less accurate.
-       */
       template <int dim>
       std::vector<std::vector<std::pair<double, double> > >
       compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access)
@@ -69,7 +52,7 @@ namespace aspect
 
         // Gauss quadrature in the interior for best accuracy.
         const QGauss<dim> quadrature_formula(quadrature_degree);
-        // GLL quadrature on the surface to get a diagonal mass matrix.
+        // GLL quadrature on the faces to get a diagonal mass matrix.
         const QGaussLobatto<dim-1> quadrature_formula_face(quadrature_degree);
 
         // The CBF method involves both boundary and volume integrals on the
@@ -95,7 +78,8 @@ namespace aspect
         const unsigned int n_q_points = quadrature_formula.size();
         const unsigned int n_face_q_points = quadrature_formula_face.size();
 
-        // Vectors for solving CBF system.
+        // Vectors for solving CBF system. Since we are using GLL
+        // quadrature, the mass matrix will be diagonal, and we can just assemble it into a vector.
         Vector<double> local_rhs(dofs_per_cell);
         Vector<double> local_mass_matrix(dofs_per_cell);
 
@@ -243,23 +227,27 @@ namespace aspect
                   if (!cell->at_boundary(f))
                     continue;
 
+                  fe_face_values.reinit (cell, f);
+
+                  // Integrate the face area
+                  for (unsigned int q=0; q<n_face_q_points; ++q)
+                    heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
+
                   const unsigned int boundary_id = cell->face(f)->boundary_id();
 
+                  // Compute heat flux through Dirichlet boundary using CBF method
                   if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
                     {
-                      fe_face_values.reinit (cell, f);
-
-                      // Assemble the mass matrix for cell face. Since we are using GLL
-                      // quadrature, the mass matrix will be diagonal, and we can just assemble it into a vector.
+                      // Assemble the mass matrix for cell face.
                       for (unsigned int q=0; q<n_face_q_points; ++q)
                         for (unsigned int i=0; i<dofs_per_cell; ++i)
                           local_mass_matrix(i) += fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
                                                   fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
                                                   fe_face_values.JxW(q);
                     }
+                  // Compute heat flux through Neumann boundary by integrating the heat flux
                   else if (fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end())
                     {
-                      fe_face_values.reinit (cell, f);
                       face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
                       simulator_access.get_material_model().evaluate(face_in, face_out);
 
@@ -294,7 +282,6 @@ namespace aspect
                           const double normal_heat_flux = heat_flux[q] * fe_face_values.normal_vector(q);
                           const double JxW = fe_face_values.JxW(q);
                           heat_flux_and_area[cell->active_cell_index()][f].first += normal_heat_flux * JxW;
-                          heat_flux_and_area[cell->active_cell_index()][f].second += JxW;
 
                           for (unsigned int i = 0; i<dofs_per_cell; ++i)
                             {
@@ -304,8 +291,31 @@ namespace aspect
                             }
                         }
                     }
-                  else
-                    continue;
+
+                  // Add advective heat flux for boundaries that are non-tangential.
+                  if (tangential_velocity_boundaries.find(boundary_id) == tangential_velocity_boundaries.end())
+                    {
+                      face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
+                      simulator_access.get_material_model().evaluate(face_in, face_out);
+
+                      if (simulator_access.get_parameters().formulation_temperature_equation ==
+                          Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                        {
+                          for (unsigned int q=0; q<n_face_q_points; ++q)
+                            {
+                              face_out.densities[q] = simulator_access.get_adiabatic_conditions().density(face_in.position[q]);
+                            }
+                        }
+
+                      // Integrate the advective heat flux
+                      for (unsigned int q=0; q<n_face_q_points; ++q)
+                        {
+                          heat_flux_and_area[cell->active_cell_index()][f].first += face_out.densities[q] *
+                                                                                    face_out.specific_heat[q] * face_in.temperature[q] *
+                                                                                    face_in.velocity[q] * fe_face_values.normal_vector(q) *
+                                                                                    fe_face_values.JxW(q);
+                        }
+                    }
                 }
 
               cell->distribute_local_to_global(local_mass_matrix, mass_matrix);
@@ -331,7 +341,7 @@ namespace aspect
 
         std::vector<double> heat_flux_values(n_face_q_points);
 
-        // Now integrate the heat flux for each face
+        // Now add the heat flux for each face at Dirichlet boundaries
         for (cell = simulator_access.get_dof_handler().begin_active(); cell!=endc; ++cell)
           if (cell->is_locally_owned() && cell->at_boundary())
             {
@@ -339,46 +349,14 @@ namespace aspect
                 if (cell->at_boundary(f))
                   {
                     const unsigned int boundary_id = cell->face(f)->boundary_id();
-
-                    // Only fill output vector for Dirichlet boundaries (Neumann boundaries have been filled above)
                     if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
                       {
                         fe_face_values.reinit (cell, f);
                         fe_face_values[simulator_access.introspection().extractors.temperature].get_function_values(heat_flux_vector, heat_flux_values);
 
-                        // Integrate the consistent heat flux and face area
-                        for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                          {
-                            heat_flux_and_area[cell->active_cell_index()][f].first += heat_flux_values[q] *
-                                                                                      fe_face_values.JxW(q);
-                            heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
-                          }
-                      }
-
-                    // Add advective heat flux for boundaries that are non-tangential
-                    if (tangential_velocity_boundaries.find(boundary_id) == tangential_velocity_boundaries.end())
-                      {
-                        fe_face_values.reinit (cell, f);
-                        face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
-                        simulator_access.get_material_model().evaluate(face_in, face_out);
-
-                        if (simulator_access.get_parameters().formulation_temperature_equation ==
-                            Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
-                          {
-                            for (unsigned int q=0; q<n_face_q_points; ++q)
-                              {
-                                face_out.densities[q] = simulator_access.get_adiabatic_conditions().density(face_in.position[q]);
-                              }
-                          }
-
-                        // Integrate the consistent heat flux and face area
                         for (unsigned int q=0; q<n_face_q_points; ++q)
-                          {
-                            heat_flux_and_area[cell->active_cell_index()][f].first += face_out.densities[q] *
-                                                                                      face_out.specific_heat[q] * face_in.temperature[q] *
-                                                                                      face_in.velocity[q] * fe_face_values.normal_vector(q) *
-                                                                                      fe_face_values.JxW(q);
-                          }
+                          heat_flux_and_area[cell->active_cell_index()][f].first += heat_flux_values[q] *
+                                                                                    fe_face_values.JxW(q);
                       }
                   }
             }
@@ -501,11 +479,20 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(HeatFluxMap,
                                   "heat flux map",
                                   "A postprocessor that computes the heat flux "
-                                  "density across each boundary. The heat flux density is computed in "
-                                  "outward direction, i.e., from the domain to the outside, "
-                                  "using the consistent boundary flux method as described in "
-                                  "Gresho, P. M., Lee, R. L., Sani, R. L., Maslanik, M. K., & Eaton, B. E. (1987). "
-                                  "The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids "
-                                  "problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.")
+                                  "density across each boundary in outward "
+                                  "direction, i.e., from the domain to the "
+                                  "outside. The heat flux is computed as sum "
+                                  "of advective heat flux and conductive heat "
+                                  "flux through Neumann boundaries, both "
+                                  "computed as integral over the boundary area, "
+                                  "and conductive heat flux through Dirichlet "
+                                  "boundaries, which is computed using the "
+                                  "consistent boundary flux method as described "
+                                  "in ``Gresho, P. M., Lee, R. L., Sani, R. L., "
+                                  "Maslanik, M. K., & Eaton, B. E. (1987). "
+                                  "The consistent Galerkin FEM for computing "
+                                  "derived boundary quantities in thermal and or "
+                                  "fluids problems. International Journal for "
+                                  "Numerical Methods in Fluids, 7(4), 371-394.''")
   }
 }
