@@ -24,7 +24,7 @@ subsection Initial temperature model
   subsection Function
     set Variable names      = x,z
     set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
-    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)
+    set Function expression = x
   end
 end
 
@@ -83,14 +83,21 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
 end
 
+subsection Discretization
+  subsection Stabilization parameters
+    set cR = 0.0
+    set beta = 0.0
+  end
+end
 
 subsection Postprocess
   set List of postprocessors = visualization
 
   subsection Visualization
-    set List of output variables      = heat flux map
+    set List of output variables      = heat flux map, heat flux density
     set Time between graphical output = 0.01
-    set Output format                 = gnuplot
+    set Output format                 = vtu
+    set Interpolate output            = true
   end
 end
 
