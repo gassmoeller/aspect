@@ -123,7 +123,8 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = geoid, dynamic topography, heat flux map, density,viscosity, gravity
+    set List of output variables      = geoid, dynamic topography, heat flux map, density,viscosity, gravity, heat flux density
+    set Interpolate output            = true
     set Time between graphical output = 0
     set Number of grouped files       = 1 
   end

@@ -61,7 +61,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 0
+  set Initial global refinement          = 2
   set Strategy                           = temperature
 end
 
@@ -78,14 +78,21 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer
 end
 
+subsection Discretization
+  subsection Stabilization parameters
+    set cR = 0.0
+    set beta = 0.0
+  end
+end
 
 subsection Postprocess
   set List of postprocessors = dynamic topography, visualization
   
   subsection Visualization
     set Time between graphical output = 0
-    set List of output variables = dynamic topography
-    set Output format                 = gnuplot
+    set List of output variables = dynamic topography, heat flux map, heat flux density
+    set Output format                 = vtu
+    set Interpolate output = true
   end
 
 end

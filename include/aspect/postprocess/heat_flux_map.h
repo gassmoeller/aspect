@@ -36,6 +36,14 @@ namespace aspect
       LinearAlgebra::BlockVector
       compute_dirichlet_boundary_heat_flux_solution_vector (const SimulatorAccess<dim> &simulator_access);
 
+      template <int dim>
+      LinearAlgebra::BlockVector
+      compute_neumann_boundary_heat_flux_solution_vector (const SimulatorAccess<dim> &simulator_access);
+
+      template <int dim>
+      LinearAlgebra::BlockVector
+      compute_advective_boundary_heat_flux_solution_vector (const SimulatorAccess<dim> &simulator_access);
+
       /**
        * This function computes the combined heat flux through each boundary face (conductive + advective).
        * For reflecting boundaries the conductive heat flux is 0, for boundaries with prescribed heat flux

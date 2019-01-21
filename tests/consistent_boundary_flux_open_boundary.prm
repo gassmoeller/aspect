@@ -84,5 +84,9 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = temperature statistics, heat flux statistics
+  set List of postprocessors = temperature statistics, heat flux statistics, visualization
+
+  subsection Visualization
+    set List of output variables = material properties
+  end
 end
