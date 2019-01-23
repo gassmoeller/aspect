@@ -549,7 +549,8 @@ namespace aspect
         geometric_average,
         pick_largest,
         project_to_Q1,
-        log_average
+        log_average,
+        bilinear_least_squares
       };
 
 

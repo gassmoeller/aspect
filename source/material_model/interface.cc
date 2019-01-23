@@ -417,7 +417,7 @@ namespace aspect
     {
       std::string get_averaging_operation_names ()
       {
-        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average";
+        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|bilinear least squares";
       }
 
 
@@ -437,6 +437,8 @@ namespace aspect
           return project_to_Q1;
         else if (s == "log average")
           return log_average;
+        else if (s == "bilinear least squares")
+          return bilinear_least_squares;
         else
           AssertThrow (false,
                        ExcMessage ("The value <" + s + "> for a material "
@@ -707,6 +709,76 @@ namespace aspect
       }
 
 
+
+      template <int dim>
+       void
+       bilinear_least_squares_projection(const typename DoFHandler<dim>::active_cell_iterator &cell,
+           const Quadrature<dim>   &quadrature_formula,
+           const Mapping<dim>      &mapping,
+           std::vector<double> &properties)
+       {
+         AssertThrow(dim == 2,
+                     ExcMessage("Currently, the averaging operation `bilinear least squares' is only supported for 2D models."));
+
+         static FE_Q<dim> fe(1);
+         FEValues<dim> fe_values (mapping, fe, quadrature_formula,
+             update_values | update_JxW_values | update_quadrature_points);
+         fe_values.reinit (typename Triangulation<dim>::active_cell_iterator(cell));
+
+         const std::vector<Point<dim> > positions = fe_values.get_quadrature_points();
+
+         const Point<dim> approximated_cell_midpoint = cell->center();
+
+         const unsigned int n_positions = positions.size();
+
+         // Noticed that the size of matrix A is n_particles x matrix_dimension
+         // which usually is not a square matrix. Therefore, we solve Ax=r by
+         // solving A^TAx= A^Tr.
+         const unsigned int matrix_dimension = 4;
+         dealii::LAPACKFullMatrix<double> A(n_positions, matrix_dimension);
+         Vector<double> r(n_positions);
+         r = 0;
+
+         const double cell_diameter = cell->diameter();
+         for (unsigned int i=0; i<positions.size(); ++i)
+           {
+             r[i] = properties[i];
+
+             A(i,0) = 1;
+             A(i,1) = (positions[i][0] - approximated_cell_midpoint[0])/cell_diameter;
+             A(i,2) = (positions[i][1] - approximated_cell_midpoint[1])/cell_diameter;
+             A(i,3) = (positions[i][0] - approximated_cell_midpoint[0]) * (positions[i][1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
+           }
+
+         dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
+
+         Vector<double> c_ATr(matrix_dimension);
+         Vector<double> c(matrix_dimension);
+
+         const double threshold = 1e-15;
+
+         // Matrix A can be rank deficient if it does not have full rank, therefore singular.
+         // To circumvent this issue, we solve A^TAx=A^Tr by using singular value
+         // decomposition (SVD).
+         A.Tmmult(B, A, false);
+         A.Tvmult(c_ATr,r);
+
+         dealii::LAPACKFullMatrix<double> B_inverse(B);
+         B_inverse.compute_inverse_svd(threshold);
+         B_inverse.vmult(c, c_ATr);
+
+         for (unsigned int i=0; i<positions.size(); ++i)
+           {
+             properties[i] = c[0] +
+                 c[1]*(positions[i][0] - approximated_cell_midpoint[0])/cell_diameter +
+                 c[2]*(positions[i][1] - approximated_cell_midpoint[1])/cell_diameter +
+                 c[3]*(positions[i][0] - approximated_cell_midpoint[0])*(positions[i][1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
+           }
+           return;
+       }
+
+
+
       template <int dim>
       void average (const AveragingOperation operation,
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -728,6 +800,20 @@ namespace aspect
                                        expansion_matrix);
           }
 
+        if (operation == bilinear_least_squares)
+          {
+            bilinear_least_squares_projection(cell,
+                quadrature_formula,
+                mapping,
+                values_out.viscosities);
+
+            bilinear_least_squares_projection(cell,
+                quadrature_formula,
+                mapping,
+                values_out.densities);
+          }
+        else
+          {
         average_property (operation, projection_matrix, expansion_matrix, values_out.viscosities);
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.densities);
@@ -743,6 +829,7 @@ namespace aspect
                           values_out.entropy_derivative_pressure);
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.entropy_derivative_temperature);
+          }
 
         // the reaction terms are unfortunately stored in reverse
         // indexing. it's also not quite clear whether these should
