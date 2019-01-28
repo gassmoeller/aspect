@@ -19,6 +19,8 @@
  */
 
 #include <aspect/particle/interpolator/biquadratic_least_squares.h>
+#include <aspect/postprocess/particles.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/grid/grid_tools.h>
@@ -33,17 +35,21 @@ namespace aspect
     {
       template <int dim>
       std::vector<std::vector<double> >
-      BiquadraticLeastSquares<dim>::properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                                                         const std::vector<Point<dim> > &positions,
-                                                         const ComponentMask &selected_properties,
-                                                         const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
-      {
+      BiquadraticLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                                      const std::vector<Point<dim> > &positions,
+                                                      const ComponentMask &selected_properties,
+                                                      const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+       {
+
+        const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
+
         AssertThrow(dim == 2,
                     ExcMessage("Currently, the particle interpolator 'biquadratic' is only supported for 2D models."));
 
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
-        Point<dim> approximated_cell_midpoint;
+        const Point<dim> approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<dim>())
+                                                      / static_cast<double> (positions.size());
 
         if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
           {
@@ -54,9 +60,6 @@ namespace aspect
                    ExcMessage("The particle property interpolator was not given any "
                               "positions to evaluate the particle cell_properties at."));
 
-            approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<dim>())
-                                         / static_cast<double> (positions.size());
-
             found_cell =
               (GridTools::find_active_cell_around_point<> (this->get_mapping(),
                                                            this->get_triangulation(),
@@ -65,12 +68,10 @@ namespace aspect
         else
           found_cell = cell;
 
-        const types::LevelInd cell_index = std::make_pair<unsigned int, unsigned int> (found_cell->level(),found_cell->index());
-        const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator,
-              typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator> particle_range = particles.equal_range(cell_index);
+        const typename ParticleHandler<dim>::particle_iterator_range particle_range =
+          particle_handler.particles_in_cell(found_cell);
 
-        const unsigned int n_particles = std::distance(particle_range.first,particle_range.second);
-        const unsigned int n_particle_properties = particles.begin()->second.get_properties().size();
+        const unsigned int n_particles = std::distance(particle_range.begin(),particle_range.end());
 
         std::vector<std::vector<double> > cell_properties(positions.size(),
                                                           std::vector<double>(n_particle_properties, numbers::signaling_nan<double>()));
@@ -90,18 +91,18 @@ namespace aspect
         A = 0;
         r = 0;
 
-        double max_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
-        double min_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
+//        double max_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
+//        double min_value_for_particle_property = (particle_range.first)->second.get_properties()[property_index];
         unsigned int index = 0;
         double cell_diameter = found_cell->diameter();
 
-        for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
-             particle != particle_range.second; ++particle, ++index)
+        for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
+            particle != particle_range.end(); ++particle, ++index)
           {
-            const double particle_property_value = particle->second.get_properties()[property_index];
+            const double particle_property_value = particle->get_properties()[property_index];
             r[index] = particle_property_value;
 
-            const Point<dim> position = particle->second.get_location();
+            const Point<dim> position = particle->get_location();
             double x = (position[0] - approximated_cell_midpoint[0])/cell_diameter;
             double y = (position[1] - approximated_cell_midpoint[1])/cell_diameter;
 
@@ -115,10 +116,10 @@ namespace aspect
             A(index,7) = x * std::pow(y,2);
             A(index,8) = std::pow(x,2) * std::pow(y,2);
 
-            if (max_value_for_particle_property < particle_property_value)
-              max_value_for_particle_property = particle_property_value;
-            if (min_value_for_particle_property > particle_property_value)
-              min_value_for_particle_property = particle_property_value;
+//            if (max_value_for_particle_property < particle_property_value)
+//              max_value_for_particle_property = particle_property_value;
+//            if (min_value_for_particle_property > particle_property_value)
+//              min_value_for_particle_property = particle_property_value;
           }
 
         dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
@@ -145,10 +146,10 @@ namespace aspect
                                         c[3]*x*y + c[4]*std::pow(x,2) + c[5]*std::pow(y,2) +
                                         c[6]*std::pow(x,2)*y + c[7]*x*std::pow(y,2) + c[8]*std::pow(x,2)*std::pow(y,2);
 
-            if (interpolated_value > max_value_for_particle_property)
-              interpolated_value = max_value_for_particle_property;
-            else if (interpolated_value < min_value_for_particle_property)
-              interpolated_value = min_value_for_particle_property;
+//            if (interpolated_value > max_value_for_particle_property)
+//              interpolated_value = max_value_for_particle_property;
+//            else if (interpolated_value < min_value_for_particle_property)
+//              interpolated_value = min_value_for_particle_property;
 
             cell_properties[positions_index][property_index] = interpolated_value;
           }
@@ -167,7 +168,7 @@ namespace aspect
     namespace Interpolator
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BiquadraticLeastSquares,
-                                            "biquadratic",
+                                            "biquadratic least squares",
                                             "Interpolates particle properties onto a vector of points using a "
                                             "biquadratic least squares method. Currently, only 2D models are "
                                             "supported. ")

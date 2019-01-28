@@ -25,7 +25,6 @@
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/full_matrix.templates.h>
-#include <deal.II/lac/lapack_full_matrix.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -61,8 +60,6 @@ namespace aspect
                                                       / static_cast<double> (positions.size());
 
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
-
-        Point<dim> approximated_cell_midpoint;
 
         if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
           {
