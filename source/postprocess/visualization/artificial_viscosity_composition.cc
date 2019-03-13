@@ -76,7 +76,10 @@ namespace aspect
           {
             prm.enter_subsection("Artificial viscosity composition");
             {
-              const std::string field_name = prm.get("Name of compositional field");
+              std::string field_name = prm.get("Name of compositional field");
+
+              if (field_name == "" && this->n_compositional_fields() == 1)
+                field_name = this->introspection().name_for_compositional_index(0);
 
               AssertThrow(this->introspection().compositional_name_exists(field_name),
                           ExcMessage("No compositional field with name <" +
