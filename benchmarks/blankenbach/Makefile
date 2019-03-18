@@ -17,10 +17,10 @@
 
 
 # specify all refinements to run here:
-refinements:=3 4 5 6
+refinements:=3 4
 
 # bases_without is "case1a case1b ..."
-bases:=$(wildcard base_case*.prm)
+bases:=$(wildcard base_case1*.prm)
 bases_without:=$(subst base_,,$(basename $(bases)))
 
 # create a list of "caseXX_refY.stat" names:

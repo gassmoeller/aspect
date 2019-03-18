@@ -98,5 +98,9 @@ subsection Postprocess
   subsection Visualization
     set Output format                 = vtu
     set Time between graphical output = 100
+    set List of output variables = artificial viscosity composition
+    subsection Artificial viscosity composition
+      set Name of compositional field = C_1
+    end
   end
 end
