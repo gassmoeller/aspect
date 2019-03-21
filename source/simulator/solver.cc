@@ -450,16 +450,15 @@ namespace aspect
     distributed_solution.block(block_idx) = current_linearization_point.block (block_idx);
 
     // Temporary vector to hold the residual, we don't need a BlockVector here.
-    LinearAlgebra::Vector temp (
-      introspection.index_sets.system_partitioning[block_idx],
-      mpi_communicator);
+    temperature_residual.reinit(introspection.index_sets.system_partitioning,
+        mpi_communicator);
 
     current_constraints.set_zero(distributed_solution);
 
     // Compute the residual before we solve and return this at the end.
     // This is used in the nonlinear solver.
     const double initial_residual = system_matrix.block(block_idx,block_idx).residual
-                                    (temp,
+                                    (temperature_residual.block(block_idx),
                                      distributed_solution.block(block_idx),
                                      system_rhs.block(block_idx));
 
@@ -491,6 +490,15 @@ namespace aspect
           else
             throw QuietException();
       }
+
+    current_constraints.set_zero(distributed_solution);
+
+    // Compute the residual after we solve and return this at the end.
+    // This is used in the nonlinear solver.
+    const double final_residual = system_matrix.block(block_idx,block_idx).residual
+                                    (temperature_residual.block(block_idx),
+                                     distributed_solution.block(block_idx),
+                                     system_rhs.block(block_idx));
 
     // signal successful solver
     signals.post_advection_solver(*this,

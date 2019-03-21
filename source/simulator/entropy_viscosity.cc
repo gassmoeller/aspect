@@ -44,7 +44,7 @@ namespace aspect
       return numbers::signaling_nan<double>();
 
     // record maximal entropy on Gauss quadrature points
-    const QGauss<dim> quadrature_formula (advection_field.polynomial_degree(introspection)+1);
+    const QGauss<dim> quadrature_formula(advection_field.polynomial_degree(introspection)+1);
     const unsigned int n_q_points = quadrature_formula.size();
 
     const FEValuesExtractors::Scalar field = advection_field.scalar_extractor(introspection);
@@ -78,7 +78,7 @@ namespace aspect
             {
               const double field_value = (old_field_values[q] +
                                           old_old_field_values[q]) / 2;
-              const double entropy = ((field_value-average_field) *
+              const double entropy = 0.5 * ((field_value-average_field) *
                                       (field_value-average_field));
 
               min_entropy = std::min (min_entropy, entropy);
@@ -127,15 +127,17 @@ namespace aspect
     if (advection_field.is_discontinuous(introspection))
       return 0.;
 
-    std::vector<double> residual = assemblers->advection_system[0]->compute_residual(scratch);
+//    std::vector<double> residual = assemblers->advection_system[0]->compute_residual(scratch);
+//
+//    for (unsigned int i=1; i<assemblers->advection_system.size(); ++i)
+//      {
+//        const std::vector<double> new_residual = assemblers->advection_system[i]->compute_residual(scratch);
+//        for (unsigned int j=0; j<residual.size(); ++j)
+//          residual[j] += new_residual[j];
+//      }
 
-    for (unsigned int i=1; i<assemblers->advection_system.size(); ++i)
-      {
-        const std::vector<double> new_residual = assemblers->advection_system[i]->compute_residual(scratch);
-        for (unsigned int j=0; j<residual.size(); ++j)
-          residual[j] += new_residual[j];
-      }
-
+    std::vector<double> residual(scratch.finite_element_values.n_quadrature_points);
+    scratch.finite_element_values[advection_field.scalar_extractor(introspection)].get_function_values (temperature_residual,residual);
 
     double max_residual = 0;
     double max_velocity = 0;

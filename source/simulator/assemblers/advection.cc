@@ -19,6 +19,7 @@
 */
 
 #include <aspect/simulator/assemblers/advection.h>
+#include <aspect/postprocess/heat_flux_map.h>
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>

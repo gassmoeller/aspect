@@ -1797,6 +1797,7 @@ namespace aspect
       LinearAlgebra::BlockVector                                old_solution;
       LinearAlgebra::BlockVector                                old_old_solution;
       LinearAlgebra::BlockVector                                system_rhs;
+      LinearAlgebra::BlockVector                                temperature_residual;
 
       LinearAlgebra::BlockVector                                current_linearization_point;
 
