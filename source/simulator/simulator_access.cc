@@ -286,6 +286,13 @@ namespace aspect
   }
 
   template <int dim>
+  const Vector<double> &
+  SimulatorAccess<dim>::get_artificial_viscosity () const
+  {
+    return simulator->viscosity_per_cell;
+  }
+
+  template <int dim>
   const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_old_solution () const
   {

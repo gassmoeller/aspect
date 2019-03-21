@@ -5,7 +5,7 @@
 
 set Dimension                              = 3
 set Use years in output instead of seconds = true
-set End time                               = 3e8
+set End time                               = 1e6
 set Output directory                       = output-gplates-3d
 set Adiabatic surface temperature          = 1600
 
@@ -74,10 +74,10 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 1
+  set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
   set Strategy                           = temperature
-  set Time steps between mesh refinement = 2
+  set Time steps between mesh refinement = 0
 end
 
 
@@ -88,6 +88,7 @@ subsection Postprocess
     set Output format                 = vtu
     set Time between graphical output = 1e6
     set Number of grouped files       = 0
+    set List of output variables      = material properties, artificial viscosity, thermal conductivity
   end
 
   subsection Depth average

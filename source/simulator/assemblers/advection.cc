@@ -221,22 +221,20 @@ namespace aspect
 
       for (unsigned int q=0; q < n_q_points; ++q)
         {
-          const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
-                                   scratch.old_old_velocity_values[q]) / 2;
-
           const double dField_dt = (this->get_old_timestep() == 0.0) ? 0.0 :
                                    (
                                      ((scratch.old_field_values)[q] - (scratch.old_old_field_values)[q])
                                      / this->get_old_timestep());
-          const double u_grad_field = u * (scratch.old_field_grads[q] +
-                                           scratch.old_old_field_grads[q]) / 2;
+          const double u_grad_field = (scratch.old_field_grads[q] * scratch.old_velocity_values[q] +
+                                           scratch.old_old_field_grads[q] * scratch.old_old_velocity_values[q]) / 2;
 
           if (advection_field.is_temperature())
             {
               const double density       = scratch.material_model_outputs.densities[q];
               const double conductivity  = scratch.material_model_outputs.thermal_conductivities[q];
+              const double artificial_viscosity = 0.0;
               const double c_P           = scratch.material_model_outputs.specific_heat[q];
-              const double k_Delta_field = conductivity * (scratch.old_field_laplacians[q] +
+              const double k_Delta_field = std::max(conductivity,artificial_viscosity) * (scratch.old_field_laplacians[q] +
                                                            scratch.old_old_field_laplacians[q]) / 2;
 
               const double gamma           = scratch.heating_model_outputs.heating_source_terms[q];

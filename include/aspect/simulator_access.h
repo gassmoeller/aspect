@@ -441,6 +441,9 @@ namespace aspect
       const LinearAlgebra::BlockVector &
       get_solution () const;
 
+      const Vector<double> &
+      get_artificial_viscosity () const;
+
       /**
        * Return a reference to the vector that has the solution of the entire
        * system at the previous time step. This vector is associated with the

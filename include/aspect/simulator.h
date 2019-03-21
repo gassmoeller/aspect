@@ -1798,6 +1798,8 @@ namespace aspect
       LinearAlgebra::BlockVector                                old_old_solution;
       LinearAlgebra::BlockVector                                system_rhs;
 
+      Vector<double>                                            viscosity_per_cell;
+
       LinearAlgebra::BlockVector                                current_linearization_point;
 
       // only used if is_compressible()

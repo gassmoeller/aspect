@@ -245,7 +245,7 @@ namespace aspect
     if (advection_field.field_type == AdvectionField::compositional_field)
       Assert(introspection.n_compositional_fields > advection_field.compositional_variable, ExcInternalError());
 
-    viscosity_per_cell = 0.0;
+    //viscosity_per_cell = 0.0;
 
     // discontinuous Galerkin doesn't require an artificial viscosity
     if (advection_field.is_discontinuous(introspection))
@@ -389,6 +389,8 @@ namespace aspect
                                                                               scratch.old_field_grads);
         scratch.finite_element_values[solution_field].get_function_gradients (old_old_solution,
                                                                               scratch.old_old_field_grads);
+
+        scratch.artificial_viscosity = viscosity_per_cell[cell->active_cell_index()];
 
         if (advection_field.is_temperature())
           {

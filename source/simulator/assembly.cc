@@ -933,7 +933,7 @@ namespace aspect
     // temperature system is assembled (as this might happen more than once per
     // timestep for iterative solvers)
     scratch.artificial_viscosity = viscosity_per_cell[cell->active_cell_index()];
-    Assert (scratch.artificial_viscosity >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
+//    Assert (scratch.artificial_viscosity >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
 
     // trigger the invocation of the various functions that actually do
     // all of the assembling
@@ -1112,8 +1112,7 @@ namespace aspect
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
     CellFilter;
 
-    Vector<double> viscosity_per_cell;
-    viscosity_per_cell.reinit(triangulation.n_active_cells());
+    viscosity_per_cell.reinit(triangulation.n_active_cells(), true);
     get_artificial_viscosity(viscosity_per_cell, advection_field);
 
     // We have to assemble the term u.grad phi_i * phi_j, which is

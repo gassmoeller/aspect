@@ -35,7 +35,12 @@ namespace aspect
         std::pair<std::string, Vector<float> *>
         return_value ("artificial_viscosity",
                       new Vector<float>(this->get_triangulation().n_active_cells()));
-        this->get_artificial_viscosity(*return_value.second);
+
+        const Vector<double> &artificial_viscosity = this->get_artificial_viscosity();
+
+        for (unsigned int i=0; i<this->get_triangulation().n_active_cells(); ++i)
+          (*return_value.second)[i] = artificial_viscosity[i];
+
         return return_value;
       }
     }

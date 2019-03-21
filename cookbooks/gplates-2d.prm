@@ -3,7 +3,7 @@
 
 set Dimension                              = 2
 set Use years in output instead of seconds = true
-set End time                               = 3e8
+set End time                               = 1e6
 set Output directory                       = output-gplates-2d
 set Adiabatic surface temperature          = 1600
 
@@ -44,7 +44,7 @@ end
 
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators = top, bottom
+  set Fixed temperature boundary indicators = 
   set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 2600 
@@ -54,11 +54,17 @@ end
 
 
 subsection Initial temperature model
-  set Model name = adiabatic
+#  set Model name = adiabatic
 
-  subsection Adiabatic
-    set Age top boundary layer = 5e7
-  end
+#  subsection Adiabatic
+#    set Age top boundary layer = 5e7
+#  end
+   set Model name = function
+   subsection Function
+     set Coordinate system = spherical
+     set Variable names = r,phi,theta
+     set Function expression = r<6271000? 1600 : 300
+   end
 end
 
 
@@ -80,12 +86,13 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics
 
   subsection Visualization
     set Output format                 = vtu
-    set Time between graphical output = 1e6
+    set Time between graphical output = 0
     set Number of grouped files       = 0
+    set List of output variables      = material properties, artificial viscosity, thermal conductivity
   end
 
   subsection Depth average
