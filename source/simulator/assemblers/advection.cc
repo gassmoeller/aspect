@@ -19,6 +19,7 @@
 */
 
 #include <aspect/simulator/assemblers/advection.h>
+#include <aspect/postprocess/heat_flux_map.h>
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
@@ -210,9 +211,15 @@ namespace aspect
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
 
+      LinearAlgebra::BlockVector boundary_heat_flux =
+            Postprocess::internal::compute_dirichlet_boundary_heat_flux_solution_vector(*this);
+
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       std::vector<double> residuals(n_q_points);
+      std::vector<double> boundary_heat_flux_values(n_q_points);
+
+      scratch.finite_element_values[advection_field.scalar_extractor(this->introspection())].get_function_values(boundary_heat_flux,boundary_heat_flux_values);
 
       if (advection_field.is_temperature())
         this->get_heating_model_manager().evaluate(scratch.material_model_inputs,
@@ -243,7 +250,7 @@ namespace aspect
               const double latent_heat_LHS = scratch.heating_model_outputs.lhs_latent_heat_terms[q];
 
               residuals[q]
-                = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma);
+                = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma); // - boundary_heat_flux_values[q]);
             }
           else
             {

@@ -114,7 +114,7 @@ namespace aspect
           simulator_access.get_parameters().fixed_heat_flux_boundary_indicators;
 
         Vector<float> artificial_viscosity(simulator_access.get_triangulation().n_active_cells());
-        simulator_access.get_artificial_viscosity(artificial_viscosity, true);
+        //simulator_access.get_artificial_viscosity(artificial_viscosity, true);
 
         // loop over all of the surface cells and evaluate the heat flux
         typename DoFHandler<dim>::active_cell_iterator
