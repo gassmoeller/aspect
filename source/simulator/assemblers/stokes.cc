@@ -569,14 +569,14 @@ namespace aspect
 
           if (this->get_timestep_number() > 1)
             drho_dt = (1.0/time_step) *
-                                          (density[q] *
-                                           (2*time_step + old_time_step) / (time_step + old_time_step)
-                                           -
-                                           density_old[q] *
-                                           (1 + time_step/old_time_step)
-                                           +
-                                           density_old_old[q] *
-                                           (time_step * time_step) / (old_time_step * (time_step + old_time_step)));
+                      (density[q] *
+                       (2*time_step + old_time_step) / (time_step + old_time_step)
+                       -
+                       density_old[q] *
+                       (1 + time_step/old_time_step)
+                       +
+                       density_old_old[q] *
+                       (time_step * time_step) / (old_time_step * (time_step + old_time_step)));
           else if (this->get_timestep_number() == 1)
             drho_dt =
               (density[q] - density_old[q]) / time_step;
@@ -588,11 +588,11 @@ namespace aspect
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             data.local_rhs(i) += (
                                    (pressure_scaling *
-                                       (1.0 / density[q]) *
+                                    (1.0 / density[q]) *
                                     (density_gradients[q] *
-                                    scratch.velocity_values[q]) *
+                                     scratch.velocity_values[q]) *
                                     scratch.phi_p[i])
-                                    + pressure_scaling * (1.0 / density[q]) * drho_dt * scratch.phi_p[i]
+                                   + pressure_scaling * (1.0 / density[q]) * drho_dt * scratch.phi_p[i]
                                  )
                                  * JxW;
         }
