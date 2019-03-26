@@ -559,6 +559,15 @@ namespace aspect
             }
         }
 
+      const unsigned int projected_density_index = this->introspection().compositional_index_for_name("projected_density");
+
+      // set up variable to interpolate prescribed field outputs onto compositional fields
+      PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim> >();
+
+      if (prescribed_field_out != NULL)
+        for (unsigned int i=0; i < in.position.size(); ++i)
+          prescribed_field_out->prescribed_field_outputs[i][projected_density_index] = out.densities[i];
+
       if (latent_heat)
         {
           /* We separate the calculation of specific heat and thermal expansivity,
@@ -787,6 +796,14 @@ namespace aspect
           out.additional_outputs.push_back(
             std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
             (new MaterialModel::ReactionRateOutputs<dim> (n_points, this->n_compositional_fields())));
+        }
+
+      if (out.template get_additional_output<PrescribedFieldOutputs<dim> >() == NULL)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+            (new MaterialModel::PrescribedFieldOutputs<dim> (n_points, this->n_compositional_fields())));
         }
     }
 
