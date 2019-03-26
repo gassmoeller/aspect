@@ -387,6 +387,38 @@ namespace aspect
     template <int dim>
     double
     Steinberger<dim>::
+    enthalpy (const double      temperature,
+              const double      pressure,
+              const std::vector<double> &compositional_fields,
+              const Point<dim> &) const
+    {
+      double enthalpy = 0.0;
+
+      if (material_lookup.size() == 1)
+        {
+          enthalpy = material_lookup[0]->enthalpy(temperature,pressure);
+        }
+      else if (material_lookup.size() == compositional_fields.size() + 1)
+        {
+          const double background_enthalpy = material_lookup[0]->enthalpy(temperature,pressure);
+          enthalpy = background_enthalpy;
+          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+            enthalpy += compositional_fields[i] *
+                        (material_lookup[i+1]->enthalpy(temperature,pressure) - background_enthalpy);
+        }
+      else
+        {
+          for (unsigned i = 0; i < material_lookup.size(); i++)
+            enthalpy += compositional_fields[i] * material_lookup[i]->enthalpy(temperature,pressure);
+        }
+      return enthalpy;
+    }
+
+
+
+    template <int dim>
+    double
+    Steinberger<dim>::
     compressibility (const double temperature,
                      const double pressure,
                      const std::vector<double> &compositional_fields,
@@ -470,7 +502,7 @@ namespace aspect
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-        ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
+      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
@@ -493,27 +525,27 @@ namespace aspect
             out.reaction_terms[i][c]            = 0;
 
           if (this->get_parameters().use_operator_splitting)
-              if (reaction_rate_out != NULL)
+            if (reaction_rate_out != NULL)
+              {
+                const unsigned int density_idx = this->introspection().compositional_index_for_name("projected_density");
+                const double old_density = in.composition[i][density_idx];
+                const double equilibrium_density = density (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+
+                if (this->get_timestep_number() != 0 && this->get_timestep_number() != numbers::invalid_unsigned_int)
+                  out.densities[i] = old_density;
+                else
+                  out.densities[i] = equilibrium_density;
+
+                // fill reaction rate outputs if the model uses operator splitting
                 {
-                  const unsigned int density_idx = this->introspection().compositional_index_for_name("projected_density");
-                  const double old_density = in.composition[i][density_idx];
-                  const double equilibrium_density = density (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-
-                  if (this->get_timestep_number() != 0 && this->get_timestep_number() != numbers::invalid_unsigned_int)
-                    out.densities[i] = old_density;
-                  else
-                    out.densities[i] = equilibrium_density;
-
-                  // fill reaction rate outputs if the model uses operator splitting
                   {
-                    {
-                      if (this->get_timestep_number() > 0)
-                        reaction_rate_out->reaction_rates[i][density_idx] = (equilibrium_density - old_density) / reaction_timescale;
-                      else
-                        reaction_rate_out->reaction_rates[i][density_idx] = 0;
-                    }
+                    if (this->get_timestep_number() > 0)
+                      reaction_rate_out->reaction_rates[i][density_idx] = (equilibrium_density - old_density) / reaction_timescale;
+                    else
+                      reaction_rate_out->reaction_rates[i][density_idx] = 0;
                   }
                 }
+              }
 
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
