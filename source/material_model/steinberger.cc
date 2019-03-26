@@ -506,19 +506,23 @@ namespace aspect
 
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
+          // Use the adiabatic pressure instead of the real one,
+          // to stabilize against pressure oscillations in phase transitions
+          const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
+
           // We are only asked to give viscosities if strain_rate.size() > 0.
           if (in.strain_rate.size() > 0)
-            out.viscosities[i]                  = viscosity                     (in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
+            out.viscosities[i]                  = viscosity                     (in.temperature[i], pressure, in.composition[i], in.strain_rate[i], in.position[i]);
 
-          out.densities[i] = density (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.densities[i] = density (in.temperature[i], pressure, in.composition[i], in.position[i]);
 
           if (!latent_heat)
             {
-              out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-              out.specific_heat[i]                  = specific_heat                 (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+              out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient (in.temperature[i], pressure, in.composition[i], in.position[i]);
+              out.specific_heat[i]                  = specific_heat                 (in.temperature[i], pressure, in.composition[i], in.position[i]);
             }
-          out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-          out.compressibilities[i]              = compressibility               (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+          out.thermal_conductivities[i]         = thermal_conductivity          (in.temperature[i], pressure, in.composition[i], in.position[i]);
+          out.compressibilities[i]              = compressibility               (in.temperature[i], pressure, in.composition[i], in.position[i]);
           out.entropy_derivative_pressure[i]    = 0;
           out.entropy_derivative_temperature[i] = 0;
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
@@ -550,8 +554,8 @@ namespace aspect
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
             {
-              seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-              seismic_out->vs[i] = seismic_Vs(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+              seismic_out->vp[i] = seismic_Vp(in.temperature[i], pressure, in.composition[i], in.position[i]);
+              seismic_out->vs[i] = seismic_Vs(in.temperature[i], pressure, in.composition[i], in.position[i]);
             }
         }
 
