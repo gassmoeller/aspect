@@ -495,7 +495,7 @@ namespace aspect
           if (this->get_parameters().use_operator_splitting)
               if (reaction_rate_out != NULL)
                 {
-                  const unsigned int density_idx = this->introspection().compositional_index_for_name("reaction_density");
+                  const unsigned int density_idx = this->introspection().compositional_index_for_name("projected_density");
                   const double old_density = in.composition[i][density_idx];
                   const double equilibrium_density = density (in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
 

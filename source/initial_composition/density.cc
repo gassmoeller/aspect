@@ -36,12 +36,12 @@ namespace aspect
     initial_composition (const Point<dim> &position,
                          const unsigned int compositional_index) const
     {
-      AssertThrow(this->introspection().compositional_name_exists("reaction_density"),
+      AssertThrow(this->introspection().compositional_name_exists("projected_density"),
                   ExcMessage("The initial composition plugin `Density' did not find a "
                              "compositional field called `Reaction_density' to initialize. Please add a "
                              "compositional field with this name."));
 
-      const unsigned int density_index = this->introspection().compositional_index_for_name("reaction_density");
+      const unsigned int density_index = this->introspection().compositional_index_for_name("projected_density");
       if (compositional_index == density_index)
         {
           MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
