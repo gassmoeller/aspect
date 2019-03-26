@@ -387,6 +387,38 @@ namespace aspect
     template <int dim>
     double
     Steinberger<dim>::
+    enthalpy (const double      temperature,
+              const double      pressure,
+              const std::vector<double> &compositional_fields,
+              const Point<dim> &) const
+    {
+      double enthalpy = 0.0;
+
+      if (material_lookup.size() == 1)
+        {
+          enthalpy = material_lookup[0]->enthalpy(temperature,pressure);
+        }
+      else if (material_lookup.size() == compositional_fields.size() + 1)
+        {
+          const double background_enthalpy = material_lookup[0]->enthalpy(temperature,pressure);
+          enthalpy = background_enthalpy;
+          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+            enthalpy += compositional_fields[i] *
+                        (material_lookup[i+1]->enthalpy(temperature,pressure) - background_enthalpy);
+        }
+      else
+        {
+          for (unsigned i = 0; i < material_lookup.size(); i++)
+            enthalpy += compositional_fields[i] * material_lookup[i]->enthalpy(temperature,pressure);
+        }
+      return enthalpy;
+    }
+
+
+
+    template <int dim>
+    double
+    Steinberger<dim>::
     compressibility (const double temperature,
                      const double pressure,
                      const std::vector<double> &compositional_fields,

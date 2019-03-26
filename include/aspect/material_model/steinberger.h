@@ -184,6 +184,11 @@ namespace aspect
                                    const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const;
 
+        virtual double enthalpy   (const double      temperature,
+                                   const double      pressure,
+                                   const std::vector<double> &compositional_fields,
+                                   const Point<dim> &position) const;
+
         /**
          * Returns the cell-wise averaged enthalpy derivatives for the evaluate
          * function and postprocessors. The function returns two pairs, the
