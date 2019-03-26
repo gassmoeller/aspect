@@ -181,7 +181,7 @@ namespace aspect
 
     const std::string allowed_solver_schemes = "single Advection, single Stokes|iterated Advection and Stokes|"
                                                "single Advection, iterated Stokes|no Advection, iterated Stokes|"
-                                               "iterated Advection and Newton Stokes|single Advection, no Stokes|"
+                                               "iterated Advection and Newton Stokes|single Advection, no Stokes|iterated Advection, no Stokes|"
                                                "IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only|"
                                                "first timestep only, single Stokes|no Advection, no Stokes";
 
@@ -202,6 +202,9 @@ namespace aspect
                        "useful for Stokes benchmarks). "
                        "The `single Advection, no Stokes' scheme only solves the temperature and other advection "
                        "systems once, and instead of solving for the Stokes system, a prescribed velocity "
+                       "and pressure is used. "
+                       "The `iterated Advection, no Stokes' scheme iterates solving the temperature and other advection "
+                       "systems, and instead of solving for the Stokes system, a prescribed velocity "
                        "and pressure is used. "
                        "The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution "
                        "of the temperature, composition and Stokes equations, using Picard iterations for the "
@@ -1250,6 +1253,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_Newton_Stokes;
       else if (solver_scheme == "single Advection, no Stokes" || solver_scheme == "Advection only")
         nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
+      else if (solver_scheme == "iterated Advection, no Stokes")
+        nonlinear_solver = NonlinearSolver::iterated_Advection_no_Stokes;
       else if (solver_scheme == "first timestep only, single Stokes")
         nonlinear_solver = NonlinearSolver::first_timestep_only_single_Stokes;
       else if (solver_scheme == "no Advection, no Stokes")

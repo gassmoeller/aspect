@@ -321,7 +321,8 @@ namespace aspect
     boundary_velocity_manager.parse_parameters (prm);
 
     // Make sure we only have a prescribed Stokes plugin if needed
-    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
+    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes ||
+        parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_no_Stokes)
       {
         AssertThrow(prescribed_stokes_solution.get()!=nullptr,
                     ExcMessage("For the 'single Advection, no Stokes' solver scheme you need to provide a Stokes plugin!")
@@ -1727,6 +1728,12 @@ namespace aspect
         case NonlinearSolver::single_Advection_no_Stokes:
         {
           solve_single_advection_no_stokes();
+          break;
+        }
+
+        case NonlinearSolver::iterated_Advection_no_Stokes:
+        {
+          solve_iterated_advection_no_stokes();
           break;
         }
 

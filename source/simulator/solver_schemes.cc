@@ -919,6 +919,110 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::solve_iterated_advection_no_stokes ()
+  {
+
+    double initial_temperature_residual = 0;
+    std::vector<double> initial_composition_residual (introspection.n_compositional_fields,0);
+
+    const unsigned int max_nonlinear_iterations =
+      (pre_refinement_step < parameters.initial_adaptive_refinement)
+      ?
+      std::min(parameters.max_nonlinear_iterations,
+               parameters.max_nonlinear_iterations_in_prerefinement)
+      :
+      parameters.max_nonlinear_iterations;
+
+    do
+      {
+        const double relative_temperature_residual =
+          assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
+
+        const std::vector<double>  relative_composition_residual =
+          assemble_and_solve_composition(nonlinear_iteration == 0, &initial_composition_residual);
+
+        const double relative_nonlinear_stokes_residual = 0.0;
+
+        // write the residual output in the same order as the solutions
+        pcout << "      Relative nonlinear residuals (temperature, compositional fields, Stokes system): " << relative_temperature_residual;
+        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+          pcout << ", " << relative_composition_residual[c];
+        pcout << ", " << relative_nonlinear_stokes_residual;
+        pcout << std::endl;
+
+        double max = 0.0;
+        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+          {
+            // in models with melt migration the melt advection equation includes the divergence of the velocity
+            // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
+            // thus, we set a threshold for the initial composition residual.
+            // this only plays a role if the right-hand side of the advection equation is very small.
+            const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity")
+                                      ?
+                                      parameters.linear_stokes_solver_tolerance * time_step
+                                      :
+                                      0.0);
+            if (initial_composition_residual[c]>threshold)
+              max = std::max(relative_composition_residual[c],max);
+          }
+
+        max = std::max(relative_temperature_residual, max);
+        pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration+1
+              << ": " << max
+              << std::endl
+              << std::endl;
+
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          postprocess ();
+
+        if (max < parameters.nonlinear_tolerance)
+          break;
+
+        ++nonlinear_iteration;
+      }
+    while (nonlinear_iteration < max_nonlinear_iterations);
+
+    // Assign Stokes solution
+    LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+
+    auto lambda = [&](const Point<dim> &p, Vector<double> &result)
+    {
+      prescribed_stokes_solution->stokes_solution(p, result);
+    };
+
+    VectorFunctionFromVectorFunctionObject<dim> func(
+      lambda,
+      0,
+      parameters.include_melt_transport ? 2*dim+3 : dim+1, // velocity and pressure
+      introspection.n_components);
+
+    VectorTools::interpolate (*mapping, dof_handler, func, distributed_stokes_solution);
+
+    // distribute hanging node and other constraints
+    current_constraints.distribute (distributed_stokes_solution);
+
+    solution.block(introspection.block_indices.velocities) =
+      distributed_stokes_solution.block(introspection.block_indices.velocities);
+    solution.block(introspection.block_indices.pressure) =
+      distributed_stokes_solution.block(introspection.block_indices.pressure);
+
+    if (parameters.include_melt_transport)
+      {
+        const unsigned int block_u_f = introspection.variable("fluid velocity").block_index;
+        const unsigned int block_p_f = introspection.variable("fluid pressure").block_index;
+        solution.block(block_u_f) = distributed_stokes_solution.block(block_u_f);
+        solution.block(block_p_f) = distributed_stokes_solution.block(block_p_f);
+      }
+
+    if (parameters.run_postprocessors_on_nonlinear_iterations)
+      postprocess ();
+
+    return;
+  }
+
+
+
+  template <int dim>
   void Simulator<dim>::solve_no_advection_no_stokes ()
   {
     if (parameters.run_postprocessors_on_nonlinear_iterations)
@@ -939,6 +1043,7 @@ namespace aspect
   template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_no_stokes(); \
+  template void Simulator<dim>::solve_iterated_advection_no_stokes(); \
   template void Simulator<dim>::solve_first_timestep_only_single_stokes(); \
   template void Simulator<dim>::solve_no_advection_no_stokes();
 
