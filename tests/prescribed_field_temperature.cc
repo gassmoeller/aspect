@@ -51,9 +51,8 @@ namespace aspect
     {
       if (out.template get_additional_output<PrescribedTemperatureOutputs<dim> >() == NULL)
         {
-          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim>> (out.n_evaluation_points()));
         }
     }
   }

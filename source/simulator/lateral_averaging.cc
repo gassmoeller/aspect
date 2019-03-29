@@ -250,9 +250,9 @@ namespace aspect
                                                         gravity.norm() : 1.0 );
               const double advective_flux = (velocity_values[q] * vertical) * in.temperature[q] *
                                             out.densities[q]*out.specific_heat[q];
-              const double conductive_flux = -(temperature_gradients[q]*vertical) *
-                                             out.thermal_conductivities[q];
-              output[q] = advective_flux + conductive_flux;
+              //const double conductive_flux = -(temperature_gradients[q]*vertical) *
+              //                               out.thermal_conductivities[q];
+              output[q] = advective_flux;
             }
         }
 
