@@ -32,3 +32,12 @@ done
 for parameter_file in "$@"; do
   rm ${parameter_file}.tmp
 done
+
+for script in `ls ${SCRIPT_FOLDER}/*.pl`; do
+  for file in $@ ; do
+    cat "$file" | perl $script > "$file.tmp"
+    mv "$file.tmp" "$file"
+  done
+done
+
+
