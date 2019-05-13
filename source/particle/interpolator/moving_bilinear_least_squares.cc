@@ -34,6 +34,14 @@ namespace aspect
   {
     namespace Interpolator
     {
+      namespace internal
+      {
+        double weight (const double distance, const double cell_width)
+        {
+          return std::max(std::pow(1.0 - std::pow((distance/cell_width),2.0),4.0),0.0);
+        }
+      }
+
       template <int dim>
       std::vector<std::vector<double> >
       MovingBilinearLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
@@ -121,10 +129,13 @@ namespace aspect
                 r[index] = particle_property_value;
 
                 const Point<dim> position = particle->get_location();
-                A(index,0) = 1;
-                A(index,1) = (position[0] - approximated_cell_midpoint[0])/cell_diameter;
-                A(index,2) = (position[1] - approximated_cell_midpoint[1])/cell_diameter;
-                A(index,3) = (position[0] - approximated_cell_midpoint[0]) * (position[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
+                const double distance = position.distance(*itr);
+                const double weight = internal::weight(distance,cell_diameter);
+
+                A(index,0) = weight * 1.0;
+                A(index,1) = weight * (position[0] - approximated_cell_midpoint[0])/cell_diameter;
+                A(index,2) = weight * (position[1] - approximated_cell_midpoint[1])/cell_diameter;
+                A(index,3) = weight * (position[0] - approximated_cell_midpoint[0]) * (position[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
               }
 
             const double threshold = 1e-15;
