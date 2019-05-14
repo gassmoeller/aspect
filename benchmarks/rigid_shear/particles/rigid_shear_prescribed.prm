@@ -1,0 +1,87 @@
+# A description of the SolKZ benchmark for which a known solution
+# is available. See the manual for more information.
+
+set Additional shared libraries            = #./libsolkz.so
+
+############### Global parameters
+
+set Dimension                              = 2
+
+set Start time                             = 0
+set End time                               = 0.0
+
+set Output directory                       = output-prescribed
+
+set Pressure normalization                 = volume
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+set Use years in output instead of seconds = false
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Function expression = -sin(pi*x)*cos(pi*y); cos(pi*x)*sin(pi*y)
+  end
+
+  subsection Pressure function
+    set Function expression = -2*pi*cos(pi*x)*cos(pi*y)
+  end
+end
+
+#subsection Boundary velocity model
+#  set Tangential velocity boundary indicators = left, right, bottom, top
+#end
+
+
+subsection Material model
+  set Model name = simple
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = (x<0.5) ? 0.4 : 0.6
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Time between graphical output = 0.0
+    set List of output variables = material properties
+  end
+end
