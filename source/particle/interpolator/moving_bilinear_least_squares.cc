@@ -38,7 +38,7 @@ namespace aspect
       {
         double weight (const double distance, const double cell_width)
         {
-          return std::max(std::pow(1.0 - std::pow((distance/cell_width),2.0),4.0),0.0);
+          return std::max(std::pow(1.0 - std::pow((distance/cell_width),2.0),2.0),0.0);
         }
       }
 
@@ -125,12 +125,12 @@ namespace aspect
             for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
                  particle != particle_range.end(); ++particle, ++index)
               {
-                const double particle_property_value = particle->get_properties()[property_index];
-                r[index] = particle_property_value;
-
                 const Point<dim> position = particle->get_location();
                 const double distance = position.distance(*itr);
                 const double weight = internal::weight(distance,cell_diameter);
+
+                const double particle_property_value = particle->get_properties()[property_index];
+                r[index] = weight * particle_property_value;
 
                 A(index,0) = weight * 1.0;
                 A(index,1) = weight * (position[0] - approximated_cell_midpoint[0])/cell_diameter;
