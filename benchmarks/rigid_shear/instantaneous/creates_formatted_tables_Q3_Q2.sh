@@ -1,6 +1,6 @@
 #!/bin/bash
 
-grid_resolution=('3' '4' '5')
+grid_resolution=('3' '4' '5' '6' '7' '8')
 PPD=('2')
 
 for ppd in ${PPD[@]}; do
