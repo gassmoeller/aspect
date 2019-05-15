@@ -88,7 +88,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx11::tuple
+      std::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<Interface<2> >,
@@ -104,7 +104,7 @@ namespace aspect
                                                         void (*declare_parameters_function) (ParameterHandler &),
                                                         Interface<dim> *(*factory_function) ())
     {
-      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
+      std::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);
@@ -117,7 +117,7 @@ namespace aspect
     void
     FreeSurfaceHandler<dim>::update ()
     {
-      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::iterator
+      for (typename std::vector<std::shared_ptr<Interface<dim> > >::iterator
            model = mesh_deformation_objects.begin(); model != mesh_deformation_objects.end(); ++model)
         (*model)->update();
     }
@@ -130,7 +130,7 @@ namespace aspect
       prm.enter_subsection ("Free surface");
       {
         const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
         prm.declare_entry("List of model names",
                           "free surface",
@@ -140,7 +140,7 @@ namespace aspect
                           "These plugins are applied in the order given. \n\n"
                           "The following mesh deformation models are available:\n\n"
                           +
-                          std_cxx11::get<dim>(registered_plugins).get_description_string());
+                          std::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry ("Additional tangential mesh velocity boundary indicators", "",
                            Patterns::List (Patterns::Anything()),
@@ -162,7 +162,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
     template <int dim>
@@ -204,8 +204,8 @@ namespace aspect
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
           // create initial temperature objects
-          mesh_deformation_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
-                                              (std_cxx11::get<dim>(registered_plugins)
+          mesh_deformation_objects.push_back (std::shared_ptr<Interface<dim> >
+                                              (std::get<dim>(registered_plugins)
                                                .create_plugin (model_names[i],
                                                                "Initial temperature model::Model names")));
 
@@ -580,7 +580,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<std_cxx11::shared_ptr<Interface<dim> > > &
+    const std::vector<std::shared_ptr<Interface<dim> > > &
     FreeSurfaceHandler<dim>::get_active_mesh_deformation_models () const
     {
       return mesh_deformation_objects;
@@ -592,7 +592,7 @@ namespace aspect
     std::string
     get_valid_model_names_pattern ()
     {
-      return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+      return std::get<dim>(registered_plugins).get_pattern_of_names ();
     }
 
 
@@ -601,7 +601,7 @@ namespace aspect
     void
     FreeSurfaceHandler<dim>::write_plugin_graph (std::ostream &out)
     {
-      std_cxx11::get<dim>(registered_plugins).write_plugin_graph ("Mesh deformation interface",
+      std::get<dim>(registered_plugins).write_plugin_graph ("Mesh deformation interface",
                                                                   out);
     }
   }

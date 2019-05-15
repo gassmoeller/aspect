@@ -25,7 +25,7 @@
 #include <aspect/melt.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
-#include <aspect/free_surface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -1153,9 +1153,6 @@ namespace aspect
     // declare the VolumeOfFluid parameters
     VolumeOfFluidHandler<dim>::declare_parameters(prm);
 
-    // also declare the parameters that the FreeSurfaceHandler needs
-    FreeSurfaceHandler<dim>::declare_parameters (prm);
-
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed
     // to the relevant signals
@@ -1937,6 +1934,7 @@ namespace aspect
     Parameters<dim>::declare_parameters (prm);
     Melt::Parameters<dim>::declare_parameters (prm);
     Newton::Parameters::declare_parameters (prm);
+    MeshDeformation::FreeSurfaceHandler<dim>::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);

@@ -25,7 +25,7 @@
 #include <aspect/melt.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
-#include <aspect/free_surface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/citation_info.h>
 
 #ifdef ASPECT_USE_WORLD_BUILDER
@@ -345,7 +345,10 @@ namespace aspect
                       ExcMessage("The free surface scheme can only be used with no pressure normalization") );
 
         // Allocate the FreeSurfaceHandler object
-        free_surface = std_cxx14::make_unique<FreeSurfaceHandler<dim>>(*this, prm );
+        //free_surface = std_cxx14::make_unique<MeshDeformation::FreeSurfaceHandler<dim>>(*this);
+        free_surface.reset(new MeshDeformation::FreeSurfaceHandler<dim>(*this));
+        free_surface->initialize_simulator(*this);
+        free_surface->parse_parameters(prm);
       }
 
     // Initialize the melt handler

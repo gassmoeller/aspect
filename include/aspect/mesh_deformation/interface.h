@@ -194,7 +194,7 @@ namespace aspect
          * Return a list of pointers to all mesh deformation models
          * currently used in the computation, as specified in the input file.
          */
-        const std::vector<std_cxx11::shared_ptr<Interface<dim> > > &
+        const std::vector<std::shared_ptr<Interface<dim> > > &
         get_active_mesh_deformation_models () const;
 
         /**
@@ -235,7 +235,7 @@ namespace aspect
          * A list of mesh deformation objects that have been requested in the
          * parameter file.
          */
-        std::vector<std_cxx11::shared_ptr<Interface<dim> > > mesh_deformation_objects;
+        std::vector<std::shared_ptr<Interface<dim> > > mesh_deformation_objects;
 
         /**
          * A list of names of mesh deformation objects that have been requested
@@ -351,7 +351,7 @@ namespace aspect
     MeshDeformationType *
     FreeSurfaceHandler<dim>::find_mesh_deformation_model () const
     {
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
            p = mesh_deformation_objects.begin();
            p != mesh_deformation_objects.end(); ++p)
         if (MeshDeformationType *x = dynamic_cast<MeshDeformationType *> ( (*p).get()) )
