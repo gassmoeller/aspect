@@ -2,9 +2,9 @@
 
 # Run all models in this directory. Note that resolution 7/8 require a workstation or cluster
 
-for stokes_degree in 2; do #3
+for stokes_degree in 2 3; do #3
   for discontinuous_pressure in false; do # true
-    for refinement in 3 4 5 6 7 8; do # 7 8
+    for refinement in 3 4 5 6 7; do # 7 8
         echo "subsection Discretization" > current.prm
         echo "  set Stokes velocity polynomial degree = $stokes_degree" >> current.prm
         echo "  set Use locally conservative discretization = $discontinuous_pressure" >> current.prm

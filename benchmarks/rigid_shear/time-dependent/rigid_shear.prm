@@ -1,10 +1,10 @@
 # A description of the SolKZ benchmark for which a known solution
 # is available. See the manual for more information.
 
-set Additional shared libraries            = ./librigid_shear.so
+set Additional shared libraries            = ../plugin/librigid_shear.so
 
 set Dimension                              = 2
-set End time                               = 4.0 
+set End time                               = 2.0 
 set Output directory                       = output
 
 set Pressure normalization                 = no
@@ -38,13 +38,13 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = -(1.0/pi)*sin(pi*x)*sin(pi*y)
+    set Function expression = sin(pi*x)*sin(pi*y)
   end
 end
 
 
 subsection Material model
-  set Model name = rigid shear
+  set Model name = rigid shear time dependent
 end
 
 
@@ -52,7 +52,7 @@ subsection Gravity model
   set Model name = function
 
   subsection Function
-    set Function expression = 0.0; (x<0.00001) ? 0.0 : (x>0.99999) ? 0.0 : -4.0 * pi * pi * pi * cos(pi*x)/sin(pi*x)
+    set Function expression = 0.0; (x<0.00001) ? 0.0 : (x>0.99999) ? 0.0 : 4.0 * pi * pi * cos(pi*x)/sin(pi*x)
   end
 end
 
@@ -92,14 +92,15 @@ subsection Postprocess
     set Data output format = vtu
     set List of particle properties = initial composition
     set Integration scheme = rk2
-    set Interpolation scheme = cell average
+    set Interpolation scheme = bilinear least squares
     set Maximum particles per cell = 16384
     set Update ghost particles = true
-    set Particle generator name = reference cell
+    set Particle generator name = reference cell #random uniform
+    set Number of particles = 8192 
 
     subsection Generator
       subsection Reference cell
-        set Number of particles per cell per direction = 4
+        set Number of particles per cell per direction = 9
       end
     end
   end

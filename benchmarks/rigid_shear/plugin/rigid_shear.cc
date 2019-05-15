@@ -109,6 +109,49 @@ namespace aspect
 
 
 
+    template<int dim>
+    class RigidShearMaterialTimeDependent : public RigidShearMaterial<dim>
+    {
+      public:
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        {
+          for (unsigned int i=0; i < in.position.size(); ++i)
+            {
+              out.densities[i] = in.composition[i][0];
+              out.viscosities[i] = 1.0;
+              out.compressibilities[i] = 0;
+              out.specific_heat[i] = 0;
+              out.thermal_expansion_coefficients[i] = 0.0;
+              out.thermal_conductivities[i] = 0.0;
+            }
+        }
+
+        virtual bool is_compressible() const
+        {
+          return false;
+        }
+
+        virtual double reference_viscosity() const
+        {
+          return 1;
+        }
+
+        void
+        parse_parameters(ParameterHandler &/*prm*/)
+        {
+          // Declare dependencies on solution variables
+          this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
+          this->model_dependence.density = MaterialModel::NonlinearDependence::none;
+          this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
+          this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+          this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
+        }
+    };
+
+
+
+
     /**
      * A postprocessor that evaluates the accuracy of the solution.
      *
@@ -204,6 +247,9 @@ namespace aspect
                                    "rigid shear",
                                    "")
 
+            ASPECT_REGISTER_MATERIAL_MODEL(RigidShearMaterialTimeDependent,
+                "rigid shear time dependent",
+                "")
 
     ASPECT_REGISTER_POSTPROCESSOR(RigidShearPostprocessor,
                                   "rigid shear",
