@@ -349,7 +349,7 @@ namespace aspect
     template <int dim>
     void FreeSurface<dim>::declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Free surface");
+      prm.enter_subsection ("Mesh deformation");
       {
         prm.declare_entry("Free surface stabilization theta", "0.5",
                           Patterns::Double(0,1),
@@ -382,7 +382,7 @@ namespace aspect
     template <int dim>
     void FreeSurface<dim>::parse_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Free surface");
+      prm.enter_subsection ("Mesh deformation");
       {
         free_surface_theta = prm.get_double("Free surface stabilization theta");
         std::string advection_dir = prm.get("Surface velocity projection");

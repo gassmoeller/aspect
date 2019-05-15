@@ -591,13 +591,13 @@ namespace aspect
     }
     prm.leave_subsection();
 
-    prm.enter_subsection ("Free surface");
+    prm.enter_subsection ("Mesh deformation");
     {
-      prm.declare_entry ("Free surface boundary indicators", "",
+      prm.declare_entry ("Mesh deformation boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
-                         "where there is a free surface. Set to nothing to disable all "
-                         "free surface computations."
+                         "where there is some type of mesh deformation. Set to nothing to disable all "
+                         "deformation computations."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
                          "numbers (in which case they correspond to the numerical "
@@ -1788,13 +1788,13 @@ namespace aspect
   parse_geometry_dependent_parameters(ParameterHandler &prm,
                                       const GeometryModel::Interface<dim> &geometry_model)
   {
-    prm.enter_subsection ("Free surface");
+    prm.enter_subsection ("Mesh deformation");
     {
       try
         {
           const std::vector<types::boundary_id> x_free_surface_boundary_indicators
             = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-                                                                      (prm.get ("Free surface boundary indicators")));
+                                                                      (prm.get ("Mesh deformation boundary indicators")));
           free_surface_boundary_indicators
             = std::set<types::boundary_id> (x_free_surface_boundary_indicators.begin(),
                                             x_free_surface_boundary_indicators.end());
@@ -1803,7 +1803,7 @@ namespace aspect
         }
       catch (const std::string &error)
         {
-          AssertThrow (false, ExcMessage ("While parsing the entry <Free surface/Free surface "
+          AssertThrow (false, ExcMessage ("While parsing the entry <Mesh deformation/Mesh deformation "
                                           "boundary indicators>, there was an error. Specifically, "
                                           "the conversion function complained as follows: "
                                           + error));
@@ -1934,7 +1934,7 @@ namespace aspect
     Parameters<dim>::declare_parameters (prm);
     Melt::Parameters<dim>::declare_parameters (prm);
     Newton::Parameters::declare_parameters (prm);
-    MeshDeformation::FreeSurfaceHandler<dim>::declare_parameters (prm);
+    MeshDeformation::MeshDeformationHandler<dim>::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);

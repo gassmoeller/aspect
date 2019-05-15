@@ -344,9 +344,9 @@ namespace aspect
         AssertThrow ( parameters.pressure_normalization == "no",
                       ExcMessage("The free surface scheme can only be used with no pressure normalization") );
 
-        // Allocate the FreeSurfaceHandler object
-        //free_surface = std_cxx14::make_unique<MeshDeformation::FreeSurfaceHandler<dim>>(*this);
-        free_surface.reset(new MeshDeformation::FreeSurfaceHandler<dim>(*this));
+        // Allocate the MeshDeformationHandler object
+        //free_surface = std_cxx14::make_unique<MeshDeformation::MeshDeformationHandler<dim>>(*this);
+        free_surface.reset(new MeshDeformation::MeshDeformationHandler<dim>(*this));
         free_surface->initialize_simulator(*this);
         free_surface->parse_parameters(prm);
       }

@@ -111,7 +111,7 @@ namespace aspect
     };
 
     template<int dim>
-    class FreeSurfaceHandler: public SimulatorAccess<dim>
+    class MeshDeformationHandler: public SimulatorAccess<dim>
     {
       public:
         /**
@@ -120,12 +120,12 @@ namespace aspect
          * Simulator that owns it, since it needs to make fairly extensive
          * changes to the internals of the simulator.
          */
-        FreeSurfaceHandler(Simulator<dim> &simulator);
+        MeshDeformationHandler(Simulator<dim> &simulator);
 
         /**
          * Destructor for the free surface handler.
          */
-        ~FreeSurfaceHandler();
+        ~MeshDeformationHandler();
 
         void initialize();
 
@@ -141,7 +141,7 @@ namespace aspect
         void execute();
 
         /**
-         * Allocates and sets up the members of the FreeSurfaceHandler. This
+         * Allocates and sets up the members of the MeshDeformationHandler. This
          * is called by Simulator<dim>::setup_dofs()
          */
         void setup_dofs();
@@ -266,7 +266,7 @@ namespace aspect
         void interpolate_mesh_velocity ();
 
         /**
-         * Reference to the Simulator object to which a FreeSurfaceHandler
+         * Reference to the Simulator object to which a MeshDeformationHandler
          * instance belongs.
          */
         Simulator<dim> &sim;
@@ -349,7 +349,7 @@ namespace aspect
     template <typename MeshDeformationType>
     inline
     MeshDeformationType *
-    FreeSurfaceHandler<dim>::find_mesh_deformation_model () const
+    MeshDeformationHandler<dim>::find_mesh_deformation_model () const
     {
       for (typename std::list<std::shared_ptr<Interface<dim> > >::const_iterator
            p = mesh_deformation_objects.begin();
@@ -386,10 +386,10 @@ namespace aspect
   namespace ASPECT_REGISTER_MESH_DEFORMATION_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::MeshDeformation::FreeSurfaceHandler<2>::register_mesh_deformation, \
+    dummy_ ## classname ## _2d (&aspect::MeshDeformation::MeshDeformationHandler<2>::register_mesh_deformation, \
                                 name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::MeshDeformation::FreeSurfaceHandler<3>::register_mesh_deformation, \
+    dummy_ ## classname ## _3d (&aspect::MeshDeformation::MeshDeformationHandler<3>::register_mesh_deformation, \
                                 name, description); \
   }
   }

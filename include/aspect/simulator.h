@@ -97,7 +97,7 @@ namespace aspect
   namespace MeshDeformation
   {
       template <int dim>
-      class FreeSurfaceHandler;
+      class MeshDeformationHandler;
   }
 
   template <int dim>
@@ -1827,15 +1827,15 @@ namespace aspect
     private:
 
       /**
-       * Unique pointer for an instance of the FreeSurfaceHandler. this way,
+       * Unique pointer for an instance of the MeshDeformationHandler. this way,
        * if we do not need the machinery for doing free surface stuff, we do
        * not even allocate it.
        */
-      std::unique_ptr<MeshDeformation::FreeSurfaceHandler<dim> > free_surface;
+      std::unique_ptr<MeshDeformation::MeshDeformationHandler<dim> > free_surface;
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
-      friend class MeshDeformation::FreeSurfaceHandler<dim>;   // FreeSurfaceHandler needs access to the internals of the Simulator
+      friend class MeshDeformation::MeshDeformationHandler<dim>;   // MeshDeformationHandler needs access to the internals of the Simulator
       friend class VolumeOfFluidHandler<dim>; // VolumeOfFluidHandler needs access to the internals of the Simulator
       friend struct Parameters<dim>;
   };
