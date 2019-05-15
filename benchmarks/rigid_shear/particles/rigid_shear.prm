@@ -38,7 +38,7 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = 4.0 * pi * pi * cos(pi*x)*sin(pi*y)
+    set Function expression = -(1.0/pi)*sin(pi*x)*sin(pi*y)
   end
 end
 
@@ -52,7 +52,7 @@ subsection Gravity model
   set Model name = function
 
   subsection Function
-    set Function expression = 0.0;1.0
+    set Function expression = 0.0; (x<0.00001) ? 0.0 : (x>0.99999) ? 0.0 : -4.0 * pi * pi * pi * cos(pi*x)/sin(pi*x)
   end
 end
 
@@ -84,7 +84,7 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0.0
-    set List of output variables = material properties
+    set List of output variables = material properties, gravity
   end
 
   subsection Particles

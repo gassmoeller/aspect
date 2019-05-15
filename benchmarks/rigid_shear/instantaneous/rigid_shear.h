@@ -55,7 +55,7 @@ namespace aspect
             const double pi = dealii::numbers::PI;
             values[0] = -std::sin(pi*p[0]) * std::cos(pi*p[1]);
             values[1] =  std::cos(pi*p[0]) * std::sin(pi*p[1]);
-            values[2] = -2.0 * pi * std::cos(pi*p[0]) * std::cos(pi*p[1]);
+            values[2] = - 2.0 * pi * std::cos(pi*p[0]) * std::cos(pi*p[1]);
             return;
           }
       };
@@ -75,9 +75,8 @@ namespace aspect
               const double x = in.position[i][0];
               const double y = in.position[i][1];
               const double pi = numbers::PI;
-              const double pi_squared = pi * pi;
 
-              out.densities[i] = 4.0 * pi_squared * std::cos(pi*x) * std::sin(pi*y);
+              out.densities[i] = -(1.0/pi) * std::sin(pi*x) * std::sin(pi*y);
               out.viscosities[i] = 1.0;
               out.compressibilities[i] = 0;
               out.specific_heat[i] = 0;
