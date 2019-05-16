@@ -56,6 +56,7 @@ namespace aspect
             values[0] = std::sin(pi*p[0]) * std::cos(pi*p[1]);
             values[1] = -std::cos(pi*p[0]) * std::sin(pi*p[1]);
             values[2] = 2.0 * pi * std::cos(pi*p[0]) * std::cos(pi*p[1]);
+            values[4] = std::sin(pi*p[0]) * std::sin(pi*p[1]);
             return;
           }
       };
@@ -184,11 +185,14 @@ namespace aspect
           Vector<float> cellwise_errors_p(this->get_triangulation().n_active_cells());
           Vector<float> cellwise_errors_ul2(this->get_triangulation().n_active_cells());
           Vector<float> cellwise_errors_pl2(this->get_triangulation().n_active_cells());
+          Vector<float> cellwise_errors_rhol2(this->get_triangulation().n_active_cells());
 
           ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0, dim),
                                               this->get_fe().n_components());
           ComponentSelectFunction<dim> comp_p(dim,
                                               this->get_fe().n_components());
+          ComponentSelectFunction<dim> comp_rho(dim+2,
+                                                this->get_fe().n_components());
 
           VectorTools::integrate_difference(this->get_mapping(), this->get_dof_handler(),
                                             this->get_solution(),
@@ -218,6 +222,13 @@ namespace aspect
                                             quadrature_formula,
                                             VectorTools::L2_norm,
                                             &comp_p);
+          VectorTools::integrate_difference(this->get_mapping(), this->get_dof_handler(),
+                                            this->get_solution(),
+                                            ref_func,
+                                            cellwise_errors_rhol2,
+                                            quadrature_formula,
+                                            VectorTools::L2_norm,
+                                            &comp_rho);
 
           const double u_l1 = Utilities::MPI::sum(cellwise_errors_u.l1_norm(), this->get_mpi_communicator());
           const double p_l1 = Utilities::MPI::sum(cellwise_errors_p.l1_norm(), this->get_mpi_communicator());
@@ -225,14 +236,17 @@ namespace aspect
                                 Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(), this->get_mpi_communicator()));
           const double p_l2 = std::sqrt(
                                 Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(), this->get_mpi_communicator()));
+          const double rho_l2 = std::sqrt(
+                                Utilities::MPI::sum(cellwise_errors_rhol2.norm_sqr(), this->get_mpi_communicator()));
 
           std::ostringstream os;
           os << std::scientific << u_l1
              << ", " << p_l1
              << ", " << u_l2
-             << ", " << p_l2;
+             << ", " << p_l2
+             << ", " << rho_l2;
 
-          return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
+          return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2, rho_L2:", os.str());
         }
     };
   }
