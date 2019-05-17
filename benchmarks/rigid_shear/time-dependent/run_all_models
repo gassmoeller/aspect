@@ -5,7 +5,7 @@
 for stokes_degree in 2 3; do #2 3
   for discontinuous_pressure in false; do # true
     for refinement in 3 4 5 6; do
-      for particles_per_direction in 4 5 6 7 10 15 20; do # 4 5 6 7 10 15 20
+      for particles_per_direction in 4 5 6 7 10 15 20 32 45 64 80; do # 4 5 6 7 10 15 20
         for generator in "reference cell"; do
         for interpolator in "cell average" "bilinear least squares"; do # cell average
         for integrator in "rk2" "rk4"; do # "rk2" "rk4"
@@ -42,7 +42,7 @@ for stokes_degree in 2 3; do #2 3
 
         echo "set Output directory = Q${stokes_degree}_P${discontinuous_pressure}_refinement${refinement}_${particles_per_direction}_${generator// /_}_${interpolator// /_}_${integrator}" >> current.prm
         echo "Starting Q${stokes_degree}_P${discontinuous_pressure}_refinement${refinement}_${particles_per_direction}_${integrator}"
-        cat rigid_shear.prm current.prm | mpirun -oversubscribe -np 12 ../plugin/aspect --
+        cat rigid_shear.prm current.prm | mpirun -np 4 ../plugin/aspect --
 
         done
         done
