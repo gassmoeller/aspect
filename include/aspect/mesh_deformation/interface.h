@@ -163,7 +163,7 @@ namespace aspect
          * know them by name. This allows the files in which individual
          * plugins are implemented to register these plugins, rather than also
          * having to modify the Manager class by adding the new initial
-         * temperature plugin class.
+         * mesh deformation plugin class.
          *
          * @param name A string that identifies the mesh deformation model
          * @param description A text description of what this model does and that
@@ -247,11 +247,13 @@ namespace aspect
          * Set the boundary conditions for the solution of the elliptic
          * problem, which computes the displacements of the internal
          * vertices so that the mesh does not become too distorted due to
-         * motion of the free surface.  Velocities of vertices on the
+         * motion of the free surface. Velocities of vertices on the
          * deforming surface are fixed according to the selected deformation
-         * plugins.  Velocities of vertices on free-slip
-         * boundaries are constrained to be tangential to those boundaries.
-         * Velocities of vertices on no-slip boundaries are set to be zero.
+         * plugins. Velocities of vertices on free-slip boundaries are
+         * constrained to be tangential to those boundaries. Velocities of
+         * vertices on no-slip boundaries are set to be zero. If a no-slip
+         * boundary is marked as additional tangential, then vertex velocities
+         * are constrained as tangential.
          */
         void make_constraints ();
 
