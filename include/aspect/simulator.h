@@ -96,8 +96,8 @@ namespace aspect
 
   namespace MeshDeformation
   {
-      template <int dim>
-      class MeshDeformationHandler;
+    template <int dim>
+    class MeshDeformationHandler;
   }
 
   template <int dim>

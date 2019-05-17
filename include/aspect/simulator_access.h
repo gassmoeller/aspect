@@ -138,10 +138,10 @@ namespace aspect
 
   template <int dim> class MeltHandler;
   template <int dim> class VolumeOfFluidHandler;
-  
+
   namespace MeshDeformation
   {
-      template <int dim> class MeshDeformationHandler;
+    template <int dim> class MeshDeformationHandler;
   }
 
   template <int dim> class NewtonHandler;

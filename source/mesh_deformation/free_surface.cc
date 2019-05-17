@@ -141,9 +141,9 @@ namespace aspect
     FreeSurface<dim>::initialize ()
     {
       this->get_signals().set_assemblers.connect(std::bind(&FreeSurface<dim>::set_assemblers,
-                                                                 std::cref(*this),
-                                                                 std::placeholders::_1,
-                                                                 std::placeholders::_2));
+                                                           std::cref(*this),
+                                                           std::placeholders::_1,
+                                                           std::placeholders::_2));
     }
 
 

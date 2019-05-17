@@ -100,14 +100,14 @@ namespace aspect
     template <int dim>
     void
     MeshDeformationHandler<dim>::register_mesh_deformation (const std::string &name,
-                                                        const std::string &description,
-                                                        void (*declare_parameters_function) (ParameterHandler &),
-                                                        Interface<dim> *(*factory_function) ())
+                                                            const std::string &description,
+                                                            void (*declare_parameters_function) (ParameterHandler &),
+                                                            Interface<dim> *(*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
     }
 
 
@@ -602,7 +602,7 @@ namespace aspect
     MeshDeformationHandler<dim>::write_plugin_graph (std::ostream &out)
     {
       std::get<dim>(registered_plugins).write_plugin_graph ("Mesh deformation interface",
-                                                                  out);
+                                                            out);
     }
   }
 }
