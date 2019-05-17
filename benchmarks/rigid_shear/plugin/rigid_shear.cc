@@ -1,7 +1,9 @@
 #ifndef ASPECT_RIGID_SHEAR_H
 #define ASPECT_RIGID_SHEAR_H
 
-#include <aspect/material_model/simple.h>
+#include <aspect/material_model/interface.h>
+#include <aspect/postprocess/particles.h>
+#include <aspect/particle/property/interface.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
@@ -119,7 +121,7 @@ namespace aspect
         {
           for (unsigned int i=0; i < in.position.size(); ++i)
             {
-              out.densities[i] = in.composition[i][0];
+              out.densities[i] = in.composition[i][1];
               out.viscosities[i] = 1.0;
               out.compressibilities[i] = 0;
               out.specific_heat[i] = 0;
@@ -147,6 +149,68 @@ namespace aspect
           this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
           this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
           this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
+        }
+    };
+
+
+
+    template <int dim>
+    class RigidShearForcingTerm : public aspect::Particle::Property::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        virtual
+        void
+        initialize_one_particle_property (const Point<dim> &position,
+                                          std::vector<double> &particle_properties) const
+        {
+          const auto &property_manager = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >().
+              get_particle_world().
+              get_property_manager();
+          const unsigned density_index = property_manager.get_data_info().get_field_index_by_name("function");
+
+          const double g_y = -4.0 * numbers::PI * numbers::PI * std::cos(numbers::PI * position[0]) / std::sin(numbers::PI * position[0]);
+          particle_properties.push_back(particle_properties[density_index]*g_y);
+        }
+
+        virtual
+        void
+        update_one_particle_property (const unsigned int data_position,
+                                      const Point<dim> &position,
+                                      const Vector<double> &/*solution*/,
+                                      const std::vector<Tensor<1,dim> > &/*gradients*/,
+                                      const ArrayView<double> &particle_properties) const
+        {
+          const auto &property_manager = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >().
+              get_particle_world().
+              get_property_manager();
+          const unsigned density_index = property_manager.get_data_info().get_field_index_by_name("function");
+
+          const double g_y = -4.0 * numbers::PI * numbers::PI * std::cos(numbers::PI * position[0]) / std::sin(numbers::PI * position[0]);
+          particle_properties[data_position] = particle_properties[density_index]*g_y;
+        }
+
+        aspect::Particle::Property::UpdateTimeFlags
+        need_update () const
+        {
+          return aspect::Particle::Property::UpdateTimeFlags::update_time_step;
+        }
+
+        virtual
+        UpdateFlags
+        get_needed_update_flags () const
+        {
+          return update_default;
+        }
+
+        virtual
+        std::vector<std::pair<std::string, unsigned int> >
+        get_property_information() const
+        {
+          std::vector<std::pair<std::string,unsigned int> > property_information;
+
+          const std::string field_name = "forcing_term_y";
+          property_information.emplace_back(field_name,1);
+          return property_information;
         }
     };
 
@@ -261,9 +325,13 @@ namespace aspect
                                    "rigid shear",
                                    "")
 
-            ASPECT_REGISTER_MATERIAL_MODEL(RigidShearMaterialTimeDependent,
-                "rigid shear time dependent",
-                "")
+    ASPECT_REGISTER_MATERIAL_MODEL(RigidShearMaterialTimeDependent,
+        "rigid shear time dependent",
+        "")
+
+    ASPECT_REGISTER_PARTICLE_PROPERTY(RigidShearForcingTerm,
+        "rigid shear forcing term",
+        "")
 
     ASPECT_REGISTER_POSTPROCESSOR(RigidShearPostprocessor,
                                   "rigid shear",
