@@ -22,28 +22,27 @@ namespace aspect
 {
   namespace RigidShearBenchmark
   {
-  /**
-   * This is the "Sol Kz" benchmark defined in the following paper:
-   * @code
-   *  @Article{DMGT11,
-   *    author =       {T. Duretz and D. A. May and T. V. Gerya and P. J. Tackley},
-   *    title =        {Discretization errors and free surface stabilization in the
-   *                  finite difference and marker-in-cell method for applied
-   *                  geodynamics: {A} numerical study},
-   *    journal =      {Geochemistry Geophysics Geosystems},
-   *    year =         2011,
-   *    volume =       12,
-   *    pages =        {Q07004/1--26}}
-   * @endcode
-   *
-   * The results are published in Kronbichler, Heister and Bangerth paper.
-   */
-  namespace AnalyticSolutions
-  {
-    using namespace dealii;
+    /**
+     * This is the "Rigid shear" benchmark based on a suggestion in the following paper:
+     * @code
+     *  @Article{KKSCND97,
+     *  author =       {P. E. van Keken and S. D. King and H. Schmeling and U. R. Christensen and D. Neumeister and M.-P. Doin},
+     *  title =        {A comparison of methods for the modeling of thermochemical convection},
+     *  journal =      {J. Geoph. Res.},
+     *  year =         1997,
+     *  volume =       102,
+     *  pages =        {22477--22495}}
+     * @endcode
+     *
+     * The results of the modification are published in Gassmoeller, Lokavarapu,
+     * Bangerth, Puckett, 2019.
+     */
+    namespace AnalyticSolutions
+    {
+      using namespace dealii;
 
       /**
-       * The exact solution for the SolKz benchmark.
+       * The exact solution for the Rigid Shear benchmark.
        */
       template<int dim>
       class FunctionRigidShear : public Function<dim>
@@ -66,6 +65,10 @@ namespace aspect
 
 
 
+    /**
+     * A material model for the stationary form of the rigid shear benchmark. All properties
+     * are defined in dependence of position.
+     */
     template<int dim>
     class RigidShearMaterial : public MaterialModel::Interface<dim>
     {
@@ -101,7 +104,6 @@ namespace aspect
         void
         parse_parameters(ParameterHandler &/*prm*/)
         {
-          // Declare dependencies on solution variables
           this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
           this->model_dependence.density = MaterialModel::NonlinearDependence::none;
           this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
@@ -112,6 +114,10 @@ namespace aspect
 
 
 
+    /**
+     * A material model for the time-dependent form of the benchmark.
+     * The density depends on the composition (e.g. advected by particles).
+     */
     template<int dim>
     class RigidShearMaterialTimeDependent : public RigidShearMaterial<dim>
     {
@@ -143,7 +149,6 @@ namespace aspect
         void
         parse_parameters(ParameterHandler &/*prm*/)
         {
-          // Declare dependencies on solution variables
           this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
           this->model_dependence.density = MaterialModel::NonlinearDependence::none;
           this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
@@ -154,6 +159,13 @@ namespace aspect
 
 
 
+    /**
+     * A particle property that represents the force term in the Stokes equation (density * gravity).
+     * The reason this is implemented as a separate particle property is that the gravity becomes
+     * infinite at x=0 and x=1, while (density * gravity) always remains finite. Therefore,
+     * interpolating (density * gravity) does not break down at the model edges, while interpolating
+     * density and then multiplying with the analytical density does.
+     */
     template <int dim>
     class RigidShearForcingTerm : public aspect::Particle::Property::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
@@ -164,8 +176,8 @@ namespace aspect
                                           std::vector<double> &particle_properties) const
         {
           const auto &property_manager = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >().
-              get_particle_world().
-              get_property_manager();
+                                         get_particle_world().
+                                         get_property_manager();
           const unsigned density_index = property_manager.get_data_info().get_field_index_by_name("function");
 
           const double g_y = -4.0 * numbers::PI * numbers::PI * std::cos(numbers::PI * position[0]) / std::sin(numbers::PI * position[0]);
@@ -181,8 +193,8 @@ namespace aspect
                                       const ArrayView<double> &particle_properties) const
         {
           const auto &property_manager = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >().
-              get_particle_world().
-              get_property_manager();
+                                         get_particle_world().
+                                         get_property_manager();
           const unsigned density_index = property_manager.get_data_info().get_field_index_by_name("function");
 
           const double g_y = -4.0 * numbers::PI * numbers::PI * std::cos(numbers::PI * position[0]) / std::sin(numbers::PI * position[0]);
@@ -221,14 +233,14 @@ namespace aspect
      * A postprocessor that evaluates the accuracy of the solution.
      *
      * The implementation of error evaluators that correspond to the
-     * benchmarks defined in the paper Duretz et al. reference above.
+     * benchmarks defined in the paper Gassmoeller et al. referenced above.
      */
     template<int dim>
     class RigidShearPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
-         * Generate graphical output from the current solution.
+         * Generate error output for velocity, pressure, and density.
          */
         virtual
         std::pair<std::string, std::string>
@@ -301,7 +313,7 @@ namespace aspect
           const double p_l2 = std::sqrt(
                                 Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(), this->get_mpi_communicator()));
           const double rho_l2 = std::sqrt(
-                                Utilities::MPI::sum(cellwise_errors_rhol2.norm_sqr(), this->get_mpi_communicator()));
+                                  Utilities::MPI::sum(cellwise_errors_rhol2.norm_sqr(), this->get_mpi_communicator()));
 
           std::ostringstream os;
           os << std::scientific << u_l1
@@ -323,19 +335,26 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(RigidShearMaterial,
                                    "rigid shear",
-                                   "")
+                                   " A material model for the stationary form of the rigid shear benchmark. All properties "
+                                   "are defined in dependence of position.")
 
     ASPECT_REGISTER_MATERIAL_MODEL(RigidShearMaterialTimeDependent,
-        "rigid shear time dependent",
-        "")
+                                   "rigid shear time dependent",
+                                   "A material model for the time-dependent form of the rigid shear benchmark. "
+                                   "The density depends on the composition (e.g. advected by particles).")
 
     ASPECT_REGISTER_PARTICLE_PROPERTY(RigidShearForcingTerm,
-        "rigid shear forcing term",
-        "")
+                                      "rigid shear forcing term",
+                                      "A particle property that represents the force term in the Stokes equation (density * gravity). "
+                                      "The reason this is implemented as a separate particle property is that the gravity becomes "
+                                      "infinite at x=0 and x=1, while (density * gravity) always remains finite. Therefore, "
+                                      "interpolating (density * gravity) does not break down at the model edges, while interpolating "
+                                      "density and then multiplying with the analytical density does.")
 
     ASPECT_REGISTER_POSTPROCESSOR(RigidShearPostprocessor,
                                   "rigid shear",
-                                  "")
+                                  " The implementation of error evaluators that correspond to the "
+                                  "benchmarks defined in the paper Gassmoeller et al. referenced above.")
   }
 }
 #endif
