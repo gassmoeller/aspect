@@ -41,10 +41,6 @@ namespace aspect
   namespace MeshDeformation
   {
     template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
-    template <int dim>
     void
     Interface<dim>::initialize ()
     {}
@@ -70,8 +66,8 @@ namespace aspect
     template <int dim>
     MeshDeformationHandler<dim>::MeshDeformationHandler (Simulator<dim> &simulator)
       : sim(simulator),  // reference to the simulator that owns the MeshDeformationHandler
-        free_surface_fe (FE_Q<dim>(1),dim), // Q1 elements which describe the mesh geometry
-        free_surface_dof_handler (sim.triangulation)
+        mesh_deformation_fe (FE_Q<dim>(1),dim), // Q1 elements which describe the mesh geometry
+        mesh_deformation_dof_handler (sim.triangulation)
     {}
 
     template <int dim>
@@ -109,7 +105,6 @@ namespace aspect
                                                          declare_parameters_function,
                                                          factory_function);
     }
-
 
 
 
@@ -222,8 +217,9 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::execute()
     {
-      if (!sim.parameters.free_surface_enabled)
-        return;
+      // TODO rename or remove, because it should be mesh_deformation_enabled
+//      if (!sim.parameters.free_surface_enabled)
+//        return;
 
       TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation");
 
@@ -250,8 +246,8 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::make_constraints()
     {
-      if (!sim.parameters.free_surface_enabled)
-        return;
+//      if (!sim.parameters.free_surface_enabled)
+//        return;
 
       // Now construct the mesh displacement constraints
       mesh_displacement_constraints.clear();
@@ -265,12 +261,12 @@ namespace aspect
       typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
       periodic_boundary_pairs pbp = sim.geometry_model->get_periodic_boundary_pairs();
       for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
-        DoFTools::make_periodicity_constraints(free_surface_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_displacement_constraints);
+        DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_displacement_constraints);
 
       // Zero out the displacement for the zero-velocity boundary indicators
       for (std::set<types::boundary_id>::const_iterator p = sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
            p != sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators().end(); ++p)
-        VectorTools::interpolate_boundary_values (free_surface_dof_handler, *p,
+        VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler, *p,
                                                   ZeroFunction<dim>(dim), mesh_displacement_constraints);
 
       // Zero out the displacement for the prescribed velocity boundaries
@@ -280,14 +276,14 @@ namespace aspect
         {
           if (tangential_mesh_boundary_indicators.find(p->first) == tangential_mesh_boundary_indicators.end())
             {
-              VectorTools::interpolate_boundary_values (free_surface_dof_handler, p->first,
+              VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler, p->first,
                                                         ZeroFunction<dim>(dim), mesh_displacement_constraints);
             }
         }
 
       sim.signals.pre_compute_no_normal_flux_constraints(sim.triangulation);
       // Make the no flux boundary constraints for boundaries with tangential mesh boundaries
-      VectorTools::compute_no_normal_flux_constraints (free_surface_dof_handler,
+      VectorTools::compute_no_normal_flux_constraints (mesh_deformation_dof_handler,
                                                        /* first_vector_component= */
                                                        0,
                                                        tangential_mesh_boundary_indicators,
@@ -300,7 +296,7 @@ namespace aspect
           periodic_boundaries.insert((*p).first.first);
           periodic_boundaries.insert((*p).first.second);
         }
-      VectorTools::compute_no_normal_flux_constraints (free_surface_dof_handler,
+      VectorTools::compute_no_normal_flux_constraints (mesh_deformation_dof_handler,
                                                        /* first_vector_component= */
                                                        0,
                                                        periodic_boundaries,
@@ -317,7 +313,7 @@ namespace aspect
         {
           ConstraintMatrix current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
 
-          mesh_deformation_objects[i]->deformation_constraints(free_surface_dof_handler,
+          mesh_deformation_objects[i]->deformation_constraints(mesh_deformation_dof_handler,
                                                                current_plugin_constraints);
 
           const IndexSet local_lines = current_plugin_constraints.get_local_lines();
@@ -346,9 +342,9 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::compute_mesh_displacements()
     {
-      QGauss<dim> quadrature(free_surface_fe.degree + 1);
+      QGauss<dim> quadrature(mesh_deformation_fe.degree + 1);
       UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values | update_gradients);
-      FEValues<dim> fe_values (*sim.mapping, free_surface_fe, quadrature, update_flags);
+      FEValues<dim> fe_values (*sim.mapping, mesh_deformation_fe, quadrature, update_flags);
 
       const unsigned int dofs_per_cell = fe_values.dofs_per_cell,
                          dofs_per_face = sim.finite_element.dofs_per_face,
@@ -376,14 +372,14 @@ namespace aspect
                                             mesh_locally_relevant,
                                             sim.mpi_communicator);
 #endif
-      DoFTools::make_sparsity_pattern (free_surface_dof_handler,
+      DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
                                        coupling, sp,
                                        mesh_displacement_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(sim.mpi_communicator));
 #ifdef ASPECT_USE_PETSC
       SparsityTools::distribute_sparsity_pattern(sp,
-                                                 free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
+                                                 mesh_deformation_dof_handler.n_locally_owned_dofs_per_processor(),
                                                  sim.mpi_communicator, mesh_locally_relevant);
       sp.compress();
       mesh_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, sim.mpi_communicator);
@@ -399,8 +395,8 @@ namespace aspect
       rhs.reinit(mesh_locally_owned, sim.mpi_communicator);
       velocity_solution.reinit(mesh_locally_owned, sim.mpi_communicator);
 
-      typename DoFHandler<dim>::active_cell_iterator cell = free_surface_dof_handler.begin_active(),
-                                                     endc= free_surface_dof_handler.end();
+      typename DoFHandler<dim>::active_cell_iterator cell = mesh_deformation_dof_handler.begin_active(),
+                                                     endc= mesh_deformation_dof_handler.end();
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           {
@@ -427,7 +423,7 @@ namespace aspect
 
       // Make the AMG preconditioner
       std::vector<std::vector<bool> > constant_modes;
-      DoFTools::extract_constant_modes (free_surface_dof_handler,
+      DoFTools::extract_constant_modes (mesh_deformation_dof_handler,
                                         ComponentMask(dim, true),
                                         constant_modes);
       // TODO: think about keeping object between time steps
@@ -474,9 +470,9 @@ namespace aspect
       const std::vector<Point<dim> > support_points
         = sim.finite_element.base_element(sim.introspection.component_indices.velocities[0]).get_unit_support_points();
 
-      Quadrature<dim> quad(support_points);
-      UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values);
-      FEValues<dim> fs_fe_values (*sim.mapping, free_surface_fe, quad, update_flags);
+      const Quadrature<dim> quad(support_points);
+      const UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values);
+      FEValues<dim> fs_fe_values (*sim.mapping, mesh_deformation_fe, quad, update_flags);
       FEValues<dim> fe_values (*sim.mapping, sim.finite_element, quad, update_flags);
       const unsigned int n_q_points = fe_values.n_quadrature_points,
                          dofs_per_cell = fe_values.dofs_per_cell;
@@ -488,7 +484,7 @@ namespace aspect
       typename DoFHandler<dim>::active_cell_iterator
       cell = sim.dof_handler.begin_active(), endc= sim.dof_handler.end();
       typename DoFHandler<dim>::active_cell_iterator
-      fscell = free_surface_dof_handler.begin_active();
+      fscell = mesh_deformation_dof_handler.begin_active();
 
       for (; cell!=endc; ++cell, ++fscell)
         if (cell->is_locally_owned())
@@ -501,7 +497,7 @@ namespace aspect
             for (unsigned int j=0; j<n_q_points; ++j)
               for (unsigned int dir=0; dir<dim; ++dir)
                 {
-                  unsigned int support_point_index
+                  const unsigned int support_point_index
                     = sim.finite_element.component_to_system_index(/*velocity component=*/ sim.introspection.component_indices.velocities[dir],
                                                                                            /*dof index within component=*/ j);
                   distributed_mesh_velocity[cell_dof_indices[support_point_index]] = velocity_values[j][dir];
@@ -516,8 +512,8 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::setup_dofs()
     {
-      if (!sim.parameters.free_surface_enabled)
-        return;
+//      if (!sim.parameters.free_surface_enabled)
+//        return;
 
       // these live in the same FE as the velocity variable:
       mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning,
@@ -525,20 +521,20 @@ namespace aspect
                            sim.mpi_communicator);
 
 
-      free_surface_dof_handler.distribute_dofs(free_surface_fe);
+      mesh_deformation_dof_handler.distribute_dofs(mesh_deformation_fe);
 
       sim.pcout << "Number of free surface degrees of freedom: "
-                << free_surface_dof_handler.n_dofs()
+                << mesh_deformation_dof_handler.n_dofs()
                 << std::endl;
 
       // Renumber the DoFs hierarchical so that we get the
       // same numbering if we resume the computation. This
       // is because the numbering depends on the order the
       // cells are created.
-      DoFRenumbering::hierarchical (free_surface_dof_handler);
+      DoFRenumbering::hierarchical (mesh_deformation_dof_handler);
 
-      mesh_locally_owned = free_surface_dof_handler.locally_owned_dofs();
-      DoFTools::extract_locally_relevant_dofs (free_surface_dof_handler,
+      mesh_locally_owned = mesh_deformation_dof_handler.locally_owned_dofs();
+      DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler,
                                                mesh_locally_relevant);
 
       mesh_displacements.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
@@ -558,13 +554,13 @@ namespace aspect
       mesh_vertex_constraints.clear();
       mesh_vertex_constraints.reinit(mesh_locally_relevant);
 
-      DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mesh_vertex_constraints);
+      DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, mesh_vertex_constraints);
 
       // We can safely close this now
       mesh_vertex_constraints.close();
 
       // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
-      sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (free_surface_dof_handler,
+      sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (mesh_deformation_dof_handler,
                                                                             mesh_displacements));
     }
 

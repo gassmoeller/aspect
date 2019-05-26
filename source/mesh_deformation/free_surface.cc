@@ -315,7 +315,7 @@ namespace aspect
 
     template <int dim>
     void
-    FreeSurface<dim>::deformation_constraints(const DoFHandler<dim> &free_surface_dof_handler,
+    FreeSurface<dim>::compute_velocity_constraints(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                               ConstraintMatrix &mesh_velocity_constraints) const
     {
       // For the free surface indicators we constrain the displacement to be v.n
@@ -325,13 +325,17 @@ namespace aspect
       IndexSet mesh_locally_relevant;
       DoFTools::extract_locally_relevant_dofs (free_surface_dof_handler,
                                                mesh_locally_relevant);
-      boundary_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, this->get_mpi_communicator());
-      project_velocity_onto_boundary(free_surface_dof_handler,mesh_locally_owned,mesh_locally_relevant,boundary_velocity);
+      boundary_velocity.reinit(mesh_locally_owned, mesh_locally_relevant,
+                               this->get_mpi_communicator());
+      project_velocity_onto_boundary(free_surface_dof_handler, mesh_locally_owned,
+                                     mesh_locally_relevant,boundary_velocity);
 
       // now insert the relevant part of the solution into the mesh constraints
       IndexSet constrained_dofs;
-      DoFTools::extract_boundary_dofs(free_surface_dof_handler, ComponentMask(dim, true),
-                                      constrained_dofs, this->get_parameters().free_surface_boundary_indicators);
+      DoFTools::extract_boundary_dofs(free_surface_dof_handler,
+                                      ComponentMask(dim, true),
+                                      constrained_dofs,
+                                      this->get_parameters().free_surface_boundary_indicators);
       for (unsigned int i = 0; i < constrained_dofs.n_elements();  ++i)
         {
           types::global_dof_index index = constrained_dofs.nth_index_in_set(i);
@@ -353,7 +357,7 @@ namespace aspect
       {
         prm.declare_entry("Free surface stabilization theta", "0.5",
                           Patterns::Double(0,1),
-                          "Theta parameter described in Kaus et. al. 2010. "
+                          "Theta parameter described in \\cite{KMM2010}. "
                           "An unstabilized free surface can overshoot its "
                           "equilibrium position quite easily and generate "
                           "unphysical results.  One solution is to use a "

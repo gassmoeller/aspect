@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_mesh_deformation_function_h
-#define _aspect_mesh_deformation_function_h
+#ifndef _aspect_mesh_deformation_boundary_function_h
+#define _aspect_mesh_deformation_boundary_function_h
 
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_access.h>
@@ -34,16 +34,16 @@ namespace aspect
   namespace MeshDeformation
   {
     template<int dim>
-    class Function : public Interface<dim>, public SimulatorAccess<dim>
+    class BoundaryFunction : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        Function();
+        BoundaryFunction();
 
         virtual void update();
 
         virtual
         void
-        deformation_constraints(const DoFHandler<dim> &free_surface_dof_handler,
+        compute_velocity_constraints(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                 ConstraintMatrix &mesh_constraints) const;
 
         /**

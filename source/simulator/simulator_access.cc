@@ -659,9 +659,9 @@ namespace aspect
 
   template <int dim>
   const MeshDeformation::MeshDeformationHandler<dim> &
-  SimulatorAccess<dim>::get_free_surface_handler () const
+  SimulatorAccess<dim>::get_mesh_deformation_handler () const
   {
-    Assert (simulator->free_surface.get() != nullptr,
+    Assert (simulator->mesh_deformation.get() != nullptr,
             ExcMessage("You can not call this function if the free surface is not enabled."));
 
     return *(simulator->free_surface);
