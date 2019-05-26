@@ -21,6 +21,7 @@
 
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+#include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 
 #include <deal.II/grid/grid_generator.h>
 #include <aspect/utilities.h>
@@ -215,7 +216,9 @@ namespace aspect
       return (1e4 / (6336000.-3481000.)) * maximal_depth();
     }
 
-
+    template <int dim>
+    void
+    SphericalShell<dim>::
 
     template <int dim>
     double
