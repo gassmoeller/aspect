@@ -340,11 +340,6 @@ namespace aspect
     // Initialize the free surface handler
     if (parameters.mesh_deformation_enabled)
       {
-        // Pressure normalization doesn't really make sense with a free surface, and if we do
-        // use it, we can run into problems with geometry_model->depth().
-        AssertThrow ( parameters.pressure_normalization == "no",
-                      ExcMessage("The free surface scheme can only be used with no pressure normalization") );
-
         // Allocate the MeshDeformationHandler object
         //mesh_deformation = std_cxx14::make_unique<MeshDeformation::MeshDeformationHandler<dim>>(*this);
         mesh_deformation.reset(new MeshDeformation::MeshDeformationHandler<dim>(*this));

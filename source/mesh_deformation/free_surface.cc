@@ -140,6 +140,11 @@ namespace aspect
     void
     FreeSurface<dim>::initialize ()
     {
+      // Pressure normalization doesn't really make sense with a free surface, and if we do
+      // use it, we can run into problems with geometry_model->depth().
+      AssertThrow ( this->get_parameters.pressure_normalization == "no",
+                    ExcMessage("The free surface scheme can only be used with no pressure normalization") );
+
       this->get_signals().set_assemblers.connect(std::bind(&FreeSurface<dim>::set_assemblers,
                                                            std::cref(*this),
                                                            std::placeholders::_1,
