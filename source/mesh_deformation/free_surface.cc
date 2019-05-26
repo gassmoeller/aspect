@@ -48,7 +48,7 @@ namespace aspect
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
 
-      if (!this->get_parameters().free_surface_enabled)
+      if (!this->get_parameters().mesh_deformation_enabled)
         return;
 
       if (this->get_parameters().include_melt_transport)
@@ -79,8 +79,8 @@ namespace aspect
               const types::boundary_id boundary_indicator
                 = cell->face(face_no)->boundary_id();
 
-              if (this->get_parameters().free_surface_boundary_indicators.find(boundary_indicator)
-                  == this->get_parameters().free_surface_boundary_indicators.end())
+              if (this->get_parameters().mesh_deformation_boundary_indicators.find(boundary_indicator)
+                  == this->get_parameters().mesh_deformation_boundary_indicators.end())
                 continue;
 
               scratch.face_finite_element_values.reinit(cell, face_no);
@@ -173,7 +173,7 @@ namespace aspect
 
 
     template <int dim>
-    void FreeSurface<dim>::project_velocity_onto_boundary(const DoFHandler<dim> &free_surface_dof_handler,
+    void FreeSurface<dim>::project_velocity_onto_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                           const IndexSet &mesh_locally_owned,
                                                           const IndexSet &mesh_locally_relevant,
                                                           LinearAlgebra::Vector &output) const
@@ -181,10 +181,10 @@ namespace aspect
       // TODO: should we use the extrapolated solution?
 
       // stuff for iterating over the mesh
-      QGauss<dim-1> face_quadrature(free_surface_dof_handler.get_fe().degree+1);
+      QGauss<dim-1> face_quadrature(mesh_deformation_dof_handler.get_fe().degree+1);
       UpdateFlags update_flags = UpdateFlags(update_values | update_quadrature_points
                                              | update_normal_vectors | update_JxW_values);
-      FEFaceValues<dim> fs_fe_face_values (this->get_mapping(), free_surface_dof_handler.get_fe(), face_quadrature, update_flags);
+      FEFaceValues<dim> fs_fe_face_values (this->get_mapping(), mesh_deformation_dof_handler.get_fe(), face_quadrature, update_flags);
       FEFaceValues<dim> fe_face_values (this->get_mapping(), this->get_fe(), face_quadrature, update_flags);
       const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
                          dofs_per_cell = fs_fe_face_values.dofs_per_cell;
@@ -199,12 +199,12 @@ namespace aspect
 
       // set up constraints
       ConstraintMatrix mass_matrix_constraints(mesh_locally_relevant);
-      DoFTools::make_hanging_node_constraints(free_surface_dof_handler, mass_matrix_constraints);
+      DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, mass_matrix_constraints);
 
       typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
       periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
-        DoFTools::make_periodicity_constraints(free_surface_dof_handler,
+        DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler,
                                                (*p).first.first, (*p).first.second, (*p).second, mass_matrix_constraints);
 
       mass_matrix_constraints.close();
@@ -220,11 +220,11 @@ namespace aspect
                                             mesh_locally_relevant,
                                             this->get_mpi_communicator());
 #endif
-      DoFTools::make_sparsity_pattern (free_surface_dof_handler, sp, mass_matrix_constraints, false,
+      DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler, sp, mass_matrix_constraints, false,
                                        Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
 #ifdef ASPECT_USE_PETSC
       SparsityTools::distribute_sparsity_pattern(sp,
-                                                 free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
+                                                 mesh_deformation_dof_handler.n_locally_owned_dofs_per_processor(),
                                                  this->get_mpi_communicator(), mesh_locally_relevant);
 
       sp.compress();
@@ -244,7 +244,7 @@ namespace aspect
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(), endc= this->get_dof_handler().end();
       typename DoFHandler<dim>::active_cell_iterator
-      fscell = free_surface_dof_handler.begin_active();
+      fscell = mesh_deformation_dof_handler.begin_active();
 
       for (; cell!=endc; ++cell, ++fscell)
         if (cell->at_boundary() && cell->is_locally_owned())
@@ -253,8 +253,10 @@ namespace aspect
               {
                 const types::boundary_id boundary_indicator
                   = cell->face(face_no)->boundary_id();
-                if (this->get_parameters().free_surface_boundary_indicators.find(boundary_indicator)
-                    == this->get_parameters().free_surface_boundary_indicators.end())
+                // TODO implement a selector for the boundary indicators
+                // For now assume that the mesh deformation boundary is the free surface boundary
+                if (this->get_parameters().mesh_deformation_boundary_indicators.find(boundary_indicator)
+                    == this->get_parameters().mesh_deformation_boundary_indicators.end())
                   continue;
 
                 fscell->get_dof_indices (cell_dof_indices);
@@ -321,21 +323,21 @@ namespace aspect
       // For the free surface indicators we constrain the displacement to be v.n
       LinearAlgebra::Vector boundary_velocity;
 
-      const IndexSet mesh_locally_owned = free_surface_dof_handler.locally_owned_dofs();
+      const IndexSet mesh_locally_owned = mesh_deformation_dof_handler.locally_owned_dofs();
       IndexSet mesh_locally_relevant;
-      DoFTools::extract_locally_relevant_dofs (free_surface_dof_handler,
+      DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler,
                                                mesh_locally_relevant);
       boundary_velocity.reinit(mesh_locally_owned, mesh_locally_relevant,
                                this->get_mpi_communicator());
-      project_velocity_onto_boundary(free_surface_dof_handler, mesh_locally_owned,
+      project_velocity_onto_boundary(mesh_deformation_dof_handler, mesh_locally_owned,
                                      mesh_locally_relevant,boundary_velocity);
 
       // now insert the relevant part of the solution into the mesh constraints
       IndexSet constrained_dofs;
-      DoFTools::extract_boundary_dofs(free_surface_dof_handler,
+      DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler,
                                       ComponentMask(dim, true),
                                       constrained_dofs,
-                                      this->get_parameters().free_surface_boundary_indicators);
+                                      this->get_parameters().mesh_deformation_boundary_indicators);
       for (unsigned int i = 0; i < constrained_dofs.n_elements();  ++i)
         {
           types::global_dof_index index = constrained_dofs.nth_index_in_set(i);

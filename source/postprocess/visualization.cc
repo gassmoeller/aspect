@@ -388,7 +388,7 @@ namespace aspect
                                 base_variables);
 
       // If there is a free surface, also attach the mesh velocity object
-      if ( this->get_free_surface_boundary_indicators().empty() == false && output_mesh_velocity)
+      if ( this->get_mesh_deformation_boundary_indicators().empty() == false && output_mesh_velocity)
         {
           free_surface_variables = std::make_shared<internal::FreeSurfacePostprocessor<dim>>();
           free_surface_variables->initialize_simulator(this->get_simulator());

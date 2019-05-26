@@ -250,24 +250,24 @@ namespace aspect
 //        return;
 
       // Now construct the mesh displacement constraints
-      mesh_displacement_constraints.clear();
-      mesh_displacement_constraints.reinit(mesh_locally_relevant);
+      mesh_velocity_constraints.clear();
+      mesh_velocity_constraints.reinit(mesh_locally_relevant);
 
-      // mesh_displacement_constraints can use the same hanging node
+      // mesh_velocity_constraints can use the same hanging node
       // information that was used for mesh_vertex constraints.
-      mesh_displacement_constraints.merge(mesh_vertex_constraints);
+      mesh_velocity_constraints.merge(mesh_vertex_constraints);
 
       // Add the vanilla periodic boundary constraints
       typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
       periodic_boundary_pairs pbp = sim.geometry_model->get_periodic_boundary_pairs();
       for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
-        DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_displacement_constraints);
+        DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_velocity_constraints);
 
       // Zero out the displacement for the zero-velocity boundary indicators
       for (std::set<types::boundary_id>::const_iterator p = sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
            p != sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators().end(); ++p)
         VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler, *p,
-                                                  ZeroFunction<dim>(dim), mesh_displacement_constraints);
+                                                  ZeroFunction<dim>(dim), mesh_velocity_constraints);
 
       // Zero out the displacement for the prescribed velocity boundaries
       // if the boundary is not in the set of tangential mesh boundaries
@@ -277,7 +277,7 @@ namespace aspect
           if (tangential_mesh_boundary_indicators.find(p->first) == tangential_mesh_boundary_indicators.end())
             {
               VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler, p->first,
-                                                        ZeroFunction<dim>(dim), mesh_displacement_constraints);
+                                                        ZeroFunction<dim>(dim), mesh_velocity_constraints);
             }
         }
 
@@ -287,7 +287,7 @@ namespace aspect
                                                        /* first_vector_component= */
                                                        0,
                                                        tangential_mesh_boundary_indicators,
-                                                       mesh_displacement_constraints, *sim.mapping);
+                                                       mesh_velocity_constraints, *sim.mapping);
 
       // make the periodic boundary indicators no displacement normal to the boundary
       std::set< types::boundary_id > periodic_boundaries;
@@ -300,7 +300,7 @@ namespace aspect
                                                        /* first_vector_component= */
                                                        0,
                                                        periodic_boundaries,
-                                                       mesh_displacement_constraints, *sim.mapping);
+                                                       mesh_velocity_constraints, *sim.mapping);
       sim.signals.post_compute_no_normal_flux_constraints(sim.triangulation);
 
       // Ask all plugins to add their constraints
@@ -313,13 +313,14 @@ namespace aspect
         {
           ConstraintMatrix current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
 
-          mesh_deformation_objects[i]->deformation_constraints(mesh_deformation_dof_handler,
+          mesh_deformation_objects[i]->compute_velocity_constraints(mesh_deformation_dof_handler,
                                                                current_plugin_constraints);
 
           const IndexSet local_lines = current_plugin_constraints.get_local_lines();
           for (auto index = local_lines.begin(); index != local_lines.end(); ++index)
             {
               if (current_plugin_constraints.is_constrained(*index))
+              {
                 if (plugin_constraints.is_constrained(*index) == false)
                   {
                     plugin_constraints.add_line(*index);
@@ -330,11 +331,12 @@ namespace aspect
                     const double inhomogeneity = plugin_constraints.get_inhomogeneity(*index);
                     plugin_constraints.set_inhomogeneity(*index, current_plugin_constraints.get_inhomogeneity(*index) + inhomogeneity);
                   }
+              }
             }
         }
 
-      mesh_displacement_constraints.merge(plugin_constraints,ConstraintMatrix::left_object_wins);
-      mesh_displacement_constraints.close();
+      mesh_velocity_constraints.merge(plugin_constraints,ConstraintMatrix::left_object_wins);
+      mesh_velocity_constraints.close();
     }
 
 
@@ -374,7 +376,7 @@ namespace aspect
 #endif
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
                                        coupling, sp,
-                                       mesh_displacement_constraints, false,
+                                       mesh_velocity_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(sim.mpi_communicator));
 #ifdef ASPECT_USE_PETSC
@@ -414,7 +416,7 @@ namespace aspect
                                         fe_values.JxW(point);
                 }
 
-            mesh_displacement_constraints.distribute_local_to_global (cell_matrix, cell_vector,
+            mesh_velocity_constraints.distribute_local_to_global (cell_matrix, cell_vector,
                                                                       cell_dof_indices, mesh_matrix, rhs, false);
           }
 
@@ -446,7 +448,7 @@ namespace aspect
       cg.solve (mesh_matrix, velocity_solution, rhs, preconditioner_stiffness);
       sim.pcout << "   Solving mesh velocity system... " << solver_control.last_step() <<" iterations."<< std::endl;
 
-      mesh_displacement_constraints.distribute (velocity_solution);
+      mesh_velocity_constraints.distribute (velocity_solution);
 
       // Update the free surface mesh velocity vector
       fs_mesh_velocity = velocity_solution;

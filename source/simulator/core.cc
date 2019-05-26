@@ -26,6 +26,7 @@
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/mesh_deformation/free_surface.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/citation_info.h>
 
 #ifdef ASPECT_USE_WORLD_BUILDER
@@ -337,7 +338,7 @@ namespace aspect
     adiabatic_conditions->initialize ();
 
     // Initialize the free surface handler
-    if (parameters.free_surface_enabled)
+    if (parameters.mesh_deformation_enabled)
       {
         // Pressure normalization doesn't really make sense with a free surface, and if we do
         // use it, we can run into problems with geometry_model->depth().
@@ -345,10 +346,10 @@ namespace aspect
                       ExcMessage("The free surface scheme can only be used with no pressure normalization") );
 
         // Allocate the MeshDeformationHandler object
-        //free_surface = std_cxx14::make_unique<MeshDeformation::MeshDeformationHandler<dim>>(*this);
-        free_surface.reset(new MeshDeformation::MeshDeformationHandler<dim>(*this));
-        free_surface->initialize_simulator(*this);
-        free_surface->parse_parameters(prm);
+        //mesh_deformation = std_cxx14::make_unique<MeshDeformation::MeshDeformationHandler<dim>>(*this);
+        mesh_deformation.reset(new MeshDeformation::MeshDeformationHandler<dim>(*this));
+        mesh_deformation->initialize_simulator(*this);
+        mesh_deformation->parse_parameters(prm);
       }
 
     // Initialize the melt handler
@@ -1304,8 +1305,8 @@ namespace aspect
     // We need to setup the free surface degrees of freedom first if there is a free
     // surface active, since the mapping must be in place before applying boundary
     // conditions that rely on it (such as no flux BCs).
-    if (parameters.free_surface_enabled)
-      free_surface->setup_dofs();
+    if (parameters.mesh_deformation_enabled)
+      mesh_deformation->setup_dofs();
 
 
     // Reconstruct the constraint-matrix:
@@ -1538,17 +1539,17 @@ namespace aspect
       x_system[0] = &solution;
       x_system[1] = &old_solution;
 
-      if (parameters.free_surface_enabled)
-        x_system.push_back( &free_surface->mesh_velocity );
+      if (parameters.mesh_deformation_enabled)
+        x_system.push_back( &mesh_deformation->mesh_velocity );
 
       std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
 
-      if (parameters.free_surface_enabled)
+      if (parameters.mesh_deformation_enabled)
         {
-          x_fs_system[0] = &free_surface->mesh_displacements;
+          x_fs_system[0] = &mesh_deformation->mesh_displacements;
           freesurface_trans
             = std_cxx14::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
-              (free_surface->free_surface_dof_handler);
+              (mesh_deformation->mesh_deformation_dof_handler);
         }
 
 
@@ -1558,7 +1559,7 @@ namespace aspect
       triangulation.prepare_coarsening_and_refinement();
       system_trans.prepare_for_coarsening_and_refinement(x_system);
 
-      if (parameters.free_surface_enabled)
+      if (parameters.mesh_deformation_enabled)
         freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
 
       triangulation.execute_coarsening_and_refinement ();
@@ -1575,14 +1576,14 @@ namespace aspect
 
       distributed_system.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
       old_distributed_system.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
-      if (parameters.free_surface_enabled)
+      if (parameters.mesh_deformation_enabled)
         distributed_mesh_velocity.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
 
       std::vector<LinearAlgebra::BlockVector *> system_tmp (2);
       system_tmp[0] = &distributed_system;
       system_tmp[1] = &old_distributed_system;
 
-      if (parameters.free_surface_enabled)
+      if (parameters.mesh_deformation_enabled)
         system_tmp.push_back(&distributed_mesh_velocity);
 
       // transfer the data previously stored into the vectors indexed by
@@ -1608,22 +1609,22 @@ namespace aspect
       old_solution = old_distributed_system;
 
       // do the same as above also for the free surface solution
-      if (parameters.free_surface_enabled)
+      if (parameters.mesh_deformation_enabled)
         {
           constraints.distribute (distributed_mesh_velocity);
-          free_surface->mesh_velocity = distributed_mesh_velocity;
+          mesh_deformation->mesh_velocity = distributed_mesh_velocity;
 
           LinearAlgebra::Vector distributed_mesh_displacements;
 
-          distributed_mesh_displacements.reinit(free_surface->mesh_locally_owned,
+          distributed_mesh_displacements.reinit(mesh_deformation->mesh_locally_owned,
                                                 mpi_communicator);
 
           std::vector<LinearAlgebra::Vector *> system_tmp (1);
           system_tmp[0] = &distributed_mesh_displacements;
 
           freesurface_trans->interpolate (system_tmp);
-          free_surface->mesh_vertex_constraints.distribute (distributed_mesh_displacements);
-          free_surface->mesh_displacements = distributed_mesh_displacements;
+          mesh_deformation->mesh_vertex_constraints.distribute (distributed_mesh_displacements);
+          mesh_deformation->mesh_displacements = distributed_mesh_displacements;
         }
 
       // Possibly load data of plugins associated with cells
@@ -1662,10 +1663,10 @@ namespace aspect
     // The free surface scheme is currently not built to work inside a nonlinear solver.
     // We do the free surface execution at the beginning of the timestep for a specific reason.
     // The time step size is calculated AFTER the whole solve_timestep() function.  If we call
-    // free_surface_execute() after the Stokes solve, it will be before we know what the appropriate
+    // mesh_deformation_execute() after the Stokes solve, it will be before we know what the appropriate
     // time step to take is, and we will timestep the boundary incorrectly.
-    if (parameters.free_surface_enabled)
-      free_surface->execute ();
+    if (parameters.mesh_deformation_enabled)
+      mesh_deformation->execute ();
 
     // Compute the reactions of compositional fields and temperature in case of operator splitting.
     if (parameters.use_operator_splitting)

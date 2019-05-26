@@ -837,7 +837,7 @@ namespace aspect
                              "diameter in one time step and therefore skip the layer "
                              "of ghost cells around the local subdomain."));
 
-      AssertThrow(!this->get_parameters().free_surface_enabled,
+      AssertThrow(!this->get_parameters().mesh_deformation_enabled,
                   ExcMessage("Combining particles and a free surface is currently untested "
                              "and not officially supported. If you disable this assertion make "
                              "sure you benchmark the particle accuracy, and carefully check for "

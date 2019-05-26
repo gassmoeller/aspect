@@ -2031,7 +2031,7 @@ namespace aspect
     std::set<types::boundary_id> boundary_indicator_lists[6]
       = { boundary_velocity_manager.get_zero_boundary_velocity_indicators(),
           boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
-          parameters.free_surface_boundary_indicators,
+          parameters.mesh_deformation_boundary_indicators,
           std::set<types::boundary_id>()   // to be prescribed velocity and traction boundary indicators
         };
 

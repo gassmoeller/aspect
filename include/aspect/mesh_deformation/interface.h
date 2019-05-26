@@ -329,7 +329,7 @@ namespace aspect
         IndexSet mesh_locally_relevant;
 
         /**
-         * Storage for the mesh displacement constraints for solving the
+         * Storage for the mesh velocity constraints for solving the
          * elliptic problem.
          */
         ConstraintMatrix mesh_velocity_constraints;
