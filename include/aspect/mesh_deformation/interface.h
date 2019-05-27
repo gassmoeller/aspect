@@ -89,7 +89,7 @@ namespace aspect
         virtual
         void
         compute_velocity_constraints(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                ConstraintMatrix &mesh_velocity_constraints) const = 0;
+                                     ConstraintMatrix &mesh_velocity_constraints) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -136,8 +136,17 @@ namespace aspect
          */
         ~MeshDeformationHandler();
 
+        /**
+         * Initialization function of the MeshDeformationHandler.
+         *
+         * The default implementation of this function does nothing.
+         */
         void initialize();
 
+        /**
+         * Update function of the MeshDeformationHandler. This function
+         * allows the individual mesh deformation objects to update.
+         */
         void update();
 
         /**

@@ -323,7 +323,7 @@ namespace aspect
     template <int dim>
     void
     FreeSurface<dim>::compute_velocity_constraints(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                              ConstraintMatrix &mesh_velocity_constraints) const
+                                                   ConstraintMatrix &mesh_velocity_constraints) const
     {
       // For the free surface indicators we constrain the displacement to be v.n
       LinearAlgebra::Vector boundary_velocity;
@@ -364,32 +364,32 @@ namespace aspect
       {
         prm.enter_subsection ("Free surface");
         {
-        prm.declare_entry("Free surface stabilization theta", "0.5",
-                          Patterns::Double(0,1),
-                          "Theta parameter described in \\cite{KMM2010}. "
-                          "An unstabilized free surface can overshoot its "
-                          "equilibrium position quite easily and generate "
-                          "unphysical results.  One solution is to use a "
-                          "quasi-implicit correction term to the forces near the "
-                          "free surface.  This parameter describes how much "
-                          "the free surface is stabilized with this term, "
-                          "where zero is no stabilization, and one is fully "
-                          "implicit.");
-        prm.declare_entry("Surface velocity projection", "normal",
-                          Patterns::Selection("normal|vertical"),
-                          "After each time step the free surface must be "
-                          "advected in the direction of the velocity field. "
-                          "Mass conservation requires that the mesh velocity "
-                          "is in the normal direction of the surface. However, "
-                          "for steep topography or large curvature, advection "
-                          "in the normal direction can become ill-conditioned, "
-                          "and instabilities in the mesh can form. Projection "
-                          "of the mesh velocity onto the local vertical direction "
-                          "can preserve the mesh quality better, but at the "
-                          "cost of slightly poorer mass conservation of the "
-                          "domain.");
-      }
-      prm.leave_subsection ();
+          prm.declare_entry("Free surface stabilization theta", "0.5",
+                            Patterns::Double(0,1),
+                            "Theta parameter described in \\cite{KMM2010}. "
+                            "An unstabilized free surface can overshoot its "
+                            "equilibrium position quite easily and generate "
+                            "unphysical results.  One solution is to use a "
+                            "quasi-implicit correction term to the forces near the "
+                            "free surface.  This parameter describes how much "
+                            "the free surface is stabilized with this term, "
+                            "where zero is no stabilization, and one is fully "
+                            "implicit.");
+          prm.declare_entry("Surface velocity projection", "normal",
+                            Patterns::Selection("normal|vertical"),
+                            "After each time step the free surface must be "
+                            "advected in the direction of the velocity field. "
+                            "Mass conservation requires that the mesh velocity "
+                            "is in the normal direction of the surface. However, "
+                            "for steep topography or large curvature, advection "
+                            "in the normal direction can become ill-conditioned, "
+                            "and instabilities in the mesh can form. Projection "
+                            "of the mesh velocity onto the local vertical direction "
+                            "can preserve the mesh quality better, but at the "
+                            "cost of slightly poorer mass conservation of the "
+                            "domain.");
+        }
+        prm.leave_subsection ();
       }
       prm.leave_subsection ();
     }
@@ -401,15 +401,15 @@ namespace aspect
       {
         prm.enter_subsection ("Free surface");
         {
-        free_surface_theta = prm.get_double("Free surface stabilization theta");
-        std::string advection_dir = prm.get("Surface velocity projection");
+          free_surface_theta = prm.get_double("Free surface stabilization theta");
+          std::string advection_dir = prm.get("Surface velocity projection");
 
-        if ( advection_dir == "normal")
-          advection_direction = SurfaceAdvection::normal;
-        else if ( advection_dir == "vertical")
-          advection_direction = SurfaceAdvection::vertical;
-        else
-          AssertThrow(false, ExcMessage("The surface velocity projection must be ``normal'' or ``vertical''."));
+          if ( advection_dir == "normal")
+            advection_direction = SurfaceAdvection::normal;
+          else if ( advection_dir == "vertical")
+            advection_direction = SurfaceAdvection::vertical;
+          else
+            AssertThrow(false, ExcMessage("The surface velocity projection must be ``normal'' or ``vertical''."));
         }
         prm.leave_subsection ();
       }

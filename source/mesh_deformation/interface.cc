@@ -194,6 +194,10 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      if (sim.parameters.mesh_deformation_enabled)
+      AssertThrow(model_names.size()>0,
+          ExcMessage("If mesh deformation is enabled, at least 1 mesh deformation model must be specified."));
+
       // go through the list, create objects and let them parse
       // their own parameters
       for (unsigned int i=0; i<model_names.size(); ++i)
@@ -267,8 +271,8 @@ namespace aspect
            p != sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators().end(); ++p)
         if (sim.parameters.mesh_deformation_boundary_indicators.find(*p) == sim.parameters.mesh_deformation_boundary_indicators.end())
           {
-        VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler, *p,
-                                                  ZeroFunction<dim>(dim), mesh_velocity_constraints);
+            VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler, *p,
+                                                      ZeroFunction<dim>(dim), mesh_velocity_constraints);
           }
 
 
@@ -280,14 +284,14 @@ namespace aspect
         {
           if (tangential_mesh_boundary_indicators.find(p->first) == tangential_mesh_boundary_indicators.end())
             {
-            if (sim.parameters.mesh_deformation_boundary_indicators.find(p->first) == sim.parameters.mesh_deformation_boundary_indicators.end())
-              {
-              VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler, p->first,
-                                                        ZeroFunction<dim>(dim), mesh_velocity_constraints);
+              if (sim.parameters.mesh_deformation_boundary_indicators.find(p->first) == sim.parameters.mesh_deformation_boundary_indicators.end())
+                {
+                  VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler, p->first,
+                                                            ZeroFunction<dim>(dim), mesh_velocity_constraints);
 
-              x_no_flux_boundary_indicators.insert(p->first);
+                  x_no_flux_boundary_indicators.insert(p->first);
 
-              }
+                }
             }
         }
 
@@ -324,24 +328,24 @@ namespace aspect
           ConstraintMatrix current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
 
           mesh_deformation_objects[i]->compute_velocity_constraints(mesh_deformation_dof_handler,
-                                                               current_plugin_constraints);
+                                                                    current_plugin_constraints);
 
           const IndexSet local_lines = current_plugin_constraints.get_local_lines();
           for (auto index = local_lines.begin(); index != local_lines.end(); ++index)
             {
               if (current_plugin_constraints.is_constrained(*index))
-              {
-                if (plugin_constraints.is_constrained(*index) == false)
-                  {
-                    plugin_constraints.add_line(*index);
-                    plugin_constraints.set_inhomogeneity(*index, current_plugin_constraints.get_inhomogeneity(*index));
-                  }
-                else
-                  {
-                    const double inhomogeneity = plugin_constraints.get_inhomogeneity(*index);
-                    plugin_constraints.set_inhomogeneity(*index, current_plugin_constraints.get_inhomogeneity(*index) + inhomogeneity);
-                  }
-              }
+                {
+                  if (plugin_constraints.is_constrained(*index) == false)
+                    {
+                      plugin_constraints.add_line(*index);
+                      plugin_constraints.set_inhomogeneity(*index, current_plugin_constraints.get_inhomogeneity(*index));
+                    }
+                  else
+                    {
+                      const double inhomogeneity = plugin_constraints.get_inhomogeneity(*index);
+                      plugin_constraints.set_inhomogeneity(*index, current_plugin_constraints.get_inhomogeneity(*index) + inhomogeneity);
+                    }
+                }
             }
         }
 
@@ -427,7 +431,7 @@ namespace aspect
                 }
 
             mesh_velocity_constraints.distribute_local_to_global (cell_matrix, cell_vector,
-                                                                      cell_dof_indices, mesh_matrix, rhs, false);
+                                                                  cell_dof_indices, mesh_matrix, rhs, false);
           }
 
       rhs.compress (VectorOperation::add);

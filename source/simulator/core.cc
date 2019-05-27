@@ -341,8 +341,8 @@ namespace aspect
     if (parameters.mesh_deformation_enabled)
       {
         // Allocate the MeshDeformationHandler object
-        //mesh_deformation = std_cxx14::make_unique<MeshDeformation::MeshDeformationHandler<dim>>(*this);
-        mesh_deformation.reset(new MeshDeformation::MeshDeformationHandler<dim>(*this));
+        mesh_deformation = std_cxx14::make_unique<MeshDeformation::MeshDeformationHandler<dim>>(*this);
+//        mesh_deformation.reset(new MeshDeformation::MeshDeformationHandler<dim>(*this));
         mesh_deformation->initialize_simulator(*this);
         mesh_deformation->parse_parameters(prm);
       }
