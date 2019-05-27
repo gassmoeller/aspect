@@ -60,12 +60,14 @@ namespace aspect
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
          */
-        virtual ~Interface();
+        virtual ~Interface() = default;
 
         /**
          * Initialization function. This function is called once at the
          * beginning of the program after parse_parameters is run and after
          * the SimulatorAccess (if applicable) is initialized.
+         *
+         * The default implementation of this function does nothing.
          */
         virtual void initialize ();
 
@@ -86,7 +88,7 @@ namespace aspect
          */
         virtual
         void
-        deformation_constraints(const DoFHandler<dim> &free_surface_dof_handler,
+        compute_velocity_constraints(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                 ConstraintMatrix &mesh_velocity_constraints) const = 0;
 
         /**
@@ -110,12 +112,19 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
     };
 
+
+
+    /**
+     * The MeshDeformationHandler that handles the motion
+     * of the surface, the internal nodes and computes the
+     * Arbitrary-Lagrangian-Eulerian correction terms.
+     */
     template<int dim>
     class MeshDeformationHandler: public SimulatorAccess<dim>
     {
       public:
         /**
-         * Initialize the free surface handler, allowing it to read in
+         * Initialize the mesh deformation handler, allowing it to read in
          * relevant parameters as well as giving it a reference to the
          * Simulator that owns it, since it needs to make fairly extensive
          * changes to the internals of the simulator.
@@ -123,7 +132,7 @@ namespace aspect
         MeshDeformationHandler(Simulator<dim> &simulator);
 
         /**
-         * Destructor for the free surface handler.
+         * Destructor for the mesh deformation handler.
          */
         ~MeshDeformationHandler();
 
@@ -132,8 +141,8 @@ namespace aspect
         void update();
 
         /**
-         * The main execution step for the free surface implementation. This
-         * computes the motion of the free surface, moves the boundary nodes
+         * The main execution step for the mesh deformation implementation. This
+         * computes the motion of the surface, moves the boundary nodes
          * accordingly, redistributes the internal nodes in order to
          * preserve mesh regularity, and calculates the Arbitrary-
          * Lagrangian-Eulerian correction terms for advected quantities.
@@ -147,13 +156,13 @@ namespace aspect
         void setup_dofs();
 
         /**
-         * Declare parameters for the free surface handling.
+         * Declare parameters for the mesh deformation handling.
          */
         static
         void declare_parameters (ParameterHandler &prm);
 
         /**
-         * Parse parameters for the free surface handling.
+         * Parse parameters for the mesh deformation handling.
          */
         void parse_parameters (ParameterHandler &prm);
 
@@ -247,7 +256,7 @@ namespace aspect
          * Set the boundary conditions for the solution of the elliptic
          * problem, which computes the displacements of the internal
          * vertices so that the mesh does not become too distorted due to
-         * motion of the free surface. Velocities of vertices on the
+         * motion of the surface. Velocities of vertices on the
          * deforming surface are fixed according to the selected deformation
          * plugins. Velocities of vertices on free-slip boundaries are
          * constrained to be tangential to those boundaries. Velocities of
@@ -274,18 +283,19 @@ namespace aspect
         Simulator<dim> &sim;
 
         /**
-        * Finite element for the free surface implementation, which is
+        * Finite element for the mesh deformation implementation, which is
         * used for tracking mesh deformation.
         */
-        const FESystem<dim> free_surface_fe;
+        const FESystem<dim> mesh_deformation_fe;
 
         /**
-         * DoFHandler for the free surface implementation.
+         * DoFHandler for the mesh deformation implementation.
          */
-        DoFHandler<dim> free_surface_dof_handler;
+        DoFHandler<dim> mesh_deformation_dof_handler;
 
         /**
-         * BlockVector which stores the mesh velocity.
+         * BlockVector which stores the mesh velocity in the
+         * Stokes finite element space.
          * This is used for ALE corrections.
          */
         LinearAlgebra::BlockVector mesh_velocity;
@@ -299,10 +309,10 @@ namespace aspect
         LinearAlgebra::Vector mesh_displacements;
 
         /**
-         * Vector for storing the mesh velocity in the free surface finite
+         * Vector for storing the mesh velocity in the mesh deformation finite
          * element space, which is, in general, not the same finite element
          * space as the Stokes system. This is used for interpolating
-         * the mesh velocity in the free surface finite element space onto
+         * the mesh velocity in the mesh deformation finite element space onto
          * the velocity in the Stokes finite element space, which is then
          * used for making the ALE correction in the advection equations.
          */
@@ -319,10 +329,10 @@ namespace aspect
         IndexSet mesh_locally_relevant;
 
         /**
-         * Storage for the mesh displacement constraints for solving the
-         * elliptic problem
+         * Storage for the mesh velocity constraints for solving the
+         * elliptic problem.
          */
-        ConstraintMatrix mesh_displacement_constraints;
+        ConstraintMatrix mesh_velocity_constraints;
 
         /**
          * Storage for the mesh vertex constraints for keeping the mesh conforming

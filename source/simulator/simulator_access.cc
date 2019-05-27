@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/mesh_deformation/free_surface.h>
+#include <aspect/mesh_deformation/interface.h>
 
 namespace aspect
 {
@@ -310,9 +311,9 @@ namespace aspect
   const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_mesh_velocity () const
   {
-    Assert( simulator->parameters.free_surface_enabled,
+    Assert( simulator->parameters.mesh_deformation_enabled,
             ExcMessage("You cannot get the mesh velocity with no free surface."));
-    return simulator->free_surface->mesh_velocity;
+    return simulator->mesh_deformation->mesh_velocity;
   }
 
 
@@ -484,9 +485,9 @@ namespace aspect
 
   template <int dim>
   const std::set<types::boundary_id> &
-  SimulatorAccess<dim>::get_free_surface_boundary_indicators () const
+  SimulatorAccess<dim>::get_mesh_deformation_boundary_indicators () const
   {
-    return simulator->parameters.free_surface_boundary_indicators;
+    return simulator->parameters.mesh_deformation_boundary_indicators;
   }
 
 
@@ -659,12 +660,12 @@ namespace aspect
 
   template <int dim>
   const MeshDeformation::MeshDeformationHandler<dim> &
-  SimulatorAccess<dim>::get_free_surface_handler () const
+  SimulatorAccess<dim>::get_mesh_deformation_handler () const
   {
-    Assert (simulator->free_surface.get() != nullptr,
+    Assert (simulator->mesh_deformation.get() != nullptr,
             ExcMessage("You can not call this function if the free surface is not enabled."));
 
-    return *(simulator->free_surface);
+    return *(simulator->mesh_deformation);
   }
 
   template <int dim>

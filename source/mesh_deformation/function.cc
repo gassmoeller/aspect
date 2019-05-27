@@ -28,7 +28,7 @@ namespace aspect
   namespace MeshDeformation
   {
     template <int dim>
-    Function<dim>::Function()
+    BoundaryFunction<dim>::BoundaryFunction()
       :
       function(dim)
     {}
@@ -37,7 +37,7 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::update ()
+    BoundaryFunction<dim>::update ()
     {
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
@@ -51,13 +51,13 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::deformation_constraints(const DoFHandler<dim> &free_surface_dof_handler,
+    BoundaryFunction<dim>::compute_velocity_constraints(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                            ConstraintMatrix &mesh_constraints) const
     {
-      for (std::set<types::boundary_id>::const_iterator p = this->get_parameters().free_surface_boundary_indicators.begin();
-           p != this->get_parameters().free_surface_boundary_indicators.end(); ++p)
+      for (std::set<types::boundary_id>::const_iterator p = this->get_parameters().mesh_deformation_boundary_indicators.begin();
+           p != this->get_parameters().mesh_deformation_boundary_indicators.end(); ++p)
         {
-          VectorTools::interpolate_boundary_values (free_surface_dof_handler,
+          VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
                                                     *p,
                                                     function,
                                                     mesh_constraints);
@@ -67,7 +67,7 @@ namespace aspect
 
 
     template <int dim>
-    void Function<dim>::declare_parameters(ParameterHandler &prm)
+    void BoundaryFunction<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
       {
@@ -81,7 +81,7 @@ namespace aspect
     }
 
     template <int dim>
-    void Function<dim>::parse_parameters(ParameterHandler &prm)
+    void BoundaryFunction<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
       {
@@ -114,8 +114,8 @@ namespace aspect
 {
   namespace MeshDeformation
   {
-    ASPECT_REGISTER_MESH_DEFORMATION_MODEL(Function,
-                                           "function",
+    ASPECT_REGISTER_MESH_DEFORMATION_MODEL(BoundaryFunction,
+                                           "boundary function",
                                            "A plugin, which prescribes the surface mesh to "
                                            "deform according to an analytically prescribed "
                                            "function. Note that the function prescribes a "

@@ -56,8 +56,8 @@ namespace aspect
                 const types::boundary_id boundary_indicator
                   = cell->face(face_no)->boundary_id();
 
-                if ( this->get_free_surface_boundary_indicators().find(boundary_indicator) !=
-                     this->get_free_surface_boundary_indicators().end() )
+                if ( this->get_mesh_deformation_boundary_indicators().find(boundary_indicator) !=
+                     this->get_mesh_deformation_boundary_indicators().end() )
                   {
                     fe_face_values.reinit(cell, face_no);
 

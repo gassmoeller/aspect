@@ -1831,7 +1831,7 @@ namespace aspect
        * if we do not need the machinery for doing free surface stuff, we do
        * not even allocate it.
        */
-      std::unique_ptr<MeshDeformation::MeshDeformationHandler<dim> > free_surface;
+      std::unique_ptr<MeshDeformation::MeshDeformationHandler<dim> > mesh_deformation;
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;

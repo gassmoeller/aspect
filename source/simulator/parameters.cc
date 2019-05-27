@@ -1792,14 +1792,14 @@ namespace aspect
     {
       try
         {
-          const std::vector<types::boundary_id> x_free_surface_boundary_indicators
+          const std::vector<types::boundary_id> x_mesh_deformation_boundary_indicators
             = geometry_model.translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
                                                                       (prm.get ("Mesh deformation boundary indicators")));
-          free_surface_boundary_indicators
-            = std::set<types::boundary_id> (x_free_surface_boundary_indicators.begin(),
-                                            x_free_surface_boundary_indicators.end());
+          mesh_deformation_boundary_indicators
+            = std::set<types::boundary_id> (x_mesh_deformation_boundary_indicators.begin(),
+                                            x_mesh_deformation_boundary_indicators.end());
 
-          free_surface_enabled = !free_surface_boundary_indicators.empty();
+          mesh_deformation_enabled = !mesh_deformation_boundary_indicators.empty();
         }
       catch (const std::string &error)
         {

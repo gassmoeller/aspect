@@ -97,7 +97,7 @@ namespace aspect
          */
         virtual
         void
-        deformation_constraints(const DoFHandler<dim> &free_surface_dof_handler,
+        compute_velocity_constraints(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                 ConstraintMatrix &mesh_velocity_constraints) const;
 
         /**
