@@ -696,7 +696,7 @@ namespace aspect
 
       /**
        * Return a set of boundary indicators that describes which of the
-       * boundaries have a free surface boundary condition
+       * boundaries have a mesh deformation boundary condition
        */
       const std::set<types::boundary_id> &
       get_mesh_deformation_boundary_indicators () const;

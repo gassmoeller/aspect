@@ -170,7 +170,7 @@ namespace aspect
 
         AssertThrow(Utilities::has_unique_entries(model_names),
                     ExcMessage("The list of strings for the parameter "
-                               "'Initial temperature model/List of model names' contains entries more than once. "
+                               "'Mesh deformation/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
         // Create the list of tangential mesh movement boundary indicators
@@ -202,7 +202,7 @@ namespace aspect
           mesh_deformation_objects.push_back (std::shared_ptr<Interface<dim> >
                                               (std::get<dim>(registered_plugins)
                                                .create_plugin (model_names[i],
-                                                               "Initial temperature model::Model names")));
+                                                               "Mesh deformation::Model names")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*mesh_deformation_objects.back()))
             sim->initialize_simulator (this->get_simulator());
