@@ -168,62 +168,31 @@ subsection Material model
   set Model name = melt srb 
   
   subsection Melt srb
-    
 
     set Include melting and freezing = false
 
-    # First we describe the parameters for the solid, in the same way
-    # we did in the model without melt transport
     set Thermal conductivity              = 1.
     set Reference solid density           = 2.
-    set Thermal expansion coefficient     = 0.
+    # The melt usually has a different (lower) density than the solid. We set Delta rho=1.
+    set Reference melt density            = 1.
+
     set Reference shear viscosity         = 1.
-    set Thermal viscosity exponent        = 0.
-    set Reference temperature             = 1
-    set Solid compressibility             = 0. 
+    set Reference temperature             = 1  # has to be set to 1, but no effect
+    set Reference melt viscosity          = 1. # 25. to test for compaction lenght =0.2
     
     # The melt usually has a different (lower) density than the solid.
     set Reference melt density            = 1.
-    
-    # The permeability describes how well the pores of a porous material
-    # are connected (and hence how fast melt can flow through the rock).
-    # It is computed as the product of the reference value given here 
-    # and the porosity cubed. This means that the lower the porosity is
-    # the more difficult it is for the melt to flow. 
     set Reference permeability            = 1.
-    
-    # The bulk viscosity describes the resistance of the rock to dilation
-    # and compaction. Melt can only flow into a region that had no melt 
-    # before if the matrix of the solid rock expands, so this parameter 
-    # also limits how fast melt can flow upwards. 
-    # The bulk viscosity is computed as the reference value given here times
-    # a term that scales with one over the porosity. This means that for zero 
-    # porosity, the rock can not dilate/compact any more, which is the same
-    # behaviour that we have for solid mantle convection. 
     set Reference bulk viscosity          = 1.
-    
-    # In dependence of how much melt is present, we also weaken the shear
-    # viscosity: The more melt is present, the weaker the rock gets. 
-    # This scaling is exponential, following the relation
-    # viscosity ~ exp(-alpha * phi),
-    # where alpha is the parameter given here, and phi is the porosity.  
+   
+    # pressure and temperature dependence set to 0 
     set Exponential melt weakening factor = 0
-    # In the same way the shear viscosity is reduced with increasing temperature, 
-    # we also prescribe the temperature-dependence of the bulk viscosity. 
     set Thermal bulk viscosity exponent   = 0.
-    
-    # Analogous the the compressibility of the solid rock, we also define a 
-    # comressibility for the melt (which is generally higher than for the solid).
-    # As we do not want our compressibility to depend on depth, we set the 
-    # pressure derivative to zero.  
     set Melt compressibility              = 0.
     set Melt bulk modulus derivative      = 0.
-    
-    # Finally, we prescribe the viscosity of the melt, which is used in Darcy's
-    # law. The lower this viscosity, the faster melt can flow.  
-    set Reference melt viscosity          = 1
-    
-
+    set Thermal viscosity exponent        = 0.
+    set Thermal expansion coefficient     = 0.
+    set Solid compressibility             = 0.
 
   end
 end
