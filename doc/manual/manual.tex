@@ -10823,7 +10823,7 @@ The parameter file and initial temperature model for this benchmark can be found
 
 \textit{This section was contributed by Marine Lasbleis.}
 
-Here we use \aspect{} to mode the compaction of a simple column with a mixture of liquid and solid using two-phase flow equations. 
+Here we use \aspect{} to model the compaction of a simple column with a mixture of liquid and solid using two-phase flow equations. 
 It presents a modification of the global melt material model to use different parametrization of the permeability, shear viscosity and bulk viscosity. 
 
 We model the compaction of a mixture of liquid and fluid, without additional melting and freezing.  
@@ -10858,15 +10858,15 @@ The compaction length is then calculated as
 \end{equation}
 and is constant with the porosity. 
 
-The global melt model is set up with compressibility, which we will need to remove by setting the parameters to 0. 
+The global melt model is originally set up with compressibility, which we will need to remove by setting the corresponding parameters to 0. 
 We are also neglecting the effects of temperature on the parameters and setting the temperature field to 0 everywhere. 
-The viscosities tends to 0 or infinity around $\phi=0$ and $\phi=1$, which is not possible to implement in numerical model. 
-We set a maximum viscosity variation due to porosity of $10^6$.
+The viscosities tends to 0 or infinity around $\phi=0$ and $\phi=1$, which is not possible to implement in numerical models. 
+We therefore set a maximum viscosity variation due to porosity of $10^6$.
 
 We defined a new material model which incorporate all of these modifications, based on the material model global melt. 
-The plugin \url{benchmarks/differenciation/melt_srb.cc} is used as an additional library and needs to be compiled befre running the parameter file. 
+The plugin \url{benchmarks/differenciation/melt_srb.cc} is used as an additional library and needs to be compiled before running the parameter file. 
 
-\paragraph{Set-up}
+\paragraph{Model Setup}
 
 We set a column of width one cell, with 200 cells in the y-direction. 
 The total size of the system is 1 and all parameters are put to 0 or 1 to have a dimensionless setting. 
@@ -10891,7 +10891,7 @@ where $h$ is length scale related to the compaction length as
 \end{equation}
 
 Comparison between the analytical solution and our runs for two compaction lengths (1 and 0.2) are shown on figure \ref{fig:analytic}. 
-The agreement is good, with a slight discrepancy at the top, likely due to the top boundary condition not exactly defines at $y=1$.   
+The agreement is good, with a slight discrepancy at the top, likely due to the top boundary condition not exactly defined at $y=1$.   
 
 \begin{figure}[h]
     \centering
@@ -10904,7 +10904,7 @@ The agreement is good, with a slight discrepancy at the top, likely due to the t
 
 \paragraph{Evolution}
 
-The porosity profiles evolves such that the liquid is expelled to the top and the matrix compacts at the bottom. 
+The porosity profile evolves such that the liquid is expelled to the top and the matrix compacts at the bottom. 
 No flow can cross the top or bottom boundaries. 
 We first check the mass conservation of the liquid with time, for different number of points in the domain. 
 Results are shown on figure \ref{fig:comp}. 
@@ -10920,7 +10920,7 @@ Results seem to show that at least 200 points are required for this case of $\de
 
 
 The porosity and matrix velocity evolution are shown on figure \ref{fig:evolution}. 
-Results are similar to \cite{SRPHD07}, except for porosity close to 1, where \aspect{} do not converge correctly and overestimate the segregation. 
+Results are similar to \cite{SRPHD07}, except for porosity close to 1, where \aspect{} does not converge correctly and overestimates the segregation. 
 Since the model was designed to solve for very low porosity, and that the equations should not be physically valid for porosity high enough than the matrix is no longer connected (the highest threshold usually considered is about 40\%, corresponding to a system made of spheres with a random close packing)
 
 The porosity profile presents numerical instabilities (wiggles) close to $y=0$, created by the jump of porosity between the initial conditions and the boundary condition. 

@@ -123,7 +123,7 @@ end
 
 ##################### Model geometry ########################
 
-# The model geometry is an elongated box with only 1 cell large.
+# The model geometry is an elongated vertical pipe that is only 1 cell wide.
 subsection Geometry model
   set Model name = box
 
@@ -147,7 +147,7 @@ subsection Gravity model
   end
 end
 
-# We use  a material model rewritting the melt global, 
+# We use  a material model modifying the melt global model, 
 # which is one of the
 # material models that works with melt transport, as it also
 # specifies the material properties needed for melt migration, 
