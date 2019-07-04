@@ -1,5 +1,9 @@
-# Benchmark for the equations of SRB 
-# See Sramek PhD thesis 2007 p48
+# Benchmark for the equations of Sramek, Ricard, Bercovici 2007 
+# Additionnal info about this benchmark is available in 
+# the PhD thesis of Sramek (p48), 
+# from Univerzita Karlova, Matematicko-fyzikální fakulta
+# and available online at https://dspace.cuni.cz/bitstream/handle/20.500.11956/12248/140024981.pdf?sequence=1
+#
 # Compaction of a simple 1D column with 30% of liquid
 
 # We use a modified version of the global melt material model
