@@ -10818,7 +10818,7 @@ The parameter file and initial temperature model for this benchmark can be found
 
 
 
-\subsubsection{Compaction -- differentiation}
+\subsubsection{Compaction in a column with melt}
 
 
 \textit{This section was contributed by Marine Lasbleis.}
@@ -10832,8 +10832,8 @@ We test here using the same set of equations than in \cite{SRB07} (SRB07), but w
 and the liquid viscosity negligible compared to the solid one. 
 Both phases are considered to be viscously deformed by the compaction, and the liquid is lighter than the solid. 
 
-The plugin and parameter files can be found at \url{benchmarks/differenciation/melt_srb.cc} and \url{benchmarks/differenciation/diff_adim.prm}. 
-A jupyter notebook (Python 3) for recreating the different figures shown here is provided in \url{benchmarks/differenciation/python}. 
+The plugin and parameter files can be found at \url{benchmarks/melt_column_differenciation/melt_SramekRicardBercovici2007.cc} and \url{benchmarks/melt_column_differenciation/diff_adim.prm}. 
+A jupyter notebook (Python 3) for recreating the different figures shown here is provided in \url{benchmarks/melt_column_differenciation/python}. 
 
 \paragraph{Modification of the MeltGlobal material model}
 
@@ -10864,19 +10864,19 @@ The viscosities tends to 0 or infinity around $\phi=0$ and $\phi=1$, which is no
 We therefore set a maximum viscosity variation due to porosity of $10^6$.
 
 We defined a new material model which incorporate all of these modifications, based on the material model global melt. 
-The plugin \url{benchmarks/differenciation/melt_srb.cc} is used as an additional library and needs to be compiled before running the parameter file. 
+The plugin \url{benchmarks/melt_column_differenciation/melt_srb.cc} is used as an additional library and needs to be compiled before running the parameter file. 
 
 \paragraph{Model Setup}
 
 We set a column of width one cell, with 200 cells in the y-direction. 
-The total size of the system is 1 and all parameters are put to 0 or 1 to have a dimensionless setting. 
+The total height of the system is 1 and all parameters are put to 0 or 1 to have a dimensionless setting. 
 The gravity is constant. 
 The bottom boundary is set at porosity of zero and no slip boundary. 
 The top boundary is set at a porosity of 1, and no flows are permitted (the gradient of fluid pressure at the top is set to the fluid weight). 
 We use a compaction length of 1 and 0.2 for this benchmark (ones need to set the fluid viscosity to 25 to change this value from 1 to 0.2), 
 and we start with a constant porosity profile of 30\%.
 
-The parameter file is available at \url{benchmarks/differenciation/diff_adim.prm}. 
+The parameter file is available at \url{benchmarks/melt_column_differenciation/diff_adim.prm}. 
 
 \paragraph{First time step}
 
@@ -10921,7 +10921,8 @@ Results seem to show that at least 200 points are required for this case of $\de
 
 The porosity and matrix velocity evolution are shown on figure \ref{fig:evolution}. 
 Results are similar to \cite{SRPHD07}, except for porosity close to 1, where \aspect{} does not converge correctly and overestimates the segregation. 
-Since the model was designed to solve for very low porosity, and that the equations should not be physically valid for porosity high enough than the matrix is no longer connected (the highest threshold usually considered is about 40\%, corresponding to a system made of spheres with a random close packing)
+The model was designed to solve for very low porosity, and the equations are not be physically valid for porosity high enough -- the matrix is then no longer connected -- then this result was expected.  
+(the highest threshold usually considered  for matrix interconnectivity is about 40\%, corresponding to a system made of spheres with a random close packing)
 
 The porosity profile presents numerical instabilities (wiggles) close to $y=0$, created by the jump of porosity between the initial conditions and the boundary condition. 
 These do not evolve too much with time. 
