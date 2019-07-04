@@ -8,7 +8,7 @@
 
 # We use here a dimensionless formulation.
 
-set Additional shared libraries            = ./libmelt_srb.so 
+set Additional shared libraries            = ./libmelt_SRB2007.so 
 
 set Dimension                              = 2
 set Output directory                       = output-srb
