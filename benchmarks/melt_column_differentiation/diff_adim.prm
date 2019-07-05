@@ -177,19 +177,19 @@ subsection Material model
 
     set Thermal conductivity              = 1.
     set Reference solid density           = 2.
-    # The melt usually has a different (lower) density than the solid. We set Delta rho=1.
+    # The melt usually has a different (lower) density than the solid. 
+    # We want to set the density difference between liquid and solid to 1,
+    # so we set the melt density to 1.
     set Reference melt density            = 1.
 
     set Reference shear viscosity         = 1.
     set Reference temperature             = 1  # has to be set to 1, but no effect
     set Reference melt viscosity          = 1. # 25. to test for compaction lenght =0.2
     
-    # The melt usually has a different (lower) density than the solid.
-    set Reference melt density            = 1.
     set Reference permeability            = 1.
     set Reference bulk viscosity          = 1.
    
-    # pressure and temperature dependence set to 0 
+    # Pressure and temperature dependence set to 0 
     set Exponential melt weakening factor = 0
     set Thermal bulk viscosity exponent   = 0.
     set Melt compressibility              = 0.

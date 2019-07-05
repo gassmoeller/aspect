@@ -41,11 +41,11 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * This material model is c/c from the melt global model
-     * to be used in the benchmarck melt_column_differenciation. 
-     * From the initial model, the permeability, the bulk and the shear viscosity
+     * This material model is copied from the melt global model
+     * to be used in the benchmark melt_column_differentiation. 
+     * From the original material model, the permeability, the bulk and the shear viscosity
      * have been modified to solve the same set of equation than in 
-     * Sramek, Ricard and Bercovici 2007 (without fusion/cristallization)
+     * Sramek, Ricard and Bercovici 2007 (without fusion/crystallization)
      *
      * The model is considered incompressible, following the definition
      * described in Interface::is_compressible.
@@ -157,27 +157,6 @@ namespace aspect
   }
 }
 
-
-
-/*
-  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
 
 
 
