@@ -183,6 +183,7 @@ namespace aspect
           reference_density_profile,
           implicit_reference_density_profile,
           incompressible,
+          projected_density_field,
           ask_material_model
         };
 
@@ -203,6 +204,8 @@ namespace aspect
             return Formulation::MassConservation::implicit_reference_density_profile;
           else if (input == "incompressible")
             return Formulation::MassConservation::incompressible;
+          else if (input == "projected density field")
+            return Formulation::MassConservation::projected_density_field;
           else if (input == "ask material model")
             return Formulation::MassConservation::ask_material_model;
           else
