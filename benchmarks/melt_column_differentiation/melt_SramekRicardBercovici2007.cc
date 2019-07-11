@@ -42,9 +42,9 @@ namespace aspect
 
     /**
      * This material model is copied from the melt global model
-     * to be used in the benchmark melt_column_differentiation. 
+     * to be used in the benchmark melt_column_differentiation.
      * From the original material model, the permeability, the bulk and the shear viscosity
-     * have been modified to solve the same set of equation than in 
+     * have been modified to solve the same set of equation than in
      * Sramek, Ricard and Bercovici 2007 (without fusion/crystallization)
      *
      * The model is considered incompressible, following the definition
@@ -393,11 +393,11 @@ namespace aspect
             {
               double porosity = std::max(in.composition[i][porosity_idx],0.0);
 
-	      // the fluid viscosity is set constant with the porosity
+              // the fluid viscosity is set constant with the porosity
               melt_out->fluid_viscosities[i] = eta_f;
-	      
-	      // the permeability is set as $\sim phi^2$ 
-              melt_out->permeabilities[i] = reference_permeability * std::pow(porosity,2); 
+
+              // the permeability is set as $\sim phi^2$
+              melt_out->permeabilities[i] = reference_permeability * std::pow(porosity,2);
               melt_out->fluid_density_gradients[i] = Tensor<1,dim>();
 
               // temperature dependence of density is 1 - alpha * (T - T(adiabatic))
@@ -410,7 +410,7 @@ namespace aspect
               melt_out->fluid_densities[i] = reference_rho_f * temperature_dependence
                                              * std::exp(melt_compressibility * (in.pressure[i] - this->get_surface_pressure()));
 
-	      // The compaction viscosity is set as $\sim (1-\phi)$
+              // The compaction viscosity is set as $\sim (1-\phi)$
               melt_out->compaction_viscosities[i] = xi_0 * std::max(1- porosity, 1e-6)/std::max(porosity, 1e-6);
 
               double visc_temperature_dependence = 1.0;
