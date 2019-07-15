@@ -175,7 +175,22 @@ get_dimension(const std::string &parameters)
         }
     }
   else
-    return 2;
+    {
+      if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+        {
+          std::cerr << "----------------------------------------------------"
+                    << std::endl;
+          std::cerr << "-- Warning: ASPECT did not find the parameter 'Dimension' in the input file. " << std::endl
+                    << "-- This can happen when using the 'include' command inside parameter files. "
+                    << "-- Please copy the 'Dimension' parameter from the included into the executed "
+                    << "-- parameter file. Assuming a spatial dimension of 2."
+                    << std::endl
+                    << "----------------------------------------------------"
+                    << std::endl;
+        }
+
+      return 2;
+    }
 }
 
 
