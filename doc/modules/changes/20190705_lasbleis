@@ -1,4 +1,4 @@
-New: Additional benchmark to test the 2-phase flow equations 
+New: Additional benchmark "melt_column_differentiation" to test the 2-phase flow equations 
 in a simple case of pure compaction (no melting/crystallization)
 in a mush column.  
 <br>
