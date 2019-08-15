@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=ASPECT
+Comment=A sample application
+Exec=aspect
+Icon=mesh-2d-icon
+Categories=Science;
+Terminal=false
