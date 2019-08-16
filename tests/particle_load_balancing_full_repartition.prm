@@ -1,0 +1,13 @@
+# A test for the particle load balacing strategy 'remove particles'.
+# As soon as too many particles live in a cell, a fraction of them
+# is discarded.
+
+include $ASPECT_SOURCE_DIR/tests/particle_load_balancing_none.prm
+
+set Dimension                              = 2
+
+subsection Postprocess
+  subsection Particles
+    set Load balancing strategy = separate repartition
+  end
+end

@@ -1,0 +1,87 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 349 (162+25+81+81)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 48, 62, 74
+     Cells per process min/max/avg:       16/16/16
+
+Number of active cells: 28 (on 4 levels)
+Number of degrees of freedom: 605 (282+41+141+141)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 10, 35, 74
+     Cells per process min/max/avg:       28/28/28
+
+Number of active cells: 31 (on 4 levels)
+Number of degrees of freedom: 673 (314+45+157+157)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 6, 32, 74
+     Cells per process min/max/avg:       31/31/31
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 827 (386+55+193+193)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 6, 25, 74
+     Cells per process min/max/avg:       40/40/40
+
+Number of active cells: 52 (on 5 levels)
+Number of degrees of freedom: 1,112 (520+72+260+260)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+Number of active cells: 52 (on 5 levels)
+Number of degrees of freedom: 1,112 (520+72+260+260)
+
+Number of active cells: 52 (on 5 levels)
+Number of degrees of freedom: 1,112 (520+72+260+260)
+
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 1, 19, 74
+     Cells per process min/max/avg:       52/52/52
+
+Number of active cells: 70 (on 5 levels)
+Number of degrees of freedom: 1,500 (702+96+351+351)
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
