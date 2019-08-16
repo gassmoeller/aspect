@@ -910,6 +910,22 @@ namespace aspect
                             ExcMessage("The 'Load balancing strategy' parameter contains an unknown value: <" + *strategy
                                        + ">. This value does not correspond to any known load balancing strategy. Possible values "
                                        "are listed in the corresponding manual subsection."));
+
+              AssertThrow(!(particle_load_balancing & ParticleLoadBalancing::repartition &&
+                            particle_load_balancing & ParticleLoadBalancing::separate_repartition),
+                          ExcMessage("The 'Load balancing strategy' parameter can not contain both the 'repartition' "
+                                     "and the 'separate repartition' strategies, as those are incompatible."));
+            }
+
+          // Enforce a large weight for particles. Unfortunately the local number of
+          // particles times the particle weight needs to be smaller than the
+          // largest possible unsigned int, and since millions of local particles
+          // are possible, this weight needs to be rather small. Remember that
+          // 1000 is also the weight that is assigned to one cell, so this really
+          // means one particle is as important as one cell.
+          if (particle_load_balancing & ParticleLoadBalancing::separate_repartition)
+            {
+              particle_weight = 1000;
             }
 
         }
