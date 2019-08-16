@@ -189,6 +189,8 @@ namespace aspect
        */
       void run ();
 
+      void repartition_mesh ();
+
       /**
        * Write a connection graph of all of the plugins we know about, in the
        * format that the programs dot and neato understand. This allows for a

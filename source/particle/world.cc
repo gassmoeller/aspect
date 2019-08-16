@@ -24,6 +24,7 @@
 #include <aspect/compat.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/citation_info.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -710,6 +711,17 @@ namespace aspect
     void
     World<dim>::advance_timestep()
     {
+      if (particle_load_balancing & ParticleLoadBalancing::separate_repartition)
+        {
+          this->get_triangulation().signals.cell_weight.connect(
+            [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                 const typename parallel::distributed::Triangulation<dim>::CellStatus status)
+            -> unsigned int
+          {
+            return this->cell_weight(cell, status);
+          });
+          const_cast<Simulator<dim> &> (this->get_simulator()).repartition_mesh();
+        }
       do
         {
           advect_particles();
@@ -730,6 +742,12 @@ namespace aspect
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
           particle_handler->exchange_ghost_particles();
+        }
+
+      if (particle_load_balancing & ParticleLoadBalancing::separate_repartition)
+        {
+          this->get_triangulation().signals.cell_weight.disconnect_all_slots();
+          const_cast<Simulator<dim> &> (this->get_simulator()).repartition_mesh();
         }
     }
 
@@ -759,7 +777,7 @@ namespace aspect
         {
           prm.declare_entry ("Load balancing strategy", "repartition",
                              Patterns::MultipleSelection ("none|remove particles|add particles|"
-                                                          "remove and add particles|repartition"),
+                                                          "remove and add particles|repartition|separate repartition"),
                              "Strategy that is used to balance the computational "
                              "load across processors for adaptive meshes.");
           prm.declare_entry ("Minimum particles per cell", "0",
@@ -877,6 +895,8 @@ namespace aspect
                 particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_and_add_particles);
               else if (*strategy == "repartition")
                 particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::repartition);
+              else if (*strategy == "separate repartition")
+                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::separate_repartition);
               else if (*strategy == "none")
                 {
                   particle_load_balancing = ParticleLoadBalancing::no_balancing;

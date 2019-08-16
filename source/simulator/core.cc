@@ -1675,6 +1675,120 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::repartition_mesh ()
+  {
+    parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
+    system_trans(dof_handler);
+
+    std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
+    mesh_deformation_trans;
+
+    {
+      TimerOutput::Scope timer (computing_timer, "Repartition mesh structure, part 1");
+
+      std::vector<const LinearAlgebra::BlockVector *> x_system (2);
+      x_system[0] = &solution;
+      x_system[1] = &old_solution;
+
+      if (parameters.mesh_deformation_enabled)
+        x_system.push_back( &mesh_deformation->mesh_velocity );
+
+      std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
+
+      if (parameters.mesh_deformation_enabled)
+        {
+          x_fs_system[0] = &mesh_deformation->mesh_displacements;
+          mesh_deformation_trans
+            = std_cxx14::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
+              (mesh_deformation->mesh_deformation_dof_handler);
+        }
+
+
+      // Possibly store data of plugins associated with cells
+      signals.pre_refinement_store_user_data(triangulation);
+
+      triangulation.prepare_coarsening_and_refinement();
+      system_trans.prepare_for_coarsening_and_refinement(x_system);
+
+      if (parameters.mesh_deformation_enabled)
+        mesh_deformation_trans->prepare_for_coarsening_and_refinement(x_fs_system);
+
+      triangulation.repartition ();
+    } // leave the timed section
+
+    setup_dofs ();
+
+    {
+      TimerOutput::Scope timer (computing_timer, "Repartition mesh structure, part 2");
+
+      LinearAlgebra::BlockVector distributed_system;
+      LinearAlgebra::BlockVector old_distributed_system;
+      LinearAlgebra::BlockVector distributed_mesh_velocity;
+
+      distributed_system.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
+      old_distributed_system.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
+      if (parameters.mesh_deformation_enabled)
+        distributed_mesh_velocity.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
+
+      std::vector<LinearAlgebra::BlockVector *> system_tmp (2);
+      system_tmp[0] = &distributed_system;
+      system_tmp[1] = &old_distributed_system;
+
+      if (parameters.mesh_deformation_enabled)
+        system_tmp.push_back(&distributed_mesh_velocity);
+
+      // transfer the data previously stored into the vectors indexed by
+      // system_tmp. then ensure that the interpolated solution satisfies
+      // hanging node constraints
+      //
+      // note that the 'constraints' variable contains hanging node constraints
+      // and constraints from periodic boundary conditions (as well as from
+      // zero and tangential velocity boundary conditions), but not from
+      // non-homogeneous boundary conditions. the latter are added not in setup_dofs(),
+      // which we call above, but added to 'current_constraints' in start_timestep(),
+      // which we do not want to call here.
+      //
+      // however, what we have should be sufficient: we have everything that
+      // is necessary to make the solution vectors *conforming* on the current
+      // mesh.
+      system_trans.interpolate (system_tmp);
+
+      constraints.distribute (distributed_system);
+      solution     = distributed_system;
+
+      constraints.distribute (old_distributed_system);
+      old_solution = old_distributed_system;
+
+      // do the same as above, but for the mesh deformation solution
+      if (parameters.mesh_deformation_enabled)
+        {
+          constraints.distribute (distributed_mesh_velocity);
+          mesh_deformation->mesh_velocity = distributed_mesh_velocity;
+
+          LinearAlgebra::Vector distributed_mesh_displacements;
+
+          distributed_mesh_displacements.reinit(mesh_deformation->mesh_locally_owned,
+                                                mpi_communicator);
+
+          std::vector<LinearAlgebra::Vector *> system_tmp (1);
+          system_tmp[0] = &distributed_mesh_displacements;
+
+          mesh_deformation_trans->interpolate (system_tmp);
+          mesh_deformation->mesh_vertex_constraints.distribute (distributed_mesh_displacements);
+          mesh_deformation->mesh_displacements = distributed_mesh_displacements;
+        }
+
+      // Possibly load data of plugins associated with cells
+      signals.post_refinement_load_user_data(triangulation);
+
+      // calculate global volume after displacing mesh (if we have, in fact, displaced it)
+      global_volume = GridTools::volume (triangulation, *mapping);
+    }
+  }
+
+
+
+  template <int dim>
   void
   Simulator<dim>::
   solve_timestep ()

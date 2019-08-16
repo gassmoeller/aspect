@@ -209,6 +209,7 @@ namespace aspect
             remove_particles = 0x1,
             add_particles = 0x2,
             repartition = 0x4,
+            separate_repartition = 0x8,
             remove_and_add_particles = remove_particles | add_particles
           };
         };
