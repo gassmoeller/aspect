@@ -101,24 +101,8 @@ namespace aspect
                     ExcMessage("At least one cell contained no particles. The `bilinear'"
                                "interpolation scheme does not support this case. "));
 
-
-        // Noticed that the size of matrix A is n_particles x matrix_dimension
-        // which usually is not a square matrix. Therefore, we solve Ax=r by
-        // solving A^TAx= A^Tr.
-        const unsigned int matrix_dimension = 4;
-        dealii::LAPACKFullMatrix<double> A(n_particles, matrix_dimension);
-        dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
-        dealii::LAPACKFullMatrix<double> B_inverse(matrix_dimension, matrix_dimension);
-
-        Vector<double> r(n_particles);
-        r = 0;
-
-        Vector<double> c_ATr(matrix_dimension);
-        Vector<double> c(matrix_dimension);
-
         const double cell_diameter = found_cell->diameter();
         unsigned int index_positions = 0;
-
         for (typename std::vector<Point<dim> >::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
           {
             unsigned int index = 0;
@@ -130,41 +114,17 @@ namespace aspect
                 const double weight = internal::weight(distance,cell_diameter);
 
                 const double particle_property_value = particle->get_properties()[property_index];
-                r[index] = weight * particle_property_value;
 
-                A(index,0) = weight * 1.0;
-                A(index,1) = weight * (position[0] - approximated_cell_midpoint[0])/cell_diameter;
-                A(index,2) = weight * (position[1] - approximated_cell_midpoint[1])/cell_diameter;
-                A(index,3) = weight * (position[0] - approximated_cell_midpoint[0]) * (position[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
+                cell_properties[index_positions][property_index] += weight * particle_property_value;
+                cell_weight[index_positions] += weight;
               }
 
-            const double threshold = 1e-15;
-
-            // Matrix A can be rank deficient if it does not have full rank, therefore singular.
-            // To circumvent this issue, we solve A^TAx=A^Tr by using singular value
-            // decomposition (SVD).
-            A.Tmmult(B, A, false);
-            A.Tvmult(c_ATr,r);
-
-            B_inverse = B;
-            B_inverse.compute_inverse_svd(threshold);
-            B_inverse.vmult(c, c_ATr);
-
-            const Point<dim> support_point = *itr;
-            double interpolated_value = c[0] +
-                                        c[1]*(support_point[0] - approximated_cell_midpoint[0])/cell_diameter +
-                                        c[2]*(support_point[1] - approximated_cell_midpoint[1])/cell_diameter +
-                                        c[3]*(support_point[0] - approximated_cell_midpoint[0])*(support_point[1] - approximated_cell_midpoint[1])/std::pow(cell_diameter,2);
-
-            // Overshoot and undershoot correction of interpolated particle property.
-            if (use_global_valued_limiter)
-              {
-                interpolated_value = std::min(interpolated_value, global_maximum_particle_properties[property_index]);
-                interpolated_value = std::max(interpolated_value, global_minimum_particle_properties[property_index]);
-              }
-
-            cell_properties[index_positions][property_index] = interpolated_value;
           }
+
+        index_positions=0;
+        for (typename std::vector<Point<dim> >::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
+          cell_properties[index_positions][property_index] /= cell_weight[index_positions];
+
         return cell_properties;
       }
 
