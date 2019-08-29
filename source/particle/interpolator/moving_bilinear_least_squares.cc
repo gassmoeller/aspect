@@ -93,7 +93,9 @@ namespace aspect
 
         std::vector<std::vector<double> > cell_properties(positions.size(),
                                                           std::vector<double>(n_particle_properties,
-                                                                              numbers::signaling_nan<double>()));
+                                                                              0.0));
+
+        std::vector<double> cell_weights(positions.size(),0.0);
 
         const unsigned int n_particles = std::distance(particle_range.begin(),particle_range.end());
 
@@ -116,14 +118,14 @@ namespace aspect
                 const double particle_property_value = particle->get_properties()[property_index];
 
                 cell_properties[index_positions][property_index] += weight * particle_property_value;
-                cell_weight[index_positions] += weight;
+                cell_weights[index_positions] += weight;
               }
 
           }
 
         index_positions=0;
         for (typename std::vector<Point<dim> >::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
-          cell_properties[index_positions][property_index] /= cell_weight[index_positions];
+          cell_properties[index_positions][property_index] /= cell_weights[index_positions];
 
         return cell_properties;
       }
