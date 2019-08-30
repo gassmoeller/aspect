@@ -525,7 +525,13 @@ namespace aspect
 
     const FEValuesExtractors::Scalar extractor = introspection.extractors.compositional_fields[advection_field.compositional_variable];
 
-    std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+
+    const unsigned int advection_dofs_per_cell = finite_element.base_element(advection_field.base_element(introspection)).dofs_per_cell;
+
+    std::vector<types::global_dof_index> cell_dof_indices (finite_element.dofs_per_cell);
+    std::vector<types::global_dof_index> cell_advection_dof_indices (advection_dofs_per_cell);
+    Vector<double> cell_vector (advection_dofs_per_cell);
+    FullMatrix<double> cell_matrix (advection_dofs_per_cell, advection_dofs_per_cell);
 
     ComponentMask property_mask  (particle_property_manager->get_data_info().n_components(),false);
     property_mask.set(particle_property,true);
@@ -548,6 +554,8 @@ namespace aspect
           std::vector<double> quadrature_weights(n_particles);
           std::vector<double> particle_values(n_particles);
 
+          std::vector<double> phi(advection_dofs_per_cell);
+
           unsigned int particle_index = 0;
           for (auto particle = particle_range.begin();
                particle != particle_range.end(); ++particle, ++particle_index)
@@ -560,43 +568,66 @@ namespace aspect
           Quadrature<dim> quadrature(quadrature_points,quadrature_weights);
           // create an FEValues object with just the temperature/composition element
           FEValues<dim> fe_values (*mapping, finite_element,
-              quadrature,
+                                   quadrature,
                                    update_JxW_values | update_values);
           fe_values.reinit (cell);
 
-          const unsigned int n_q_points = fe_values.n_quadrature_points,
-                             dofs_per_cell = fe_values.dofs_per_cell;
+          const unsigned int n_q_points = fe_values.n_quadrature_points;
 
           // stuff for assembling system
-          std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
-          Vector<double> cell_vector (dofs_per_cell);
-          FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
           cell->get_dof_indices (cell_dof_indices);
 
+          // get all dof indices on the current cell, then extract those
+          // that correspond to the solution_field we are interested in
+          for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (finite_element.system_to_component_index(i).first == advection_field.component_index(introspection))
+                {
+                  cell_advection_dof_indices[i_advection] = cell_dof_indices[i];
+                  ++i_advection;
+                }
+              ++i;
+            }
+
           cell_vector = 0;
           cell_matrix = 0;
+
           for (unsigned int point=0; point<n_q_points; ++point)
             {
-              for (unsigned int i=0; i<dofs_per_cell; ++i)
+              const double JxW = fe_values.JxW(point);
+
+              // precompute the values of shape functions.
+              // We only need to look up values of shape functions if they
+              // belong to 'our' component. They are zero otherwise anyway.
+              // Note that we later only look at the values that we do set here.
+              for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
                 {
                   if (finite_element.system_to_component_index(i).first == advection_field.component_index(introspection))
-                  for (unsigned int j=0; j<dofs_per_cell; ++j)
-                    if (finite_element.system_to_component_index(j).first == advection_field.component_index(introspection))
                     {
-                      cell_matrix(i,j) += (fe_values[extractor].value(j,point) *
-                                           fe_values[extractor].value(i,point) ) *
-                                          fe_values.JxW(point);
+                      phi[i_advection]      = fe_values[extractor].value(i,point);
+                      ++i_advection;
+                    }
+                  ++i;
+                }
+
+              for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+                {
+                  for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                    {
+                      cell_matrix(i,j) += phi[i] *
+                                          phi[j] *
+                                          JxW;
                     }
 
-                  cell_vector(i) += fe_values[extractor].value(i,point)
+                  cell_vector(i) += phi[i]
                                     * particle_values[point]
-                                    * fe_values.JxW(point);
+                                    * JxW;
                 }
             }
 
           current_constraints.distribute_local_to_global (cell_matrix, cell_vector,
-              cell_dof_indices, system_matrix, system_rhs);
+                                                          cell_advection_dof_indices, system_matrix, system_rhs);
         }
 
     system_rhs.compress (VectorOperation::add);
