@@ -216,7 +216,7 @@ namespace aspect
 
             case Parameters<dim>::AdvectionFieldMethod::particles:
             {
-              interpolate_particle_properties(adv_field);
+              project_particles_onto_fields(adv_field);
               break;
             }
 

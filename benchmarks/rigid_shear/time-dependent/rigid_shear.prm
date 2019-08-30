@@ -6,7 +6,7 @@
 set Additional shared libraries            = ../plugin/librigid_shear.so
 
 set Dimension                              = 2
-set End time                               = 0.1
+set End time                               = 0.0
 set Output directory                       = output
 
 set Pressure normalization                 = no
@@ -25,7 +25,8 @@ end
 
 
 subsection Discretization
-  set Use discontinuous composition discretization = true
+  set Composition polynomial degree = 2
+  set Use discontinuous composition discretization = false
 end
 
 subsection Boundary velocity model

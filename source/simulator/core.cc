@@ -863,7 +863,7 @@ namespace aspect
   {
     system_matrix.clear ();
 
-    bool have_fem_compositional_field = false;
+    bool have_fem_compositional_field = true;
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
       {
         const AdvectionField adv_field (AdvectionField::composition(c));

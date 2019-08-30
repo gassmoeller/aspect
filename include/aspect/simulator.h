@@ -728,6 +728,9 @@ namespace aspect
        */
       void interpolate_particle_properties (const AdvectionField &advection_field);
 
+      void project_particles_onto_fields(const AdvectionField &advection_field);
+
+
       /**
        * Solve the Stokes linear system.
        *

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-grid_resolution=('3' '4' '5' '6')
-interpolators=('cell_average' 'bilinear_least_squares')
-integrators=('rk2' 'rk4')
-stokes_degrees=('2' '3')
+grid_resolution=('3' '4' '5')
+interpolators=('cell_average')
+integrators=('rk2')
+stokes_degrees=('2')
 
 for stokes_degree in ${stokes_degrees[@]}; do
   for interpolator in ${interpolators[@]}; do
@@ -13,7 +13,7 @@ for stokes_degree in ${stokes_degrees[@]}; do
       echo "h                     ppc e_u_L1      e_p_L1       e_u_L2       e_p_L2       e_rho_L2" > $outputfile
 
       if [ $stokes_degree == 2 ]; then
-        PPD=('4' '5' '6' '7' '10' '15' '20')
+        PPD=('3' '4' '10')
       else
         PPD=('4' '5' '6' '7' '10' '15' '20' '32' '45' '64' '80')
       fi

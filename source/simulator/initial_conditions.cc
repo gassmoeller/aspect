@@ -33,7 +33,7 @@
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/numerics/vector_tools.h>
-
+#include <deal.II/particles/particle_handler.h>
 
 namespace aspect
 {
@@ -471,6 +471,166 @@ namespace aspect
     solution = old_solution;
     old_old_solution = old_solution;
   }
+
+  template <int dim>
+  void Simulator<dim>::project_particles_onto_fields(const AdvectionField &advection_field)
+  {
+    TimerOutput::Scope timer (computing_timer, "Particles: Interpolate");
+
+    const Postprocess::Particles<dim> &particle_postprocessor =
+      postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >();
+
+    const Particle::Property::Manager<dim> *particle_property_manager = &particle_postprocessor.get_particle_world().get_property_manager();
+    const Particles::ParticleHandler<dim> &particle_handler = particle_postprocessor.get_particle_world().get_particle_handler();
+
+    if (particle_handler.n_global_particles() == 0)
+      return;
+
+    unsigned int particle_property;
+
+    if (parameters.mapped_particle_properties.size() != 0)
+      {
+        const std::pair<std::string,unsigned int> particle_property_and_component = parameters.mapped_particle_properties.find(advection_field.compositional_variable)->second;
+
+        particle_property = particle_property_manager->get_data_info().get_position_by_field_name(particle_property_and_component.first)
+                            + particle_property_and_component.second;
+      }
+    else
+      {
+        particle_property = std::count(introspection.compositional_field_methods.begin(),
+                                       introspection.compositional_field_methods.begin() + advection_field.compositional_variable,
+                                       Parameters<dim>::AdvectionFieldMethod::particles);
+        AssertThrow(particle_property <= particle_property_manager->get_data_info().n_components(),
+                    ExcMessage("Can not automatically match particle properties to fields, because there are"
+                               "more fields that are marked as particle advected than particle properties"));
+      }
+
+    const unsigned int block_idx = advection_field.block_index(introspection);
+
+    if (!advection_field.is_temperature() && advection_field.compositional_variable!=0)
+      {
+        // Allocate the system matrix for the current compositional field by
+        // reusing the Trilinos sparsity pattern from the matrix stored for
+        // composition 0 (this is the place we allocate the matrix at).
+        const unsigned int block0_idx = AdvectionField::composition(0).block_index(introspection);
+        system_matrix.block(block_idx, block_idx).reinit(system_matrix.block(block0_idx, block0_idx));
+      }
+
+    system_matrix.block(block_idx, block_idx) = 0;
+    system_rhs.block(block_idx) = 0;
+
+    LinearAlgebra::BlockVector particle_solution, dist_solution;
+    particle_solution.reinit(system_rhs, false);
+    dist_solution.reinit(system_rhs, false);
+
+    const FEValuesExtractors::Scalar extractor = introspection.extractors.compositional_fields[advection_field.compositional_variable];
+
+    std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+
+    ComponentMask property_mask  (particle_property_manager->get_data_info().n_components(),false);
+    property_mask.set(particle_property,true);
+
+    for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
+         cell != dof_handler.end(); ++cell)
+      if (cell->is_locally_owned())
+        {
+          auto particle_range =
+            particle_handler.particles_in_cell(cell);
+
+          const unsigned int n_particles = std::distance(particle_range.begin(),particle_range.end());
+
+          AssertThrow(n_particles != 0,
+                      ExcMessage("At least one cell contained no particles. The `project particle properties'"
+                                 "scheme does not support this case. "));
+
+          // get the temperature/composition support points
+          std::vector<Point<dim> > quadrature_points(n_particles);
+          std::vector<double> quadrature_weights(n_particles);
+          std::vector<double> particle_values(n_particles);
+
+          unsigned int particle_index = 0;
+          for (auto particle = particle_range.begin();
+               particle != particle_range.end(); ++particle, ++particle_index)
+            {
+              quadrature_points[particle_index] = particle->get_reference_location();
+              quadrature_weights[particle_index] = 1.0/n_particles;
+              particle_values[particle_index] = particle->get_properties()[particle_property];
+            }
+
+          Quadrature<dim> quadrature(quadrature_points,quadrature_weights);
+          // create an FEValues object with just the temperature/composition element
+          FEValues<dim> fe_values (*mapping, finite_element,
+              quadrature,
+                                   update_JxW_values | update_values);
+          fe_values.reinit (cell);
+
+          const unsigned int n_q_points = fe_values.n_quadrature_points,
+                             dofs_per_cell = fe_values.dofs_per_cell;
+
+          // stuff for assembling system
+          std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
+          Vector<double> cell_vector (dofs_per_cell);
+          FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
+
+          cell->get_dof_indices (cell_dof_indices);
+
+          cell_vector = 0;
+          cell_matrix = 0;
+          for (unsigned int point=0; point<n_q_points; ++point)
+            {
+              for (unsigned int i=0; i<dofs_per_cell; ++i)
+                {
+                  if (finite_element.system_to_component_index(i).first == advection_field.component_index(introspection))
+                  for (unsigned int j=0; j<dofs_per_cell; ++j)
+                    if (finite_element.system_to_component_index(j).first == advection_field.component_index(introspection))
+                    {
+                      cell_matrix(i,j) += (fe_values[extractor].value(j,point) *
+                                           fe_values[extractor].value(i,point) ) *
+                                          fe_values.JxW(point);
+                    }
+
+                  cell_vector(i) += fe_values[extractor].value(i,point)
+                                    * particle_values[point]
+                                    * fe_values.JxW(point);
+                }
+            }
+
+          current_constraints.distribute_local_to_global (cell_matrix, cell_vector,
+              cell_dof_indices, system_matrix, system_rhs);
+        }
+
+    system_rhs.compress (VectorOperation::add);
+    system_matrix.compress(VectorOperation::add);
+
+    solve_advection(advection_field);
+
+//    // Jacobi seems to be fine here.  Other preconditioners (ILU, IC) run into troubles
+//    // because the matrix is mostly empty, since we don't touch internal vertices.
+//    LinearAlgebra::PreconditionJacobi preconditioner_mass;
+//    preconditioner_mass.initialize(mass_matrix);
+//
+//    SolverControl solver_control(5*rhs.size(), this->get_parameters().linear_stokes_solver_tolerance*rhs.l2_norm());
+//    SolverCG<LinearAlgebra::Vector> cg(solver_control);
+//    cg.solve (mass_matrix, dist_solution, rhs, preconditioner_mass);
+//
+//    mass_matrix_constraints.distribute (dist_solution);
+//    particle_solution = dist_solution;
+//
+//
+//    // overwrite the relevant composition block only
+//    const unsigned int blockidx = advection_field.block_index(introspection);
+//    solution.block(blockidx) = particle_solution.block(blockidx);
+//
+//    // In the first timestep initialize all solution vectors with the initial
+//    // particle solution, identical to the end of the
+//    // Simulator<dim>::set_initial_temperature_and_compositional_fields ()
+//    // function.
+//    if (timestep_number == 0)
+//      {
+//        old_solution.block(blockidx) = particle_solution.block(blockidx);
+//        old_old_solution.block(blockidx) = particle_solution.block(blockidx);
+//      }
+  }
 }
 
 
@@ -481,7 +641,8 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::set_initial_temperature_and_compositional_fields(); \
   template void Simulator<dim>::compute_initial_pressure_field(); \
-  template void Simulator<dim>::interpolate_particle_properties(const AdvectionField &);
+  template void Simulator<dim>::interpolate_particle_properties(const AdvectionField &); \
+  template void Simulator<dim>::project_particles_onto_fields(const AdvectionField &);
 
 
   ASPECT_INSTANTIATE(INSTANTIATE)
