@@ -1,10 +1,9 @@
-# A simple setup for for using the GPlates interface in a 2d shell
-# with the latent heat material model. It tests the feature of the
-# latent heat material model to use a layered viscosity profile. 
+# This is a copy of the latent_heat_viscosity test that modifies
+# the top viscosity prefactor to be different than 1.0
 
 set Dimension                              = 2
 set Use years in output instead of seconds = true
-set End time                               = 3e8
+set End time                               = 0
 set Output directory                       = output
 set Adiabatic surface temperature          = 1600
 set Resume computation                     = false
@@ -15,15 +14,15 @@ subsection Material model
 
   subsection Latent heat
     set Viscosity                     = 1e21
-    set Thermal viscosity exponent    = 15.0
+    set Thermal viscosity exponent    = 0.0
     set Reference temperature         = 1600
-    set Phase transition depths       = 410000, 660000
-    set Phase transition widths       = 20000, 20000
-    set Phase transition temperatures = 1600, 1600
-    set Phase transition Clapeyron slopes = 3e6, -2e6
-    set Phase transition density jumps = 100, 200
-    set Corresponding phase for density jump = 0, 0
-    set Viscosity prefactors          = 1, 10, 100
+    set Phase transition depths       = 100000, 410000, 660000
+    set Phase transition widths       = 20000, 20000, 20000
+    set Phase transition temperatures = 1600, 1600, 1600
+    set Phase transition Clapeyron slopes = 0, 3e6, -2e6
+    set Phase transition density jumps = -100, 100, 200
+    set Corresponding phase for density jump = 0, 0, 0
+    set Viscosity prefactors          = 10, 1, 10, 1
   end
 end
 
@@ -94,12 +93,9 @@ end
 
 
 subsection Mesh refinement
-  set Refinement fraction                = 0.8
-  set Coarsening fraction                = 0.05
-  set Initial adaptive refinement        = 1
-  set Initial global refinement          = 3
-  set Strategy                           = thermal energy density
-  set Time steps between mesh refinement = 5
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 6
+  set Time steps between mesh refinement = 0
 end
 
 
@@ -107,7 +103,6 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
 
   subsection Visualization
-    set Interpolate output = false
     set Output format                 = vtu
     set Time between graphical output = 1e6
     set Number of grouped files       = 0
@@ -118,14 +113,3 @@ subsection Postprocess
     set Time between graphical output = 1e6
   end
 end
-
-subsection Checkpointing
-  set Time between checkpoint  = 1800
-end
-
-subsection Termination criteria
-  set End step = 1
-  set Checkpoint on termination = true
-  set Termination criteria      = end step
-end
-

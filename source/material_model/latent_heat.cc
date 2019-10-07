@@ -210,7 +210,7 @@ namespace aspect
             // this means, that there are no actual density or viscosity "jumps", but
             // gradual transitions between the materials
             double phase_dependence = 0.0;
-            double viscosity_phase_dependence = 1.0;
+            double viscosity_phase_dependence = phase_prefactors[0];
 
             // transitions defined by depth
             unsigned int number_of_phase_transitions;
@@ -249,6 +249,7 @@ namespace aspect
                       phase_dependence += phaseFunction * density_jumps[phase] * (1.0 - composition[0]);
                     else if (transition_phases[phase] == 1) // 2nd compositional field
                       phase_dependence += phaseFunction * density_jumps[phase] * composition[0];
+
                     viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[phase]-1.);
                   }
               }
@@ -441,7 +442,7 @@ namespace aspect
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: $Pa/K$.");
           prm.declare_entry ("Phase transition density jumps", "",
-                             Patterns::List (Patterns::Double(0)),
+                             Patterns::List (Patterns::Double()),
                              "A list of density jumps at each phase transition. A positive value means "
                              "that the density increases with depth. The corresponding entry in "
                              "Corresponding phase for density jump determines if the density jump occurs "
