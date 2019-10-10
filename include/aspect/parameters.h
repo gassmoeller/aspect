@@ -71,7 +71,8 @@ namespace aspect
         iterated_Advection_and_Newton_Stokes,
         single_Advection_no_Stokes,
         first_timestep_only_single_Stokes,
-        no_Advection_no_Stokes
+        no_Advection_no_Stokes,
+        projected_bulk_composition
       };
     };
 

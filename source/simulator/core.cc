@@ -1689,8 +1689,8 @@ namespace aspect
       mesh_deformation->execute ();
 
     // Compute the reactions of compositional fields and temperature in case of operator splitting.
-    if (parameters.use_operator_splitting)
-      compute_reactions ();
+//    if (parameters.use_operator_splitting)
+//      compute_reactions ();
 
     switch (parameters.nonlinear_solver)
       {
@@ -1739,6 +1739,12 @@ namespace aspect
         case NonlinearSolver::no_Advection_no_Stokes:
         {
           solve_no_advection_no_stokes();
+          break;
+        }
+
+        case NonlinearSolver::projected_bulk_composition:
+        {
+          solve_projected_bulk_composition();
           break;
         }
 

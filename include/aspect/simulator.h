@@ -554,6 +554,8 @@ namespace aspect
        */
       void solve_iterated_advection_and_stokes ();
 
+      void solve_projected_bulk_composition ();
+
       /**
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
