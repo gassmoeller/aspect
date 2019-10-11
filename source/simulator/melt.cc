@@ -26,6 +26,8 @@
 #include <aspect/mesh_deformation/interface.h>
 #include <deal.II/base/signaling_nan.h>
 
+#include <aspect/simulator/assemblers/advection.h>
+
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/lac/sparsity_tools.h>
 
@@ -1717,7 +1719,13 @@ namespace aspect
     assemblers.advection_system.push_back(
       std_cxx14::make_unique<Assemblers::MeltAdvectionSystem<dim> > ());
 
-
+    // add the diffusion assemblers if we have fields that use this method
+    if (std::find(this->get_parameters().compositional_field_methods.begin(),
+                  this->get_parameters().compositional_field_methods.end(),
+                  Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion) !=
+                      this->get_parameters().compositional_field_methods.end())
+      assemblers.advection_system.push_back(
+        std_cxx14::make_unique<aspect::Assemblers::DiffusionSystem<dim> >());
   }
 
 
