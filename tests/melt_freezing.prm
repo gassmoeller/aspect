@@ -1,0 +1,132 @@
+#########################################################
+# This is a test for the advection scheme that transports
+# compositional fields with the melt velocity. The material
+# properties are set in such a way that the melt velocity 
+# is 1 m/yr and the solid velocity is 0. 
+# There are two compositional fields, one is transported 
+# with the solid velocity (the peridotite field), and one is
+# trnsported with the melt velocity (the melt composition
+# field). 
+# While the mass of the peridotite field should be conserved, 
+# the mass of the melt_composition field should decrease over 
+# time with a rate of 1/yr. 
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0.1
+set Use years in output instead of seconds = false
+set Adiabatic surface temperature          = 1600 
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Maximum time step                      = 0.01
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom
+  set List of model names = initial temperature
+end
+
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators =
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 0.0;0.0;0.0
+  end
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom
+end
+
+
+subsection Prescribed Stokes solution
+#  set Model name = function
+
+  subsection Velocity function
+    set Function expression = 0.0;0.0
+  end
+  subsection Pressure function
+    set Function expression = 0.0
+  end
+  subsection Compaction pressure function
+    set Function expression = 0.0
+  end
+  subsection Fluid pressure function
+    set Function expression = 0.0
+  end
+end
+
+subsection Melt settings
+  set Include melt transport = true
+#  set Use discontinuous compaction pressure = false
+end
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = porosity, peridotite, melt_composition
+  set Compositional field methods = field, field, melt field
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = 
+    set Function expression = (y>0.5) ? y-0.5 : 0.0; 0.0; 1.0
+  end
+end
+
+subsection Material model
+  set Model name = melting rate
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, visualization, material statistics
+  set Run postprocessors on nonlinear iterations = true
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables      = material properties, melt material properties
+
+    subsection Material properties
+      set List of material properties = density, viscosity, reaction terms
+    end
+
+    subsection Melt material properties
+      set List of properties = permeability, fluid density, compaction viscosity, fluid viscosity
+    end
+
+    set Time between graphical output = 0
+  end
+end
