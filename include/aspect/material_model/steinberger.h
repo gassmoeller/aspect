@@ -284,11 +284,6 @@ namespace aspect
         unsigned int n_lateral_slices;
 
         /**
-         * The value for the phase reaction timescale.
-         */
-        double reaction_timescale;
-
-        /**
          * Minimum and maximum allowed viscosity, as well as the maximum allowed
          * viscosity variation compared to the average radial viscosity.
          */

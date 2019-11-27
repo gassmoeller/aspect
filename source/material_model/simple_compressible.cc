@@ -34,15 +34,16 @@ namespace aspect
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          const double temperature = in.temperature[i];
           const Point<dim> position = in.position[i];
+          const double temperature = in.temperature[i];
+          const double pressure = in.pressure[i];
 
           out.viscosities[i] = constant_rheology.compute_viscosity();
           out.specific_heat[i] = reference_specific_heat;
           out.thermal_conductivities[i] = k_value;
           out.thermal_expansion_coefficients[i] = thermal_alpha;
 
-          double rho = reference_rho * std::exp(reference_compressibility * (this->get_adiabatic_conditions().pressure(position) - this->get_surface_pressure()));
+          double rho = reference_rho * std::exp(reference_compressibility * (pressure - this->get_surface_pressure()));
           rho *= (1 - thermal_alpha * (temperature - this->get_adiabatic_conditions().temperature(position)));
 
           out.densities[i] = rho;

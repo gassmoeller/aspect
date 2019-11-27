@@ -206,6 +206,7 @@ namespace aspect
                                                 DataOutBase::default_suffix(output_format));
                   std::ofstream f (filename.c_str());
 
+
                   if (output_format == DataOutBase::gnuplot)
                     {
                       DataOutBase::GnuplotFlags gnuplot_flags;

@@ -66,7 +66,6 @@ namespace aspect
       {
         single_Advection_single_Stokes,
         iterated_Advection_and_Stokes,
-        iterated_Entropy_and_Stokes,
         single_Advection_iterated_Stokes,
         no_Advection_iterated_Stokes,
         iterated_Advection_and_Newton_Stokes,

@@ -1709,8 +1709,8 @@ namespace aspect
       mesh_deformation->execute ();
 
     // Compute the reactions of compositional fields and temperature in case of operator splitting.
-    // if (parameters.use_operator_splitting)
-    //  compute_reactions ();
+    if (parameters.use_operator_splitting)
+      compute_reactions ();
 
     switch (parameters.nonlinear_solver)
       {
@@ -1729,12 +1729,6 @@ namespace aspect
         case NonlinearSolver::iterated_Advection_and_Stokes:
         {
           solve_iterated_advection_and_stokes();
-          break;
-        }
-
-        case NonlinearSolver::iterated_Entropy_and_Stokes:
-        {
-          solve_iterated_entropy_and_stokes();
           break;
         }
 

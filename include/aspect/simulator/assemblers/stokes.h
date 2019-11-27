@@ -164,24 +164,6 @@ namespace aspect
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
     };
 
-    /**
-     * This class assembles the right-hand-side term of the Stokes equation
-     * that is caused by the variable density in the mass conservation equation.
-     * This class approximates this term as
-     * $ - \nabla \cdot \mathbf{u} = \frac{1}{\rho} \nabla \rho \cdot \mathbf{u}$
-     * where the right-hand side is explicitly taken from the last timestep.
-     */
-    template <int dim>
-    class StokesCompositionDensityTerm : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        virtual
-        void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
-    };
-
 
     /**
      * This class assembles the right-hand-side term of the Stokes equation
