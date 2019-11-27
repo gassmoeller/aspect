@@ -1,0 +1,143 @@
+# Adiabatic downwelling that starts on one adiabat, with inflow on another adiabat
+
+set Additional shared libraries            = ./libentropy_plugins.so
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+
+set End time                               = 2.5e8
+set Output directory                       = output_adiabat_opx
+set Nonlinear solver scheme                = iterated Advection and Stokes
+
+subsection Formulation
+  set Mass conservation = projected density field
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 13000
+    set Y extent = 1300000
+    set Y repetitions = 200
+  end
+end
+
+
+subsection Initial temperature model
+  # The actual initial temperature is irrelevant, because it
+  # is recalculated from the entropy in the first solve.
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1595
+  end
+end
+
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1595
+
+subsection Adiabatic conditions model
+  set Model name = compute entropy profile #ascii data
+  subsection Compute entropy profile
+    # Entropy equivalent to T=1595 K according to table
+    set Surface entropy = 2534
+  end
+
+  subsection Ascii data model
+    set Data directory  = $ASPECT_SOURCE_DIR/data/material-model/
+    set Data file name  = entropy-table/opxtable2/opxtable2_s.ad1600.txt
+  end
+end
+
+subsection Boundary temperature model
+  # No temperature boundary conditions, those are set from entropy
+  set Fixed temperature boundary indicators = 
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = top
+  set Model name = function
+  subsection Function
+    # only the first component (entropy) matters, the other equations
+    # are not solved but computed from entropy
+    set Function expression = 2534; 3300
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function
+  set Tangential velocity boundary indicators = left, right
+  subsection Function
+    set Function expression = 0; -0.01
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81 
+  end
+end
+
+subsection Temperature field
+  set Temperature method = prescribed field
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = entropy, density_field
+  set Compositional field methods = field, prescribed field
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    # Entropy equivalent to T=1405 K according to table
+    set Function expression = 2360; 0.0
+  end
+end
+
+subsection Material model
+  set Model name = entropy model
+
+  subsection Entropy model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/
+    set Material file name               = entropy-table/opxtable2/opxtable2_s.aspect
+    set Radial viscosity file name       = steinberger/test-steinberger-compressible/test-radial-visc.txt
+    set Lateral viscosity file name      = steinberger/temp-viscosity-prefactor.txt
+    set Reference viscosity              = 1e22
+    set Maximum lateral viscosity variation = 1
+    set Minimum viscosity                = 1e22
+    set Maximum viscosity                = 1e22
+    set Reaction timescale               = 1e6
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics
+
+  subsection Visualization
+     set Time between graphical output = 0
+     set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature
+     subsection Material properties
+       set List of material properties = density,thermal expansivity,specific heat,viscosity, compressibility
+     end
+  end
+end
+
+
+subsection Termination criteria
+  set Termination criteria = end time
+  set Checkpoint on termination = true
+end

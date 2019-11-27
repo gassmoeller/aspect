@@ -180,6 +180,7 @@ namespace aspect
                        "heat conduction in determining the length of each time step.");
 
     const std::string allowed_solver_schemes = "single Advection, single Stokes|iterated Advection and Stokes|"
+                                               "iterated Entropy and Stokes|"
                                                "single Advection, iterated Stokes|no Advection, iterated Stokes|"
                                                "iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|"
                                                "single Advection, no Stokes|IMPES|iterated IMPES|"
@@ -1274,6 +1275,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::single_Advection_single_Stokes;
       else if (solver_scheme == "iterated Advection and Stokes" || solver_scheme == "iterated IMPES")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_Stokes;
+      else if (solver_scheme == "iterated Entropy and Stokes")
+        nonlinear_solver = NonlinearSolver::iterated_Entropy_and_Stokes;
       else if (solver_scheme == "single Advection, iterated Stokes" || solver_scheme == "iterated Stokes")
         nonlinear_solver = NonlinearSolver::single_Advection_iterated_Stokes;
       else if (solver_scheme == "no Advection, iterated Stokes" || solver_scheme == "Stokes only")

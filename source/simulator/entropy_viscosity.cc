@@ -255,9 +255,12 @@ namespace aspect
                                                                    advection_field);
     const double global_max_velocity = get_maximal_velocity(old_solution);
 
+    const bool need_hessians = advection_field.is_temperature() ||
+        introspection.name_for_compositional_index(advection_field.compositional_variable) == "entropy";
+
     const UpdateFlags update_flags = update_values |
                                      update_gradients |
-                                     (advection_field.is_temperature() ? update_hessians : update_default) |
+                                     (need_hessians ? update_hessians : update_default) |
                                      update_quadrature_points |
                                      update_JxW_values;
 
@@ -482,7 +485,8 @@ namespace aspect
         scratch.finite_element_values[solution_field].get_function_gradients (old_old_solution,
                                                                               scratch.old_old_field_grads);
 
-        if (advection_field.is_temperature())
+        if (advection_field.is_temperature() ||
+            introspection.name_for_compositional_index(advection_field.compositional_variable) == "entropy")
           {
             scratch.finite_element_values[solution_field].get_function_laplacians (old_solution,
                                                                                    scratch.old_field_laplacians);

@@ -252,7 +252,7 @@ namespace aspect
                                             out.densities[q]*out.specific_heat[q];
               const double conductive_flux = -(temperature_gradients[q]*vertical) *
                                              out.thermal_conductivities[q];
-              output[q] = advective_flux + conductive_flux;
+              output[q] = advective_flux;
             }
         }
 
