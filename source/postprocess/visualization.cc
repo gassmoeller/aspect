@@ -33,6 +33,8 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
+#include <gmt/gmt.h>
+
 #include <math.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -525,6 +527,14 @@ namespace aspect
     std::pair<std::string,std::string>
     Visualization<dim>::execute (TableHandler &statistics)
     {
+      void *API;      /* The API control structure */
+      /* Initialize the GMT session */
+      API = GMT_Create_Session ("test", 2U, 0, NULL);
+      /* And now for something original: */
+      GMT_Message (API, GMT_TIME_NONE, "hello, world\n");
+      /* Destroy the GMT session */
+      GMT_Destroy_Session (API);
+
       // if this is the first time we get here, set the last output time
       // to the current time - output_interval. this makes sure we
       // always produce data during the first time step
