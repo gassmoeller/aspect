@@ -59,6 +59,7 @@ aspect.tag: $(aspect-files) $(change-files) modules/changes.h options.dox Makefi
 	@echo 'IMAGE_PATH = manual'                                  >> aspect.dox
 	@echo 'PROJECT_NAME = "ASPECT"'                              >> aspect.dox
 	@echo 'INPUT = $(aspect-files)'                              >> aspect.dox
+	@echo 'LATEX_OUTPUT      = doxygen'                           >> aspect.dox
 	@echo 'HTML_OUTPUT      = doxygen'                           >> aspect.dox
 	@echo 'GENERATE_TAGFILE = $@'                                >> aspect.dox
 	@doxygen aspect.dox || echo "Running doxygen to generate documentation failed."
