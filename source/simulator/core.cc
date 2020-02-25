@@ -51,6 +51,7 @@
 
 #include <deal.II/fe/mapping_q.h>
 #include <deal.II/fe/mapping_cartesian.h>
+#include <deal.II/fe/mapping_manifold.h>
 
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/derivative_approximation.h>
@@ -1208,7 +1209,7 @@ namespace aspect
                                                        introspection.component_indices.velocities[0],
                                                        boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
                                                        constraints,
-                                                       *mapping);
+                                                       MappingManifold<dim>());
     }
 
 
