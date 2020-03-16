@@ -359,7 +359,24 @@ namespace aspect
     if (stokes_matrix_free)
       return;
 
-    system_preconditioner_matrix = 0;
+    const unsigned int velocity_block_idx = introspection.block_indices.velocities;
+    const unsigned int pressure_block_idx = introspection.block_indices.pressure;
+
+    if (parameters.include_melt_transport)
+      {
+        system_preconditioner_matrix.block(velocity_block_idx, velocity_block_idx) = 0;
+
+        const unsigned int p_f_block_idx = this->introspection().variable("fluid pressure").block_index;
+        const unsigned int p_c_block_idx = this->introspection().variable("compaction pressure").block_index;
+
+        Assert(p_f_block_idx == p_c_block_idx, ExcInternalError());
+        system_preconditioner_matrix.block(p_f_block_idx, p_f_block_idx) = 0;
+      }
+    else
+      {
+        system_preconditioner_matrix.block(velocity_block_idx, velocity_block_idx) = 0;
+        system_preconditioner_matrix.block(pressure_block_idx, pressure_block_idx) = 0;
+      }
 
     const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
 
@@ -706,7 +723,39 @@ namespace aspect
 
 
     if (rebuild_stokes_matrix == true)
-      system_matrix = 0;
+      {
+        const unsigned int velocity_block_idx = introspection.block_indices.velocities;
+        const unsigned int pressure_block_idx = introspection.block_indices.pressure;
+
+        if (parameters.include_melt_transport)
+          {
+            system_matrix.block(velocity_block_idx, velocity_block_idx) = 0;
+
+            const unsigned int p_f_block_idx = this->introspection().variable("fluid pressure").block_index;
+            const unsigned int p_c_block_idx = this->introspection().variable("compaction pressure").block_index;
+
+            Assert(p_f_block_idx == p_c_block_idx, ExcInternalError());
+
+            system_matrix.block(velocity_block_idx, p_f_block_idx) = 0;
+            system_matrix.block(p_f_block_idx, p_f_block_idx) = 0;
+            system_matrix.block(p_f_block_idx, p_f_block_idx) = 0;
+
+            system_rhs.block(velocity_block_idx) = 0;
+            system_rhs.block(p_f_block_idx) = 0;
+          }
+        else
+          {
+        system_matrix.block(velocity_block_idx, velocity_block_idx) = 0;
+        system_matrix.block(velocity_block_idx, pressure_block_idx) = 0;
+        system_matrix.block(pressure_block_idx, velocity_block_idx) = 0;
+
+        if (parameters.use_equal_order_interpolation_for_stokes == true)
+          system_matrix.block(pressure_block_idx, pressure_block_idx) = 0;
+
+        system_rhs.block(velocity_block_idx) = 0;
+        system_rhs.block(pressure_block_idx) = 0;
+          }
+      }
 
     // We are using constraints.distribute_local_to_global() without a matrix
     // if we do not rebuild the Stokes matrix. This produces incorrect results
