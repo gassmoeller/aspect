@@ -255,6 +255,7 @@ namespace aspect
       normal_vector(const typename Triangulation<dim>::face_iterator &face,
                     const Point<dim> &p) const
       {
+        {
         // Let us first test whether we are on a "horizontal" face
         // (tangential to the sphere).  In this case, the normal vector is
         // easy to compute since it is proportional to the vector from the
@@ -293,6 +294,36 @@ namespace aspect
               unnormalized_spherical_normal / unnormalized_spherical_normal.norm();
             return normalized_spherical_normal;
           }
+        }
+
+        // Next check if we are on a conical boundary (constant latitude), in this case
+        // we also have an analytical formula
+        if (dim == 3)
+        {
+          constexpr unsigned int n_vertices = GeometryInfo<dim>::vertices_per_face;
+          std::array<double, n_vertices>     latitudes;
+          std::array<double, n_vertices-1>     latitude_differences;
+
+          latitudes[0] = Utilities::Coordinates::cartesian_to_spherical_coordinates(face->vertex(0))[dim-1];
+          for (unsigned int i = 1; i < n_vertices; ++i)
+            {
+              latitudes[i] = Utilities::Coordinates::cartesian_to_spherical_coordinates(face->vertex(i))[dim-1];
+              latitude_differences[i-1] = std::abs(latitudes[i]-latitudes[i-1]);
+            }
+          const auto minmax_distance =
+            std::minmax_element(latitude_differences.begin(), latitude_differences.end());
+
+          if (*minmax_distance.second < 1e-6)
+            {
+          const double c_squared = (this->radius_1 / this->x_1[dim-1])*(this->radius_1 / this->x_1[dim-1]);
+          Tensor<1,dim> normal = p;
+          normal[0] *= -2.0/c_squared;
+          normal[1] *= -2.0/c_squared;
+          normal[dim-1] *= 2.0;
+
+          return normal/normal.norm();
+            }
+        }
 
         // If it is not a horizontal face, just use the machinery of the
         // base class.
