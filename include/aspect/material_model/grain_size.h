@@ -23,6 +23,8 @@
 #define _aspect_model_grain_size_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/rheology/grain_size_diffusion_dislocation.h>
+
 #include <aspect/simulator_access.h>
 #include <array>
 
@@ -31,37 +33,6 @@ namespace aspect
   namespace MaterialModel
   {
     using namespace dealii;
-
-    /**
-     * Additional output fields for the dislocation viscosity parameters
-     * to be added to the MaterialModel::MaterialModelOutputs structure
-     * and filled in the MaterialModel::GrainSize::evaluate() function.
-     */
-    template <int dim>
-    class DislocationViscosityOutputs : public NamedAdditionalMaterialOutputs<dim>
-    {
-      public:
-        DislocationViscosityOutputs(const unsigned int n_points);
-
-        std::vector<double> get_nth_output(const unsigned int idx) const override;
-
-        /**
-         * Dislocation viscosities at the evaluation points passed to
-         * the instance of MaterialModel::Interface::evaluate() that fills
-         * the current object.
-         */
-        std::vector<double> dislocation_viscosities;
-
-        /**
-         * This contains the fraction of the deformation work that is
-         * converted to surface energy of grains instead of thermal energy.
-         * It is used to reduce the shear heating by this fraction. If it
-         * is set to 0.0 it will not change the shear heating.
-         */
-        std::vector<double> boundary_area_change_work_fractions;
-    };
-
-
 
     /**
      * A material model that relies on compositional fields that stand for
@@ -409,6 +380,11 @@ namespace aspect
          * field provided.
          */
         std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup> > material_lookup;
+
+/**
+ * handles all rheology.
+ */
+        Rheology::GrainSizeDiffusionDislocation<dim> grain_size_rheology;
     };
 
   }

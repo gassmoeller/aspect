@@ -105,69 +105,6 @@ namespace aspect
           void
           create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
 
-        protected:
-        //TODO fix parsing:
-          double reference_rho;
-          double reference_T;
-          double eta;
-
-          /**
-           * Parameters controlling the grain size evolution.
-           */
-          std::vector<double> grain_growth_activation_energy;
-          std::vector<double> grain_growth_activation_volume;
-          std::vector<double> grain_growth_rate_constant;
-          std::vector<double> grain_growth_exponent;
-          double              minimum_grain_size;
-          std::vector<double> reciprocal_required_strain;
-          std::vector<double> recrystallized_grain_size;
-
-          /**
-           * Parameters controlling the dynamic grain recrystallization.
-           * (following paleowattmeter as described in Austin, N. J., & Evans, B.
-           * (2007). Paleowattmeters: A scaling relation for dynamically
-           * recrystallized grain size. Geology, 35(4), 343-346.). If this is
-           * set to false we use the approach of Hall, C. E.,
-           * Parmentier, E. M. (2003). Influence of grain size evolution on
-           * convective instability. Geochemistry, Geophysics, Geosystems, 4(3).
-           */
-          bool use_paleowattmeter;
-          std::vector<double> grain_boundary_energy;
-          std::vector<double> boundary_area_change_work_fraction;
-          std::vector<double> geometric_constant;
-
-          /**
-           * Parameters controlling the viscosity.
-           */
-          double dislocation_viscosity_iteration_threshold;
-          unsigned int dislocation_viscosity_iteration_number;
-          std::vector<double> dislocation_creep_exponent;
-          std::vector<double> dislocation_activation_energy;
-          std::vector<double> dislocation_activation_volume;
-          std::vector<double> dislocation_creep_prefactor;
-          std::vector<double> diffusion_creep_exponent;
-          std::vector<double> diffusion_activation_energy;
-          std::vector<double> diffusion_activation_volume;
-          std::vector<double> diffusion_creep_prefactor;
-          std::vector<double> diffusion_creep_grain_size_exponent;
-
-          /**
-           * Because of the nonlinear nature of this material model many
-           * parameters need to be kept within bounds to ensure stability of the
-           * solution. These bounds can be adjusted as input parameters.
-           */
-          double max_temperature_dependence_of_eta;
-          double min_eta;
-          double max_eta;
-          double min_grain_size;
-          double pv_grain_size_scaling;
-
-          /**
-           * Whether to advect the real grain size, or the logarithm of the
-           * grain size. The logarithm reduces jumps.
-           */
-          bool advect_log_GrainSizeDiffusionDislocation;
-
 
           double viscosity (const double                  temperature,
                             const double                  pressure,
@@ -233,6 +170,69 @@ namespace aspect
                              const Point<dim>             &position,
                              const unsigned int            phase_index,
                              const int                     crossed_transition) const;
+
+        protected:
+        //TODO fix parsing:
+          double reference_rho;
+          double reference_T;
+          double eta;
+
+          /**
+           * Parameters controlling the grain size evolution.
+           */
+          std::vector<double> grain_growth_activation_energy;
+          std::vector<double> grain_growth_activation_volume;
+          std::vector<double> grain_growth_rate_constant;
+          std::vector<double> grain_growth_exponent;
+          double              minimum_grain_size;
+          std::vector<double> reciprocal_required_strain;
+          std::vector<double> recrystallized_grain_size;
+
+          /**
+           * Parameters controlling the dynamic grain recrystallization.
+           * (following paleowattmeter as described in Austin, N. J., & Evans, B.
+           * (2007). Paleowattmeters: A scaling relation for dynamically
+           * recrystallized grain size. Geology, 35(4), 343-346.). If this is
+           * set to false we use the approach of Hall, C. E.,
+           * Parmentier, E. M. (2003). Influence of grain size evolution on
+           * convective instability. Geochemistry, Geophysics, Geosystems, 4(3).
+           */
+          bool use_paleowattmeter;
+          std::vector<double> grain_boundary_energy;
+          std::vector<double> boundary_area_change_work_fraction;
+          std::vector<double> geometric_constant;
+
+          /**
+           * Parameters controlling the viscosity.
+           */
+          double dislocation_viscosity_iteration_threshold;
+          unsigned int dislocation_viscosity_iteration_number;
+          std::vector<double> dislocation_creep_exponent;
+          std::vector<double> dislocation_activation_energy;
+          std::vector<double> dislocation_activation_volume;
+          std::vector<double> dislocation_creep_prefactor;
+          std::vector<double> diffusion_creep_exponent;
+          std::vector<double> diffusion_activation_energy;
+          std::vector<double> diffusion_activation_volume;
+          std::vector<double> diffusion_creep_prefactor;
+          std::vector<double> diffusion_creep_grain_size_exponent;
+
+          /**
+           * Because of the nonlinear nature of this material model many
+           * parameters need to be kept within bounds to ensure stability of the
+           * solution. These bounds can be adjusted as input parameters.
+           */
+          double max_temperature_dependence_of_eta;
+          double min_eta;
+          double max_eta;
+          double min_grain_size;
+          double pv_grain_size_scaling;
+
+          /**
+           * Whether to advect the real grain size, or the logarithm of the
+           * grain size. The logarithm reduces jumps.
+           */
+          bool advect_log_GrainSizeDiffusionDislocation;
 
           /**
            * Function that defines the phase transition interface

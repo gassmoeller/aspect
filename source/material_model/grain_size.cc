@@ -36,51 +36,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    namespace
-    {
-      std::vector<std::string> make_dislocation_viscosity_outputs_names()
-      {
-        std::vector<std::string> names;
-        names.emplace_back("dislocation_viscosity");
-        names.emplace_back("boundary_area_change_work_fraction");
-        return names;
-      }
-    }
-
-
-
-    template <int dim>
-    DislocationViscosityOutputs<dim>::DislocationViscosityOutputs (const unsigned int n_points)
-      :
-      NamedAdditionalMaterialOutputs<dim>(make_dislocation_viscosity_outputs_names()),
-      dislocation_viscosities(n_points, numbers::signaling_nan<double>()),
-      boundary_area_change_work_fractions(n_points, numbers::signaling_nan<double>())
-    {}
-
-
-
-    template <int dim>
-    std::vector<double>
-    DislocationViscosityOutputs<dim>::get_nth_output(const unsigned int idx) const
-    {
-      AssertIndexRange (idx, 2);
-      switch (idx)
-        {
-          case 0:
-            return dislocation_viscosities;
-
-          case 1:
-            return boundary_area_change_work_fractions;
-
-          default:
-            AssertThrow(false, ExcInternalError());
-        }
-      // we will never get here, so just return something
-      return dislocation_viscosities;
-    }
-
-
-
     template <int dim>
     void
     GrainSize<dim>::initialize()
@@ -824,11 +779,11 @@ namespace aspect
               const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i] - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
               const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
 
-              const double diff_viscosity = diffusion_viscosity(in.temperature[i], pressure, composition, in.strain_rate[i], in.position[i]);
+              const double diff_viscosity = grain_size_rheology.diffusion_viscosity(in.temperature[i], pressure, composition, in.strain_rate[i], in.position[i]);
 
               if (std::abs(second_strain_rate_invariant) > 1e-30)
                 {
-                  disl_viscosity = dislocation_viscosity(in.temperature[i], pressure, composition, in.strain_rate[i], in.position[i]);
+                  disl_viscosity = grain_size_rheology.dislocation_viscosity(in.temperature[i], pressure, composition, in.strain_rate[i], in.position[i]);
                   effective_viscosity = disl_viscosity * diff_viscosity / (disl_viscosity + diff_viscosity);
                 }
               else
@@ -853,7 +808,7 @@ namespace aspect
               {
                 if (this->introspection().name_for_compositional_index(c) == "grain_size")
                   {
-                    out.reaction_terms[i][c] = grain_size_change(in.temperature[i], pressure, composition,
+                    out.reaction_terms[i][c] = grain_size_rheology.grain_size_change(in.temperature[i], pressure, composition,
                                                                  in.strain_rate[i], in.velocity[i], in.position[i], c, crossed_transition);
                     if (advect_log_grainsize)
                       out.reaction_terms[i][c] = - out.reaction_terms[i][c] / composition[c];
@@ -1227,6 +1182,8 @@ namespace aspect
       {
         prm.enter_subsection("Grain size model");
         {
+          grain_size_rheology.parse_parameters(prm);
+
           reference_rho              = prm.get_double ("Reference density");
           reference_T                = prm.get_double ("Reference temperature");
           eta                        = prm.get_double ("Viscosity");
