@@ -145,108 +145,11 @@ namespace aspect
          */
         double k_value;
 
-        /**
-         * Parameters controlling the grain size evolution.
-         */
-        std::vector<double> grain_growth_activation_energy;
-        std::vector<double> grain_growth_activation_volume;
-        std::vector<double> grain_growth_rate_constant;
-        std::vector<double> grain_growth_exponent;
-        double              minimum_grain_size;
-        std::vector<double> reciprocal_required_strain;
-        std::vector<double> recrystallized_grain_size;
-
-        /**
-         * Parameters controlling the dynamic grain recrystallization.
-         * (following paleowattmeter as described in Austin, N. J., & Evans, B.
-         * (2007). Paleowattmeters: A scaling relation for dynamically
-         * recrystallized grain size. Geology, 35(4), 343-346.). If this is
-         * set to false we use the approach of Hall, C. E.,
-         * Parmentier, E. M. (2003). Influence of grain size evolution on
-         * convective instability. Geochemistry, Geophysics, Geosystems, 4(3).
-         */
-        bool use_paleowattmeter;
-        std::vector<double> grain_boundary_energy;
-        std::vector<double> boundary_area_change_work_fraction;
-        std::vector<double> geometric_constant;
-
-        /**
-         * Parameters controlling the viscosity.
-         */
-        double dislocation_viscosity_iteration_threshold;
-        unsigned int dislocation_viscosity_iteration_number;
-        std::vector<double> dislocation_creep_exponent;
-        std::vector<double> dislocation_activation_energy;
-        std::vector<double> dislocation_activation_volume;
-        std::vector<double> dislocation_creep_prefactor;
-        std::vector<double> diffusion_creep_exponent;
-        std::vector<double> diffusion_activation_energy;
-        std::vector<double> diffusion_activation_volume;
-        std::vector<double> diffusion_creep_prefactor;
-        std::vector<double> diffusion_creep_grain_size_exponent;
-
-        /**
-         * Because of the nonlinear nature of this material model many
-         * parameters need to be kept within bounds to ensure stability of the
-         * solution. These bounds can be adjusted as input parameters.
-         */
-        double max_temperature_dependence_of_eta;
-        double min_eta;
-        double max_eta;
         double min_specific_heat;
         double max_specific_heat;
         double min_thermal_expansivity;
         double max_thermal_expansivity;
         unsigned int max_latent_heat_substeps;
-        double min_grain_size;
-        double pv_grain_size_scaling;
-
-        /**
-         * Whether to advect the real grain size, or the logarithm of the
-         * grain size. The logarithm reduces jumps.
-         */
-        bool advect_log_grainsize;
-
-
-        double viscosity (const double                  temperature,
-                          const double                  pressure,
-                          const std::vector<double>    &compositional_fields,
-                          const SymmetricTensor<2,dim> &strain_rate,
-                          const Point<dim>             &position) const;
-
-        double diffusion_viscosity (const double      temperature,
-                                    const double      pressure,
-                                    const std::vector<double>    &compositional_fields,
-                                    const SymmetricTensor<2,dim> &,
-                                    const Point<dim> &position) const;
-
-        /**
-         * This function calculates the dislocation viscosity. For this purpose
-         * we need the dislocation component of the strain rate, which we can
-         * only compute by knowing the dislocation viscosity. Therefore, we
-         * iteratively solve for the dislocation viscosity and update the
-         * dislocation strain rate in each iteration using the new value
-         * obtained for the dislocation viscosity. The iteration is started
-         * with a dislocation viscosity calculated for the whole strain rate
-         * unless a guess for the viscosity is provided, which can reduce the
-         * number of iterations significantly.
-         */
-        double dislocation_viscosity (const double      temperature,
-                                      const double      pressure,
-                                      const std::vector<double>    &compositional_fields,
-                                      const SymmetricTensor<2,dim> &strain_rate,
-                                      const Point<dim> &position,
-                                      const double viscosity_guess = 0) const;
-
-        /**
-         * This function calculates the dislocation viscosity for a given
-         * dislocation strain rate.
-         */
-        double dislocation_viscosity_fixed_strain_rate (const double      temperature,
-                                                        const double      pressure,
-                                                        const std::vector<double> &,
-                                                        const SymmetricTensor<2,dim> &dislocation_strain_rate,
-                                                        const Point<dim> &position) const;
 
         double density (const double temperature,
                         const double pressure,
@@ -285,73 +188,6 @@ namespace aspect
                            const Point<dim> &position) const;
 
         /**
-         * Rate of grain size growth (Ostwald ripening) or reduction
-         * (due to dynamic recrystallization and phase transformations)
-         * in dependence on temperature, pressure, strain rate, mineral
-         * phase and creep regime.
-         * We use the grain size growth laws as for example described
-         * in Behn, M. D., Hirth, G., & Elsenbeck, J. R. (2009). Implications
-         * of grain size evolution on the seismic structure of the oceanic
-         * upper mantle. Earth and Planetary Science Letters, 282(1), 178-189.
-         *
-         * For the rate of grain size reduction due to dynamic crystallization
-         * there is the choice between the paleowattmeter (Austins and
-         * Evans, 2007) and the paleopiezometer (Hall and Parmentier, 2003)
-         * as described in the parameter use_paleowattmeter.
-         */
-        double
-        grain_size_change (const double                  temperature,
-                           const double                  pressure,
-                           const std::vector<double>    &compositional_fields,
-                           const SymmetricTensor<2,dim> &strain_rate,
-                           const Tensor<1,dim>          &velocity,
-                           const Point<dim>             &position,
-                           const unsigned int            phase_index,
-                           const int                     crossed_transition) const;
-
-        /**
-         * Function that defines the phase transition interface
-         * (0 above, 1 below the phase transition).This is done
-         * individually for each transition and summed up in the end.
-         */
-        double
-        phase_function (const Point<dim> &position,
-                        const double temperature,
-                        const double pressure,
-                        const unsigned int phase) const;
-
-        /**
-         * Function that returns the phase for a given
-         * position, temperature, pressure and compositional
-         * field index.
-         */
-        unsigned int
-        get_phase_index (const Point<dim> &position,
-                         const double temperature,
-                         const double pressure) const;
-
-        /**
-         * Function that takes an object in the same format
-         * as in.composition as argument and converts the
-         * vector that corresponds to the grain size to its
-         * logarithms and limits the grain size to
-         * a global minimum. The input argument @p compositional_fields
-         * is modified in-place.
-         */
-        void
-        convert_log_grain_size (std::vector<double> &compositional_fields) const;
-
-        /**
-         * list of depth, width and Clapeyron slopes for the different phase
-         * transitions and in which phase they occur
-         */
-        std::vector<double> transition_depths;
-        std::vector<double> transition_temperatures;
-        std::vector<double> transition_slopes;
-        std::vector<double> transition_widths;
-
-
-        /**
          * The following variables are properties of the material files
          * we read in.
          */
@@ -381,9 +217,9 @@ namespace aspect
          */
         std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup> > material_lookup;
 
-/**
- * handles all rheology.
- */
+        /**
+         * handles all rheology.
+         */
         Rheology::GrainSizeDiffusionDislocation<dim> grain_size_rheology;
     };
 

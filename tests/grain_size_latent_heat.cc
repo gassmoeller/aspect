@@ -21,6 +21,7 @@
 #include <aspect/material_model/grain_size.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -48,17 +49,26 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class GrainSizeLatentHeat : public MaterialModel::GrainSize<dim>
+    class GrainSizeLatentHeat : public MaterialModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
-        virtual bool is_compressible () const
+        bool is_compressible () const override
         {
           return false;
         }
 
-        virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                              typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+        void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+                      typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
         {
+          // First let the base model compute all values
+          grain_size_model.evaluate(in,out);
+
+          // We dont want any grain size change for this test
+          for (unsigned int i=0; i<in.position.size(); ++i)
+            for (unsigned int c = 0; c<out.reaction_terms[i].size(); ++c)
+              out.reaction_terms[i][c] = 0.0;
+
+          // Now modify thermal expansivity and specific heat for this benchmark
           double dHdT = 0.0;
           double dHdp = 0.0;
 
@@ -99,20 +109,20 @@ namespace aspect
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
-                  const double own_enthalpy = this->material_lookup[0]->enthalpy(temperatures[q],pressures[q]);
+                  const double own_enthalpy = material_lookup[0]->enthalpy(temperatures[q],pressures[q]);
                   for (unsigned int p=0; p<n_q_points; ++p)
                     {
                       double enthalpy_p,enthalpy_T;
                       if (std::fabs(temperatures[q] - temperatures[p]) > 1e-12 * temperatures[q])
                         {
-                          enthalpy_p = this->material_lookup[0]->enthalpy(temperatures[p],pressures[q]);
+                          enthalpy_p = material_lookup[0]->enthalpy(temperatures[p],pressures[q]);
                           const double point_contribution = (own_enthalpy-enthalpy_p)/(temperatures[q]-temperatures[p]);
                           dHdT += point_contribution;
                           T_points++;
                         }
                       if (std::fabs(pressures[q] - pressures[p]) > 1)
                         {
-                          enthalpy_T = this->material_lookup[0]->enthalpy(temperatures[q],pressures[p]);
+                          enthalpy_T = material_lookup[0]->enthalpy(temperatures[q],pressures[p]);
                           dHdp += (own_enthalpy-enthalpy_T)/(pressures[q]-pressures[p]);
                           p_points++;
                         }
@@ -129,58 +139,6 @@ namespace aspect
 
           for (unsigned int i=0; i<in.position.size(); ++i)
             {
-              // convert the grain size from log to normal
-              std::vector<double> composition (in.composition[i]);
-              if (this->advect_log_grainsize)
-                this->convert_log_grain_size(composition);
-              else
-                for (unsigned int c=0; c<composition.size(); ++c)
-                  composition[c] = std::max(this->min_grain_size,composition[c]);
-
-              // set up an integer that tells us which phase transition has been crossed inside of the cell
-              int crossed_transition(-1);
-
-              if (this->get_adiabatic_conditions().is_initialized())
-                for (unsigned int phase=0; phase<this->transition_depths.size(); ++phase)
-                  {
-                    // first, get the pressure at which the phase transition occurs normally
-                    const Point<dim,double> transition_point = this->get_geometry_model().representative_point(this->transition_depths[phase]);
-                    const Point<dim,double> transition_plus_width = this->get_geometry_model().representative_point(this->transition_depths[phase] + this->transition_widths[phase]);
-                    const Point<dim,double> transition_minus_width = this->get_geometry_model().representative_point(this->transition_depths[phase] - this->transition_widths[phase]);
-                    const double transition_pressure = this->get_adiabatic_conditions().pressure(transition_point);
-                    const double pressure_width = 0.5 * (this->get_adiabatic_conditions().pressure(transition_plus_width)
-                                                         - this->get_adiabatic_conditions().pressure(transition_minus_width));
-
-
-                    // then calculate the deviation from the transition point (both in temperature
-                    // and in pressure)
-                    double pressure_deviation = in.pressure[i] - transition_pressure
-                                                - this->transition_slopes[phase] * (in.temperature[i] - this->transition_temperatures[phase]);
-
-                    if ((std::abs(pressure_deviation) < pressure_width)
-                        &&
-                        ((in.velocity[i] * this->get_gravity_model().gravity_vector(in.position[i])) * pressure_deviation > 0))
-                      crossed_transition = phase;
-                  }
-              else
-                for (unsigned int j=0; j<in.position.size(); ++j)
-                  for (unsigned int k=0; k<this->transition_depths.size(); ++k)
-                    if ((this->phase_function(in.position[i], in.temperature[i], in.pressure[i], k)
-                         != this->phase_function(in.position[j], in.temperature[j], in.pressure[j], k))
-                        &&
-                        ((in.velocity[i] * this->get_gravity_model().gravity_vector(in.position[i]))
-                         * ((in.position[i] - in.position[j]) * this->get_gravity_model().gravity_vector(in.position[i])) > 0))
-                      crossed_transition = k;
-
-              if (in.strain_rate.size() > 0)
-                out.viscosities[i] = std::min(std::max(this->min_eta,this->viscosity(in.temperature[i],
-                                                                                     in.pressure[i],
-                                                                                     composition,
-                                                                                     in.strain_rate[i],
-                                                                                     in.position[i])),this->max_eta);
-
-              out.densities[i] = this->density(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-
               if (this->get_adiabatic_conditions().is_initialized())
                 {
                   if ((in.current_cell.state() == IteratorState::valid)
@@ -190,37 +148,176 @@ namespace aspect
                       out.thermal_expansion_coefficients[i] = (1 - 3515.6 * dHdp) / in.temperature[i];
                       out.specific_heat[i] = dHdT;
                     }
-                  else
-                    {
-                      out.thermal_expansion_coefficients[i] = this->thermal_expansion_coefficient(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-                      out.specific_heat[i] = this->specific_heat(in.temperature[i], in.pressure[i], composition, in.position[i]);
-                    }
                 }
               else
                 {
-                  out.thermal_expansion_coefficients[i] = (1 - 3515.6 * this->material_lookup[0]->dHdp(in.temperature[i],in.pressure[i])) / in.temperature[i];
-                  out.specific_heat[i] = this->material_lookup[0]->dHdT(in.temperature[i],in.pressure[i]);
+                  out.thermal_expansion_coefficients[i] = (1 - 3515.6 * material_lookup[0]->dHdp(in.temperature[i],in.pressure[i])) / in.temperature[i];
+                  out.specific_heat[i] = material_lookup[0]->dHdT(in.temperature[i],in.pressure[i]);
                 }
-
-              out.thermal_conductivities[i] = this->k_value;
-              out.compressibilities[i] = this->compressibility(in.temperature[i], in.pressure[i], composition, in.position[i]);
-
-              // TODO: make this more general for not just olivine grains
-              if (in.strain_rate.size() > 0)
-                for (unsigned int c=0; c<composition.size(); ++c)
-                  {
-                    if (this->introspection().name_for_compositional_index(c) == "olivine_grain_size")
-                      {
-                        out.reaction_terms[i][c] = this->grain_size_change(in.temperature[i], in.pressure[i], composition,
-                                                                           in.strain_rate[i], in.velocity[i], in.position[i], c, crossed_transition);
-                        if (this->advect_log_grainsize)
-                          out.reaction_terms[i][c] = - out.reaction_terms[i][c] / composition[c];
-                      }
-                    else
-                      out.reaction_terms[i][c] = 0.0;
-                  }
             }
         }
+
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override
+        {
+          grain_size_model.create_additional_named_outputs(out);
+        }
+
+        void
+        initialize() override
+        {
+          grain_size_model.initialize();
+
+          n_material_data = material_file_names.size();
+          for (unsigned i = 0; i < n_material_data; i++)
+            {
+              if (material_file_format == perplex)
+                material_lookup
+                .push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(datadirectory+material_file_names[i],
+                           use_bilinear_interpolation,
+                           this->get_mpi_communicator()));
+              else if (material_file_format == hefesto)
+                material_lookup
+                .push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::HeFESToReader>(datadirectory+material_file_names[i],
+                           datadirectory+derivatives_file_names[i],
+                           use_bilinear_interpolation,
+                           this->get_mpi_communicator()));
+              else
+                AssertThrow (false, ExcNotImplemented());
+            }
+        }
+
+        double
+        reference_viscosity () const override
+        {
+          return grain_size_model.reference_viscosity();
+        }
+
+        static
+        void
+        declare_parameters (ParameterHandler &prm)
+        {
+          MaterialModel::GrainSize<dim>::declare_parameters(prm);
+        }
+
+
+        void
+        parse_parameters (ParameterHandler &prm) override
+        {
+          prm.enter_subsection("Material model");
+          {
+            prm.enter_subsection("Grain size model");
+            {
+              // parameters for reading in tables with material properties
+              datadirectory        = prm.get ("Data directory");
+              {
+                const std::string subst_text = "$ASPECT_SOURCE_DIR";
+                std::string::size_type position;
+                while (position = datadirectory.find (subst_text),  position!=std::string::npos)
+                  datadirectory.replace (datadirectory.begin()+position,
+                                         datadirectory.begin()+position+subst_text.size(),
+                                         ASPECT_SOURCE_DIR);
+              }
+              material_file_names  = Utilities::split_string_list
+                                     (prm.get ("Material file names"));
+              derivatives_file_names = Utilities::split_string_list
+                                       (prm.get ("Derivatives file names"));
+              use_table_properties = prm.get_bool ("Use table properties");
+              use_enthalpy = prm.get_bool ("Use enthalpy for material properties");
+
+              // We only use the enthalpy in this test material model, but not for our grain_size_model member
+              // variable.
+              prm.set("Use enthalpy for material properties", false);
+
+              // Make sure the grain size field comes after all potential material
+              // data fields. Otherwise our material model calculation uses the
+              // wrong compositional fields.
+              if (use_table_properties && material_file_names.size() > 1)
+                {
+                  AssertThrow(this->introspection().compositional_index_for_name("grain_size") >= material_file_names.size(),
+                              ExcMessage("The compositional fields indicating the major element composition need to be first in the "
+                                         "list of compositional fields, but the grain size field seems to have a lower index than the number "
+                                         "of provided data files. This is likely inconsistent. Please check the number of provided data "
+                                         "files and the order of compositional fields."));
+                }
+
+              if (prm.get ("Material file format") == "perplex")
+                material_file_format = perplex;
+              else if (prm.get ("Material file format") == "hefesto")
+                material_file_format = hefesto;
+              else
+                AssertThrow (false, ExcNotImplemented());
+
+              use_bilinear_interpolation = prm.get_bool ("Bilinear interpolation");
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+
+
+          grain_size_model.initialize_simulator(this->get_simulator());
+          grain_size_model.parse_parameters(prm);
+
+
+
+          // Declare dependencies on solution variables
+          this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+
+          this->model_dependence.viscosity = NonlinearDependence::temperature
+                                             | NonlinearDependence::pressure
+                                             | NonlinearDependence::strain_rate
+                                             | NonlinearDependence::compositional_fields;
+
+          this->model_dependence.density = NonlinearDependence::none;
+          this->model_dependence.compressibility = NonlinearDependence::none;
+          this->model_dependence.specific_heat = NonlinearDependence::none;
+
+          if (use_table_properties)
+            {
+              this->model_dependence.density |= NonlinearDependence::temperature
+                                                | NonlinearDependence::pressure
+                                                | NonlinearDependence::compositional_fields;
+              this->model_dependence.compressibility = NonlinearDependence::temperature
+                                                       | NonlinearDependence::pressure
+                                                       | NonlinearDependence::compositional_fields;
+              this->model_dependence.specific_heat = NonlinearDependence::temperature
+                                                     | NonlinearDependence::pressure
+                                                     | NonlinearDependence::compositional_fields;
+            }
+        }
+
+      private:
+
+        MaterialModel::GrainSize<dim> grain_size_model;
+
+        /**
+        * The following variables are properties of the material files
+        * we read in.
+        */
+        std::string datadirectory;
+        std::vector<std::string> material_file_names;
+        std::vector<std::string> derivatives_file_names;
+        unsigned int n_material_data;
+        bool use_table_properties;
+        bool use_enthalpy;
+        bool use_bilinear_interpolation;
+
+        /**
+         * The format of the provided material files. Currently we support
+         * the PERPLEX and HeFESTo data formats.
+         */
+        enum formats
+        {
+          perplex,
+          hefesto
+        } material_file_format;
+
+        /**
+         * List of pointers to objects that read and process data we get from
+         * material data files. There is one pointer/object per compositional
+         * field provided.
+         */
+        std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup> > material_lookup;
     };
   }
 }

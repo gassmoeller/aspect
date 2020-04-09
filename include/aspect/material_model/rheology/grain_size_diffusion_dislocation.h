@@ -31,34 +31,34 @@ namespace aspect
   {
     using namespace dealii;
 
-      /**
-      * Additional output fields for the dislocation viscosity parameters
-      * to be added to the MaterialModel::MaterialModelOutputs structure
-      * and filled in the MaterialModel::GrainSizeDiffusionDislocation::evaluate() function.
-      */
-      template <int dim>
-      class DislocationViscosityOutputs : public NamedAdditionalMaterialOutputs<dim>
-      {
-        public:
-          DislocationViscosityOutputs(const unsigned int n_points);
+    /**
+    * Additional output fields for the dislocation viscosity parameters
+    * to be added to the MaterialModel::MaterialModelOutputs structure
+    * and filled in the MaterialModel::GrainSizeDiffusionDislocation::evaluate() function.
+    */
+    template <int dim>
+    class DislocationViscosityOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        DislocationViscosityOutputs(const unsigned int n_points);
 
-          std::vector<double> get_nth_output(const unsigned int idx) const override;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
-          /**
-           * Dislocation viscosities at the evaluation points passed to
-           * the instance of MaterialModel::Interface::evaluate() that fills
-           * the current object.
-           */
-          std::vector<double> dislocation_viscosities;
+        /**
+         * Dislocation viscosities at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> dislocation_viscosities;
 
-          /**
-           * This contains the fraction of the deformation work that is
-           * converted to surface energy of grains instead of thermal energy.
-           * It is used to reduce the shear heating by this fraction. If it
-           * is set to 0.0 it will not change the shear heating.
-           */
-          std::vector<double> boundary_area_change_work_fractions;
-      };
+        /**
+         * This contains the fraction of the deformation work that is
+         * converted to surface energy of grains instead of thermal energy.
+         * It is used to reduce the shear heating by this fraction. If it
+         * is set to 0.0 it will not change the shear heating.
+         */
+        std::vector<double> boundary_area_change_work_fractions;
+    };
 
     namespace Rheology
     {
@@ -106,11 +106,9 @@ namespace aspect
           create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
 
 
-          double viscosity (const double                  temperature,
-                            const double                  pressure,
-                            const std::vector<double>    &compositional_fields,
-                            const SymmetricTensor<2,dim> &strain_rate,
-                            const Point<dim>             &position) const;
+          void viscosity (const typename Interface<dim>::MaterialModelInputs &in,
+                          typename Interface<dim>::MaterialModelOutputs &out,
+                          const unsigned int i) const;
 
           double diffusion_viscosity (const double      temperature,
                                       const double      pressure,
@@ -171,11 +169,21 @@ namespace aspect
                              const unsigned int            phase_index,
                              const int                     crossed_transition) const;
 
+          int
+          crossed_transition (const MaterialModelInputs<dim> &in,
+                              const unsigned int i) const;
+
         protected:
-        //TODO fix parsing:
+          //TODO fix parsing:
           double reference_rho;
           double reference_T;
           double eta;
+
+          /**
+           * Whether to advect the real grain size, or the logarithm of the
+           * grain size. The logarithm reduces jumps.
+           */
+          bool advect_log_grainsize;
 
           /**
            * Parameters controlling the grain size evolution.
