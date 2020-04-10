@@ -380,48 +380,6 @@ namespace aspect
       {
         const double diff_viscosity = diffusion_viscosity(temperature,pressure,composition,strain_rate,position) ;
 
-        // Start the iteration with the full strain rate
-        double dis_viscosity;
-        if (viscosity_guess == 0)
-          dis_viscosity = dislocation_viscosity_fixed_strain_rate(temperature,pressure,std::vector<double>(),strain_rate,position);
-        else
-          dis_viscosity = viscosity_guess;
-
-        double dis_viscosity_old = 0;
-        unsigned int i = 0;
-        while ((std::abs((dis_viscosity-dis_viscosity_old) / dis_viscosity) > dislocation_viscosity_iteration_threshold)
-               && (i < dislocation_viscosity_iteration_number))
-          {
-            const SymmetricTensor<2,dim> dislocation_strain_rate = diff_viscosity
-                                                                   / (diff_viscosity + dis_viscosity) * strain_rate;
-            dis_viscosity_old = dis_viscosity;
-            dis_viscosity = dislocation_viscosity_fixed_strain_rate(temperature,
-                                                                    pressure,
-                                                                    std::vector<double>(),
-                                                                    dislocation_strain_rate,
-                                                                    position);
-            ++i;
-          }
-
-        Assert(i<dislocation_viscosity_iteration_number,ExcInternalError());
-
-        return dis_viscosity;
-      }
-
-
-
-      template <int dim>
-      double
-      GrainSizeDiffusionDislocation<dim>::
-      dislocation_viscosity_fixed_strain_rate (const double      temperature,
-                                               const double      pressure,
-                                               const std::vector<double> &,
-                                               const SymmetricTensor<2,dim> &dislocation_strain_rate,
-                                               const Point<dim> &position) const
-      {
-        const SymmetricTensor<2,dim> shear_strain_rate = dislocation_strain_rate - 1./dim * trace(dislocation_strain_rate) * unit_symmetric_tensor<dim>();
-        const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
-
         // Currently this will never be called without adiabatic_conditions initialized, but just in case
         const double adiabatic_pressure = this->get_adiabatic_conditions().is_initialized()
                                           ?
@@ -449,12 +407,59 @@ namespace aspect
             if (temperature_dependence < 1.0 / max_temperature_dependence_of_eta)
               energy_term = adiabatic_energy_term / max_temperature_dependence_of_eta;
           }
-
         const double strain_rate_dependence = (1.0 - dislocation_creep_exponent[phase_index]) / dislocation_creep_exponent[phase_index];
+        const double dislocation_term = std::pow(dislocation_creep_prefactor[phase_index],-1.0/dislocation_creep_exponent[phase_index]);
 
-        return std::pow(dislocation_creep_prefactor[phase_index],-1.0/dislocation_creep_exponent[phase_index])
-               * std::pow(second_strain_rate_invariant,strain_rate_dependence)
-               * energy_term;
+        // Start the iteration with the full strain rate
+        double dis_viscosity;
+        if (viscosity_guess == 0)
+          {
+            const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
+            const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+
+            dis_viscosity = dislocation_term
+                            * std::pow(second_strain_rate_invariant,strain_rate_dependence)
+                            * energy_term;
+
+          }
+        else
+          dis_viscosity = viscosity_guess;
+
+        double dis_viscosity_old = 0;
+        unsigned int i = 0;
+        while ((std::abs((dis_viscosity-dis_viscosity_old) / dis_viscosity) > dislocation_viscosity_iteration_threshold)
+               && (i < dislocation_viscosity_iteration_number))
+          {
+            const SymmetricTensor<2,dim> dislocation_strain_rate = diff_viscosity
+                                                                   / (diff_viscosity + dis_viscosity) * strain_rate;
+            dis_viscosity_old = dis_viscosity;
+
+            const SymmetricTensor<2,dim> shear_strain_rate = dislocation_strain_rate - 1./dim * trace(dislocation_strain_rate) * unit_symmetric_tensor<dim>();
+            const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+
+            dis_viscosity = dislocation_term
+                            * std::pow(second_strain_rate_invariant,strain_rate_dependence)
+                            * energy_term;
+            ++i;
+          }
+
+        Assert(i<dislocation_viscosity_iteration_number,ExcInternalError());
+
+        return dis_viscosity;
+      }
+
+
+
+      template <int dim>
+      double
+      GrainSizeDiffusionDislocation<dim>::
+      dislocation_viscosity_fixed_strain_rate (const double      /*temperature*/,
+                                               const double      /*pressure*/,
+                                               const std::vector<double> &,
+                                               const SymmetricTensor<2,dim> &/*dislocation_strain_rate*/,
+                                               const Point<dim> &/*position*/) const
+      {
+        return 0.0;
       }
 
 
@@ -588,9 +593,9 @@ namespace aspect
       void
       GrainSizeDiffusionDislocation<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.declare_entry ("Reference temperature", "293",
+        prm.declare_entry ("Reference density", "3300",
                            Patterns::Double (0),
-                           "The reference temperature $T_0$. Units: $\\si{K}$.");
+                           "The reference density $\\rho_0$. Units: $kg/m^3$.");
         prm.declare_entry ("Viscosity", "5e24",
                            Patterns::Double (0),
                            "The value of the constant viscosity. Units: $kg/m/s$.");
@@ -781,7 +786,7 @@ namespace aspect
                                 "field with name 'grain_size' is present. Please use another material "
                                 "model or add such a field."));
 
-        reference_T                = prm.get_double ("Reference temperature");
+        reference_rho              = prm.get_double ("Reference density");
         eta                        = prm.get_double ("Viscosity");
 
         transition_depths         = Utilities::string_to_double

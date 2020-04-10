@@ -169,14 +169,18 @@ namespace aspect
                              const unsigned int            phase_index,
                              const int                     crossed_transition) const;
 
+
+          /**
+           * Function that determines if the material in this cell has crossed
+           * a phase transition and if so which one. Returns -1 of no transition
+           * was crossed.
+           */
           int
           crossed_transition (const MaterialModelInputs<dim> &in,
                               const unsigned int i) const;
 
-        protected:
-          //TODO fix parsing:
+        private:
           double reference_rho;
-          double reference_T;
           double eta;
 
           /**
