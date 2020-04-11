@@ -135,7 +135,7 @@ namespace aspect
         edot_ii = ref_strain_rate;
       else
         // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
-        edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
+        edot_ii = std::max(Utilities::compute_strain_rate_invariant(strain_rate),
                            min_strain_rate);
 
       // Calculate viscosities for each of the individual compositional phases

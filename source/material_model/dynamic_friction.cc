@@ -40,11 +40,11 @@ namespace aspect
       std::vector<double> viscosities(mu_s.size());
 
       // second invariant for strain tensor
-      const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
-                                            ?
-                                            reference_strain_rate * reference_strain_rate
-                                            :
-                                            std::fabs(second_invariant(deviator(strain_rate))));
+      const double strain_rate_dev_inv = ((this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
+                                          ?
+                                          reference_strain_rate
+                                          :
+                                          Utilities::compute_strain_rate_invariant(strain_rate));
 
       for (unsigned int i = 0; i < mu_s.size(); i++)
         {
@@ -52,7 +52,7 @@ namespace aspect
           // equation 13 in van Dinther et al., (2013, JGR). Although here the dynamic friction coefficient
           // is directly specified. In addition, we also use a reference strain rate in place of a characteristic
           // velocity divided by local element size.
-          const double mu  = mu_d[i] + (mu_s[i] - mu_d[i]) / ( (1 + strain_rate_dev_inv2/reference_strain_rate) );
+          const double mu  = mu_d[i] + (mu_s[i] - mu_d[i]) / ( (1 + strain_rate_dev_inv*strain_rate_dev_inv/reference_strain_rate) );
 
           // Convert effective steady-state friction coefficient to internal angle of friction.
           const double phi = std::atan (mu);
@@ -61,7 +61,7 @@ namespace aspect
           const double plastic_viscosity = drucker_prager_plasticity.compute_viscosity(cohesions[i],
                                                                                        phi,
                                                                                        std::max(pressure,0.0),
-                                                                                       std::sqrt(strain_rate_dev_inv2),
+                                                                                       strain_rate_dev_inv,
                                                                                        std::numeric_limits<double>::infinity());
 
           // Cut off the viscosity between a minimum and maximum value to avoid

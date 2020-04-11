@@ -3401,6 +3401,48 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    double compute_strain_rate_invariant(const SymmetricTensor<2,dim> &strain_rate)
+    {
+      /*
+       The line below is equivalent to:
+
+       const Tensor<2,dim> deviatoric_strain_rate
+              = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
+
+        const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(deviatoric_strain_rate)));
+       */
+      const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(deviator(strain_rate))));
+
+      return second_strain_rate_invariant;
+    }
+
+
+
+    template <int dim>
+    SymmetricTensor<2,dim>  compute_shear_strain_rate(const SymmetricTensor<2,dim> &strain_rate)
+    {
+      const SymmetricTensor<2,dim> deviatoric_strain_rate
+        = strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>();
+
+      return deviatoric_strain_rate;
+    }
+
+
+
+    template <int dim>
+    SymmetricTensor<2,dim> compute_shear_stress_tensor(const SymmetricTensor<2,dim> &strain_rate,
+                                                       const double viscosity)
+    {
+      const SymmetricTensor<2,dim> shear_stress =
+        2.0 * viscosity *
+        compute_shear_strain_rate(strain_rate);
+
+      return shear_stress;
+    }
+
+
 // Explicit instantiations
 
 #define INSTANTIATE(dim) \
@@ -3409,7 +3451,17 @@ namespace aspect
                                                       const ComponentMask &); \
   template \
   std::vector<std::string> \
-  expand_dimensional_variable_names<dim> (const std::vector<std::string> &var_declarations);
+  expand_dimensional_variable_names<dim> (const std::vector<std::string> &var_declarations); \
+  \
+  template \
+  double compute_strain_rate_invariant(const SymmetricTensor<2,dim> &); \
+  \
+  template \
+  SymmetricTensor<2,dim> compute_shear_strain_rate(const SymmetricTensor<2,dim> &); \
+  \
+  template \
+  SymmetricTensor<2,dim> compute_shear_stress_tensor(const SymmetricTensor<2,dim> &, \
+                                                     const double );
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 

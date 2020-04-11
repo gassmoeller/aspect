@@ -125,7 +125,7 @@ namespace aspect
 
 
         // Calculate strain rate second invariant
-        const double edot_ii = std::sqrt(std::fabs(second_invariant(deviator(strain_rate))));
+        const double edot_ii = Utilities::compute_strain_rate_invariant(strain_rate);
 
         // New strain is the old strain plus dt*edot_ii
         const double new_strain = old_strain + dt*edot_ii;

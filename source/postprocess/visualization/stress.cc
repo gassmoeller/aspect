@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/stress.h>
+#include <aspect/utilities.h>
 
 
 
@@ -53,18 +54,9 @@ namespace aspect
         // ...and use it to compute the stresses
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
-            const SymmetricTensor<2,dim> compressible_strain_rate
-              = (this->get_material_model().is_compressible()
-                 ?
-                 strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                 :
-                 strain_rate);
-
-            const double eta = out.viscosities[q];
-
-            const SymmetricTensor<2,dim> stress = 2*eta*compressible_strain_rate +
+            const SymmetricTensor<2,dim> stress = Utilities::compute_shear_stress_tensor(in.strain_rate[q],out.viscosities[q]) +
                                                   in.pressure[q] * unit_symmetric_tensor<dim>();
+
             for (unsigned int i=0; i<SymmetricTensor<2,dim>::n_independent_components; ++i)
               computed_quantities[q](i) = stress[stress.unrolled_to_component_indices(i)];
           }

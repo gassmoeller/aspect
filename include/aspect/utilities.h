@@ -1366,6 +1366,24 @@ namespace aspect
          */
         std::array<double,dim> coordinates;
     };
+
+    /**
+     * A function that takes the @p strain_rate as input argument and computes the
+     * quantity epsilondot_ii, often called strain rate invariant in the geodynamic
+     * literature. Note that when publications
+     * in the geosciences talk about the strain rate invariant they in fact mean:
+     * the square-root of the norm of the second invariant of the deviatoric strain
+     * rate. Therefore this is what this function returns.
+     */
+    template <int dim>
+    double compute_strain_rate_invariant(const SymmetricTensor<2,dim> &strain_rate);
+
+    template <int dim>
+    SymmetricTensor<2,dim> compute_shear_strain_rate(const SymmetricTensor<2,dim> &strain_rate);
+
+    template <int dim>
+    SymmetricTensor<2,dim> compute_shear_stress_tensor(const SymmetricTensor<2,dim> &strain_rate,
+                                                       const double shear_viscosity);
   }
 }
 

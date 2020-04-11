@@ -47,13 +47,7 @@ namespace aspect
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
-          const SymmetricTensor<2,dim> compressible_strain_rate =
-            (this->get_material_model().is_compressible()
-             ?
-             material_model_inputs.strain_rate[q]
-             - 1./3. * trace(material_model_inputs.strain_rate[q]) * unit_symmetric_tensor<dim>()
-             :
-             material_model_inputs.strain_rate[q]);
+          const SymmetricTensor<2,dim> compressible_strain_rate = Utilities::compute_shear_strain_rate(material_model_inputs.strain_rate[q]);
 
           const SymmetricTensor<2,dim> stress =
             2 * material_model_outputs.viscosities[q] *

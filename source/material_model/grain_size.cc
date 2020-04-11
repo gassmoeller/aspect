@@ -245,8 +245,7 @@ namespace aspect
           const double grain_size_growth = grain_size_growth_rate * grain_growth_timestep;
 
           // grain size reduction in dislocation creep regime
-          const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
-          const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+          const double second_strain_rate_invariant = Utilities::compute_strain_rate_invariant(strain_rate);
 
           const double current_diffusion_viscosity   = diffusion_viscosity(temperature, pressure, current_composition, strain_rate, position);
           current_dislocation_viscosity              = dislocation_viscosity(temperature, pressure, current_composition, strain_rate, position, current_dislocation_viscosity);
@@ -335,8 +334,7 @@ namespace aspect
                          const SymmetricTensor<2,dim> &strain_rate,
                          const Point<dim>             &position) const
     {
-      const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
-      const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+      const double second_strain_rate_invariant = Utilities::compute_strain_rate_invariant(strain_rate);
 
       const double grain_size = composition[this->introspection().compositional_index_for_name("grain_size")];
 
@@ -429,8 +427,7 @@ namespace aspect
                                              const SymmetricTensor<2,dim> &dislocation_strain_rate,
                                              const Point<dim> &position) const
     {
-      const SymmetricTensor<2,dim> shear_strain_rate = dislocation_strain_rate - 1./dim * trace(dislocation_strain_rate) * unit_symmetric_tensor<dim>();
-      const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+      const double second_strain_rate_invariant = Utilities::compute_strain_rate_invariant(dislocation_strain_rate);
 
       // Currently this will never be called without adiabatic_conditions initialized, but just in case
       const double adiabatic_pressure = this->get_adiabatic_conditions().is_initialized()
@@ -478,8 +475,7 @@ namespace aspect
                const SymmetricTensor<2,dim> &strain_rate,
                const Point<dim> &position) const
     {
-      const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
-      const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+      const double second_strain_rate_invariant = Utilities::compute_strain_rate_invariant(strain_rate);
 
       const double diff_viscosity = diffusion_viscosity(temperature, pressure, composition, strain_rate, position);
 
@@ -821,8 +817,7 @@ namespace aspect
               double effective_viscosity;
               double disl_viscosity = std::numeric_limits<double>::max();
 
-              const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i] - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
-              const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+              const double second_strain_rate_invariant = Utilities::compute_strain_rate_invariant(in.strain_rate[i]);
 
               const double diff_viscosity = diffusion_viscosity(in.temperature[i], pressure, composition, in.strain_rate[i], in.position[i]);
 

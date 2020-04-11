@@ -414,7 +414,8 @@ namespace aspect
         // Calculate changes in strain and update the reaction terms
         if  (this->simulator_is_past_initialization() && this->get_timestep_number() > 0 && in.strain_rate.size())
           {
-            const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
+            const double edot_ii = std::max(Utilities::compute_strain_rate_invariant(in.strain_rate[i]),min_strain_rate);
+
             const double e_ii = edot_ii*this->get_timestep();
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_only && plastic_yielding == true)
               out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
