@@ -128,7 +128,7 @@ namespace aspect
         std::array<std::pair<double, unsigned int>,2>
         enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const;
 
-      protected:
+      private:
         double reference_rho;
         double reference_T;
         double eta;

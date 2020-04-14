@@ -588,9 +588,9 @@ namespace aspect
       void
       GrainSizeDiffusionDislocation<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.declare_entry ("Reference temperature", "293",
+        prm.declare_entry ("Reference density", "3300",
                            Patterns::Double (0),
-                           "The reference temperature $T_0$. Units: $\\si{K}$.");
+                           "The reference density $\\rho_0$. Units: $kg/m^3$.");
         prm.declare_entry ("Viscosity", "5e24",
                            Patterns::Double (0),
                            "The value of the constant viscosity. Units: $kg/m/s$.");
@@ -781,7 +781,7 @@ namespace aspect
                                 "field with name 'grain_size' is present. Please use another material "
                                 "model or add such a field."));
 
-        reference_T                = prm.get_double ("Reference temperature");
+        reference_rho              = prm.get_double ("Reference density");
         eta                        = prm.get_double ("Viscosity");
 
         transition_depths         = Utilities::string_to_double
