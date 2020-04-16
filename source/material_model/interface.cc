@@ -408,6 +408,15 @@ namespace aspect
 
 
     template <int dim>
+    bool
+    MaterialModelInputs<dim>::needs_viscosity_evaluation() const
+    {
+      return strain_rate.size() != 0;
+    }
+
+
+
+    template <int dim>
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
                                                     const unsigned int n_comp)
       :

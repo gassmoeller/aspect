@@ -272,6 +272,14 @@ namespace aspect
       unsigned int n_evaluation_points() const;
 
       /**
+       * Function that returns if the caller requests an evaluation
+       * of the viscosity. This is optional, because calulating
+       * viscosity can be more expensive than the other material
+       * model quantities and is not needed for all applications.
+       */
+      bool needs_viscosity_evaluation() const;
+
+      /**
        * Vector with global positions where the material has to be evaluated
        * in evaluate().
        */
@@ -524,6 +532,7 @@ namespace aspect
        * in order to compute the reaction increment.
        */
       std::vector<std::vector<double> > reaction_terms;
+      
 
       /**
        * Vector of shared pointers to additional material model output
