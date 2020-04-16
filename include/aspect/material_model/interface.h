@@ -533,7 +533,6 @@ namespace aspect
        */
       std::vector<std::vector<double> > reaction_terms;
       
-
       /**
        * Vector of shared pointers to additional material model output
        * objects that can then be added to MaterialModelOutputs. By default,

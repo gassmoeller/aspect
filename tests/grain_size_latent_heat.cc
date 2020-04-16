@@ -172,7 +172,7 @@ namespace aspect
                          * ((in.position[i] - in.position[j]) * this->get_gravity_model().gravity_vector(in.position[i])) > 0))
                       crossed_transition = k;
 
-              if (in.strain_rate.size() > 0)
+              if (in.needs_viscosity_evaluation())
                 out.viscosities[i] = std::min(std::max(this->min_eta,this->viscosity(in.temperature[i],
                                                                                      in.pressure[i],
                                                                                      composition,

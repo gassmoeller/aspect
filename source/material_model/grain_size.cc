@@ -816,7 +816,7 @@ namespace aspect
                   crossed_transition = k;
 
 
-          if (in.strain_rate.size() > 0)
+          if (in.needs_viscosity_evaluation())
             {
               double effective_viscosity;
               double disl_viscosity = std::numeric_limits<double>::max();

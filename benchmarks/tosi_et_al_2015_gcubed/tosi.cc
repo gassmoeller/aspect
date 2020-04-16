@@ -64,7 +64,7 @@ namespace aspect
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
-              if (in.strain_rate.size())
+              if (in.needs_viscosity_evaluation())
                 {
                   double viscosity = 0.0;
 
