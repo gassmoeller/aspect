@@ -167,6 +167,17 @@ namespace aspect
       identifies_single_variable(const Dependence dependence);
     }
 
+    struct PhaseInformation
+    {
+      public:
+      std::vector<unsigned int> n_transitions;
+    };
+
+    struct PhaseState
+    {
+      public:
+      std::vector<double> value;
+    };
 
     template <int dim>     class AdditionalMaterialInputs;
 
