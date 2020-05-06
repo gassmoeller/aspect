@@ -890,7 +890,6 @@ namespace aspect
         {
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_single_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::iterated_Entropy_and_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
@@ -917,7 +916,6 @@ namespace aspect
         {
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_single_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::iterated_Entropy_and_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes:
