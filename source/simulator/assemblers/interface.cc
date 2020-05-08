@@ -530,9 +530,9 @@ namespace aspect
       std::vector<double> prefactors(scratch.material_model_inputs.n_evaluation_points(), 1.0);
 
       const double max_density = *std::max_element(scratch.material_model_outputs.densities.begin(),
-      scratch.material_model_outputs.densities.end());
+                                                   scratch.material_model_outputs.densities.end());
       const double max_cp = *std::max_element(scratch.material_model_outputs.specific_heat.begin(),
-      scratch.material_model_outputs.specific_heat.end());
+                                              scratch.material_model_outputs.specific_heat.end());
 
       if (scratch.advection_field->is_temperature())
         for (unsigned int i=0; i<prefactors.size(); ++i)
