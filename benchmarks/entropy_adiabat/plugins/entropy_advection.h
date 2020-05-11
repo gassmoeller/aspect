@@ -34,7 +34,8 @@ namespace aspect
      * advection equation for the current cell.
      */
     template <int dim>
-    class EntropyAdvectionSystem : public Assemblers::Interface<dim>,
+    class EntropyAdvectionSystem : public Assemblers::Interface<dim>, 
+    public Assemblers::AdvectionStabilizationInterface<dim>,
       public SimulatorAccess<dim>
     {
       public:
@@ -46,6 +47,14 @@ namespace aspect
         virtual
         std::vector<double>
         compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const;
+
+                virtual
+        std::vector<double>
+        advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const;
+
+        virtual
+        std::vector<double>
+        diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const;
     };
   }
 }

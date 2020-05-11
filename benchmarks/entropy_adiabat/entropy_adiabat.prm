@@ -158,7 +158,7 @@ subsection Postprocess
 
   subsection Visualization
      set Time between graphical output = 0
-     set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature
+     set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature, entropy conductivity
      subsection Material properties
        set List of material properties = density,thermal expansivity,specific heat,viscosity, compressibility
      end

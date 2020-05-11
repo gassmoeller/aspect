@@ -195,6 +195,60 @@ namespace aspect
         }
       return residuals;
     }
+
+
+
+    template <int dim>
+    std::vector<double>
+    EntropyAdvectionSystem<dim>::advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+
+      std::vector<double> prefactors(scratch.material_model_inputs.n_evaluation_points(), 0.0);
+
+      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      if (advection_field.is_temperature() ||
+          this->introspection().name_for_compositional_index(advection_field.compositional_variable) != "entropy")
+        return prefactors;
+
+      const double max_density = *std::max_element(scratch.material_model_outputs.densities.begin(),
+                                                   scratch.material_model_outputs.densities.end());
+      const double max_temperature = *std::max_element(scratch.material_model_inputs.temperature.begin(),
+                                              scratch.material_model_inputs.temperature.end());
+
+        for (unsigned int i=0; i<prefactors.size(); ++i)
+          prefactors[i] = max_density * max_temperature;
+
+      return prefactors;
+    }
+
+
+
+    template <int dim>
+    std::vector<double>
+    EntropyAdvectionSystem<dim>::diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+
+      std::vector<double> prefactors(scratch.material_model_inputs.n_evaluation_points(), 0.0);
+
+      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      if (advection_field.is_temperature() ||
+          this->introspection().name_for_compositional_index(advection_field.compositional_variable) != "entropy")
+        return prefactors;
+
+      const double max_thermal_conductivity = *std::max_element(scratch.material_model_outputs.thermal_conductivities.begin(),
+                                                   scratch.material_model_outputs.thermal_conductivities.end());
+      const double max_temperature = *std::max_element(scratch.material_model_inputs.temperature.begin(),
+                                              scratch.material_model_inputs.temperature.end());
+      const double max_specific_heat = *std::max_element(scratch.material_model_outputs.specific_heat.begin(),
+                                                   scratch.material_model_outputs.specific_heat.end());
+
+        for (unsigned int i=0; i<prefactors.size(); ++i)
+          prefactors[i] = max_thermal_conductivity * max_temperature / max_specific_heat;
+
+      return prefactors;
+    }
   }
 
 // The function below replaces the normal temperature advection assembler with the entropy advection assembler of this file

@@ -46,5 +46,5 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "entropy_plugins")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED compute_entropy_profile.h compute_entropy_profile.cc entropy_model.h entropy_model.cc entropy_advection.cc entropy_advection.h)
+ADD_LIBRARY(${TARGET} SHARED compute_entropy_profile.h compute_entropy_profile.cc entropy_model.h entropy_model.cc entropy_advection.cc entropy_advection.h entropy_conductivity.cc entropy_conductivity.h)
 ASPECT_SETUP_PLUGIN(${TARGET})

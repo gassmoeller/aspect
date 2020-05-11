@@ -342,11 +342,15 @@ namespace aspect
         // viscosity if flow through the boundary is slow, or
         // tangential.
         if (parameters.advection_stabilization_method
-            == Parameters<dim>::AdvectionStabilizationMethod::entropy_viscosity
-            && advection_field.is_temperature())
+            == Parameters<dim>::AdvectionStabilizationMethod::entropy_viscosity)
           {
             const std::set<types::boundary_id> &fixed_temperature_boundaries =
-              boundary_temperature_manager.get_fixed_temperature_boundary_indicators();
+            (advection_field.is_temperature())
+            ?
+              boundary_temperature_manager.get_fixed_temperature_boundary_indicators()
+              :
+              boundary_composition_manager.get_fixed_composition_boundary_indicators();
+
             const std::set<types::boundary_id> &tangential_velocity_boundaries =
               boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
             const std::set<types::boundary_id> &zero_velocity_boundaries =
