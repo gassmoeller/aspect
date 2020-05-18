@@ -210,6 +210,10 @@ namespace aspect
     AssertThrow (assemblers.advection_system.size() == 1,
                  ExcMessage("There is more than one advection assembler active. This is not allowed."));
 
+    AssertThrow (simulator_access.get_heating_model_manager().adiabatic_heating_enabled() == false,
+                 ExcMessage("The entropy advection assembler requires "
+                            "that adiabatic heating is disabled."));
+
     assemblers.advection_system[0] = std_cxx14::make_unique<Assemblers::EntropyAdvectionSystem<dim> >();
 
     assemblers.advection_system_assembler_properties[0].needed_update_flags = update_hessians;

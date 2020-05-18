@@ -57,18 +57,18 @@ namespace aspect
       MaterialModel::PrescribedTemperatureOutputs<dim> *prescribed_temperature_out
         = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim> >();
 
-      // check if the material model computes prescribed field outputs
+      // check if the material model computes prescribed temperature outputs
       AssertThrow(prescribed_temperature_out != NULL,
-                  ExcMessage("You are trying to use a prescribed temperature field, "
-                             "but the material model you use does not support interpolating properties "
-                             "(it does not create PrescribedTemperatureOutputs, which is required for this "
-                             "advection field type)."));
+                  ExcMessage("The material model you use does not provide "
+                             "PrescribedTemperatureOutputs, which is required "
+                             "for this adiabatic conditions plugin."));
 
       const unsigned int entropy_index = this->introspection().compositional_index_for_name("entropy");
 
       // Constant properties on the reference profile
       in.strain_rate.resize(0); // we do not need the viscosity
       in.velocity[0] = Tensor <1,dim> ();
+      // The entropy along an adiabat is constant (equals the surface entropy)
       in.composition[0][entropy_index] = surface_entropy;
 
       // Check whether gravity is pointing up / out or down / in. In the normal case it should

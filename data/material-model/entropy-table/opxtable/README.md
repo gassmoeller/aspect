@@ -4,4 +4,4 @@ is only useful for benchmarking the method as done in
 benchmarks/entropy\_adiabat. Its resolution is too coarse for realistic models.
 
 References:
-(1) Stixrude, L. and C. Lithgow-Bertelloni, Thermodynamics of mantle minerals: 1. Physical properties, Geophysical Journal International, 162, 610-632, 2005. (2) Stixrude, L. and C. Lithgow-Bertelloni, Thermodynamics of mantle minerals II, Phase equilibria, Geophysical Journal International, 184, 1180-1213, 2011. (3) The citation to the parameter file that you have chosen.
+(1) Stixrude, L. and C. Lithgow-Bertelloni, Thermodynamics of mantle minerals: 1. Physical properties, Geophysical Journal International, 162, 610-632, 2005. (2) Stixrude, L. and C. Lithgow-Bertelloni, Thermodynamics of mantle minerals II, Phase equilibria, Geophysical Journal International, 184, 1180-1213, 2011.

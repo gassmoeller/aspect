@@ -72,7 +72,7 @@ namespace aspect
         virtual bool is_initialized() const;
 
         /**
-         * Return the adiabatic entropy at a given point of the domain.
+         * Return the adiabatic temperature at a given point of the domain.
          */
         virtual double temperature (const Point<dim> &p) const;
 
@@ -102,7 +102,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
-
         /**
          * Whether the adiabatic conditions are already calculated. This is
          * important for plugins that are used by the adiabatic conditions but
