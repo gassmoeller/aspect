@@ -21,8 +21,9 @@
 #ifndef _aspect_material_model_entropy_model_h
 #define _aspect_material_model_entropy_model_h
 
-#include <aspect/material_model/utilities.h>
+#include <aspect/material_model/interface.h>
 
+#include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -31,34 +32,15 @@ namespace aspect
   {
     using namespace dealii;
 
-    namespace MaterialUtilities
-    {
-      namespace Lookup
-      {
-        /**
-         * An implementation of the above base class that reads in files created
-         * by the Perplex software.
-         */
-        class PerplexEntropyReader : public MaterialLookup
-        {
-          public:
-            PerplexEntropyReader(const std::string &filename,
-                                 const MPI_Comm &comm);
-
-            double
-            temperature(const double temperature,
-                        const double pressure) const;
-
-          private:
-            dealii::Table<2,double> temperature_values;
-        };
-      }
-    }
-
     /**
-     * A model that is formulated in terms of pressure and entropy
-     * to allow more realistic thermodynamic computations.
-     *
+     * A material model that is designed to use pressure and entropy (rather
+     * than pressure and temperature) as independent variables. It will look up
+     * all material properties in a data table for a given pressure and
+     * entropy, and will additionally provide an additional output object of
+     * type PrescribedTemperatureOutputs filled with the temperature, and
+     * an additional output object of type PrescribedFieldOutput filled with
+     * the densities (necessary for the projected density approximation of
+     * the Stokes equation).
      * @ingroup MaterialModels
      */
     template <int dim>
@@ -79,12 +61,7 @@ namespace aspect
          */
 
         /**
-         * Return whether the model is compressible or not.  Incompressibility
-         * does not necessarily imply that the density is constant; rather, it
-         * may still depend on temperature or pressure. In the current
-         * context, compressibility means whether we should solve the continuity
-         * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-         * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+         * Return whether the model is compressible or not.
          */
         virtual bool is_compressible () const;
         /**
@@ -130,6 +107,15 @@ namespace aspect
          * @}
          */
 
+        /**
+         * Creates additional output objects of
+         * type PrescribedTemperatureOutputs filled with the temperature
+         * (necessary for solving the entropy equation), and
+         * an additional output object of type PrescribedFieldOutput filled with
+         * the densities (necessary for the projected density approximation of
+         * the Stokes equation). Also creates SeismicAdditionalOutputs for
+         * postprocessing purposes.
+         */
         virtual
         void
         create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
@@ -157,7 +143,7 @@ namespace aspect
          * List of pointers to objects that read and process data we get from
          * Perplex files.
          */
-        std::unique_ptr<MaterialUtilities::Lookup::PerplexEntropyReader> material_lookup;
+        std::unique_ptr<Utilities::AsciiDataLookup<2>> material_lookup;
     };
   }
 }

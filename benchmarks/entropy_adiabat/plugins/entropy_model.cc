@@ -32,157 +32,23 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    namespace MaterialUtilities
-    {
-      namespace Lookup
-      {
-        PerplexEntropyReader::PerplexEntropyReader(const std::string &filename,
-                                                   const MPI_Comm &comm)
-        {
-          /* Initializing variables */
-          interpolation = true;
-          delta_press=numbers::signaling_nan<double>();
-          min_press=std::numeric_limits<double>::max();
-          max_press=-std::numeric_limits<double>::max();
-          delta_temp=numbers::signaling_nan<double>();
-          min_temp=std::numeric_limits<double>::max();
-          max_temp=-std::numeric_limits<double>::max();
-          n_temperature=0;
-          n_pressure=0;
-
-          std::string temp;
-          // Read data from disk and distribute among processes
-          std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
-
-          std::getline(in, temp); // eat first line
-          std::getline(in, temp); // eat next line
-          std::getline(in, temp); // eat next line
-          std::getline(in, temp); // eat next line
-
-          in >> min_temp;
-          std::getline(in, temp);
-          in >> delta_temp;
-          std::getline(in, temp);
-          in >> n_temperature;
-          std::getline(in, temp);
-          std::getline(in, temp);
-          in >> min_press;
-          min_press *= 1e5;  // conversion from [bar] to [Pa]
-          std::getline(in, temp);
-          in >> delta_press;
-          delta_press *= 1e5; // conversion from [bar] to [Pa]
-          std::getline(in, temp);
-          in >> n_pressure;
-          std::getline(in, temp);
-          std::getline(in, temp);
-          std::getline(in, temp);
-
-          AssertThrow(min_temp >= 0.0, ExcMessage("Read in of Material header failed (mintemp)."));
-          AssertThrow(delta_temp > 0, ExcMessage("Read in of Material header failed (delta_temp)."));
-          AssertThrow(n_temperature > 0, ExcMessage("Read in of Material header failed (numtemp)."));
-          AssertThrow(min_press >= 0, ExcMessage("Read in of Material header failed (min_press)."));
-          AssertThrow(delta_press > 0, ExcMessage("Read in of Material header failed (delta_press)."));
-          AssertThrow(n_pressure > 0, ExcMessage("Read in of Material header failed (numpress)."));
-
-
-          max_temp = min_temp + (n_temperature-1) * delta_temp;
-          max_press = min_press + (n_pressure-1) * delta_press;
-
-          density_values.reinit(n_temperature,n_pressure);
-          thermal_expansivity_values.reinit(n_temperature,n_pressure);
-          specific_heat_values.reinit(n_temperature,n_pressure);
-          vp_values.reinit(n_temperature,n_pressure);
-          vs_values.reinit(n_temperature,n_pressure);
-          enthalpy_values.reinit(n_temperature,n_pressure);
-          temperature_values.reinit(n_temperature,n_pressure);
-
-          unsigned int i = 0;
-          while (!in.eof())
-            {
-              double unused_value;
-              double rho,alpha,cp,vp,vs,h,T;
-
-              in >> T;
-              if (in.fail())
-                {
-                  in.clear();
-                  T = temperature_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                }
-
-              // Pressure
-              in >> unused_value;
-
-              in >> rho;
-              if (in.fail())
-                {
-                  in.clear();
-                  rho = density_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                }
-              in >> alpha;
-              if (in.fail())
-                {
-                  in.clear();
-                  alpha = thermal_expansivity_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                }
-              in >> cp;
-              if (in.fail())
-                {
-                  in.clear();
-                  cp = specific_heat_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                }
-              in >> vp;
-              if (in.fail())
-                {
-                  in.clear();
-                  vp = vp_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                }
-              in >> vs;
-              if (in.fail())
-                {
-                  in.clear();
-                  vs = vs_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                }
-              in >> h;
-              if (in.fail())
-                {
-                  in.clear();
-                  h = enthalpy_values[(i-1)%n_temperature][(i-1)/n_temperature];
-                }
-
-              std::getline(in, temp);
-              if (in.eof())
-                break;
-
-              density_values[i%n_temperature][i/n_temperature]=rho;
-              thermal_expansivity_values[i%n_temperature][i/n_temperature]=alpha;
-              specific_heat_values[i%n_temperature][i/n_temperature]=cp;
-              vp_values[i%n_temperature][i/n_temperature]=vp;
-              vs_values[i%n_temperature][i/n_temperature]=vs;
-              enthalpy_values[i%n_temperature][i/n_temperature]=h;
-              temperature_values[i%n_temperature][i/n_temperature]=T;
-
-              ++i;
-            }
-          AssertThrow(i == n_temperature*n_pressure, ExcMessage("Material table size not consistent with header."));
-
-        }
-
-        double
-        PerplexEntropyReader::temperature(double temperature,
-                                          double pressure) const
-        {
-          return value(temperature,pressure,temperature_values,true);
-        }
-      }
-    }
-
     template <int dim>
     void
     EntropyModel<dim>::initialize()
     {
-      material_lookup = std::make_unique<MaterialUtilities::Lookup::PerplexEntropyReader>
-                        (data_directory+material_file_name,
-                         this->get_mpi_communicator());
+      AssertThrow (this->get_parameters().formulation_mass_conservation ==
+                   Parameters<dim>::Formulation::MassConservation::projected_density_field,
+                   ExcMessage("The 'entropy model' material model was only tested with the "
+                              "'projected density field' approximation "
+                              "for the mass conservation equation, which is not selected."));
+
+      AssertThrow (this->introspection().compositional_name_exists("entropy"),
+                   ExcMessage("The 'entropy model' material model requires the existence of a compositional field "
+                              "named 'entropy'. This field does not exist."));
+
+      material_lookup = std::make_unique<Utilities::AsciiDataLookup<2>>(7,1.0);
+      material_lookup->load_file(data_directory+material_file_name,
+                                 this->get_mpi_communicator());
     }
 
 
@@ -221,17 +87,21 @@ namespace aspect
           // to stabilize against pressure oscillations in phase transitions.
           // This is a requirement of the projected density approximation for
           // the Stokes equation and not related to the entropy formulation.
-          const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
-          const double entropy = in.composition[i][entropy_index];
+          Point<2> entropy_pressure(in.composition[i][entropy_index],
+                                    this->get_adiabatic_conditions().pressure(in.position[i]) / 1.e5);
 
-          // Constant viscosity
+          out.densities[i]                      = material_lookup->get_data(entropy_pressure,1);
+          out.thermal_expansion_coefficients[i] = material_lookup->get_data(entropy_pressure,2);
+          out.specific_heat[i]                  = material_lookup->get_data(entropy_pressure,3);
+
+          const Tensor<1,2> density_gradient    = material_lookup->get_gradients(entropy_pressure,1);
+          const Tensor<1,2> pressure_unit_vector ({0.0,1.0});
+          out.compressibilities[i]              = (density_gradient * pressure_unit_vector) / out.densities[i];
+
+          // Constant viscosity and thermal conductivity
           out.viscosities[i]                    = reference_eta;
-
-          out.densities[i]                      = material_lookup->density(entropy,pressure);
-          out.thermal_expansion_coefficients[i] = material_lookup->thermal_expansivity(entropy,pressure);
-          out.specific_heat[i]                  = material_lookup->specific_heat(entropy,pressure);
           out.thermal_conductivities[i]         = thermal_conductivity_value;
-          out.compressibilities[i]              = material_lookup->dRhodp(entropy,pressure) / out.densities[i];
+
           out.entropy_derivative_pressure[i]    = 0.;
           out.entropy_derivative_temperature[i] = 0.;
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
@@ -246,14 +116,14 @@ namespace aspect
           // set up variable to interpolate prescribed field outputs onto temperature field
           if (PrescribedTemperatureOutputs<dim> *prescribed_temperature_out = out.template get_additional_output<PrescribedTemperatureOutputs<dim> >())
             {
-              prescribed_temperature_out->prescribed_temperature_outputs[i] = material_lookup->temperature(entropy,pressure);
+              prescribed_temperature_out->prescribed_temperature_outputs[i] = material_lookup->get_data(entropy_pressure,0);
             }
 
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
             {
-              seismic_out->vp[i] = material_lookup->seismic_Vp(entropy,pressure);
-              seismic_out->vs[i] = material_lookup->seismic_Vs(entropy,pressure);
+              seismic_out->vp[i] = material_lookup->get_data(entropy_pressure,4);
+              seismic_out->vs[i] = material_lookup->get_data(entropy_pressure,5);
             }
         }
     }
@@ -280,7 +150,7 @@ namespace aspect
                              "The file name of the material data.");
           prm.declare_entry ("Reference viscosity", "1e22",
                              Patterns::Double(0),
-                             "The reference viscosity that is used for pressure scaling. "
+                             "The viscosity that is used in this model. "
                              "\n\n"
                              "Units: $Pa \\, s$");
           prm.declare_entry ("Thermal conductivity", "4.7",
@@ -360,8 +230,9 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(EntropyModel,
                                    "entropy model",
-                                   "This material model is formulated in terms of entropy and "
-                                   "pressure. It requires a thermodynamic datatable that contains "
+                                   "A material model that is designed to use pressure and entropy (rather "
+                                   "than pressure and temperature) as independent variables. "
+                                   "It requires a thermodynamic data table that contains "
                                    "all relevant properties in a specific format as illustrated in "
                                    "the data/material-model/entropy-table/opxtable example folder. "
                                    "The material model requires the use of the projected density "
