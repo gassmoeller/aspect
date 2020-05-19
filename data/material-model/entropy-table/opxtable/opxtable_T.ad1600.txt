@@ -1,5 +1,5 @@
 # This is an exemplary isentrope for an opx mantle composition, exported
-# from HeFesto, for a surface adiabatic temperature of 1600 K. 
+# from HeFESTo, for a surface adiabatic temperature of 1600 K. 
 #
 # POINTS: 1401 
 # depth (m), pressure (Pa), temperature (K), density (kg/m^3)
