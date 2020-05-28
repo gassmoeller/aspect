@@ -582,9 +582,10 @@ namespace aspect
 
         /**
          * This function returns a representative prefactor for the advection
-         * term of the equation. In the non-dimensional case this is simply
-         * 1.0, but for other quantities like temperature it is computed
-         * using physical units (like density and specific heat capacity).
+         * term of the equation for each quadrature point of the current cell.
+         * In the non-dimensional case this is simply 1.0, but for other
+         * quantities like temperature it is computed using physical units
+         * (like density and specific heat capacity).
          * This information is useful for algorithms depending on the size of
          * individual terms, like stabilization methods.
          */
@@ -594,11 +595,12 @@ namespace aspect
 
         /**
          * This function returns a representative conductivity for the
-         * diffusion part of the equation. In the pure advection case
-         * this is 0.0, in a non-dimensional advection-diffusion case this
-         * is simply 1.0, but for other quantities like temperature it is
-         * computed using physical units (like thermal conductivity).
-         * This information is useful for algorithms depending on the size of
+         * diffusion part of the equation for each quadrature point of the
+         * current cell. For the pure advection case this factor is 0.0, in a
+         * non-dimensional advection-diffusion equation this factor is simply
+         * 1.0, but for other quantities like temperature it is
+         * computed using physical units (like thermal conductivity).  This
+         * information is useful for algorithms depending on the size of
          * individual terms, like stabilization methods.
          */
         virtual
