@@ -207,9 +207,7 @@ namespace aspect
       std::vector<double> prefactors(scratch.material_model_inputs.n_evaluation_points(), 0.0);
 
       for (unsigned int i=0; i<prefactors.size(); ++i)
-        prefactors[i] = scratch.material_model_outputs.thermal_conductivities[i] *
-                        scratch.material_model_inputs.temperature[i] /
-                        scratch.material_model_outputs.specific_heat[i];
+        prefactors[i] = scratch.material_model_outputs.densities[i] * scratch.material_model_inputs.temperature[i];
 
       return prefactors;
     }
@@ -225,7 +223,9 @@ namespace aspect
       std::vector<double> prefactors(scratch.material_model_inputs.n_evaluation_points(), 0.0);
 
       for (unsigned int i=0; i<prefactors.size(); ++i)
-        prefactors[i] = scratch.material_model_outputs.densities[i] * scratch.material_model_inputs.temperature[i];
+        prefactors[i] = scratch.material_model_outputs.thermal_conductivities[i] *
+                        scratch.material_model_inputs.temperature[i] /
+                        scratch.material_model_outputs.specific_heat[i];
 
       return prefactors;
     }
