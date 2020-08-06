@@ -901,6 +901,7 @@ namespace aspect
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::Stokes_adjoint: // is that right?
             return true;
 
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
@@ -929,6 +930,7 @@ namespace aspect
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::first_timestep_only_single_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::Stokes_adjoint: // is that right?
             return true;
 
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
@@ -2048,18 +2050,6 @@ namespace aspect
     simulator_is_past_initialization = true;
     do
       {
-<<<<<<< HEAD
-        // Only solve if we are not in pre-refinement, or we do not want to skip
-        // solving in pre-refinement.
-        if (! (parameters.skip_solvers_on_initial_refinement
-               && pre_refinement_step < parameters.initial_adaptive_refinement))
-          {
-            start_timestep ();
-
-            // then do the core work: assemble systems and solve
-            solve_timestep ();
-          }
-=======
 
         start_timestep ();
 
@@ -2072,7 +2062,6 @@ namespace aspect
 
         // then do the core work: assemble systems and solve
         solve_timestep ();
->>>>>>> implement adjoint inversion
 
         // See if we have to start over with a new adaptive refinement cycle
         // at the beginning of the simulation. If so, set the
@@ -2106,18 +2095,12 @@ namespace aspect
         // update values for timestep, increment time step by one.
         advance_time(new_time_step);
 
-<<<<<<< HEAD
-        // Check whether to terminate the simulation. The first part of the
-        // pair indicates whether to terminate the execution; the second
-        // indicates whether to do one more checkpoint:
-=======
         }
 
         // check whether to terminate the simulation. the
         // first part of the pair indicates whether to terminate
         // the execution; the second indicates whether to do one
         // more checkpoint
->>>>>>> implement adjoint inversion
         const std::pair<bool,bool> termination = termination_manager.execute();
 
         const bool checkpoint_written = maybe_write_checkpoint(last_checkpoint_time, termination);

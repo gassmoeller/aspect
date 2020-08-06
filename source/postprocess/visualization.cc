@@ -658,8 +658,6 @@ namespace aspect
       internal::BaseAdjointVariablePostprocessor<dim> adjoint_base_variables;
       adjoint_base_variables.initialize_simulator (this->get_simulator());
 
-      std_cxx1x::shared_ptr<internal::FreeSurfacePostprocessor<dim> > free_surface_variables;
-
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
       data_out.add_data_vector (this->get_solution(),

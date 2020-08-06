@@ -185,7 +185,7 @@ namespace aspect
                                                "iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|"
                                                "single Advection, no Stokes|IMPES|iterated IMPES|"
                                                "iterated Stokes|Newton Stokes|Stokes only|Advection only|"
-                                               "first timestep only|Stokes adjoint, single Stokes|no Advection, no Stokes";
+                                               "first timestep only, single Stokes|no Advection, no Stokes|Stokes adjoint";
 
     prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
                        Patterns::Selection (allowed_solver_schemes),
