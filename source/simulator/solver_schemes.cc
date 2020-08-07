@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/mesh_deformation/free_surface.h>
@@ -1070,6 +1070,8 @@ namespace aspect
       postprocess ();
   }
 
+
+
   template <int dim>
   void Simulator<dim>::solve_stokes_adjoint ()
   {
@@ -1086,6 +1088,10 @@ namespace aspect
         pcout << "   Forward problem ... " << std::endl;
 
         adjoint_problem = false;
+
+        // set the assemblers for the RHS
+        set_assemblers();
+
         rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
         assemble_stokes_system();
@@ -1110,6 +1116,13 @@ namespace aspect
 
         // only do adjoint if final (refined) mesh is reached
         adjoint_problem = true;
+
+        // clear all RHS assemblers and only assemble the Adjoint RHS; 
+        assemblers->stokes_system.clear();
+        assemblers->stokes_system_on_boundary_face.push_back(
+            std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
+
+        // Don't need to reassmble the stokes system because it's the same as for the forward problem
         rebuild_stokes_matrix = rebuild_stokes_preconditioner = false;
 
         // the right hand side is assembled differently when adjoint_problem is true
@@ -1150,6 +1163,7 @@ namespace aspect
 
 //      }
   }
+
 
 }
 

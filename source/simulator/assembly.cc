@@ -251,8 +251,8 @@ namespace aspect
     assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
     assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity = true;
 
-    assemblers->stokes_system_on_boundary_face.push_back(
-      std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
+   // assemblers->stokes_system_on_boundary_face.push_back(
+   //   std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
   }
 
   template <int dim>
