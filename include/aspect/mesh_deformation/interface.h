@@ -88,16 +88,28 @@ namespace aspect
         virtual void update();
 
         /**
+        * A function that returns the initial deformation of certain mesh
+        * vertices (e.g. the surface vertices). @p position is the original
+        * position of each vertex and this function is expected to return the
+        * displacement vector of this position. The default implementation does
+        * return a zero displacement (=no initial deformation).
+        */
+        virtual
+        Tensor<1,dim>
+        compute_initial_deformation_on_boundary(const Point<dim> &position) const;
+
+        /**
          * A function that creates constraints for the velocity of certain mesh
          * vertices (e.g. the surface vertices) for a specific set of boundaries.
          * The calling class will respect
          * these constraints when computing the new vertex positions.
+         * The default implementation creates no constraints.
          */
         virtual
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  ConstraintMatrix &mesh_velocity_constraints,
-                                                 const std::set<types::boundary_id> &boundary_id) const = 0;
+                                                 const std::set<types::boundary_id> &boundary_id) const;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -156,6 +168,11 @@ namespace aspect
          * allows the individual mesh deformation objects to update.
          */
         void update();
+
+        /**
+         * Compute the initial mesh deformation from plugins that implement it.
+         */
+        void execute_initial_deformation();
 
         /**
          * The main execution step for the mesh deformation implementation. This

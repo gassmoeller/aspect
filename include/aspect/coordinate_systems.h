@@ -45,6 +45,38 @@ namespace aspect
         ellipsoidal,
         invalid
       };
+
+      template<int dim>
+      Tensor<1, dim>
+      get_depth_direction(Point<dim> &position, CoordinateSystem coordinate_system)
+      {
+        Tensor<1, dim> depth_direction;
+        switch (coordinate_system)
+          {
+            case CoordinateSystem::depth:
+            {
+              depth_direction[0] = -1.0;
+              break;
+            }
+            case CoordinateSystem::cartesian:
+            {
+              depth_direction[dim-2] = -1.0;
+
+              break;
+            }
+            case CoordinateSystem::spherical:
+            case CoordinateSystem::ellipsoidal:
+            {
+              depth_direction = position / position.norm();
+              break;
+            }
+            case invalid:
+              AssertThrow(false,ExcInternalError());
+
+              break;
+          }
+        return depth_direction;
+      }
     }
   }
 }

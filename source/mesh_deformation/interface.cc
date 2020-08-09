@@ -46,10 +46,34 @@ namespace aspect
     Interface<dim>::initialize ()
     {}
 
+
+
     template <int dim>
     void
     Interface<dim>::update ()
     {}
+
+
+
+    template <int dim>
+    Tensor<1,dim>
+    Interface<dim>::
+    compute_initial_deformation_on_boundary(const Point<dim> &/*position*/) const
+    {
+      return Tensor<1,dim>();
+    }
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::
+    compute_velocity_constraints_on_boundary(const DoFHandler<dim> &/*mesh_deformation_dof_handler*/,
+                                             ConstraintMatrix &/*mesh_velocity_constraints*/,
+                                             const std::set<types::boundary_id> &/*boundary_id*/) const
+    {}
+
+
 
     template <int dim>
     void
@@ -304,6 +328,15 @@ namespace aspect
               mesh_deformation_objects_map[boundary_id->first].back()->initialize ();
             }
         }
+    }
+
+
+
+    template <int dim>
+    void MeshDeformationHandler<dim>::execute_initial_deformation()
+    {
+      TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation initialize");
+
     }
 
 
