@@ -35,7 +35,7 @@ namespace aspect
       AdjointVelocity ()
         :
         DataPostprocessorVector<dim> ("adjoint_velocity",
-                                      update_q_points)
+                                      update_quadrature_points)
       {}
 
 
@@ -47,7 +47,7 @@ namespace aspect
                                          const std::vector<std::vector<Tensor<1,dim> > > &,
                                          const std::vector<std::vector<Tensor<2,dim> > > &,
                                          const std::vector<Point<dim> > &,
-                                         const std::vector<Point<dim> >                  &evaluation_points,
+                                         const std::vector<Point<dim> >                  &/*evaluation_points*/,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
         const unsigned int n_quadrature_points = solution_values.size();

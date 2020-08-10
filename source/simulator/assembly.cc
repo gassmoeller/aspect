@@ -251,8 +251,8 @@ namespace aspect
     assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
     assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity = true;
 
-   // assemblers->stokes_system_on_boundary_face.push_back(
-   //   std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
+    // assemblers->stokes_system_on_boundary_face.push_back(
+    //   std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
   }
 
   template <int dim>
@@ -1324,7 +1324,7 @@ namespace aspect
                              quadrature_formula,
                              update_values |
                              update_gradients |
-                             update_q_points |
+                             update_quadrature_points |
                              update_JxW_values);
 
     FEValues<dim> fe_values_adjoint (*mapping,
@@ -1332,15 +1332,15 @@ namespace aspect
                                      quadrature_formula,
                                      update_values |
                                      update_gradients |
-                                     update_q_points |
+                                     update_quadrature_points |
                                      update_JxW_values);
 
     FEFaceValues<dim> fe_face_values (*mapping,
-                                     finite_element,
+                                      finite_element,
                                       quadrature_formula_face,
                                       update_values |
                                       update_gradients |
-                                      update_q_points |
+                                      update_quadrature_points |
                                       update_JxW_values);
 
     // Storage for shape function values for the current solution.
@@ -1490,8 +1490,8 @@ namespace aspect
                   // todo this should be delta function (here and RHS). figure this out.
                   for (unsigned int q=0; q<n_q_face_points; ++q)
                     {
-                	  dynamic_topography_surface_average += topo_values[q] * fe_face_values.JxW(q);
-                	  cell_surface_area += fe_face_values.JxW(q);
+                      dynamic_topography_surface_average += topo_values[q] * fe_face_values.JxW(q);
+                      cell_surface_area += fe_face_values.JxW(q);
                     }
 
                   dynamic_topography_surface_average /= cell_surface_area;

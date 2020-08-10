@@ -2053,49 +2053,49 @@ namespace aspect
 
         start_timestep ();
 
-      // since the default for num_it_adjoint i 0, this won't do anything if this isn't run in adjoint mode
-      for (unsigned int i=0; i<parameters.num_it_adjoint; ++i)
-      {
-
-       if (parameters.nonlinear_solver == NonlinearSolver::Stokes_adjoint) 
-          pcout << " ^^ Adjoint iteration number " << i  << std::endl;
-
-        // then do the core work: assemble systems and solve
-        solve_timestep ();
-
-        // See if we have to start over with a new adaptive refinement cycle
-        // at the beginning of the simulation. If so, set the
-        // simulator_is_past_initialization variable back to false because we will
-        // have to re-initialize some variables such as the size of vectors,
-        // the initial state, etc.
-        if (timestep_number == 0)
+        // since the default for num_it_adjoint i 0, this won't do anything if this isn't run in adjoint mode
+        for (unsigned int i=0; i<parameters.num_it_adjoint; ++i)
           {
-            const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
-            if (initial_refinement_done)
+
+            if (parameters.nonlinear_solver == NonlinearSolver::Stokes_adjoint)
+              pcout << " ^^ Adjoint iteration number " << i  << std::endl;
+
+            // then do the core work: assemble systems and solve
+            solve_timestep ();
+
+            // See if we have to start over with a new adaptive refinement cycle
+            // at the beginning of the simulation. If so, set the
+            // simulator_is_past_initialization variable back to false because we will
+            // have to re-initialize some variables such as the size of vectors,
+            // the initial state, etc.
+            if (timestep_number == 0)
               {
-                simulator_is_past_initialization = false;
-                goto start_time_iteration;
+                const bool initial_refinement_done = maybe_do_initial_refinement(max_refinement_level);
+                if (initial_refinement_done)
+                  {
+                    simulator_is_past_initialization = false;
+                    goto start_time_iteration;
+                  }
               }
+
+            // if we postprocess nonlinear iterations or adjoint stokes, this function is called within
+            // solve_timestep () in the individual solver schemes
+            if (!parameters.run_postprocessors_on_nonlinear_iterations)
+              postprocess ();
+
+            // get new time step size
+            const double new_time_step = compute_time_step();
+
+            // see if we want to refine the mesh
+            maybe_refine_mesh(new_time_step, max_refinement_level);
+
+            // see if we want to write a timing summary
+            maybe_write_timing_output();
+
+            // update values for timestep, increment time step by one.
+            advance_time(new_time_step);
+
           }
-
-        // if we postprocess nonlinear iterations or adjoint stokes, this function is called within
-        // solve_timestep () in the individual solver schemes
-        if (!parameters.run_postprocessors_on_nonlinear_iterations)
-             postprocess ();
-
-        // get new time step size
-        const double new_time_step = compute_time_step();
-
-        // see if we want to refine the mesh
-        maybe_refine_mesh(new_time_step, max_refinement_level);
-
-        // see if we want to write a timing summary
-        maybe_write_timing_output();
-
-        // update values for timestep, increment time step by one.
-        advance_time(new_time_step);
-
-        }
 
         // check whether to terminate the simulation. the
         // first part of the pair indicates whether to terminate
