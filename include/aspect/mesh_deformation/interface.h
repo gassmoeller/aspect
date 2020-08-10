@@ -96,7 +96,8 @@ namespace aspect
         */
         virtual
         Tensor<1,dim>
-        compute_initial_deformation_on_boundary(const Point<dim> &position) const;
+        compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator,
+                                                const Point<dim> &position) const;
 
         /**
          * A function that creates constraints for the velocity of certain mesh
@@ -311,6 +312,25 @@ namespace aspect
          * in the parameter file.
          */
         std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim> > > > mesh_deformation_objects_map;
+
+        /**
+        * Set the boundary conditions for the solution of the elliptic
+        * problem, which computes the displacements of the internal
+        * vertices so that the mesh does not become too distorted due to
+        * motion of the surface. Velocities of vertices on the
+        * deforming surface are fixed according to the selected deformation
+        * plugins. Velocities of vertices on free-slip boundaries are
+        * constrained to be tangential to those boundaries. Velocities of
+        * vertices on no-slip boundaries are set to be zero. If a no-slip
+        * boundary is marked as additional tangential, then vertex velocities
+        * are constrained as tangential.
+        */
+        ConstraintMatrix make_initial_constraints ();
+
+        /**
+         * Solve vector Laplacian equation for internal mesh displacements.
+         */
+        void compute_initial_mesh_displacements (const ConstraintMatrix &initial_mesh_displacement_constraints);
 
         /**
          * Set the boundary conditions for the solution of the elliptic
