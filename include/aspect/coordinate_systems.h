@@ -67,7 +67,7 @@ namespace aspect
             case CoordinateSystem::spherical:
             case CoordinateSystem::ellipsoidal:
             {
-              depth_direction = position / position.norm();
+              depth_direction = - position / position.norm();
               break;
             }
             case invalid:

@@ -555,57 +555,29 @@ namespace aspect
             }
         }
 
-      // Ask all plugins to add their constraints.
-      // For the moment add constraints from all plugins into one matrix, then
-      // merge that matrix with the existing constraints (respecting the existing
-      // constraints as more important)
-      ConstraintMatrix plugin_constraints(mesh_vertex_constraints.get_local_lines());
+      // Ask initial topography plugins for their constraints.
 
       for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim> > > >::iterator boundary_id
            = mesh_deformation_objects_map.begin();
            boundary_id != mesh_deformation_objects_map.end(); ++boundary_id)
         {
-          for (typename std::vector<std::unique_ptr<Interface<dim> > >::iterator
-               model = boundary_id->second.begin();
-               model != boundary_id->second.end(); ++model)
-            {
-              ConstraintMatrix current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
-
               Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel
               (dim,
                [&] (const Point<dim> &x) -> Tensor<1,dim>
               {
-                return (*model)->compute_initial_deformation_on_boundary(boundary_id->first, x);
+                const Tensor<1,dim> depth_direction = Utilities::Coordinates::get_depth_direction(x,
+                this->get_geometry_model().natural_coordinate_system());
+                return x - this->get_initial_topography_model().value(x) * depth_direction;
               });
 
               VectorTools::interpolate_boundary_values (this->get_mapping(),
                                                         mesh_deformation_dof_handler,
                                                         boundary_id->first,
                                                         vel,
-                                                        current_plugin_constraints,
+                                                        initial_deformation_constraints,
                                                         ComponentMask());
-
-              const IndexSet local_lines = current_plugin_constraints.get_local_lines();
-              for (auto index = local_lines.begin(); index != local_lines.end(); ++index)
-                {
-                  if (current_plugin_constraints.is_constrained(*index))
-                    {
-                      if (plugin_constraints.is_constrained(*index) == false)
-                        {
-                          plugin_constraints.add_line(*index);
-                          plugin_constraints.set_inhomogeneity(*index, current_plugin_constraints.get_inhomogeneity(*index));
-                        }
-                      else
-                        {
-                          const double inhomogeneity = plugin_constraints.get_inhomogeneity(*index);
-                          plugin_constraints.set_inhomogeneity(*index, current_plugin_constraints.get_inhomogeneity(*index) + inhomogeneity);
-                        }
-                    }
-                }
-            }
         }
 
-      initial_deformation_constraints.merge(plugin_constraints,ConstraintMatrix::left_object_wins);
       initial_deformation_constraints.close();
 
       return initial_deformation_constraints;
