@@ -511,7 +511,7 @@ namespace aspect
           double eq_melt_molar_fraction = this->melt_fraction(in.temperature[q],
                                                               this->get_adiabatic_conditions().pressure(in.position[q]),
                                                               bulk_composition,
-															  molar_volatiles_in_melt,
+                                                              molar_volatiles_in_melt,
                                                               solid_composition,
                                                               melt_composition);
 
@@ -748,15 +748,15 @@ namespace aspect
               melt_molar_fraction = melt_fraction(in.temperature[q],
                                                   this->get_adiabatic_conditions().pressure(in.position[q]),
                                                   bulk_composition,
-												  molar_volatiles_in_melt,
+                                                  molar_volatiles_in_melt,
                                                   solid_composition,
                                                   melt_composition);
 
               if (boukare_out != nullptr)
-              {
-                boukare_out->bulk_composition[q] = bulk_composition;
-                boukare_out->molar_volatiles_in_melt[q] = molar_volatiles_in_melt;
-              }
+                {
+                  boukare_out->bulk_composition[q] = bulk_composition;
+                  boukare_out->molar_volatiles_in_melt[q] = molar_volatiles_in_melt;
+                }
 
               // We have to compute the update to the melt fraction in such a way that the bulk composition is conserved.
               const double change_of_melt_composition = reaction_fraction * limit_update_to_0_and_1(old_melt_composition, melt_composition - old_melt_composition);
