@@ -23,6 +23,7 @@
 
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/melt_boukare.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 #include <aspect/material_model/rheology/visco_plastic.h>
 
@@ -178,12 +179,29 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class ViscoPlastic : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class ViscoPlastic : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>, public MaterialModel::MeltFractionModel<dim>
     {
       public:
 
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                       MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
+        /**
+        * Reference value for the Darcy coefficient, which is defined as
+        * permeability divided by fluid viscosity. Units: m^2/Pa/s.
+        */
+        virtual double reference_darcy_coefficient () const;
+
+        /**
+        * Compute the equilibrium melt fractions for the given input conditions.
+        * @p in and @p melt_fractions need to have the same size.
+        *
+        * @param in Object that contains the current conditions.
+        * @param melt_fractions Vector of doubles that is filled with the
+        * equilibrium melt fraction for each given input conditions.
+        */
+        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                     std::vector<double> &melt_fractions) const;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
@@ -266,6 +284,11 @@ namespace aspect
          * Object that handles phase transitions.
          */
         MaterialUtilities::PhaseFunction<dim> phase_function;
+
+        /**
+         * Pointer to the material model used as the base model
+         */
+        MaterialModel::MeltBoukare<dim> melt_model;
 
     };
 

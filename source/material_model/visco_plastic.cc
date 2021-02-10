@@ -30,6 +30,26 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    template <int dim>
+    double
+    ViscoPlastic<dim>::
+    reference_darcy_coefficient () const
+    {
+      return melt_model.reference_darcy_coefficient();
+    }
+
+
+
+    template <int dim>
+    void
+    ViscoPlastic<dim>::
+    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                    std::vector<double> &melt_fractions) const
+    {
+      melt_model.melt_fractions(in,melt_fractions);
+    }
+
+
 
     template <int dim>
     bool
@@ -127,6 +147,8 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+      melt_model.evaluate(in, out);
+
       // Store which components do not represent volumetric compositions (e.g. strain components).
       const ComponentMask volumetric_compositions = rheology->get_volumetric_composition_mask();
 
@@ -175,42 +197,6 @@ namespace aspect
 
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i], volumetric_compositions);
 
-          // not strictly correct if thermal expansivities are different, since we are interpreting
-          // these compositions as volume fractions, but the error introduced should not be too bad.
-          out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
-          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
-          out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
-
-          if (define_conductivities == false)
-            {
-              double thermal_diffusivity = 0.0;
-
-              for (unsigned int j=0; j < volume_fractions.size(); ++j)
-                thermal_diffusivity += volume_fractions[j] * thermal_diffusivities[j];
-
-              // Thermal conductivity at the given positions. If the temperature equation uses
-              // the reference density profile formulation, use the reference density to
-              // calculate thermal conductivity. Otherwise, use the real density. If the adiabatic
-              // conditions are not yet initialized, the real density will still be used.
-              if (this->get_parameters().formulation_temperature_equation ==
-                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile &&
-                  this->get_adiabatic_conditions().is_initialized())
-                out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] *
-                                                this->get_adiabatic_conditions().density(in.position[i]);
-              else
-                out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] * out.densities[i];
-            }
-          else
-            {
-              // Use thermal conductivity values specified in the parameter file, if this
-              // option was selected.
-              out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
-            }
-
-          out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
-          out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
-          out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
-
           // Compute the effective viscosity if requested and retrieve whether the material is plastically yielding
           bool plastic_yielding = false;
           if (in.requests_property(MaterialProperties::viscosity))
@@ -226,7 +212,7 @@ namespace aspect
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
               // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
               // of compositional field viscosities is consistent with any averaging scheme.
-              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, isostrain_viscosities.composition_viscosities, rheology->viscosity_averaging);
+              //out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, isostrain_viscosities.composition_viscosities, rheology->viscosity_averaging);
 
               // Decide based on the maximum composition if material is yielding.
               // This avoids for example division by zero for harmonic averaging (as plastic_yielding
@@ -240,10 +226,6 @@ namespace aspect
                     out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >())
                 rheology->compute_viscosity_derivatives(i, volume_fractions, isostrain_viscosities.composition_viscosities, in, out, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
             }
-
-          // Now compute changes in the compositional fields (i.e. the accumulated strain).
-          for (unsigned int c=0; c<in.composition[i].size(); ++c)
-            out.reaction_terms[i][c] = 0.0;
 
           // Calculate changes in strain invariants and update the reaction terms
           rheology->strain_rheology.fill_reaction_outputs(in, i, rheology->min_strain_rate, plastic_yielding, out);
@@ -293,7 +275,7 @@ namespace aspect
     ViscoPlastic<dim>::
     is_compressible () const
     {
-      return equation_of_state.is_compressible();
+      return melt_model.is_compressible();
     }
 
 
@@ -395,6 +377,12 @@ namespace aspect
       }
       prm.leave_subsection();
 
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&melt_model))
+        sim->initialize_simulator (this->get_simulator());
+      melt_model.parse_parameters(prm);
+      melt_model.initialize();
+
+
       // Declare dependencies on solution variables
       this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
       this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
@@ -413,6 +401,8 @@ namespace aspect
 
       if (rheology->use_elasticity)
         rheology->elastic_rheology.create_elastic_outputs(out);
+
+      melt_model.create_additional_named_outputs(out);
     }
 
   }
