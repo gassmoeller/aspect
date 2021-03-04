@@ -1,5 +1,6 @@
 # The 2D Stokes in an annulus benchmark, for which an
-# analytical solution is available.
+# analytical solution is available. This is the rotating
+# version of the benchmark described in Gassmoeller et al. 2023.
 #
 # See the manual for more information.
 
@@ -9,15 +10,18 @@
 # equal to the start time to force a single time
 # step before the program terminates.
 
-set Additional shared libraries            = ./plugin/libannulus.so
+set Additional shared libraries            = ../plugin/libannulus.so
 set Dimension                              = 2
 set Start time                             = 0
 
-#t = W(2 π)≈1.459668031931907631609261850867606339157809499424392505715135150675824156227404522963194005578792121
-set End time                               = 6.28 #1.459668031931907631609261850 #6.28
+# for visualization: t = log(1 + 2 pi) = 1.9855683087099188711207438626228625913235123943706611263321188546
+# for visualization: t = log(1 + 4 pi) = 1.9855683087099188711207438626228625913235123943706611263321188546
+# for benchmark: t = log(1+pi/4) = 0.5796414510841191875793214691134667815528212002807962352303566450
+set End time                                = 2.6075939815049280917817614240391581472837221358084918109292273672
+#set End time                               = 1.9855683087099188711207438626228625913235123943706611263321188546
 
 set Use years in output instead of seconds = false
-set Nonlinear solver scheme                = no Advection, iterated Stokes
+set Nonlinear solver scheme                = single Advection, single Stokes
 set Output directory                       = output
 set Pressure normalization                 = surface
 
@@ -44,32 +48,40 @@ subsection Boundary velocity model
                                                 1  : AnnulusBoundary
 end
 
-#subsection Discretization
-#set Stokes velocity polynomial degree = 1
-#set Use locally conservative discretization = true
-#end
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = density_field
+  #set Compositional field methods = particles
+end
+
+subsection Initial composition model
+  set List of model names = initial density
+end
 
 subsection Material model
   set Model name = AnnulusMaterial
+  set Material averaging = harmonic average only viscosity
 end
 
 subsection Gravity model
-  set Model name = radial constant
-  subsection Radial constant
-    set Magnitude =  1
-  end
+  set Model name = annulus gravity
 end
 
 #Viscosity parameter is k, which controls the number
 #of mantle convection cells
 
 subsection Annulus benchmark
+   set Use analytical density          = false
    set Viscosity parameter             = 4
 end
 
-############### Parameters describing the temperature field
-# As above, there is no need to set anything for the
-# temperature boundary conditions.
+subsection Boundary temperature model
+  set List of model names =
+end
 
 subsection Initial temperature model
   set Model name = function
@@ -99,20 +111,40 @@ end
 # run at the end of each time step.
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor, depth average, rotation statistics
+  set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor, rotation statistics
+
   subsection Dynamic topography
     set Density above = 0
     set Density below = 0
   end
+
   subsection Visualization
-    set List of output variables = density, viscosity, strain rate, dynamic topography
-    set Time between graphical output = 0
+    set List of output variables = density, gravity, AnnulusVisualizationPostprocessor #dynamic topography
+    set Time between graphical output = 0.1
+  end
+
+  subsection Particles
+    set Time between data output = 2.6
+    set Integration scheme = rk2 # or rk4
+    set Interpolation scheme = bilinear least squares # or cell average
+    set List of particle properties = particle density
+    set Update ghost particles = true
+    set Particle generator name = random uniform
+    set Number of particles = 49152
+    set Load balancing strategy = add particles # not necessary for uniform mesh
+    set Minimum particles per cell = 12
   end
 end
 
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-12
-    set Number of cheap Stokes solver steps = 0
+    set Number of cheap Stokes solver steps = 200
+    set Stokes solver type = block GMG
+    set Krylov method for cheap solver steps = IDR(s)
   end
+end
+
+subsection Checkpointing
+  set Time between checkpoint = 1800
 end

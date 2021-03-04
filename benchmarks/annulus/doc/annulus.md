@@ -57,3 +57,7 @@ second-order convergence rate for the pressure.
 
 Velocity and pressure errors in the <span class="math inline"><em>L</em><sub>2</sub></span>-norm as a function of the mesh size for the 2D annulus benchmark.
 ```
+
+Additionally, the subdirectory "transient" contains an extension of the benchmark
+to time-dependent flow. The benchmark and its results are described in
+Gassmoeller et al. (2023), "Benchmarking the accuracy of higher order particle methods in geodynamic models of transient flow", in review.

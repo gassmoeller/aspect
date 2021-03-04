@@ -35,5 +35,5 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "time_dependent_annulus")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED time_dependent_annulus.cc time_dependent_annulus.h)
+ADD_LIBRARY(${TARGET} SHARED time_dependent_annulus.cc time_dependent_annulus.h rk_2_first_order_time.h rk_2_first_order_time.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})

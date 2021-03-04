@@ -24,6 +24,7 @@
 #include <aspect/global.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/postprocess/dynamic_topography.h>
+#include <aspect/postprocess/visualization.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -60,50 +61,109 @@ namespace aspect
       const double rho_0 = 1000.;
       const double gravity = 1.;
 
-      Tensor<1,2>
-      Annulus_velocity (const Point<2> &pos,
-                        const double k)
+      double
+      phase(const double t)
       {
-        const double x = pos[0];
-        const double y = pos[1];
-        const double r = std::sqrt(x*x+y*y);
-        const double theta = std::atan2(y,x);
-        const double f_r = A*r + B/r;
-        const double g_r = A*r/2 + B*std::log(r)/r + C/r;
-        const double v_r = g_r*k*sin(k*theta);
-        const double v_theta = f_r*cos(k*theta);
-        const double v_x = cos(theta)*v_r - sin(theta)*v_theta;
-        const double v_y = sin(theta)*v_r + cos(theta)*v_theta;
-        return Point<2> (v_x,v_y);
+        // return t;
+        return exp(t)-1;
       }
 
-      double
-      Annulus_pressure (const Point<2> &pos,
-                        const double k)
+      template<int dim>
+      Tensor<1,dim>
+      Annulus_velocity (const Point<dim> &pos,
+                        const double k,
+                        const double t)
       {
-        const double x = pos[0];
-        const double y = pos[1];
-        const double r=std::sqrt(x*x+y*y);
-        const double theta = std::atan2(y,x);
-        const double f_r = 2*r + B/r;
+        Assert (dim == 2, ExcNotImplemented());
+        Tensor<1,dim> velocity;
+
+        const double r = std::sqrt(pos[0]*pos[0]+pos[1]*pos[1]);
+        const double theta = std::atan2(pos[1],pos[0]);
+        const double f_r = A*r + B/r;
         const double g_r = A*r/2 + B*std::log(r)/r + C/r;
-        const double h_r=(2*g_r-f_r)/r;
-        return k*h_r*sin(k*theta)+rho_0*gravity*(outer_radius-r);
+        const double v_r = g_r*k*sin(k*(theta-phase(t)));
+        const double v_theta = f_r*cos(k*(theta-phase(t))) + r * exp(t);
+
+        velocity[0] = cos(theta) * v_r - sin(theta) * v_theta;
+        velocity[1] = sin(theta) * v_r + cos(theta) * v_theta;
+
+        return velocity;
       }
 
       template<int dim>
       double
-      Annulus_normal_traction (const Point<dim> &pos,
-                               const double k)
+      Annulus_pressure (const Point<dim> &pos,
+                        const double k,
+                        const double t)
       {
         Assert (dim == 2, ExcNotImplemented());
         const double x = pos[0];
         const double y = pos[1];
         const double r=std::sqrt(x*x+y*y);
         const double theta = std::atan2(y,x);
-        const double f_r = 2*r + B/r;
+        const double f_r = A*r + B/r;
         const double g_r = A*r/2 + B*std::log(r)/r + C/r;
-        return k * 3.*f_r/r * std::sin(k*theta) - rho_0 * g_r * (outer_radius - r);
+        const double h_r=(2*g_r-f_r)/r;
+        return k*h_r*sin(k*(theta-phase(t)))+rho_0*gravity*(outer_radius-r);
+      }
+
+      template<int dim>
+      double
+      Annulus_normal_traction (const Point<dim> &pos,
+                               const double k,
+                               const double t)
+      {
+        Assert (dim == 2, ExcNotImplemented());
+        const double x = pos[0];
+        const double y = pos[1];
+        const double r=std::sqrt(x*x+y*y);
+        const double theta = std::atan2(y,x);
+        const double f_r = A*r + B/r;
+        const double g_r = A*r/2 + B*std::log(r)/r + C/r;
+        return k * 3.*f_r/r * std::sin(k*(theta-phase(t))) - rho_0 * g_r * (outer_radius - r);
+      }
+
+      template<int dim>
+      double
+      Annulus_density (const Point<dim> &pos,
+                       const double k,
+                       const double t)
+      {
+        const double x = pos[0];
+        const double y = pos[1];
+        const double r=std::sqrt(x*x+y*y);
+        const double theta = std::atan2(y,x);
+
+        const double stream_function = -((A/2)*r*r + B * std::log(r) + C) * std::cos(k*(theta-phase(t)));
+        const double rho_0 = 1000.;
+
+        return stream_function + rho_0;
+      }
+
+
+
+      template<int dim>
+      Tensor<1,dim>
+      Annulus_gravity (const Point<dim> &pos,
+                       const double k,
+                       const double t)
+      {
+        const double x = pos[0];
+        const double y = pos[1];
+        const double r=std::sqrt(x*x+y*y);
+        const double theta = std::atan2(y,x);
+        const double f = A*r + B/r;
+        const double f_prime = 2 - B/std::pow(r,2.0);
+        const double g = A*r/2 + B*std::log(r)/r + C/r;
+        const double g_prime = A/2 - B*std::log(r)/std::pow(r,2.0) + B/std::pow(r,2.0) - C/std::pow(r,2.0);
+        const double g_prime_prime = -B/std::pow(r,3)*(3-2*std::log(r)) - 2./std::pow(r,3);
+        const double N = g_prime_prime - g_prime/r - (g*(std::pow(k,2) - 1))/std::pow(r,2.0) + f/std::pow(r,2.0) + f_prime/r;
+        const double rho_0 = 1000.;
+        const double forcing_term = N*k*sin(k*(theta-phase(t))) + rho_0;
+        const double gravity_magnitude = forcing_term / Annulus_density(pos,k,t);
+
+        const Tensor<1,dim> gravity_direction = -pos / pos.norm();
+        return gravity_magnitude * gravity_direction;
       }
 
 
@@ -114,28 +174,30 @@ namespace aspect
       class FunctionAnnulus : public Function<dim>
       {
         public:
-          FunctionAnnulus (const double beta)
+          FunctionAnnulus (const double beta, const unsigned int n_comp)
             :
-            Function<dim>(dim+2),
-            beta_(beta)
+            Function<dim>(n_comp),
+            beta_(beta),
+            n_components(n_comp)
           {}
 
           virtual void vector_value (const Point<dim>   &pos,
                                      Vector<double>   &values) const
           {
             Assert (dim == 2, ExcNotImplemented());
-            Assert (values.size() >= 4, ExcInternalError());
+            Assert (values.size() >= n_components, ExcInternalError());
 
-            const Point<2> p (pos[0], pos[1]);
-
-            const Tensor<1,2> v = AnalyticSolutions::Annulus_velocity (p, beta_);
+            const Tensor<1,dim> v = AnalyticSolutions::Annulus_velocity (pos, beta_, this->get_time());
             values[0] = v[0];
             values[1] = v[1];
-            values[2] = AnalyticSolutions::Annulus_pressure (p, beta_);
+            values[2] = AnalyticSolutions::Annulus_pressure (pos, beta_, this->get_time());
+            values[3] = 0.0;
+            values[4] = AnalyticSolutions::Annulus_density (pos, beta_, this->get_time());
           }
 
         private:
           const double beta_;
+          const unsigned int n_components;
       };
     }
 
@@ -171,7 +233,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class AnnulusMaterial : public MaterialModel::Interface<dim>
+    class AnnulusMaterial : public MaterialModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -181,31 +243,31 @@ namespace aspect
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
+          double t = 0.0;
+          if (this->simulator_is_past_initialization() == true)
+            t = this->get_time();
+
+          const double density_index = this->introspection().compositional_index_for_name("density_field");
+
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
-              const Point<dim> &pos = in.position[i];
-
               out.viscosities[i] = 1;
-
-              const double k=beta;
-              const double x = pos[0];
-              const double y = pos[1];
-              const double r=std::sqrt(x*x+y*y);
-              const double theta = std::atan2(y,x);
-              const double  A=2.0, B=-3.0/std::log(2.0), C=-1;
-              const double f = A*r + B/r;
-              const double f_prime = 2 - B/std::pow(r,2.0);
-              const double g = A*r/2 + B*std::log(r)/r + C/r;
-              const double g_prime = A/2 - B*std::log(r)/std::pow(r,2.0) + B/std::pow(r,2.0) - C/std::pow(r,2.0);
-              const double g_prime_prime = -B/std::pow(r,3)*(3-2*std::log(r)) - 2./std::pow(r,3);
-              const double N = g_prime_prime - g_prime/r - (g*(std::pow(k,2) - 1))/std::pow(r,2.0) + f/std::pow(r,2.0) + f_prime/r;
-              const double rho_0 = 1000.;
-              out.densities[i] = N*k*sin(k*theta) + rho_0;
+              if (use_analytical_density == true)
+                {
+                  out.densities[i] = AnalyticSolutions::Annulus_density(in.position[i], beta, t);
+                }
+              else
+                {
+                  out.densities[i] = in.composition[i][density_index];
+                }
 
               out.compressibilities[i] = 0;
               out.specific_heat[i] = 0;
               out.thermal_expansion_coefficients[i] = 0;
               out.thermal_conductivities[i] = 0.0;
+
+              for (unsigned int c=0; c<in.composition[i].size(); ++c)
+                out.reaction_terms[i][c] = 0.0;
             }
         }
         /**
@@ -251,6 +313,12 @@ namespace aspect
          */
         double get_beta() const;
 
+      private:
+        /**
+         * Whether to use the analytical density.
+         */
+        bool use_analytical_density;
+
         /**
          * viscosity value in the inclusion
          */
@@ -281,6 +349,11 @@ namespace aspect
         prm.declare_entry("Viscosity parameter", "0",
                           Patterns::Double (0),
                           "Viscosity parameter k in the Annulus benchmark.");
+
+        prm.declare_entry("Use analytical density", "true",
+                          Patterns::Bool(),
+                          "Whether to use the analytical density solution, or to look for a "
+                          "compositional field named <density_field> to use as density.");
       }
       prm.leave_subsection();
     }
@@ -293,6 +366,7 @@ namespace aspect
       prm.enter_subsection("Annulus benchmark");
       {
         beta = prm.get_double ("Viscosity parameter");
+        use_analytical_density = prm.get_bool ("Use analytical density");
       }
       prm.leave_subsection();
 
@@ -323,55 +397,42 @@ namespace aspect
 
 
 
-    template <>
-    Tensor<1,2>
-    AnnulusBoundary<2>::
+    template <int dim>
+    Tensor<1,dim>
+    AnnulusBoundary<dim>::
     boundary_velocity (const types::boundary_id ,
-                       const Point<2> &p) const
+                       const Point<dim> &p) const
     {
+      Assert (dim==2, ExcNotImplemented());
 
-      const AnnulusMaterial<2> &
+      const AnnulusMaterial<dim> &
       material_model
-        = Plugins::get_plugin_as_type<const AnnulusMaterial<2>>(this->get_material_model());
+        = Plugins::get_plugin_as_type<const AnnulusMaterial<dim>>(this->get_material_model());
 
-      return AnalyticSolutions::Annulus_velocity (p, material_model.get_beta());
+      return AnalyticSolutions::Annulus_velocity (p, material_model.get_beta(), this->get_time());
     }
-
-
-
-    template <>
-    Tensor<1,3>
-    AnnulusBoundary<3>::
-    boundary_velocity (const types::boundary_id ,
-                       const Point<3> &) const
-    {
-      Assert (false, ExcNotImplemented());
-      return Tensor<1,3>();
-    }
-
 
 
 
     /**
      * Gravity model for the Annulus benchmark
      */
-
     template <int dim>
-    class AnnulusGravity : public aspect::GravityModel::Interface<dim>
+    class AnnulusGravity : public aspect::GravityModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
-        virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const;
+        virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const
+        {
+          const AnnulusMaterial<dim> &material_model
+            = Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
+          const double k = material_model.get_beta();
 
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+          double t = 0.0;
+          if (this->simulator_is_past_initialization() == true)
+            t = this->get_time();
 
-        /**
-         * Read the parameters this class declares from the parameter file.
-        */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
+          return AnalyticSolutions::Annulus_gravity(pos,k,t);
+        }
 
         double beta;
     };
@@ -408,73 +469,149 @@ namespace aspect
         compute_dynamic_topography_error() const;
     };
 
+    /**
+      * A postprocessor that visualizes the analytical solution.
+      */
+    template <int dim>
+    class AnnulusVisualizationPostprocessor : public DataPostprocessor<dim>,
+      public Postprocess::VisualizationPostprocessors::Interface<dim>,
+      public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        AnnulusVisualizationPostprocessor ()
+          :
+          DataPostprocessor<dim> ()
+        {};
+
+        std::vector<std::string>
+        get_names () const override
+        {
+          std::vector<std::string> solution_names;
+
+          solution_names.push_back ("analytic_pressure");
+          solution_names.push_back ("analytic_density");
+          return solution_names;
+        };
+
+        std::vector<DataComponentInterpretation::DataComponentInterpretation>
+        get_data_component_interpretation () const override
+        {
+          std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation;
+          interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+          interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+
+          return interpretation;
+        };
+
+        UpdateFlags
+        get_needed_update_flags () const override
+        {
+          return update_gradients | update_values  | update_quadrature_points;
+        };
+
+        void
+        evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                              std::vector<Vector<double> > &computed_quantities) const override
+        {
+          const unsigned int n_quadrature_points = input_data.solution_values.size();
+          Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
+          Assert (input_data.solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
+
+
+          const AnnulusMaterial<dim> &material_model
+            = Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
+
+          for (unsigned int q=0; q<n_quadrature_points; ++q)
+            {
+              computed_quantities[q][0] = AnalyticSolutions::Annulus_pressure(input_data.evaluation_points[q], material_model.get_beta(), this->get_time());
+              computed_quantities[q][1] = AnalyticSolutions::Annulus_density(input_data.evaluation_points[q], material_model.get_beta(), this->get_time());
+            }
+        };
+    };
+
     template <int dim>
     std::pair<std::string,std::string>
-    AnnulusPostprocessor<dim>::execute (TableHandler &)
+    AnnulusPostprocessor<dim>::execute (TableHandler &statistics)
     {
+      const unsigned int n_components = this->introspection().n_components;
       std::unique_ptr<Function<dim>> ref_func;
       {
         const AnnulusMaterial<dim> &material_model
           = Plugins::get_plugin_as_type<const AnnulusMaterial<dim>>(this->get_material_model());
 
-        ref_func.reset (new AnalyticSolutions::FunctionAnnulus<dim>(material_model.get_beta()));
+        ref_func.reset (new AnalyticSolutions::FunctionAnnulus<dim>(material_model.get_beta(), n_components));
+        ref_func->set_time(this->get_time());
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
 
-      Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
-      Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
-      Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
-      Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
+      Vector<double> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
+      Vector<double> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
+      Vector<double> cellwise_errors_rhol2 (this->get_triangulation().n_active_cells());
 
       ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
-                                          dim+2);
-      ComponentSelectFunction<dim> comp_p(dim, dim+2);
+                                          n_components);
+      ComponentSelectFunction<dim> comp_p(dim, n_components);
+      ComponentSelectFunction<dim> comp_rho(dim+2, n_components);
 
-      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                         this->get_solution(),
-                                         *ref_func,
-                                         cellwise_errors_u,
-                                         quadrature_formula,
-                                         VectorTools::L1_norm,
-                                         &comp_u);
-      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                         this->get_solution(),
-                                         *ref_func,
-                                         cellwise_errors_p,
-                                         quadrature_formula,
-                                         VectorTools::L1_norm,
-                                         &comp_p);
-      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+      VectorTools::integrate_difference (this->get_mapping(),
+                                         this->get_dof_handler(),
                                          this->get_solution(),
                                          *ref_func,
                                          cellwise_errors_ul2,
                                          quadrature_formula,
                                          VectorTools::L2_norm,
                                          &comp_u);
-      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
+      VectorTools::integrate_difference (this->get_mapping(),
+                                         this->get_dof_handler(),
                                          this->get_solution(),
                                          *ref_func,
                                          cellwise_errors_pl2,
                                          quadrature_formula,
                                          VectorTools::L2_norm,
                                          &comp_p);
+      VectorTools::integrate_difference (this->get_mapping(),
+                                         this->get_dof_handler(),
+                                         this->get_solution(),
+                                         *ref_func,
+                                         cellwise_errors_rhol2,
+                                         quadrature_formula,
+                                         VectorTools::L2_norm,
+                                         &comp_rho);
 
-      const double u_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u, VectorTools::L1_norm);
-      const double p_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L1_norm);
       const double u_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_ul2, VectorTools::L2_norm);
       const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_pl2, VectorTools::L2_norm);
+      const double rho_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_rhol2, VectorTools::L2_norm);
       const double topo_l2 = compute_dynamic_topography_error();
+
+      statistics.add_value ("u_L2",
+                            u_l2);
+      statistics.set_precision ("u_L2", 14);
+      statistics.set_scientific ("u_L2", true);
+
+      statistics.add_value ("p_L2",
+                            p_l2);
+      statistics.set_precision ("p_L2", 14);
+      statistics.set_scientific ("p_L2", true);
+
+      statistics.add_value ("rho_L2",
+                            rho_l2);
+      statistics.set_precision ("rho_L2", 14);
+      statistics.set_scientific ("rho_L2", true);
+
+      statistics.add_value ("topo_L2",
+                            topo_l2);
+      statistics.set_precision ("topo_L2", 14);
+      statistics.set_scientific ("topo_L2", true);
 
       std::ostringstream os;
 
-      os << std::scientific <<  u_l1
-         << ", " << p_l1
-         << ", " << u_l2
+      os << std::scientific <<  u_l2
          << ", " << p_l2
+         << ", " << rho_l2
          << ", " << topo_l2;
 
-      return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2, topo_L2:", os.str());
+      return std::make_pair("Errors u_L2, p_L2, rho_L2, topo_L2:", os.str());
     }
 
     /**
@@ -533,7 +670,7 @@ namespace aspect
                   for (unsigned int q=0; q < quadrature_formula.size(); ++q)
                     {
                       const Point<dim> p = fe_face_values.quadrature_point(q);
-                      const double analytic_normal_stress = AnalyticSolutions::Annulus_normal_traction<dim>(p, beta);
+                      const double analytic_normal_stress = AnalyticSolutions::Annulus_normal_traction<dim>(p, beta, this->get_time());
                       const double gravity = this->get_gravity_model().gravity_vector(p).norm();
                       const double density = out_face.densities[q];
                       const double diff = - analytic_normal_stress / gravity/ density - topo_values[q];
@@ -543,6 +680,63 @@ namespace aspect
       const double total_l2_error =  Utilities::MPI::sum(l2_error,this->get_mpi_communicator());
       return std::sqrt(total_l2_error);
     }
+
+
+
+    /**
+     * A particle property that represents the density on particles.
+     */
+    template <int dim>
+    class ParticleDensity : public aspect::Particle::Property::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        virtual
+        void
+        initialize_one_particle_property (const Point<dim> &position,
+                                          std::vector<double> &particle_properties) const
+        {
+          const AnnulusMaterial<dim> &material_model
+            = Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
+          const double k = material_model.get_beta();
+          const double density = AnalyticSolutions::Annulus_density(position, k, 0.0);
+          particle_properties.push_back(density);
+        }
+
+        virtual
+        std::vector<std::pair<std::string, unsigned int> >
+        get_property_information() const
+        {
+          std::vector<std::pair<std::string,unsigned int> > property_information;
+
+          const std::string field_name = "particle_density";
+          property_information.emplace_back(field_name,1);
+          return property_information;
+        }
+    };
+
+
+
+    /**
+    * A initial condition for compositional fields that represents the initial density.
+    */
+    template <int dim>
+    class AnnulusInitialDensity : public aspect::InitialComposition::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const override
+        {
+          const double density_index = this->introspection().compositional_index_for_name("density_field");
+          const AnnulusMaterial<dim> &material_model
+            = Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
+          const double k = material_model.get_beta();
+          const double density = AnalyticSolutions::Annulus_density(position, k, 0.0);
+
+          if (n_comp == density_index)
+            return density;
+
+          return 0.0;
+        }
+    };
   }
 }
 
@@ -569,5 +763,22 @@ namespace aspect
                                   "A postprocessor that compares the solution of the `Annulus' benchmark "
                                   "with the one computed by ASPECT "
                                   "and reports the error. See the manual for more information.")
+
+    ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(AnnulusVisualizationPostprocessor,
+                                                "AnnulusVisualizationPostprocessor",
+                                                "A visualization output object that visualizes "
+                                                "the analytical solution of the Annulus benchmark.")
+
+    ASPECT_REGISTER_PARTICLE_PROPERTY(ParticleDensity,
+                                      "particle density",
+                                      "A particle property that represents the density.")
+
+    ASPECT_REGISTER_GRAVITY_MODEL(AnnulusGravity,
+                                  "annulus gravity",
+                                  "A gravity model.")
+
+    ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(AnnulusInitialDensity,
+                                              "initial density",
+                                              "An initial condition for composition following the initial density.")
   }
 }

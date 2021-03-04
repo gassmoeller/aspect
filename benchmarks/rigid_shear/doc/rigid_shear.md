@@ -1,3 +1,7 @@
+# The rigid shear benchmark
+
+*This section was contributed by R. Gassmoeller.*
+
 This directory contains the "Rigid shear" benchmark for which a known solution
 is available. The necessary code lives in the plugin/ subdirectory, while
 instantaneous and time-dependent version of the benchmark are in the
@@ -7,3 +11,7 @@ script that formats the output into readable text files. For a more
 detailed description of the benchmark see Gassmoeller et al. (2019), "Evaluating
 the Accuracy of Hybrid Finite Element/Particle-In-Cell Methods for
 Modeling Incompressible Stokes Flow", Geophysical Journal International, 219, 3.
+
+Additionally, the "transient" directory contains an extension of the benchmark
+to time-dependent flow. The benchmark and its results are described in
+Gassmoeller et al. (2023), "Benchmarking the accuracy of higher order particle methods in geodynamic models of transient flow", in review.

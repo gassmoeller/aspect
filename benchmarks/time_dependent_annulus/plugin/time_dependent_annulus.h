@@ -115,12 +115,19 @@ namespace aspect
     using namespace dealii;
 
     template <int dim>
-    class TimeDependentAnnulus : public MaterialModel::Interface<dim>
+    class TimeDependentAnnulus : public MaterialModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       private:
         std::shared_ptr<Functions::ParsedFunction<dim>> density_function, pressure_function, velocity_function;
 
       public:
+        virtual void update ()
+        {
+          density_function->set_time(this->get_time());
+          pressure_function->set_time(this->get_time());
+          velocity_function->set_time(this->get_time());
+        };
+
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
