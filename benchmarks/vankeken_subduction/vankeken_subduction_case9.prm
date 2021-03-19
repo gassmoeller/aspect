@@ -75,14 +75,7 @@ subsection Boundary temperature model
   set List of model names = initial temperature
 end
 
-subsection Boundary velocity model
-     subsection Function
-          set Variable names = x,y,t
-	  set Function constants = H=6.0e5, v=0.035355339, eps=0.01
-          set Function expression = if( x<=(H-y)+eps, v, 0.0 ) ; \
-	      	       		    if( x<=(H-y)+eps,-v, 0.0 )
-     end
-end
+
 
 subsection Gravity model
   set Model name = vertical
@@ -103,7 +96,7 @@ subsection Material model
 end
 
 subsection Mesh refinement
-  set Initial global refinement = 2
+  set Initial global refinement = 1
   set Initial adaptive refinement = 0
   set Time steps between mesh refinement = 0
   set Run postprocessors on initial refinement = true
@@ -114,6 +107,15 @@ subsection Mesh refinement
     set Function expression = 7.0
   end	     
   set Additional refinement times = 2.0e8, 2.2e8
+end
+
+subsection Boundary velocity model
+     subsection Function
+          set Variable names = x,y,t
+	  set Function constants = H=6.0e5, v=0.035355339, eps=0.01, width=50000
+          set Function expression = if( x<=(H-y)+eps, v, if(x<=(H-y)+width*sqrt(2), v*(0.5 * (1 + cos(pi*(x-(H-y))/(width*sqrt(2))))), 0.0)); \
+	      	              if( x<=(H-y)+eps,-v, if(x<=(H-y)+width*sqrt(2),-v*(0.5 * (1 + cos(pi*(x-(H-y))/(width*sqrt(2))))), 0.0))
+     end
 end
 
 # Turn prescribed velocities and pressure on
@@ -137,9 +139,9 @@ subsection Prescribed fields
   subsection Velocity function
     set Variable names = x,y,t
     # Return u_x; u_y; u_z (u_z only used if in 3d)
-    set Function constants = H=6.0e5, v=0.035355339, eps=0.01
-    set Function expression = if( x<=(H-y)+eps, v, 0.0 ); \
-	      	              if( x<=(H-y)+eps,-v, 0.0 )
+    set Function constants = H=6.0e5, v=0.035355339, eps=0.01, width=50000
+    set Function expression = if( x<=(H-y)+eps, v, if(x<=(H-y)+width*sqrt(2), v*(0.5 * (1 + cos(pi*(x-(H-y))/(width*sqrt(2))))), 0.0)); \
+	      	              if( x<=(H-y)+eps,-v, if(x<=(H-y)+width*sqrt(2),-v*(0.5 * (1 + cos(pi*(x-(H-y))/(width*sqrt(2))))), 0.0))
   end
   subsection Pressure indicator function
     set Function constants = pi=3.14159, H=6.0e5, W=6.6e5, eps=0.01
@@ -154,9 +156,9 @@ subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, velocity statistics
   subsection Visualization
     set List of output variables = volumetric strain rate
-    set Output format = hdf5
+    set Output format = vtu
     set Interpolate output = false
-    set Time between graphical output = 5.0e6
+    set Time between graphical output = 0
   end
 end
 
