@@ -11,21 +11,23 @@ RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \
     mkdir aspect/build-release && \
     cd aspect/build-release && \
     git checkout master && \
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake -G 'Ninja' -DCMAKE_BUILD_TYPE=Release \
           -DASPECT_PRECOMPILE_HEADERS=ON \
+          -DCMAKE_UNITY_BUILD_BATCH_SIZE=20 \
           .. && \
-    make -j6 && \
+    ninja && \
     mv aspect ../aspect-release && \
-    make clean && \
+    ninja clean && \
     cd .. && \
     mkdir build-debug && \
     cd build-debug && \
-    cmake -DCMAKE_BUILD_TYPE=Debug \
+    cmake -G 'Ninja' -DCMAKE_BUILD_TYPE=Debug \
           -DASPECT_PRECOMPILE_HEADERS=ON \
+          -DCMAKE_UNITY_BUILD_BATCH_SIZE=20 \
           .. && \
-    make -j6 && \
+    ninja && \
     mv aspect $HOME/aspect/aspect && \
-    make clean
+    ninja clean
 
 ENV ASPECT_DIR /home/dealii/aspect/build-debug
 
