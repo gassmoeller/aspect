@@ -23,9 +23,17 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_LOGIN }}
-      - name: Build and Push to Docker Hub
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_LOGIN }}
+      - name: Build and Push to registries
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: gassmoeller/aspect:latest
           file: contrib/docker/docker/Dockerfile
+          tags: |
+            geodynamics/aspect:latest
+            ghcr.io/gassmoeller/aspect:latest
