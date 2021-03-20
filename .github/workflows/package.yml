@@ -1,12 +1,15 @@
 # This is a basic workflow to create a github package
 
-name: build_package
+name: build_container
 
 # Controls when the action will run. 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ build_package ]
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 0 * * *'
 
 jobs:
   push_to_registry:
@@ -20,8 +23,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_LOGIN }}
-      - name: Push to GitHub Packages
+      - name: Build and Push to Docker Hub
         uses: docker/build-push-action@v2
         with:
+          push: true
           tags: gassmoeller/aspect:latest
           file: contrib/docker/docker/Dockerfile
