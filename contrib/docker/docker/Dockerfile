@@ -13,7 +13,7 @@ RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \
     git checkout master && \
     cmake -G 'Ninja' -DCMAKE_BUILD_TYPE=Release \
           -DASPECT_PRECOMPILE_HEADERS=ON \
-          -DCMAKE_UNITY_BUILD_BATCH_SIZE=20 \
+          -DCMAKE_UNITY_BUILD_BATCH_SIZE=40 \
           .. && \
     ninja && \
     mv aspect ../aspect-release && \
@@ -23,7 +23,7 @@ RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \
     cd build-debug && \
     cmake -G 'Ninja' -DCMAKE_BUILD_TYPE=Debug \
           -DASPECT_PRECOMPILE_HEADERS=ON \
-          -DCMAKE_UNITY_BUILD_BATCH_SIZE=20 \
+          -DCMAKE_UNITY_BUILD_BATCH_SIZE=40 \
           .. && \
     ninja && \
     mv aspect $HOME/aspect/aspect && \

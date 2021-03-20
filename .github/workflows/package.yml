@@ -21,11 +21,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_LOGIN }}
       - name: Push to GitHub Packages
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
-          repository: gassmoeller/aspect/aspect
-          tag_with_ref: true
-          dockerfile: contrib/docker/docker/Dockerfile
+          tags: gassmoeller/aspect:latest
+          file: contrib/docker/docker/Dockerfile
