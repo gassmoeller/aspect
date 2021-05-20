@@ -28,6 +28,9 @@ SET(TARGET "aspect")
 FILE(GLOB_RECURSE TARGET_SRC
      "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
 
+INCLUDE_DIRECTORIES("/home/rene/software/SHTOOLS/include")
+LINK_DIRECTORIES("/home/rene/software/SHTOOLS/include/lib")
+
 # Special treatment of some files for unity builds. We move the following
 # files to the end of the list of all .cc files (TARGET_SRC). This ordering is
 # required to not have specializations (for example helper_functions.cc)
@@ -466,6 +469,10 @@ ENDIF()
 
 ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
 DEAL_II_SETUP_TARGET(${TARGET})
+
+TARGET_LINK_LIBRARIES("aspect" "SHTOOLS")
+TARGET_LINK_LIBRARIES("aspect" "fftw3")
+TARGET_LINK_LIBRARIES("aspect" "gfortran")
 
 FIND_PACKAGE(PerpleX QUIET
   HINTS ./contrib/perplex/install/ ../ ../../ ${PERPLEX_DIR} $ENV{PERPLEX_DIR})

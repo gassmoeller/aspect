@@ -50,6 +50,8 @@
 #include <errno.h>
 
 #include <boost/math/special_functions/spherical_harmonic.hpp>
+#include "../../SHTOOLS/include/shtools.h"
+
 #include <boost/lexical_cast.hpp>
 
 namespace aspect

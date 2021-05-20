@@ -29,6 +29,9 @@
 #include <iostream>
 #include <array>
 
+#include <boost/math/special_functions/spherical_harmonic.hpp>
+#include "../../SHTOOLS/include/shtools.h"
+
 #include <boost/lexical_cast.hpp>
 
 namespace aspect
@@ -171,6 +174,47 @@ namespace aspect
           profile.initialize(this->get_mpi_communicator());
           vs_to_density_index = profile.get_column_index_from_name("vs_to_density");
         }
+
+      const unsigned int lmin = 255;
+      const unsigned int lmax = 255;
+      std::vector<double> p((lmax+1)*(lmax+2)/2);
+      const double z = 0.1;
+      const double phi = 0.0;
+      const int phase=-1;
+      const int normalization= 1;
+
+      shtools::PlmON(p.data(),lmax,std::cos(z),&phase,&normalization);
+
+      std::cout << "SHTOOLS: ";
+      for (unsigned int l=lmin; l<=lmax; ++l)
+        for (unsigned int m=0; m<=l; ++m)
+          {
+            const unsigned int index = shtools::PlmIndex(l,m) - 1 ;
+            std::cout << p[index] << " ";
+          }
+      std::cout << std::endl << std::endl;
+
+      std::cout << "BOOST: ";
+      for (unsigned int l=lmin; l<=lmax; ++l)
+        for (unsigned int m=0; m<=l; ++m)
+          {
+            const double sph_harm_val = boost::math::spherical_harmonic_r(l, m, z, phi);
+            std::cout << sph_harm_val << " ";
+          }
+      std::cout << std::endl << std::endl;
+
+      std::cout << "Relative Errors: ";
+      for (unsigned int l=lmin; l<=lmax; ++l)
+        for (unsigned int m=0; m<=l; ++m)
+          {
+            const unsigned int index = shtools::PlmIndex(l,m) - 1 ;
+            const double sph_harm_val = boost::math::spherical_harmonic_r(l, m, z, phi);
+            if (std::abs(p[index]) > 0.0)
+              std::cout << (sph_harm_val - p[index]) / p[index] << " ";
+            else
+              std::cout << "0.0 ";
+          }
+      std::cout << std::endl << std::endl;
     }
 
 
@@ -461,8 +505,6 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-
-      initialize ();
     }
   }
 }
