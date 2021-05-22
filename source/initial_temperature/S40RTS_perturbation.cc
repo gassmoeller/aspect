@@ -178,43 +178,43 @@ namespace aspect
       const unsigned int lmin = 255;
       const unsigned int lmax = 255;
       std::vector<double> p((lmax+1)*(lmax+2)/2);
-      const double z = 0.1;
+      const double theta = 0.1;
       const double phi = 0.0;
       const int phase=-1;
       const int normalization= 1;
 
-      shtools::PlmON(p.data(),lmax,std::cos(z),&phase,&normalization);
+      shtools::PlmON(p.data(),lmax,std::cos(theta),&phase,&normalization);
 
-      std::cout << "SHTOOLS: ";
+      this->get_pcout() << "SHTOOLS: ";
       for (unsigned int l=lmin; l<=lmax; ++l)
         for (unsigned int m=0; m<=l; ++m)
           {
             const unsigned int index = shtools::PlmIndex(l,m) - 1 ;
-            std::cout << p[index] << " ";
+            this->get_pcout() << p[index] << " ";
           }
-      std::cout << std::endl << std::endl;
+      this->get_pcout() << std::endl << std::endl;
 
-      std::cout << "BOOST: ";
+      this->get_pcout() << "BOOST: ";
       for (unsigned int l=lmin; l<=lmax; ++l)
         for (unsigned int m=0; m<=l; ++m)
           {
-            const double sph_harm_val = boost::math::spherical_harmonic_r(l, m, z, phi);
-            std::cout << sph_harm_val << " ";
+            const double sph_harm_val = boost::math::spherical_harmonic_r(l, m, theta, phi);
+            this->get_pcout() << sph_harm_val << " ";
           }
-      std::cout << std::endl << std::endl;
+      this->get_pcout() << std::endl << std::endl;
 
-      std::cout << "Relative Errors: ";
+      this->get_pcout() << "Relative Errors: ";
       for (unsigned int l=lmin; l<=lmax; ++l)
         for (unsigned int m=0; m<=l; ++m)
           {
             const unsigned int index = shtools::PlmIndex(l,m) - 1 ;
-            const double sph_harm_val = boost::math::spherical_harmonic_r(l, m, z, phi);
+            const double sph_harm_val = boost::math::spherical_harmonic_r(l, m, theta, phi);
             if (std::abs(p[index]) > 0.0)
-              std::cout << (sph_harm_val - p[index]) / p[index] << " ";
+              this->get_pcout() << (sph_harm_val - p[index]) / p[index] << " ";
             else
-              std::cout << "0.0 ";
+              this->get_pcout() << "0.0 ";
           }
-      std::cout << std::endl << std::endl;
+      this->get_pcout() << std::endl << std::endl;
     }
 
 
