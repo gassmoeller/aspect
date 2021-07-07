@@ -232,10 +232,7 @@ namespace aspect
            * Find nearest orthogonal matrix using a SVD if the
            * deteriminant is more than a tolerance away from one.
            */
-          void
-          orthogonalize_matrix(dealii::Tensor<2, 3> &tensor,
-                               double tolerance) const;
-
+         
           /**
            * todo
            */
