@@ -33,6 +33,7 @@
 
 #if DEAL_II_VERSION_GTE(9,3,0)
 #include <deal.II/matrix_free/fe_point_evaluation.h>
+#include <deal.II/fe/component_mask.h>
 #endif
 
 #include <boost/serialization/map.hpp>
@@ -652,7 +653,7 @@ namespace aspect
                            solution_values.end());
 
       if (((update_flags & update_values) == true) || ((update_values & update_gradients) == true))
-        evaluators.reinit(cell, positions, {solution_values.data(), solution_values.size()}, update_flags);
+        evaluators.reinit(cell, positions, {solution_values.data(), solution_values.size()}, update_flags, ComponentMask());
 
       auto particle = begin_particle;
       for (unsigned int i = 0; particle!=end_particle; ++particle,++i)
@@ -1066,7 +1067,8 @@ namespace aspect
           reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
                  const ArrayView<Point<dim>> &positions,
                  const ArrayView<double> &solution_values,
-                 const UpdateFlags update_flags)
+                 const UpdateFlags update_flags,
+                 const ComponentMask &selected_components)
           {
             // FEPointEvaluation uses different evaluation flags than the common UpdateFlags.
             // Translate between the two.
@@ -1082,36 +1084,53 @@ namespace aspect
             Assert ((update_flags & ~(update_gradients | update_values)) == false,
                     ExcNotImplemented());
 
+            const auto &component_indices = simulator_access.introspection().component_indices;
+
             // Reinitialize and evaluate all evaluators.
-            // TODO: It would be nice to be able to hand over a ComponentMask
-            // to specify which evaluators to use. Currently, this is only
-            // possible by manually accessing the public members of this class.
-            velocity.reinit (cell, positions);
-            pressure.reinit (cell, positions);
-            temperature.reinit (cell, positions);
-
-            for (auto &evaluator_composition: compositions)
-              evaluator_composition.reinit (cell, positions);
-
-            if (simulator_access.include_melt_transport())
+            if (selected_components[component_indices.velocities[0]] == true)
               {
-                fluid_velocity->reinit (cell, positions);
-                fluid_pressure->reinit (cell, positions);
-                compaction_pressure->reinit (cell, positions);
+                velocity.reinit (cell, positions);
+                velocity.evaluate (solution_values, evaluation_flags);
               }
 
-            velocity.evaluate (solution_values, evaluation_flags);
-            pressure.evaluate (solution_values, evaluation_flags);
-            temperature.evaluate (solution_values, evaluation_flags);
+            if (selected_components[component_indices.pressure] == true)
+              {
+                pressure.reinit (cell, positions);
+                pressure.evaluate (solution_values, evaluation_flags);
+              }
 
-            for (auto &evaluator_composition: compositions)
-              evaluator_composition.evaluate (solution_values, evaluation_flags);
+            if (selected_components[component_indices.temperature] == true)
+              {
+                temperature.reinit (cell, positions);
+                temperature.evaluate (solution_values, evaluation_flags);
+              }
+
+            const unsigned int n_compositional_fields = simulator_access.n_compositional_fields();
+            const auto &composition_component_indices = component_indices.compositional_fields;
+            for (unsigned int composition_index = 0; composition_index < n_compositional_fields; ++composition_index)
+              if (selected_components[composition_component_indices[composition_index]] == true)
+              {
+                  compositions[composition_index].reinit (cell, positions);
+                  compositions[composition_index].evaluate (solution_values, evaluation_flags);
+                }
 
             if (simulator_access.include_melt_transport())
-              {
-                fluid_velocity->evaluate (solution_values, evaluation_flags);
-                fluid_pressure->evaluate (solution_values, evaluation_flags);
-                compaction_pressure->evaluate (solution_values, evaluation_flags);
+            {
+              if (selected_components[melt_component_indices[0]] == true)
+                  {
+                    fluid_velocity->reinit (cell, positions);
+                    fluid_velocity->evaluate (solution_values, evaluation_flags);
+                  }
+                if (selected_components[melt_component_indices[1]] == true)
+                  {
+                    fluid_pressure->reinit (cell, positions);
+                    fluid_pressure->evaluate (solution_values, evaluation_flags);
+                  }
+                if (selected_components[melt_component_indices[2]] == true)
+                  {
+                    compaction_pressure->reinit (cell, positions);
+                    compaction_pressure->evaluate (solution_values, evaluation_flags);
+                  }
               }
           }
 
