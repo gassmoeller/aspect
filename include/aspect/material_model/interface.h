@@ -1269,8 +1269,12 @@ namespace aspect
          * be the identity tensor (this is the default case), but this may become
          * important for material models with anisotropic viscosities, if the
          * constitutive tensor is not normalized.
+         * 
+         * @deprecated This function is no longer used, the reference viscosity is
+         * computed dynamically by the solver.
          */
-        virtual double reference_viscosity () const = 0;
+        DEAL_II_DEPRECATED
+        virtual double reference_viscosity () const;
         /**
          * @}
          */

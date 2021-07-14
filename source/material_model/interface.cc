@@ -93,6 +93,16 @@ namespace aspect
 
 
     template <int dim>
+    double
+    Interface<dim>::reference_viscosity () const
+    {
+      AssertThrow(false,ExcMessage("The MaterialModel::Interface::reference_viscosity function should no longer be used.Use the evaluate() function to compute a viscosity at specified reference conditions."));
+      return numbers::signaling_nan<double>();
+    }
+
+
+
+    template <int dim>
     void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &)
