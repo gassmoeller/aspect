@@ -42,17 +42,12 @@ namespace aspect
                           const Point<dim> &/*position*/,
                           const unsigned int compositional_field) const
     {
-      Assert(compositional_field == 0,
-             ExcMessage("The 'spherical constant' boundary composition plugin "
-                        "only supports a single compositional field."));
-      (void) compositional_field;
-
       Assert (this->get_geometry_model().translate_id_to_symbol_name(boundary_indicator) == "top" ||
               this->get_geometry_model().translate_id_to_symbol_name(boundary_indicator) == "bottom",
               ExcMessage ("Unknown boundary indicator for geometry model. "
                           "The given boundary should be ``top'' or ``bottom''."));
 
-      return boundary_compositions[boundary_indicator];
+      return boundary_compositions[boundary_indicator][compositional_field];
     }
 
 
@@ -66,13 +61,15 @@ namespace aspect
         prm.enter_subsection("Spherical constant");
         {
           prm.declare_entry ("Outer composition", "0.",
-                             Patterns::Double (),
-                             "Composition at the outer boundary (lithosphere water/air). "
-                             "For a spherical geometry model, this is the only boundary. "
-                             "Units: none.");
+                             Patterns::List(Patterns::Double ()),
+                             "A comma separated list of composition boundary values "
+                             "at the top boundary (at maximal radius). This list must have as many "
+                             "entries as there are compositional fields. Units: none.");
           prm.declare_entry ("Inner composition", "1.",
-                             Patterns::Double (),
-                             "Composition at the inner boundary (core mantle boundary). Units: none.");
+                             Patterns::List(Patterns::Double ()),
+                             "A comma separated list of composition boundary values "
+                             "at the bottom boundary (at minimal radius). This list must have as many "
+                             "entries as there are compositional fields. Units: none.");
         }
         prm.leave_subsection ();
       }
@@ -89,13 +86,17 @@ namespace aspect
         prm.enter_subsection("Spherical constant");
         {
           const auto boundary_names_map = this->get_geometry_model().get_symbolic_boundary_names_map();
-          boundary_compositions.resize(boundary_names_map.size(),numbers::signaling_nan<double>());
+
+          // This assumes boundary_ids are numbered from 0 to boundary_names_map.size()-1.
+          boundary_compositions.resize(boundary_names_map.size(),
+                                       std::vector<double>(this->n_compositional_fields(),
+                                                           numbers::signaling_nan<double>()));
 
           if (boundary_names_map.find("bottom") != boundary_names_map.end())
-            boundary_compositions[boundary_names_map.at("bottom")] =  prm.get_double ("Inner composition");
+            boundary_compositions[boundary_names_map.at("bottom")] = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Inner composition")));
 
           if (boundary_names_map.find("top") != boundary_names_map.end())
-            boundary_compositions[boundary_names_map.at("top")] =  prm.get_double ("Outer composition");
+            boundary_compositions[boundary_names_map.at("top")] = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Outer composition")));
         }
         prm.leave_subsection ();
       }
@@ -112,7 +113,7 @@ namespace aspect
     ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL(SphericalConstant,
                                                "spherical constant",
                                                "A model in which the composition is chosen constant on "
-                                               "the inner and outer boundaries of a surface, spherical "
+                                               "the inner and outer boundaries of a sphere, spherical "
                                                "shell, chunk or ellipsoidal chunk. "
                                                "Parameters are read from subsection 'Spherical constant'.")
   }

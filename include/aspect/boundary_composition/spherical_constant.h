@@ -26,6 +26,7 @@
 
 #include <aspect/simulator_access.h>
 
+#include<unordered_map>
 
 namespace aspect
 {
@@ -71,9 +72,11 @@ namespace aspect
 
       private:
         /**
-         * Compositions at the boundaries.
+         * Compositions at the boundaries. The vector has as many outer elements
+         * as there are boundaries. Each vector has as many inner elements as there
+         * are compositions.
          */
-        std::vector<double> boundary_compositions;
+        std::vector<std::vector<double>> boundary_compositions;
     };
   }
 }
