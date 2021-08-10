@@ -23,6 +23,7 @@
 #include <aspect/citation_info.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -543,8 +544,8 @@ namespace aspect
      * Implement the block Schur preconditioner for the Stokes system.
      */
     template <class StokesMatrixType, class ABlockMatrixType, class SchurComplementMatrixType,
-              class ABlockPreconditionerType, class SchurComplementPreconditionerType>
-    class BlockSchurGMGPreconditioner : public Subscriptor
+              class ABlockPreconditionerType, class SchurComplementPreconditionerType, int dim>
+    class BlockSchurGMGPreconditioner : public Subscriptor, public aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -572,7 +573,8 @@ namespace aspect
                                      const bool                               do_solve_A,
                                      const bool                               do_solve_Schur_complement,
                                      const double                             A_block_tolerance,
-                                     const double                             Schur_complement_tolerance);
+                                     const double                             Schur_complement_tolerance,
+                                     const bool                               output_details);
 
         /**
          * Matrix vector product with this preconditioner object.
@@ -604,14 +606,16 @@ namespace aspect
         mutable unsigned int                                            n_iterations_Schur_complement_;
         const double                                                    A_block_tolerance;
         const double                                                    Schur_complement_tolerance;
+        const bool                                                      output_details;
+
         mutable dealii::LinearAlgebra::distributed::BlockVector<double> utmp;
         mutable dealii::LinearAlgebra::distributed::BlockVector<double> ptmp;
     };
 
     template <class StokesMatrixType, class ABlockMatrixType, class SchurComplementMatrixType,
-              class ABlockPreconditionerType, class SchurComplementPreconditionerType>
+              class ABlockPreconditionerType, class SchurComplementPreconditionerType, int dim>
     BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType,
-                                ABlockPreconditionerType, SchurComplementPreconditionerType>::
+                                ABlockPreconditionerType, SchurComplementPreconditionerType, dim>::
                                 BlockSchurGMGPreconditioner (const StokesMatrixType                  &Stokes_matrix,
                                                              const ABlockMatrixType                  &A_block,
                                                              const SchurComplementMatrixType         &Schur_complement_block,
@@ -620,7 +624,8 @@ namespace aspect
                                                              const bool                               do_solve_A,
                                                              const bool                               do_solve_Schur_complement,
                                                              const double                             A_block_tolerance,
-                                                             const double                             Schur_complement_tolerance)
+                                                             const double                             Schur_complement_tolerance,
+                                                             const bool output_details)
                                   :
                                   stokes_matrix                   (Stokes_matrix),
                                   A_block                         (A_block),
@@ -632,34 +637,35 @@ namespace aspect
                                   n_iterations_A_                 (0),
                                   n_iterations_Schur_complement_  (0),
                                   A_block_tolerance               (A_block_tolerance),
-                                  Schur_complement_tolerance      (Schur_complement_tolerance)
+                                  Schur_complement_tolerance      (Schur_complement_tolerance),
+                                  output_details                  (output_details)
     {}
 
     template <class StokesMatrixType, class ABlockMatrixType, class SchurComplementMatrixType,
-              class ABlockPreconditionerType, class SchurComplementPreconditionerType>
+              class ABlockPreconditionerType, class SchurComplementPreconditionerType, int dim>
     unsigned int
     BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType,
-                                ABlockPreconditionerType, SchurComplementPreconditionerType>::
+                                ABlockPreconditionerType, SchurComplementPreconditionerType, dim>::
                                 n_iterations_A_block() const
     {
       return n_iterations_A_;
     }
 
     template <class StokesMatrixType, class ABlockMatrixType, class SchurComplementMatrixType,
-              class ABlockPreconditionerType, class SchurComplementPreconditionerType>
+              class ABlockPreconditionerType, class SchurComplementPreconditionerType, int dim>
     unsigned int
     BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType,
-                                ABlockPreconditionerType, SchurComplementPreconditionerType>::
+                                ABlockPreconditionerType, SchurComplementPreconditionerType, dim>::
                                 n_iterations_Schur_complement() const
     {
       return n_iterations_Schur_complement_;
     }
 
     template <class StokesMatrixType, class ABlockMatrixType, class SchurComplementMatrixType,
-              class ABlockPreconditionerType, class SchurComplementPreconditionerType>
+              class ABlockPreconditionerType, class SchurComplementPreconditionerType, int dim>
     void
     BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType,
-                                ABlockPreconditionerType, SchurComplementPreconditionerType>::
+                                ABlockPreconditionerType, SchurComplementPreconditionerType, dim>::
                                 vmult (dealii::LinearAlgebra::distributed::BlockVector<double>       &dst,
                                        const dealii::LinearAlgebra::distributed::BlockVector<double>  &src) const
     {
@@ -689,10 +695,17 @@ namespace aspect
             {
               try
                 {
+                  if (output_details)
+                    this->get_pcout() << "Solving Stokes inner S block... ";
+
                   dst.block(1) = 0.0;
                   solver.solve(Schur_complement_block,
                                dst.block(1), src.block(1),
                                Schur_complement_preconditioner);
+
+                  if (output_details)
+                    this->get_pcout() << solver_control.last_step() << " iterations." << std::endl;
+
                   n_iterations_Schur_complement_ += solver_control.last_step();
                 }
               // if the solver fails, report the error from processor 0 with some additional
@@ -738,9 +751,16 @@ namespace aspect
           SolverCG<dealii::LinearAlgebra::distributed::Vector<double>> solver(solver_control);
           try
             {
+              if (output_details)
+                this->get_pcout() << "Solving Stokes inner A block... ";
+
               dst.block(0) = 0.0;
               solver.solve(A_block, dst.block(0), utmp.block(0),
                            A_block_preconditioner);
+
+              if (output_details)
+                this->get_pcout() << solver_control.last_step() << " iterations." << std::endl;
+
               n_iterations_A_ += solver_control.last_step();
             }
           // if the solver fails, report the error from processor 0 with some additional
@@ -2187,22 +2207,27 @@ namespace aspect
     solver_control_expensive.enable_history_data();
 
     // create a cheap preconditioner that consists of only a single V-cycle
-    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
+    internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner, dim>
     preconditioner_cheap (stokes_matrix, A_block_matrix, Schur_complement_block_matrix,
                           prec_A, prec_Schur,
                           /*do_solve_A*/false,
                           /*do_solve_Schur*/false,
                           sim.parameters.linear_solver_A_block_tolerance,
-                          sim.parameters.linear_solver_S_block_tolerance);
+                          sim.parameters.linear_solver_S_block_tolerance,
+                          /*output_details*/false);
+    preconditioner_cheap.initialize_simulator(sim);
 
     // create an expensive preconditioner that solves for the A block with CG
-    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
+    internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner, dim>
     preconditioner_expensive (stokes_matrix, A_block_matrix, Schur_complement_block_matrix,
                               prec_A, prec_Schur,
                               /*do_solve_A*/true,
                               /*do_solve_Schur*/true,
                               sim.parameters.linear_solver_A_block_tolerance,
-                              sim.parameters.linear_solver_S_block_tolerance);
+                              sim.parameters.linear_solver_S_block_tolerance,
+                              /*output_details*/true);
+
+    preconditioner_expensive.initialize_simulator(sim);
 
     PrimitiveVectorMemory<dealii::LinearAlgebra::distributed::BlockVector<double>> mem;
 
@@ -2220,7 +2245,7 @@ namespace aspect
         // products and GMG v-cycle where the smoothers, transfer operators, and coarse
         // solvers are all defined to be linear operators which do not change from iteration
         // to iteration. Therefore we can use non-flexible Krylov methods like GMRES or IDR(s),
-        // instead of requiring FGMRES, greatly lowing the memory requirement of the solver.
+        // instead of requiring FGMRES, greatly lowering the memory requirement of the solver.
         if (sim.parameters.stokes_krylov_type == Parameters<dim>::StokesKrylovType::gmres)
           {
             SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>

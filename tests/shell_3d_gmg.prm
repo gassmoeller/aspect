@@ -89,8 +89,12 @@ end
 
 
 subsection Solver parameters
+  subsection Matrix Free
+    set Output details = true
+  end
   subsection Stokes solver parameters
     set Stokes solver type = block GMG
     set Linear solver tolerance = 1e-4
+    set Number of cheap Stokes solver steps = 10
   end
 end
