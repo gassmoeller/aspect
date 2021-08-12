@@ -57,8 +57,8 @@ namespace aspect
     void
     ComputeProfile<dim>::initialize()
     {
-      if (initialized)
-        return;
+      //if (initialized)
+      //  return;
 
       temperatures.resize(n_points, numbers::signaling_nan<double>());
       pressures.resize(n_points, numbers::signaling_nan<double>());
@@ -108,10 +108,14 @@ namespace aspect
             {
               // use material properties calculated at i-1
               const double density = out.densities[0];
-              const double alpha = out.thermal_expansion_coefficients[0];
+              
+              // We need to use the effective thermal expansivity and specific heat here. Otherwise,
+              // the adiabatic profile will not contain latent heat contributions from phase transitions.
+              const double alpha = out.thermal_expansion_coefficients[0] + density * out.entropy_derivative_pressure[0];
               // Handle the case that cp is zero (happens in simple Stokes test problems like sol_cx). By setting
               // 1/cp = 0.0 we will have a constant temperature profile with depth.
-              const double one_over_cp = (out.specific_heat[0]>0.0) ? 1.0/out.specific_heat[0] : 0.0;
+              const double effective_cp = out.specific_heat[0] - in.temperature[0] * out.entropy_derivative_temperature[0];
+              const double one_over_cp = (effective_cp) ? 1.0/effective_cp : 0.0;
               // get the magnitude of gravity. we assume
               // that gravity always points along the depth direction. this
               // may not strictly be true always but is likely a good enough

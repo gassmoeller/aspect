@@ -347,6 +347,14 @@ namespace aspect
       sim->initialize_simulator (*this);
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
+    
+    // need to initialize again to compute the phase function
+    adiabatic_conditions->initialize ();
+    adiabatic_conditions->initialize ();
+    adiabatic_conditions->initialize ();
+    adiabatic_conditions->initialize ();
+    adiabatic_conditions->initialize ();
+    adiabatic_conditions->initialize ();
 
     // Initialize the mesh deformation handler
     if (parameters.mesh_deformation_enabled)
