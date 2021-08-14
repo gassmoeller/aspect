@@ -104,10 +104,87 @@ namespace aspect
   }
 
 
+  template <int dim, int spacedim=dim>
+  void
+  constrain_point(const DoFHandler<dim,spacedim> &dof_handler,
+                  const Mapping<dim> &mapping,
+                  const Point<dim> &location,
+                  AffineConstraints<double> &constraints,
+                  const unsigned int first_vector_component)
+  {
+    const auto &fe = dof_handler.get_fe();
+    const std::vector<Point<dim - 1>> &unit_support_points = fe.get_unit_face_support_points();
+    const Quadrature<dim - 1> quadrature(unit_support_points);
+    const unsigned int dofs_per_face = fe.dofs_per_face;
+    std::vector<types::global_dof_index> face_dofs(dofs_per_face);
+
+
+    FEFaceValues<dim, spacedim> fe_face_values(mapping,
+                                               fe,
+                                               quadrature,
+                                               update_quadrature_points |
+                                               update_normal_vectors);
+
+    std::set<types::boundary_id>::iterator b_id;
+
+    for (const auto &cell : dof_handler.active_cell_iterators())
+      if (cell->level_subdomain_id() != numbers::artificial_subdomain_id
+          &&
+          cell->level_subdomain_id() != numbers::invalid_subdomain_id)
+        for (unsigned int face_no = 0;
+             face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+          {
+            typename DoFHandler<dim, spacedim>::face_iterator face = cell->face(face_no);
+            face->get_dof_indices(face_dofs);
+            fe_face_values.reinit(cell, face_no);
+
+            for (unsigned int i = 0; i < face_dofs.size(); ++i)
+              if (fe.face_system_to_component_index(i).first ==
+                  first_vector_component)
+                {
+                  const Point<dim> position = fe_face_values.quadrature_point(i);
+                  if (position.distance(location) < 1e-6*cell->diameter())
+                    {
+                      std::array<types::global_dof_index,dim> dof_indices;
+                      dof_indices[0] = face_dofs[i];
+                      for (unsigned int k = 0; k < dofs_per_face; ++k)
+                        if ((k != i) &&
+                            (quadrature.point(k) == quadrature.point(i)) &&
+                            (fe.face_system_to_component_index(k).first >=
+                             first_vector_component) &&
+                            (fe.face_system_to_component_index(k).first <
+                             first_vector_component + dim))
+                          dof_indices
+                          [fe.face_system_to_component_index(k).first -
+                           first_vector_component] = face_dofs[k];
+
+                      for (unsigned int k=0; k<dim; ++k)
+                        if (!constraints.is_constrained(dof_indices[k]) &&
+                            constraints.can_store_line(dof_indices[k]))
+                          {
+                            constraints.add_line(dof_indices[k]);
+                          }
+                    }
+                }
+          }
+  }
 
   template <int dim>
   void Simulator<dim>::setup_nullspace_constraints(AffineConstraints<double> &constraints)
   {
+
+    if (parameters.nullspace_removal & Parameters<dim>::NullspaceRemoval::net_rotation)
+      {
+        //Assert(is_shell)
+        const Point<dim> &location = geometry_model->representative_point(0.0);
+
+        constrain_point(dof_handler,
+                        *mapping,
+                        location,
+                        constraints,
+                        0);
+      }
+
     if (!(parameters.nullspace_removal & (NullspaceRemoval::linear_momentum
                                           | NullspaceRemoval::net_translation)))
       return;
