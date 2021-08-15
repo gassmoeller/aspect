@@ -128,9 +128,7 @@ namespace aspect
     std::set<types::boundary_id>::iterator b_id;
 
     for (const auto &cell : dof_handler.active_cell_iterators())
-      if (cell->level_subdomain_id() != numbers::artificial_subdomain_id
-          &&
-          cell->level_subdomain_id() != numbers::invalid_subdomain_id)
+      if (cell->is_ghost() || cell->is_locally_owned())
         for (unsigned int face_no = 0;
              face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
           {
