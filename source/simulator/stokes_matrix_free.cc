@@ -54,7 +54,7 @@ namespace aspect
                     const Mapping<dim> &mapping,
                     const Point<dim> &location,
                     AffineConstraints<double> &constraints,
-                    const unsigned int first_vector_component)
+                    const ComponentMask &mask)
     {
       const auto &fe = dof_handler.get_fe();
       const std::vector<Point<dim - 1>> &unit_support_points = fe.get_unit_face_support_points();
@@ -83,33 +83,19 @@ namespace aspect
               fe_face_values.reinit(cell, face_no);
 
               for (unsigned int i = 0; i < face_dofs.size(); ++i)
-                if (fe.face_system_to_component_index(i).first ==
-                    first_vector_component)
-                  {
-                    const Point<dim> position = fe_face_values.quadrature_point(i);
-                    if (position.distance(location) < 1e-6*cell->diameter())
-                      {
-                        std::array<types::global_dof_index,dim> dof_indices;
-                        dof_indices[0] = face_dofs[i];
-                        for (unsigned int k = 0; k < dofs_per_face; ++k)
-                          if ((k != i) &&
-                              (quadrature.point(k) == quadrature.point(i)) &&
-                              (fe.face_system_to_component_index(k).first >=
-                               first_vector_component) &&
-                              (fe.face_system_to_component_index(k).first <
-                               first_vector_component + dim))
-                            dof_indices
-                            [fe.face_system_to_component_index(k).first -
-                             first_vector_component] = face_dofs[k];
-
-                        for (unsigned int k=0; k<dim; ++k)
-                          if (!constraints.is_constrained(dof_indices[k]) &&
-                              constraints.can_store_line(dof_indices[k]))
-                            {
-                              constraints.add_line(dof_indices[k]);
-                            }
-                      }
-                  }
+                {
+                  const Point<dim> position = fe_face_values.quadrature_point(i);
+                  if (position.distance(location) < 1e-6*cell->diameter())
+                    {
+                      const unsigned int component = fe.face_system_to_component_index(i).first;
+                      if (mask[component])
+                        {
+                          if (!constraints.is_constrained(face_dofs[i]) &&
+                              constraints.can_store_line(face_dofs[i]))
+                            constraints.add_line(face_dofs[i]);
+                        }
+                    }
+                }
             }
     }
 
@@ -124,7 +110,7 @@ namespace aspect
                              const Point<dim> &location,
                              AffineConstraints<double> &constraints,
                              const unsigned int level,
-                             const unsigned int first_vector_component)
+                             const ComponentMask &mask)
     {
       const auto &fe = dof_handler.get_fe();
       const std::vector<Point<dim - 1>> &unit_support_points = fe.get_unit_face_support_points();
@@ -153,33 +139,19 @@ namespace aspect
               fe_face_values.reinit(cell, face_no);
 
               for (unsigned int i = 0; i < face_dofs.size(); ++i)
-                if (fe.face_system_to_component_index(i).first ==
-                    first_vector_component)
-                  {
-                    const Point<dim> position = fe_face_values.quadrature_point(i);
-                    if (position.distance(location) < 1e-6*cell->diameter())
-                      {
-                        std::array<types::global_dof_index,dim> dof_indices;
-                        dof_indices[0] = face_dofs[i];
-                        for (unsigned int k = 0; k < dofs_per_face; ++k)
-                          if ((k != i) &&
-                              (quadrature.point(k) == quadrature.point(i)) &&
-                              (fe.face_system_to_component_index(k).first >=
-                               first_vector_component) &&
-                              (fe.face_system_to_component_index(k).first <
-                               first_vector_component + dim))
-                            dof_indices
-                            [fe.face_system_to_component_index(k).first -
-                             first_vector_component] = face_dofs[k];
-
-                        for (unsigned int k=0; k<dim; ++k) // skip the last entry
-                          if (!constraints.is_constrained(dof_indices[k]) &&
-                              constraints.can_store_line(dof_indices[k]))
-                            {
-                              constraints.add_line(dof_indices[k]);
-                            }
-                      }
-                  }
+                {
+                  const Point<dim> position = fe_face_values.quadrature_point(i);
+                  if (position.distance(location) < 1e-6*cell->diameter())
+                    {
+                      const unsigned int component = fe.face_system_to_component_index(i).first;
+                      if (mask[component])
+                        {
+                          if (!constraints.is_constrained(face_dofs[i]) &&
+                              constraints.can_store_line(face_dofs[i]))
+                            constraints.add_line(face_dofs[i]);
+                        }
+                    }
+                }
             }
     }
 
@@ -2629,13 +2601,42 @@ namespace aspect
                 {
                   //Assert(is_shell)
                   const Point<dim> &location = sim.geometry_model->representative_point(0.0);
+                  ComponentMask mask(dof_handler_v.get_fe().n_components(), false);
 
-                  internal::constrain_point_on_level(dof_handler_v,
-                                                     *sim.mapping,
-                                                     location,
-                                                     user_level_constraints,
-                                                     level,
-                                                     0);
+                  if (dim==2)
+                    {
+                      mask.set(0, true);
+                      internal::constrain_point_on_level(dof_handler_v,
+                                                         *sim.mapping,
+                                                         location,
+                                                         user_level_constraints,
+                                                         level,
+                                                         mask);
+                    }
+                  if (dim==3)
+                    {
+                      mask.set(0, true);
+                      mask.set(1, true);
+                      internal::constrain_point_on_level(dof_handler_v,
+                                                         *sim.mapping,
+                                                         location,
+                                                         user_level_constraints,
+                                                         level,
+                                                         mask);
+                      Point<dim> location2;
+                      location2[0] = location[dim-1];
+                      mask.set(0, false);
+                      mask.set(1, true);
+                      internal::constrain_point_on_level(dof_handler_v,
+                                                         *sim.mapping,
+                                                         location,
+                                                         user_level_constraints,
+                                                         level,
+                                                         mask);
+
+                    }
+
+
                 }
 
               internal::TangentialBoundaryFunctions::compute_no_normal_flux_constraints_shell(dof_handler_v,
