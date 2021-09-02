@@ -12,7 +12,8 @@ for index in 0 1 2 3 4 5 6; do
     data_folder=output-lateral_pipe_increase_pressure_repetitions_${repetitions[$index]}_${formulation}_${maximum_timestep[$index]}
     echo $data_folder $outputfile
     expected_mass_flux=0.0011382473816094456
-    cat $data_folder/statistics | tail -n 1 | gawk "{printf \" %g\",sqrt((\$21+$expected_mass_flux)*(\$21+$expected_mass_flux))/$expected_mass_flux}" >> $outputfile
+    right_flux=`grep "Outward mass flux through boundary with indicator 1" $data_folder/statistics | gawk '{print $2}' | sed s/.$//`
+    cat $data_folder/statistics | tail -n 1 | gawk "{printf \" %g\",sqrt((\$${right_flux}+$expected_mass_flux)*(\$${right_flux}+$expected_mass_flux))/$expected_mass_flux}" >> $outputfile
   done
 done
 
