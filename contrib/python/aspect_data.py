@@ -8,7 +8,7 @@ import os
 
 
 def read_statistics(fname):
-    """ Read the statistics file output by CIG-ASPECT
+    """ Read the statistics file output by ASPECT
     
     return a pandas table, where names are taken from the statistics file.
     """
