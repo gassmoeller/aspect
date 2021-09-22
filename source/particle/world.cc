@@ -906,7 +906,7 @@ namespace aspect
                 if (particles_in_cell.begin() != particles_in_cell.end())
                   {
                     // Only use deal.II FEPointEvaluation if it's fast path is used
-                    const bool use_fast_path = dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr;
+                    const bool use_fast_path = true; //dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr;
                     if (use_fast_path)
                       local_update_particles(cell,
                                              particles_in_cell.begin(),
@@ -1201,7 +1201,7 @@ namespace aspect
               if (particles_in_cell.begin() != particles_in_cell.end())
                 {
                   // Only use deal.II FEPointEvaluation if it's fast path is used
-                  const bool use_fast_path = dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr;
+                  const bool use_fast_path = true; //dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr;
                   if (use_fast_path)
                     local_advect_particles(cell,
                                            particles_in_cell.begin(),
