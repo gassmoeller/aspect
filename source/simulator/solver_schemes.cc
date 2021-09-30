@@ -337,6 +337,41 @@ namespace aspect
     if (fields_advected_by_particles.size() > 0)
       interpolate_particle_properties(fields_advected_by_particles);
 
+    // If the field is a stress field, we want to include all stress tensor components in the computation of the residual
+    double stress_initial_residual = 0.0;
+    double old_stress_initial_residual = 0.0;
+    std::vector<unsigned int> stress_indices;
+    std::vector<unsigned int> old_stress_indices;
+    stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xx"));
+    stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yy"));
+    old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xx_old"));
+    old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yy_old"));
+    if (dim == 2)
+      {
+        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy"));
+        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy_old"));
+      }
+    else if (dim == 3)
+      {
+        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_zz"));
+        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy"));
+        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xz"));
+        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yz"));
+        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_zz_old"));
+        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy_old"));
+        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xz_old"));
+        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yz_old"));
+      }
+
+
+    if (compute_initial_residual)
+      {
+        const double n_stress_fields = stress_indices.size();
+        for (auto &c : stress_indices)
+          stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm() / n_stress_fields;
+        for (auto &c : old_stress_indices)
+          old_stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm() / n_stress_fields;
+      }
 
     // for consistency we update the current linearization point only after we have solved
     // all fields, so that we use the same point in time for every field when solving
@@ -344,6 +379,12 @@ namespace aspect
       {
         current_linearization_point.block(introspection.block_indices.compositional_fields[c])
           = solution.block(introspection.block_indices.compositional_fields[c]);
+
+        if ((initial_residual.size() > 0) && std::find(stress_indices.begin(), stress_indices.end(), c) != stress_indices.end())
+          initial_residual[c] = stress_initial_residual;
+
+        if ((initial_residual.size() > 0) && std::find(old_stress_indices.begin(), old_stress_indices.end(), c) != old_stress_indices.end())
+          initial_residual[c] = old_stress_initial_residual;
 
         if ((initial_residual.size() > 0) && (initial_residual[c] > 0))
           current_residual[c] /= initial_residual[c];
@@ -996,7 +1037,12 @@ namespace aspect
         // but only if they have already been displaced in a nonlinear
         // iteration (in the assemble_and_solve_composition call).
         if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
-          particle_world->restore_particles();
+          {
+            particle_world->restore_particles();
+
+            // Apply a particle update if required by the particle properties
+            signals.post_restore_particles(*particle_world.get());
+          }
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,
@@ -1118,7 +1164,12 @@ namespace aspect
         // but only if they have already been displaced in a nonlinear
         // iteration (in the assemble_and_solve_composition call).
         if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
-          particle_world->restore_particles();
+          {
+            particle_world->restore_particles();
+
+            // Apply a particle update if required by the particle properties
+            signals.post_restore_particles(*particle_world.get());
+          }
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,
@@ -1273,7 +1324,12 @@ namespace aspect
         // but only if they have already been displaced in a nonlinear
         // iteration (in the assemble_and_solve_composition call).
         if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
-          particle_world->restore_particles();
+          {
+            particle_world->restore_particles();
+
+            // Apply a particle update if required by the particle properties.
+            signals.post_restore_particles(*particle_world.get());
+          }
 
         assemble_and_solve_temperature();
         assemble_and_solve_composition();

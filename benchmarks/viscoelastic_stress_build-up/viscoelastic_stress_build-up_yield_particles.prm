@@ -15,9 +15,6 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 
-set Nonlinear solver scheme                = single Advection, iterated Stokes
-set Nonlinear solver tolerance             = 1e-5
-set Max nonlinear iterations               = 100
 set End time                               = 100e3
 set Output directory                       = output_viscoelastic_stress_build-up_yield_particles
 
