@@ -29,6 +29,7 @@
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/citation_info.h>
 #include <aspect/postprocess/particles.h>
+#include <aspect/adiabatic_conditions/compute_profile.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
 #include <world_builder/world.h>
@@ -347,14 +348,12 @@ namespace aspect
       sim->initialize_simulator (*this);
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
-    
-    // need to initialize again to compute the phase function
-    adiabatic_conditions->initialize ();
-    adiabatic_conditions->initialize ();
-    adiabatic_conditions->initialize ();
-    adiabatic_conditions->initialize ();
-    adiabatic_conditions->initialize ();
-    adiabatic_conditions->initialize ();
+
+    // need to initialize iteratively to compute the phase function correctly because it depends on
+    // the adiabatic profile. Only use on ComputeProfile plugin, which is not used for entropy models.
+    if (Plugins::plugin_type_matches<AdiabaticConditions::ComputeProfile<dim>>(*adiabatic_conditions))
+      for (unsigned int i=0; i<5; ++i)
+        adiabatic_conditions->initialize ();
 
     // Initialize the mesh deformation handler
     if (parameters.mesh_deformation_enabled)

@@ -108,7 +108,7 @@ namespace aspect
             {
               // use material properties calculated at i-1
               const double density = out.densities[0];
-              
+
               // We need to use the effective thermal expansivity and specific heat here. Otherwise,
               // the adiabatic profile will not contain latent heat contributions from phase transitions.
               const double alpha = out.thermal_expansion_coefficients[0] + density * out.entropy_derivative_pressure[0];
