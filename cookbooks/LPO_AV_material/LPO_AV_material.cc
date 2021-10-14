@@ -86,7 +86,7 @@ namespace aspect
       public:
         AnisotropicViscosity(const unsigned int n_points);
 
-        static double compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const;
+        static double J2_second_invariant(const SymmetricTensor<2,dim> t, const double min_strain_rate);
 
         static FullMatrix<double> transform_Symmetric3x3_matrix_to_6D_vector(const SymmetricTensor<2,3> &tensor);
 
@@ -101,7 +101,7 @@ namespace aspect
          * variable is used to implement anisotropic viscosity.
          *
          * @note The strain rate term in equation (1) of the manual will be
-         * multiplied by this tensor *and* the viscosity scalar ($\eta$), as
+         * multiplied by this tensor *and* the viscosity scalar ($\eta$ /i.e. effective viscosity), as
          * described in the manual section titled "Constitutive laws". This
          * variable is assigned the rank-four identity tensor by default.
          * This leaves the isotropic constitutive law unchanged if the material
@@ -112,8 +112,6 @@ namespace aspect
 
     namespace
     {
-
-
 
       template <int dim>
       std::vector<std::string> make_AnisotropicViscosity_additional_outputs_names()
@@ -501,12 +499,12 @@ namespace aspect
 
   namespace MaterialModel
   {
-    // The AV material model calculates an anisotropic viscosity tensor from director vectors and the normal and shear
-    // viscosities (defined in the .prm file). In contrast to the `Anisotropic` material model, the principal directions of the
-    // tensor are not read from an input file, but instead are computed at every quadrature point. This material model is used in T independent models.
-    // All the parameters are defined below.
+    /* The LPO_AV material model calculates an anisotropic viscosity tensor from the orientation of the olivine grains. 
+    We first calculate a V tensor that is stress independent, and from that we create the stress_strain_directors, 
+    that will be used in the Assemblers (2*eta_eff*s-s-d*strain rate). To get the V tensor we will use the micromechanical model 
+    by Hansen et al., 2016, similarly as it was described in Kiraly et al., 2020 */
     template <int dim>
-    class AV : public MaterialModel::Simple<dim>
+    class LPO_AV : public MaterialModel::Simple<dim>
     {
       public:
         virtual void initialize();
@@ -519,7 +517,7 @@ namespace aspect
         virtual double reference_density () const;
         virtual void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
       private:
-        double eta_N; //reference viscosity
+        double eta; //reference viscosity
         double min_strain_rate;
         double grain_size; 
         void set_assemblers(const SimulatorAccess<dim> &,
@@ -536,7 +534,7 @@ namespace aspect
   {
     template <int dim>
     void
-    AV<dim>::set_assemblers(const SimulatorAccess<dim> &,
+    LPO_AV<dim>::set_assemblers(const SimulatorAccess<dim> &,
                             Assemblers::Manager<dim> &assemblers) const
     {
       for (unsigned int i=0; i<assemblers.stokes_preconditioner.size(); ++i)
@@ -556,15 +554,15 @@ namespace aspect
 
     template <int dim>
     void
-    AV<dim>::
+    LPO_AV<dim>::
     initialize()
     {
-      this->get_signals().set_assemblers.connect (std::bind(&AV<dim>::set_assemblers,
+      this->get_signals().set_assemblers.connect (std::bind(&LPO_AV<dim>::set_assemblers,
                                                             std::cref(*this),
                                                             std::placeholders::_1,
                                                             std::placeholders::_2));
       AssertThrow((dim==3),
-                  ExcMessage("Olivine has 3 independent slip systems, hence these models only work in 3D"));
+                  ExcMessage("Olivine has 3 independent slip systems, allowing for deformation in 3 independent directions, hence these models only work in 3D"));
 
     }
 
@@ -583,20 +581,18 @@ namespace aspect
       SymmetricTensor<2,3>
       Stress_strain_aggregate(SymmetricTensor<2,3,double> rate,Tensor<1,3,double> euler,double temperature,double grain_size)
       {
-        const unsigned int dim = 3;
-
-        /*%Micromechanical model for olivine deformation by Hansen et al., (2016,
-        %JGR) using a pseudo-Taylor method, assuming that each grain experiences
-        %the same strain rate. It results in the best fitting stress in MPa.*/
-
+        /*Micromechanical model for olivine deformation by Hansen et al., (2016,
+        JGR) using a pseudo-Taylor method, assuming that each grain experiences
+        the same strain rate. It results in the best fitting stress in MPa that we convert at the end to unit in Pa.*/
+        const int dim=3;
         double nFo = 4.1;
         double A0 = 1.1e5*std::exp(-530000/8.314/temperature);
         FullMatrix<double> Schm(6,3); //Schmid tensor, 6x3 matrix
         FullMatrix<double> pinvschm(3,6); //pseudoinverse of Schmid tensor, 3x6 matrix
         Tensor<1,3> A_ss; //A_ss is the invers of the minimum resolved stress on the slip systems on the nth power
-        A_ss[0] = 67.620068827798290;
-        A_ss[1] = 97.774775049471710;
-        A_ss[2] = 0.410143670706667;
+        A_ss[0] = 139.2525;
+        A_ss[1] = 214.4907;
+        A_ss[2] = 0.3520;
         Schm[4][3] = 1;
         Schm[5][2] = 1;
         Schm[6][1] = 1;
@@ -658,13 +654,12 @@ namespace aspect
 
     template <int dim> 
     double
-    AnisotropicViscosity<dim>::
-    compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const //cannot define or redeclare 'compute_second_invariant' here because namespace 'MaterialModel' does not enclose namespace 'AnisotropicViscosity'
+    AnisotropicViscosity<dim>::J2_second_invariant(const SymmetricTensor<2,dim> t, const double min_strain_rate)
     {
-      const double edot_ii_strict = std::sqrt(strain_rate*strain_rate); //error: use of undeclared identifier 'strain_rate'
-      const double edot_ii = std::max(edot_ii_strict, min_strain_rate); //error: use of undeclared identifier 'min_strain_rate'
-      return edot_ii;
-    } //Can I generalize it to be able to use for both strain rate and deviatoric stress?
+      const double J2_strict = 1/6*(std::pow(t[0][0] - t[1][1],2) + std::pow(t[1][1] - t[2][2],2)+std::pow(t[2][2] - t[0][0],2))+std::pow(t[0][1],2)+std::pow(t[1][2],2)+std::pow(t[2][0],2); 
+      const double J2 = std::max(J2_strict, std::pow(min_strain_rate,2)); //prevents having too small values (also used in compute_second_invariant for strain rate)
+      return J2;
+    } 
 
     template<int dim> 
     FullMatrix<double>
@@ -725,20 +720,20 @@ namespace aspect
       return rot_matrix;
     }
 
-    template <int dim> //this is what I have to change first!
+    template <int dim> 
     void
-    AV<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+    LPO_AV<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                        MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
         out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
 
       AssertThrow((this->introspection().compositional_name_exists("euler1")),
-                  ExcMessage("AV material model only works if there is a compositional field called euler1 (first euler angle)."));
+                  ExcMessage("LPO_AV material model only works if there is a compositional field called euler1 (first euler angle)."));
       AssertThrow(this->introspection().compositional_name_exists("euler2"),
-                  ExcMessage("AV material model only works if there is a compositional field called euler2 (second euler angle)."));
+                  ExcMessage("LPO_AV material model only works if there is a compositional field called euler2 (second euler angle)."));
       AssertThrow(this->introspection().compositional_name_exists("euler3"),
-                  ExcMessage("AV material model only works if there is a compositional field called euler3 (third euler angle)."));
+                  ExcMessage("LPO_AV material model only works if there is a compositional field called euler3 (third euler angle)."));
 
       std::vector<unsigned int> c_idx_euler;
       c_idx_euler.push_back (this->introspection().compositional_index_for_name("euler1"));
@@ -768,7 +763,7 @@ namespace aspect
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
           out.densities[q] = 0;//(in.composition[q][c_idx_gamma] > 0.8 ? 1 : 0); //Change this to 0 for the simple shear box test
-          out.viscosities[q] = eta_N; //Should we do this once we get an "reference/isotropic viscosity" out from the viscosity tensor?
+          out.viscosities[q] = eta; //Later it is going to be overwritten by the effective viscosity
           out.thermal_expansion_coefficients[q] = 0;
           out.specific_heat[q] = 0;
           out.thermal_conductivities[q] = 0;
@@ -787,121 +782,104 @@ namespace aspect
           if (this->simulator_is_past_initialization())
             {
               //Second invariant of strain-rate
-              const double edot_ii = AnisotropicViscosity<dim>::compute_second_invariant(in.strain_rate[q], min_strain_rate);
-              //Define E tensor from Kiraly et al 2020 (G3) using edot_ii
-              SymmetricTensor<2,6> E;
-              SymmetricTensor<2,5> E_reduced, E_reduced_inv;
-              Tensor<2,6 > S, S_power;
-              Tensor<2,5 > S_power_reduced;
-              E[0][0]=edot_ii;
-              E[0][1]=-edot_ii/2;
-              E[0][2]=-edot_ii/2;
-              E[1][0]=-edot_ii/2;
-              E[1][1]=edot_ii;
-              E[1][2]=-edot_ii/2;
-              E[2][0]=-edot_ii/2;
-              E[2][1]=-edot_ii/2;
-              E[2][2]=edot_ii;
-              E[3][3]=edot_ii/std::sqrt(2);
-              E[4][4]=edot_ii/std::sqrt(2);
-              E[5][5]=edot_ii/std::sqrt(2);
-              //Create fluidity tensor 
-              for (int i = 0; i < 6; i++)
-               { 
-                SymmetricTensor<2,dim> rate = AnisotropicViscosity<dim>::transform_6D_vector_to_Symmetric3x3_matrix(E[i]);
-                SymmetricTensor<2,dim> S_stress = internal::Stress_strain_aggregate(in.strain_rate[q], euler, in.temperature[q],grain_size);
-                const double S_stress_equivalent = std::sqrt(3*dealii::second_invariant(S_stress));//Von Mises equivalent stress using deal.ii second invariant
-                Tensor<1,6> S_stress_voigt = AnisotropicViscosity<dim>::transform_Symmetric3x3_matrix_to_6D_vector(S_stress);
-                for (int j = 0; j < 6; j++)
+              const double E_eq = std::sqrt(4/3*AnisotropicViscosity<dim>::J2_second_invariant(in.strain_rate[q], min_strain_rate)); 
+              SymmetricTensor<2,dim> e1, e2, e3, e4, e5, E;
+              E=in.strain_rate[q];
+              //We define 5 independent strainrates, of which E is the linear combination
+              e1[0][0]=E_eq;
+              e1[1][1]=E_eq;
+              e1[2][2]=-2*E_eq;
+              e2[0][0]=E_eq;
+              e2[1][1]=-2*E_eq;
+              e2[2][2]=E_eq;
+              e3[0][1]=E_eq;
+              e3[1][0]=E_eq;
+              e4[0][2]=E_eq;
+              e4[2][0]=E_eq;
+              e5[1][2]=E_eq;
+              e5[2][1]=E_eq;
+
+              //We calculate the stress response for each strain rate with the micromechanical model
+              SymmetricTensor<2,dim> stress1, stress2, stress3, stress4, stress5, Stress, s1, s2, s3, s4, s5, S;
+              stress1=internal::Stress_strain_aggregate(e1, euler, in.temperature[q],grain_size);
+              stress2=internal::Stress_strain_aggregate(e2, euler, in.temperature[q],grain_size);
+              stress3=internal::Stress_strain_aggregate(e3, euler, in.temperature[q],grain_size);
+              stress4=internal::Stress_strain_aggregate(e4, euler, in.temperature[q],grain_size);
+              stress5=internal::Stress_strain_aggregate(e5, euler, in.temperature[q],grain_size);
+              Stress=internal::Stress_strain_aggregate(E, euler, in.temperature[q],grain_size);
+              const double Stress_eq= std::sqrt(3*AnisotropicViscosity<dim>::J2_second_invariant(Stress, min_strain_rate));
+              //To calculate a "stress independent viscosity" (i.e. inverse of fluidty) 
+              //we have to convert the stress to a "non-Newtonian modified stress" which is the stress *second invariant on the power of (n-1)/2
+              for (int i = 0; i < dim; i++)
+               {
+                for (int j = 0; j < dim; j++)
                 {
-                  S[j][i] = S_stress_voigt[j];
-                  S_power[j][i] = S_stress_voigt[j]*std::pow(S_stress_equivalent,3.5-1)*std::pow(3,(3.5-1)/2);
+                  s1[i][j]= stress1[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(stress1, min_strain_rate),1.25);//assuming n=3.5, so (n-1)/2=1.25
+                  s2[i][j]= stress2[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(stress2, min_strain_rate),1.25);
+                  s3[i][j]= stress3[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(stress3, min_strain_rate),1.25);
+                  s4[i][j]= stress4[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(stress4, min_strain_rate),1.25);
+                  s5[i][j]= stress5[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(stress5, min_strain_rate),1.25);
+                  S[i][j]= Stress[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(Stress, min_strain_rate),1.25);
                 }
               }
-              for (int i = 0; i < 5; i++)
+              
+              //Build the stress independent V tensor 
+              SymmetricTensor<4,dim> V, ViscoTensor_r4;
+              for (int i = 0; i < dim; i++)
                {
-                for (int j = 0; j < 5; j++)
+                for (int j = 0; j < dim; j++)
                 {
-                  E_reduced[i][j] = E[i+1][j+1];
-                  S_power_reduced[i][j] = S_power[i+1][j+1];
-                }
-              }
-              //E_reduced_inv= dealii::invert(E_reduced); //in instantiation of function template specialization 'dealii::invert<5, double>' requested here //internal::SymmetricTensorImplementation::Inverse<2, dim, Number> only implemented until dim=3
-              SymmetricTensor<2,6> ViscoTensor;
-              SymmetricTensor<2,5> ViscoTensor_reduced;
-              //ViscoTensor_reduced = dealii::operator*(symmetrize(S_power_reduced), invert(E_reduced));
-              //S_power_reduced.operator*(ViscoTensor_reduced, invert(E_reduced) );
-              ViscoTensor_reduced = symmetrize(S_power_reduced * E_reduced_inv); 
-              for (int i = 1; i < 6; i++)
-               {
-                for (int j = 1; j < 6; j++)
-                {
-                  ViscoTensor[i][j]=ViscoTensor_reduced[i-1][j-1]; //This is only the stress independent part of the viscosity
-                }
-              }
-
-              ViscoTensor[0][0] = S_power[0][0]/2*edot_ii + ViscoTensor[1][1]/4 + ViscoTensor[1][2]/2 + ViscoTensor[2][2]/4;
-              ViscoTensor[0][1] = S_power[1][0]/edot_ii + ViscoTensor[1][1]/2 + ViscoTensor[1][2]/2;
-              ViscoTensor[0][2] = S_power[2][0]/edot_ii + ViscoTensor[1][2]/2 + ViscoTensor[2][2]/2;
-              ViscoTensor[0][3] = std::sqrt(2)*S_power[0][3]/edot_ii ;
-              ViscoTensor[0][4] = std::sqrt(2)*S_power[0][4]/edot_ii ;
-              ViscoTensor[0][5] = std::sqrt(2)*S_power[0][5]/edot_ii ;
-
-              SymmetricTensor<2,dim> current_stress = internal::Stress_strain_aggregate(in.strain_rate[q], euler, in.temperature[q], grain_size);
-              const double current_stress_equivalent = std::sqrt(3*dealii::second_invariant(current_stress));
-
-              // Overwrite the scalar viscosity with a better guess
-              out.viscosities[q] = 1 / (std::pow(current_stress_equivalent,3.5-1)*std::pow(3,(3.5-1)/2));
-              /*for (int i = 1; i < 6; i++)
-               {
-                for (int j = 1; j < 6; j++)
-                {
-                  ViscoTensor[i][j]=ViscoTensor_reduced[i][j] / (power(S_stress_equivalent,3.5-1)*power(3,(3.5-1)/2)); 
-                }
-              }*/
-
-
-
-
-
-                  if (anisotropic_viscosity != nullptr)
+                  V[i][j][2][2] = (S[i][j] - ((2/3*s1[i][j]/E_eq)+(1/3*s2[i][j]/E_eq)) *E[0][0] 
+                                         - ((1/3*s1[i][j]/E_eq)-(1/3*s2[i][j]/E_eq)) *E[1][1]
+                                         - s3[i][j]*E[0][1]/E_eq - s4[i][j]*E[0][2]/E_eq - s5[i][j]*E[1][2]/E_eq)/
+                                         (E[0][0]/3 + 2*E[1][1]/3 + E[2][2]);
+                  V[i][j][0][0] = (2/3* s1[i][j] + 1/3*s2[i][j])/E_eq + 1/3*V[i][j][2][2];
+                  V[i][j][1][1] = (1/3* s1[i][j] - 1/3*s2[i][j])/E_eq + 2/3*V[i][j][2][2];
+                  V[i][j][0][1] = 0.5*s3[i][j]/E_eq;
+                  V[i][j][0][2] = 0.5*s4[i][j]/E_eq;
+                  V[i][j][1][2] = 0.5*s5[i][j]/E_eq; 
+                  for (int k = 0; k<dim; k++)
+                  {
+                    for (int l = 0; l<dim; l++)
                     {
-
-                      const std::array<double,3> Viscoeigenvalues = eigenvalues(ViscoTensor);
-                      for (unsigned int i=0; i<3; ++i)
-                        {
-                          AssertThrow((Viscoeigenvalues[i]>0),
-                                      ExcMessage("Eigenvalue "+ std::to_string(i) + " of the viscosity tensor is negative at " +
-                                                 std::to_string(Viscoeigenvalues[i]) + ". This is not allowed."));
-                        }
-                      
-                      anisotropic_viscosity->stress_strain_directors[q][0][0][0][0] = ViscoTensor[0][0];
-                      anisotropic_viscosity->stress_strain_directors[q][0][0][1][1] = ViscoTensor[0][1];
-                      anisotropic_viscosity->stress_strain_directors[q][0][0][2][2] = ViscoTensor[0][2];
-                      anisotropic_viscosity->stress_strain_directors[q][0][0][1][2] = ViscoTensor[0][3] / std::sqrt(2.0);
-                      anisotropic_viscosity->stress_strain_directors[q][0][0][0][2] = ViscoTensor[0][4] / std::sqrt(2.0);
-                      anisotropic_viscosity->stress_strain_directors[q][0][0][0][1] = ViscoTensor[0][5] / std::sqrt(2.0);
-                      anisotropic_viscosity->stress_strain_directors[q][1][1][1][1] = ViscoTensor[1][1];
-                      anisotropic_viscosity->stress_strain_directors[q][1][1][2][2] = ViscoTensor[1][2];
-                      anisotropic_viscosity->stress_strain_directors[q][1][1][1][2] = ViscoTensor[1][3] / std::sqrt(2.0);
-                      anisotropic_viscosity->stress_strain_directors[q][1][1][0][2] = ViscoTensor[1][4] / std::sqrt(2.0);
-                      anisotropic_viscosity->stress_strain_directors[q][1][1][0][1] = ViscoTensor[1][5] / std::sqrt(2.0);
-                      anisotropic_viscosity->stress_strain_directors[q][2][2][2][2] = ViscoTensor[2][2];
-                      anisotropic_viscosity->stress_strain_directors[q][2][2][1][2] = ViscoTensor[2][3] / std::sqrt(2.0);
-                      anisotropic_viscosity->stress_strain_directors[q][2][2][0][2] = ViscoTensor[2][4] / std::sqrt(2.0);
-                      anisotropic_viscosity->stress_strain_directors[q][2][2][0][1] = ViscoTensor[2][5] / std::sqrt(2.0);
-                      anisotropic_viscosity->stress_strain_directors[q][1][2][1][2] = ViscoTensor[3][3] / 2.0;
-                      anisotropic_viscosity->stress_strain_directors[q][1][2][0][2] = ViscoTensor[3][4] / 2.0;
-                      anisotropic_viscosity->stress_strain_directors[q][1][2][0][1] = ViscoTensor[3][5] / 2.0;
-                      anisotropic_viscosity->stress_strain_directors[q][0][2][0][2] = ViscoTensor[4][4] / 2.0;
-                      anisotropic_viscosity->stress_strain_directors[q][0][2][0][1] = ViscoTensor[4][5] / 2.0;
-                      anisotropic_viscosity->stress_strain_directors[q][0][1][0][1] = ViscoTensor[5][5] / 2.0;
-                    
-
-                      
+                      ViscoTensor_r4[i][j][k][l]= V[i][j][k][l]/std::pow(AnisotropicViscosity<dim>::J2_second_invariant(Stress, min_strain_rate),1.25);
                     }
+                  }
+                }
+              }
+              
+              // Overwrite the scalar viscosity with an effective viscosity
+              out.viscosities[q] = Stress_eq/E_eq; 
+              if (anisotropic_viscosity != nullptr)
+              {
+                anisotropic_viscosity->stress_strain_directors[q] = ViscoTensor_r4/(Stress_eq/E_eq);
+                SymmetricTensor<2,6> ViscoTensor;
+                ViscoTensor[0][0]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][0] * out.viscosities[q];
+                ViscoTensor[0][1]=anisotropic_viscosity->stress_strain_directors[q][0][0][1][1] * out.viscosities[q];
+                ViscoTensor[0][2]=anisotropic_viscosity->stress_strain_directors[q][0][0][2][2] * out.viscosities[q];
+                ViscoTensor[0][3]=anisotropic_viscosity->stress_strain_directors[q][0][0][1][2] * std::sqrt(2) * out.viscosities[q];
+                ViscoTensor[0][4]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][2] * std::sqrt(2) * out.viscosities[q];
+                ViscoTensor[0][5]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][1] * std::sqrt(2) * out.viscosities[q];
+                ViscoTensor[1][1]=anisotropic_viscosity->stress_strain_directors[q][1][1][1][1] * out.viscosities[q];
+                ViscoTensor[1][2]=anisotropic_viscosity->stress_strain_directors[q][1][1][2][2] * out.viscosities[q];
+                ViscoTensor[1][3]=anisotropic_viscosity->stress_strain_directors[q][1][1][1][2] * std::sqrt(2) * out.viscosities[q];
+                ViscoTensor[1][4]=anisotropic_viscosity->stress_strain_directors[q][1][1][0][2] * std::sqrt(2) * out.viscosities[q];
+                ViscoTensor[1][5]=anisotropic_viscosity->stress_strain_directors[q][1][1][0][1] * std::sqrt(2) * out.viscosities[q];
+                ViscoTensor[2][2]=anisotropic_viscosity->stress_strain_directors[q][2][2][2][2] * out.viscosities[q];
+                ViscoTensor[2][3]=anisotropic_viscosity->stress_strain_directors[q][2][2][1][2] * std::sqrt(2) * out.viscosities[q];
+                ViscoTensor[2][4]=anisotropic_viscosity->stress_strain_directors[q][2][2][0][2] * std::sqrt(2) * out.viscosities[q];
+                ViscoTensor[2][5]=anisotropic_viscosity->stress_strain_directors[q][2][2][0][1] * std::sqrt(2) * out.viscosities[q];
+                ViscoTensor[3][3]=anisotropic_viscosity->stress_strain_directors[q][1][2][1][2] * 2 * out.viscosities[q];
+                ViscoTensor[3][4]=anisotropic_viscosity->stress_strain_directors[q][1][2][0][2] * 2 * out.viscosities[q];
+                ViscoTensor[3][5]=anisotropic_viscosity->stress_strain_directors[q][1][2][0][1] * 2 * out.viscosities[q];
+                ViscoTensor[4][4]=anisotropic_viscosity->stress_strain_directors[q][0][2][0][2] * 2 * out.viscosities[q];
+                ViscoTensor[4][5]=anisotropic_viscosity->stress_strain_directors[q][0][2][0][1] * 2 * out.viscosities[q];
+                ViscoTensor[5][5]=anisotropic_viscosity->stress_strain_directors[q][0][1][0][1] * 2 * out.viscosities[q];
+
+
                 }
             }
+      }      
     }
 
 
@@ -909,7 +887,7 @@ namespace aspect
 
     template <int dim>
     bool
-    AV<dim>::is_compressible () const
+    LPO_AV<dim>::is_compressible () const
     {
       return false;
     }
@@ -918,7 +896,7 @@ namespace aspect
 
     template <int dim>
     double
-    AV<dim>::reference_density () const
+    LPO_AV<dim>::reference_density () const
     {
       return 1.0;
     }
@@ -927,7 +905,7 @@ namespace aspect
 
     template <int dim>
     double
-    AV<dim>::reference_viscosity () const
+    LPO_AV<dim>::reference_viscosity () const
     {
       return 1e20;
     }
@@ -936,13 +914,13 @@ namespace aspect
 
     template <int dim>
     void
-    AV<dim>::parse_parameters (ParameterHandler &prm)
+    LPO_AV<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("AV");
+        prm.enter_subsection("LPO_AV");
         {
-          eta_N = prm.get_double("Reference viscosity");
+          eta = prm.get_double("Reference viscosity");
           min_strain_rate = prm.get_double("Minimum strain rate");
           grain_size = prm.get_double("Grain size");
         }
@@ -955,11 +933,11 @@ namespace aspect
 
     template <int dim>
     void
-    AV<dim>::declare_parameters (ParameterHandler &prm)
+    LPO_AV<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("AV");
+        prm.enter_subsection("AnisotropicViscosity");
         {
           prm.declare_entry ("Refernce viscosity viscosity", "1e20",
                              Patterns::Double(),
@@ -979,7 +957,7 @@ namespace aspect
 
     template <int dim>
     void
-    AV<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
+    LPO_AV<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (out.template get_additional_output<AnisotropicViscosity<dim> >() == nullptr)
         {
@@ -1022,8 +1000,8 @@ namespace aspect
 
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(AV,
-                                   "AV material",
-                                   "Transverse isotropic material model.")
+    ASPECT_REGISTER_MATERIAL_MODEL(LPO_AV,
+                                   "AnisotropicViscosity material",
+                                   "Olivine LPO related viscous anisotropy")
   }
 }
