@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
 
@@ -18,6 +19,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
+#include <aspect/material_model/LPO_AV_material.h>
 #include <aspect/introspection.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/plugins.h>
@@ -496,7 +498,7 @@ namespace aspect
       this->get_material_model().create_additional_named_outputs(material_model_outputs);
     }
   }
-
+  
   namespace MaterialModel
   {
     /* The LPO_AV material model calculates an anisotropic viscosity tensor from the orientation of the olivine grains. 
