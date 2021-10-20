@@ -41,7 +41,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class AV : public MaterialModel::Simple<dim>, public ::aspect::SimulatorAccess<dim>
+    class LPO_AV : public MaterialModel::Simple<dim>
     {
       public:
         virtual void initialize();

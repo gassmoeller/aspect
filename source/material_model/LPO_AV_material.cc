@@ -499,12 +499,13 @@ namespace aspect
     }
   }
   
+  /*
   namespace MaterialModel
   {
     /* The LPO_AV material model calculates an anisotropic viscosity tensor from the orientation of the olivine grains. 
     We first calculate a V tensor that is stress independent, and from that we create the stress_strain_directors, 
     that will be used in the Assemblers (2*eta_eff*s-s-d*strain rate). To get the V tensor we will use the micromechanical model 
-    by Hansen et al., 2016, similarly as it was described in Kiraly et al., 2020 */
+    by Hansen et al., 2016, similarly as it was described in Kiraly et al., 2020 *
     template <int dim>
     class LPO_AV : public MaterialModel::Simple<dim>
     {
@@ -526,6 +527,7 @@ namespace aspect
                             Assemblers::Manager<dim> &assemblers) const;
     };
   }
+  */
 }
 
 namespace aspect
@@ -920,7 +922,7 @@ namespace aspect
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("LPO_AV");
+        prm.enter_subsection("AnisotropicViscosity");
         {
           eta = prm.get_double("Reference viscosity");
           min_strain_rate = prm.get_double("Minimum strain rate");
@@ -941,7 +943,7 @@ namespace aspect
       {
         prm.enter_subsection("AnisotropicViscosity");
         {
-          prm.declare_entry ("Refernce viscosity viscosity", "1e20",
+          prm.declare_entry ("Reference viscosity", "1e20",
                              Patterns::Double(),
                              "Magnitude of reference viscosity.");
           prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(),
