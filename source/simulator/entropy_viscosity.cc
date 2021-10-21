@@ -140,6 +140,11 @@ namespace aspect
         if (auto *stabilization_assembler =
               dynamic_cast<Assemblers::AdvectionStabilizationInterface<dim>* > ((assemblers->advection_system[i]).get()))
           {
+            Assert (max_advection_prefactor == 0.0 && max_conductivity == 0.0,
+                    ExcMessage("More than one assembler has provided scaling factors for the entropy "
+                               "viscosity stabilization, which is not supported. Make sure only one active advection "
+                               "assembler is derived from the class AdvectionStabilizationInterface."));
+
             const std::vector<double> max_advection_prefactors = stabilization_assembler->advection_prefactors(scratch);
             const std::vector<double> max_conductivities = stabilization_assembler->diffusion_prefactors(scratch);
 
