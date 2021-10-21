@@ -51,7 +51,7 @@ namespace aspect
      * current cell in case we only want to solve the diffusion equation.
      */
     template <int dim>
-    class DiffusionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
+    class DiffusionSystem : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:
