@@ -589,8 +589,8 @@ namespace aspect
          * In the non-dimensional case this is simply 1.0, but for other
          * quantities like temperature it is computed using physical units
          * (like density and specific heat capacity).
-         * This information is useful for algorithms depending on the size of
-         * individual terms, like stabilization methods.
+         * This information is useful for algorithms that depend on the
+         * magnitude of individual terms, like stabilization methods.
          */
         virtual
         std::vector<double>
@@ -602,9 +602,9 @@ namespace aspect
          * current cell. For the pure advection case this factor is 0.0, in a
          * non-dimensional advection-diffusion equation this factor is simply
          * 1.0, but for other quantities like temperature it is
-         * computed using physical units (like thermal conductivity).  This
-         * information is useful for algorithms depending on the size of
-         * individual terms, like stabilization methods.
+         * computed using physical units (like thermal conductivity).
+         * This information is useful for algorithms that depend on the
+         * magnitude of individual terms, like stabilization methods.
          */
         virtual
         std::vector<double>
