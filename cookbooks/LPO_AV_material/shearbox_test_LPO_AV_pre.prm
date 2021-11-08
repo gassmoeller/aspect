@@ -103,7 +103,7 @@ end
 subsection Boundary velocity model
   subsection Function
     set Variable names = x,y,z,t
-    set Function expression = if(t<2.5,z/100,0);if(t<2.5,0,x/100);0; ## Annotation: set velocity condition 
+    set Function expression = if(t<5e5,z/10000,0);if(t<5e5,0,x/10000);0; ## Annotation: set velocity condition 
   end
 end
 
@@ -111,7 +111,7 @@ subsection Prescribed Stokes solution
   set Model name = function
   subsection Velocity function
     set Variable names = x,y,z,t
-    set Function expression = if(t<2.5,z-1,0);if(t<2.5,0,x-1);0; ## Annotation: set velocity condition 
+    set Function expression = if(t<5e5,z/1000,0);if(t<5e5,0,x/1000);0; ## Annotation: set velocity condition 
   end
 
 end
@@ -172,7 +172,7 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 1e5 #0.024999
-    set List of output variables = compositional vector, density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
+    set List of output variables = density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
   end
   #subsection Particles
    # set Number of particles        = 27 #0

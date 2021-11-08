@@ -597,12 +597,12 @@ namespace aspect
         A_ss[0] = 139.2525;
         A_ss[1] = 214.4907;
         A_ss[2] = 0.3520;
-        Schm[4][3] = 1;
-        Schm[5][2] = 1;
-        Schm[6][1] = 1;
-        pinvschm[1][6] = 1;
-        pinvschm[2][5] = 1;
-        pinvschm[3][4] = 1;
+        Schm[3][2] = 1;
+        Schm[4][1] = 1;
+        Schm[5][0] = 1;
+        pinvschm[0][5] = 1;
+        pinvschm[1][4] = 1;
+        pinvschm[2][3] = 1;
         //for (int i = 0; i < ngrains; i++) {
           Tensor<2,3> R = AnisotropicViscosity<dim>::euler_angles_to_rotation_matrix(euler[0],euler[1],euler[2]);
           SymmetricTensor<2,3> Rate_grain=symmetrize(R*rate*transpose(R));
@@ -766,7 +766,7 @@ namespace aspect
 
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
-          out.densities[q] = 0;//(in.composition[q][c_idx_gamma] > 0.8 ? 1 : 0); //Change this to 0 for the simple shear box test
+          out.densities[q] = 3300;//(in.composition[q][c_idx_gamma] > 0.8 ? 1 : 0); //Change this to 0 for the simple shear box test
           out.viscosities[q] = eta; //Later it is going to be overwritten by the effective viscosity
           out.thermal_expansion_coefficients[q] = 0;
           out.specific_heat[q] = 0;
