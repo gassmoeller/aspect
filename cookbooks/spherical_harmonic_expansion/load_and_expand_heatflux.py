@@ -11,7 +11,7 @@ import matplotlib
 from mpl_toolkits import mplot3d
 
 import vtk as vtk; from vtk.util import numpy_support
-from scipy.interpolate import griddata
+import scipy.interpolate as interpolate
 
 
 def load_vtk(filename):
@@ -67,29 +67,56 @@ text_filename = os.path.join(output_directory, 'heat_flux.' + number)
 heat_flux = pd.read_csv(text_filename, delimiter=' ', skiprows=1, header=0, names=['x','y','z','heat_flux'])
 
 heat_flux['r'] = heat_flux.apply(lambda row: np.sqrt(row.x*row.x+row.y*row.y+row.z*row.z), axis = 1)
+heat_flux['latitude'] = heat_flux.apply(lambda row: 90 - np.arccos(row.z/row.r) * 180 / np.pi, axis = 1)
+heat_flux['longitude'] = heat_flux.apply(lambda row: np.arctan2(row.y,row.x) * 180 / np.pi, axis = 1)
+
 bottom_heat_flux = heat_flux[heat_flux.r < 4e6].to_numpy()
 
 
-xi = np.linspace(np.min(bottom_heat_flux[:,0]), np.max(bottom_heat_flux[:,0]), 101)
-yi = np.linspace(np.min(bottom_heat_flux[:,1]), np.max(bottom_heat_flux[:,1]), 101)
-zi = np.linspace(np.min(bottom_heat_flux[:,2]), np.max(bottom_heat_flux[:,2]), 2)
-
+lat_i = np.linspace(-90, 90, 51)
+long_i = np.linspace(-180, 180, 51)
 # Generate data interpolation grid. 
-X, Y, Z = np.meshgrid(xi,yi,zi)
+Lat, Lon = np.meshgrid(lat_i,long_i)
 
-# Interpolate heat flux onto new grid
-heat_flux_structured = griddata((bottom_heat_flux[:,0:3]), bottom_heat_flux[:,3], (X,Y,Z), method='nearest')
+# create interpolation function
+#function = interpolate.interp2d(bottom_heat_flux[:,5], bottom_heat_flux[:,6], bottom_heat_flux[:,3], kind='linear')
+#function = interpolate.interp2d(bottom_heat_flux[:,5], bottom_heat_flux[:,6], bottom_heat_flux[:,3], kind='linear')
+#bottom_heat_flux_interpolated = function(lat_i, long_i)
 
-# Plot strain-rate field
+# Plot heat flux field
 fig = plt.figure()
-ax0 = fig.gca(projection='3d')
 
-c = ax0.scatter(bottom_heat_flux[:,0],bottom_heat_flux[:,1],bottom_heat_flux[:,2],c=bottom_heat_flux[:,3])
+# Cartesian scatter
+# ax0 = fig.gca(projection='3d')
+# c = ax0.scatter(bottom_heat_flux[:,0],bottom_heat_flux[:,1],bottom_heat_flux[:,2],c=bottom_heat_flux[:,3])
+
+# Geographic scatter
+ax0 = fig.add_subplot(211)
+c = ax0.scatter(bottom_heat_flux[:,6],bottom_heat_flux[:,5],c=bottom_heat_flux[:,3])
+
+#ax1 = fig.add_subplot(212)
+#d = ax1.scatter(Lon, Lat,c=bottom_heat_flux_interpolated)
+
+# Geographic contour
+# Interpolate heat flux onto new grid
+heat_flux_structured = interpolate.griddata((bottom_heat_flux[:,5:]), bottom_heat_flux[:,3], (Lat,Lon), method='cubic')
+ax1 = fig.add_subplot(212)
+d = ax1.pcolormesh(Lon,Lat,heat_flux_structured)
+
+
 ax0.set_aspect('equal', 'box')
-ax0.set_xlabel('Horizontal Position (m)')
-ax0.set_ylabel('Vertical Position (m)')
-ax0.set_title('Strain Rate Second Invariant (1/s)', fontsize=10)
+ax0.set_xlabel('Longitude')
+ax0.set_ylabel('Latitude')
+ax0.set_title('Heat flux on cell centers', fontsize=10)
+
+ax1.set_aspect('equal', 'box')
+ax1.set_xlabel('Longitude')
+ax1.set_ylabel('Latitude')
+ax1.set_title('Heat flux on GLQ points', fontsize=10)
+
 fig.colorbar(c, ax=ax0)
+fig.colorbar(d, ax=ax1)
+
 plt.show()
-#plt.savefig("strain_rate_field.png", dpi=300)
-#plt.close()
+plt.savefig("heat_flux.png", dpi=300)
+plt.close()
