@@ -1,0 +1,49 @@
+{
+	"version":"0.4",
+	"potential mantle temperature":1500,
+	"thermal expansion coefficient":2.0e-5,
+	"maximum distance between coordinates":100000,
+	"interpolation":"monotone spline",
+	"surface temperature": 293.15,
+	"force surface temperature": true,
+	"coordinate system":{"model":"cartesian"},
+	"features": [
+
+		{"model":"mantle layer","name":"upper mantle","min depth":100e3,"coordinates":[[ -1e3, -500e3 ],[ -501e3,2500e3 ],[2501e3,2500e3 ], [2501e3, -501e3 ]],"composition models":[{"model":"uniform","compositions":[5],"fractions":[245]}]},
+
+		{"model":"oceanic plate","name":"Caribbean plate","max depth":100e3,"coordinates":[[ -1e3,0],[1700e3,0],[1700e3,1000e3 ],[ -1e3,1000e3 ]],"temperature models":[{"model":"linear","max depth":100e3 }],"composition models":[{"model":"uniform","compositions":[1,5],"fractions":[1,800],"max depth":30e3 },
+		{"model":"uniform","compositions":[1,5],"fractions":[0,50],"min depth":30e3 }]},
+
+		{"model":"oceanic plate","name":"NS American plate","max depth":100e3,"coordinates":[[1700e3,0],[1700e3,1000e3 ],[1000e3,1000e3 ],[700e3,1000e3 ],[ -1e3,1000e3 ],[ -1e3,1501e3 ],[2501e3,1501e3 ],[2501e3, -501e3 ],[ -1e3, -501e3 ],[ -1e3,0]],"temperature models":[{"model":"linear","max depth":100e3 }],"composition models":[{"model":"uniform","compositions":[0,5],"fractions":[1,1000],"max depth":30e3 },
+
+		{"model":"uniform","compositions":[0,5],"fractions":[0,50],"min depth":30e3 }]},
+
+		{"model":"mantle layer","name":"lower mantle","min depth":660e3,"coordinates":[[ -1e3, -500e3 ],[ -501e3,2500e3 ],[2501e3,2500e3 ], [2501e3, -501e3 ]],"composition models":[{"model":"uniform","compositions":[4,5],"fractions":[1,1200]}]},
+
+		{"model":"subducting plate","name":"subducting slab","coordinates":[[1700e3,0],[1700e3,500e3 ],[1700e3,1000e3 ]],"dip point":[ -1, -1],"min depth":0,"max depth":660e3,"segments": [{"length":250e3,"thickness":[100e3 ],"angle":[0,50]},
+
+		{"length":50e3,"thickness":[100e3,50e3 ],"angle":[50,55]}
+		],
+	"sections":[
+		{"coordinate":1,"segments": [{"length":250e3,"thickness":[100e3 ],"angle":[0,50]},
+		{"length":100e3,"thickness":[100e3,50],"angle":[50,55]}]}
+		],
+	"temperature models": [
+		{"model":"plate model","density":3300,"plate velocity":0.0200,"thermal conductivity":2.5,"thermal expansion coefficient":2e-5 }
+		],
+	"composition models":[{"model":"uniform","compositions":[0,5],"fractions":[1,1000],"max distance slab top":30e3 },{"model":"uniform","compositions":[0,1,2,3,4,5,6],"fractions":[0,0,0,0,0,50,0],"min distance slab top":30e3 }]},
+
+ 	{"model":"continental plate","name":"South Weakzone",
+	"coordinates":[[ -1e3,0e3 ],[ -1e3, -50e3 ],[2501e3, -50e3 ],[2501e3,0e3 ]],
+	"temperature models":[{"model":"linear","max depth":100e3 }],
+	"composition models":[
+ 	{"model":"uniform","compositions":[2,5],"fractions":[1,1000],"max depth":30e3 },
+ 	{"model":"uniform","compositions":[3,5],"fractions":[1,500],"min depth":30e3,"max depth":100e3 }]},
+
+ 	{"model":"oceanic plate","name":"Carribean weak zone",
+ 	"coordinates":[[ -1e3,1000e3 ],[ -1e3,1050e3 ],[2501e3,1050e3 ],[2501e3,1000e3 ]],
+	"temperature models":[{"model":"linear","max depth":100e3 }],
+	"composition models":[{"model":"uniform","compositions":[2,5],"fractions":[1,1000],"max depth":30e3 },
+	{"model":"uniform","compositions":[3,5],"fractions":[1,800],"min depth":30e3,"max depth":100e3 }]}
+	]
+ }

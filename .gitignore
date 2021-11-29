@@ -15,6 +15,7 @@
 /aspect
 /benchmarks/**/CMakeCache.txt
 /benchmarks/**/CMakeFiles/
+./prmfiles
 /benchmarks/**/Makefile
 /benchmarks/**/cmake_install.cmake
 /benchmarks/**/lib*.so

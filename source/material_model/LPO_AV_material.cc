@@ -766,7 +766,7 @@ namespace aspect
 
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
-          out.densities[q] = 3300;//(in.composition[q][c_idx_gamma] > 0.8 ? 1 : 0); //Change this to 0 for the simple shear box test
+          out.densities[q] = 3300;//Change this to 0 for the simple shear box test
           out.viscosities[q] = eta; //Later it is going to be overwritten by the effective viscosity
           out.thermal_expansion_coefficients[q] = 0;
           out.specific_heat[q] = 0;
@@ -782,9 +782,10 @@ namespace aspect
             euler[i] = in.composition[q][c_idx_euler[i]];}
 
           // The computation of the viscosity tensor is only
-          // necessary after the simulator has been initialized.
+          // necessary after the simulator has been initialized. In ts 0 the strain rate is 0; 
           if (this->simulator_is_past_initialization())
             {
+              
               //Second invariant of strain-rate
               const double E_eq = std::sqrt(4/3*AnisotropicViscosity<dim>::J2_second_invariant(in.strain_rate[q], min_strain_rate)); 
               SymmetricTensor<2,dim> e1, e2, e3, e4, e5, E;
@@ -853,7 +854,7 @@ namespace aspect
               }
               
               // Overwrite the scalar viscosity with an effective viscosity
-              out.viscosities[q] = Stress_eq/E_eq; 
+              out.viscosities[q] = std::abs(Stress_eq/E_eq); 
               if (anisotropic_viscosity != nullptr)
               {
                 anisotropic_viscosity->stress_strain_directors[q] = ViscoTensor_r4/(Stress_eq/E_eq);
