@@ -729,8 +729,8 @@ namespace aspect
     LPO_AV<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                        MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-        out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
+      MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity;
+        anisotropic_viscosity = out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
 
       AssertThrow((this->introspection().compositional_name_exists("euler1")),
                   ExcMessage("LPO_AV material model only works if there is a compositional field called euler1 (first euler angle)."));
@@ -766,11 +766,11 @@ namespace aspect
 
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
-          out.densities[q] = 3300;//Change this to 0 for the simple shear box test
+          out.densities[q] = 0;//Change this to 0 for the simple shear box test
           out.viscosities[q] = eta; //Later it is going to be overwritten by the effective viscosity
-          out.thermal_expansion_coefficients[q] = 0;
-          out.specific_heat[q] = 0;
-          out.thermal_conductivities[q] = 0;
+          out.thermal_expansion_coefficients[q] = 1e-10;
+          out.specific_heat[q] = 1;
+          out.thermal_conductivities[q] = 1;
           out.compressibilities[q] = 0.0;
           out.entropy_derivative_pressure[q] = 0.0;
           out.entropy_derivative_temperature[q] = 0.0;
@@ -782,14 +782,17 @@ namespace aspect
             euler[i] = in.composition[q][c_idx_euler[i]];}
 
           // The computation of the viscosity tensor is only
-          // necessary after the simulator has been initialized. In ts 0 the strain rate is 0; 
-          if (this->simulator_is_past_initialization())
+          // necessary after the simulator has been initialized
+          if  ((this->simulator_is_past_initialization()) && (this->get_timestep_number() > 0) && (in.temperature[q]>1000))
             {
-              
-              //Second invariant of strain-rate
-              const double E_eq = std::sqrt(4/3*AnisotropicViscosity<dim>::J2_second_invariant(in.strain_rate[q], min_strain_rate)); 
+              double E_eq;
               SymmetricTensor<2,dim> e1, e2, e3, e4, e5, E;
-              E=in.strain_rate[q];
+              
+                E_eq= std::sqrt(4/3*AnisotropicViscosity<dim>::J2_second_invariant(in.strain_rate[q], min_strain_rate)); //Second invariant of strain-rate
+                E=in.strain_rate[q];
+                
+                AssertThrow(isfinite(1/E.norm()),
+                  ExcMessage("Strain rate should be finite")); 
               //We define 5 independent strainrates, of which E is the linear combination
               e1[0][0]=E_eq;
               e1[1][1]=E_eq;
@@ -805,6 +808,10 @@ namespace aspect
               e5[2][1]=E_eq;
 
               //We calculate the stress response for each strain rate with the micromechanical model
+              // AssertThrow(in.temperature[q] != 0,
+              //     ExcMessage("Temperature is 0")); 
+              // AssertThrow(grain_size == 1000,
+              //     ExcMessage("Something is wrong with the grain_size"));
               SymmetricTensor<2,dim> stress1, stress2, stress3, stress4, stress5, Stress, s1, s2, s3, s4, s5, S;
               stress1=internal::Stress_strain_aggregate(e1, euler, in.temperature[q],grain_size);
               stress2=internal::Stress_strain_aggregate(e2, euler, in.temperature[q],grain_size);
@@ -813,6 +820,10 @@ namespace aspect
               stress5=internal::Stress_strain_aggregate(e5, euler, in.temperature[q],grain_size);
               Stress=internal::Stress_strain_aggregate(E, euler, in.temperature[q],grain_size);
               const double Stress_eq= std::sqrt(3*AnisotropicViscosity<dim>::J2_second_invariant(Stress, min_strain_rate));
+              AssertThrow(Stress_eq != 0,
+                  ExcMessage("Equivalent stress should not be 0"));
+              AssertThrow(isfinite(Stress_eq),
+                  ExcMessage("Stress should be finite")); 
               //To calculate a "stress independent viscosity" (i.e. inverse of fluidty) 
               //we have to convert the stress to a "non-Newtonian modified stress" which is the stress *second invariant on the power of (n-1)/2
               for (int i = 0; i < dim; i++)
@@ -854,7 +865,11 @@ namespace aspect
               }
               
               // Overwrite the scalar viscosity with an effective viscosity
-              out.viscosities[q] = std::abs(Stress_eq/E_eq); 
+              out.viscosities[q] = std::abs(Stress_eq/E_eq);
+              AssertThrow(out.viscosities[q] != 0,
+                  ExcMessage("EViscosity should not be 0")); 
+              AssertThrow(isfinite(out.viscosities[q]),
+                  ExcMessage("EViscosity should not be finite")); 
               if (anisotropic_viscosity != nullptr)
               {
                 anisotropic_viscosity->stress_strain_directors[q] = ViscoTensor_r4/(Stress_eq/E_eq);
@@ -884,6 +899,7 @@ namespace aspect
 
                 }
             }
+
       }      
     }
 
