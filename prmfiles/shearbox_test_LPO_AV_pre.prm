@@ -10,10 +10,11 @@ set Dimension                              = 3
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
-set Use years in output instead of seconds = true
-set End time                               = 1e6 #100. #00.0 #0.0125 #5.0
-#set Nonlinear solver scheme = single Advection, single Stokes
-set Output directory                       = shearbox_test_LPOAV
+set Use years in output instead of seconds = false
+set End time                               = 10 #100. #00.0 #0.0125 #5.0
+set Nonlinear solver scheme = single Advection, single Stokes
+set Output directory                       = shearbox_test_LPOAV_density0
+set No temperature advection = true
 
 # Then there are variables that describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
@@ -50,12 +51,12 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent = 22000
-    set Y extent = 22000
-    set Z extent = 22000
-    set Box origin X coordinate = -12000
-    set Box origin Y coordinate = -12000
-    set Box origin Z coordinate = -12000
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+    set Box origin X coordinate = -0.5
+    set Box origin Y coordinate = -0.5
+    set Box origin Z coordinate = -0.5
   end
 end
 
@@ -103,7 +104,7 @@ end
 subsection Boundary velocity model
   subsection Function
     set Variable names = x,y,z,t
-    set Function expression = if(t<5e5,z/10000,0);if(t<5e5,0,x/10000);0; ## Annotation: set velocity condition 
+    set Function expression = z;0;0; ## Annotation: set velocity condition 
   end
 end
 
@@ -125,7 +126,7 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 10   # 
+    set Magnitude = 0   # 
   end
 end
 
@@ -135,7 +136,7 @@ subsection Material model
 
   subsection AnisotropicViscosity
     set Reference viscosity           = 1e20
-    set Minimum strain rate           = 1e-19 
+    set Minimum strain rate           = 1e-15 
     set Grain size                    = 1000 #give it in microns
   end
 end
@@ -171,7 +172,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
 
   subsection Visualization
-    set Time between graphical output = 1e5 #0.024999
+    set Time between graphical output = 0.5 #0.024999
     set List of output variables = density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
   end
   #subsection Particles
