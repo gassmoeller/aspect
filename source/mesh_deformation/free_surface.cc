@@ -218,7 +218,7 @@ namespace aspect
       // stuff for iterating over the mesh
       QGauss<dim-1> face_quadrature(mesh_deformation_dof_handler.get_fe().degree+1);
       UpdateFlags update_flags = UpdateFlags(update_values | update_quadrature_points
-                                             | update_normal_vectors | update_JxW_values);
+                                             | update_normal_vectors | update_gradients | update_JxW_values);
       FEFaceValues<dim> fs_fe_face_values (this->get_mapping(), mesh_deformation_dof_handler.get_fe(), face_quadrature, update_flags);
       FEFaceValues<dim> fe_face_values (this->get_mapping(), this->get_fe(), face_quadrature, update_flags);
       const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
@@ -231,6 +231,7 @@ namespace aspect
 
       // stuff for getting the velocity values
       std::vector<Tensor<1,dim>> velocity_values(n_face_q_points);
+      std::vector<Tensor<2,dim>> deformation_gradients(n_face_q_points);
 
       // set up constraints
       AffineConstraints<double> mass_matrix_constraints(mesh_locally_relevant);
@@ -285,6 +286,8 @@ namespace aspect
 
                 fscell->get_dof_indices (cell_dof_indices);
                 fs_fe_face_values.reinit (fscell, face_no);
+                fs_fe_face_values[extract_vel].get_function_gradients(this->get_mesh_deformation_handler().get_mesh_displacements(), deformation_gradients);
+
                 fe_face_values.reinit (cell, face_no);
                 fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), velocity_values);
 
@@ -303,6 +306,11 @@ namespace aspect
 
                     direction *= ( direction.norm() > 0.0 ? 1./direction.norm() : 0.0 );
 
+                    Tensor<1,dim> direction_normal = velocity_values[point] - (velocity_values[point] * direction) * direction;
+                    direction_normal *= ( direction_normal.norm() > 0.0 ? 1./direction_normal.norm() : 0.0 );
+
+                    const double projected_gradient = (deformation_gradients[point] * direction_normal) * direction;
+
                     for (unsigned int i=0; i<dofs_per_cell; ++i)
                       {
                         for (unsigned int j=0; j<dofs_per_cell; ++j)
@@ -314,6 +322,9 @@ namespace aspect
 
                         cell_vector(i) += (fs_fe_face_values[extract_vel].value(i,point) * direction)
                                           * (velocity_values[point] * direction)
+                                          * fs_fe_face_values.JxW(point)
+                                           - (fs_fe_face_values[extract_vel].value(i,point) * direction)
+                                          * ((velocity_values[point] * direction_normal) * projected_gradient)
                                           * fs_fe_face_values.JxW(point);
                       }
                   }

@@ -65,6 +65,7 @@ subsection Mesh deformation
   # this parameter.
   subsection Free surface
     set Free surface stabilization theta = 0.5
+#    set Surface velocity projection = vertical
   end
 end
 
@@ -139,6 +140,6 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, topography
 
   subsection Visualization
-    set Time between graphical output = 1.e6
+    set Time between graphical output = 0
   end
 end
