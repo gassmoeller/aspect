@@ -944,7 +944,7 @@ namespace aspect
         prm.enter_subsection("AnisotropicViscosity");
         {
           
-
+          equation_of_state.parse_parameters (prm);
           eta = prm.get_double("Reference viscosity");
           min_strain_rate = prm.get_double("Minimum strain rate");
           grain_size = prm.get_double("Grain size");
@@ -964,6 +964,7 @@ namespace aspect
       {
         prm.enter_subsection("AnisotropicViscosity");
         {
+          EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
           prm.declare_entry ("Reference viscosity", "1e20",
                              Patterns::Double(),
                              "Magnitude of reference viscosity.");

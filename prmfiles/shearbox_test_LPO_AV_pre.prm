@@ -1,7 +1,7 @@
 # A description of convection in a 3d box. See the manual for more information.
 set CFL number = 0.1
 
-set Timing output frequency = 5000
+set Timing output frequency = 5
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
@@ -12,7 +12,7 @@ set Dimension                              = 3
 # also designate an output directory.
 set Use years in output instead of seconds = false
 set End time                               = 10 #100. #00.0 #0.0125 #5.0
-set Nonlinear solver scheme = single Advection, no Stokes
+set Nonlinear solver scheme = single Advection, single Stokes
 set Output directory                       = shearbox_test_LPOAV_density0
 set No temperature advection = true
 
@@ -108,14 +108,14 @@ subsection Boundary velocity model
   end
 end
 
-subsection Prescribed Stokes solution
-  set Model name = function
-  subsection Velocity function
-    set Variable names = x,y,z,t
-    set Function expression = if(t<5e5,z/1000,0);if(t<5e5,0,x/1000);0; ## Annotation: set velocity condition 
-  end
+#subsection Prescribed Stokes solution
+#  set Model name = function
+#  subsection Velocity function
+#    set Variable names = x,y,z,t
+#    set Function expression = if(t<5e5,z/1000,0);if(t<5e5,0,x/1000);0; ## Annotation: set velocity condition 
+#  end
 
-end
+#end
 
 # The following two sections describe first the
 # direction (vertical) and magnitude of gravity and the
@@ -132,7 +132,7 @@ end
 
 
 subsection Material model
-  set Model name = AnisotropicViscosity material
+  set Model name = simpler
 
   subsection AnisotropicViscosity
     set Reference viscosity           = 1e20
@@ -169,11 +169,11 @@ end
 # our start time (zero) and final time (0.5) this means that
 # we will obtain 50 output files.
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, composition statistics
 
   subsection Visualization
     set Time between graphical output = 0.5 #0.024999
-    set List of output variables = density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
+    set List of output variables = density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor#, named additional outputs
   end
   #subsection Particles
    # set Number of particles        = 27 #0
