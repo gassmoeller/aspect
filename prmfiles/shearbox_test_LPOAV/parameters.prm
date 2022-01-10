@@ -5309,7 +5309,7 @@ subsection Material model
     set Grain size          = 1000
 
     # Stabilizes strain dependent viscosity. Units: \si{\per\second}
-    set Minimum strain rate = 1e-19 # default: 1.4e-20
+    set Minimum strain rate = 1e-15 # default: 1.4e-20
 
     # Magnitude of reference viscosity.
     set Reference viscosity = 1e20

@@ -135,7 +135,7 @@ subsection Material model
 
   subsection AnisotropicViscosity
     set Reference viscosity           = 1e20
-    set Minimum strain rate           = 1e-19 
+    set Minimum strain rate           = 1e-15 
     set Grain size                    = 1000 #give it in microns
   end
 end

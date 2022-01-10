@@ -12,7 +12,7 @@ set Dimension                              = 3
 # also designate an output directory.
 set Use years in output instead of seconds = false
 set End time                               = 10 #100. #00.0 #0.0125 #5.0
-set Nonlinear solver scheme = single Advection, single Stokes
+set Nonlinear solver scheme = single Advection, no Stokes
 set Output directory                       = shearbox_test_LPOAV_density0
 set No temperature advection = true
 
@@ -108,14 +108,14 @@ subsection Boundary velocity model
   end
 end
 
-#subsection Prescribed Stokes solution
-#  set Model name = function
-#  subsection Velocity function
-#    set Variable names = x,y,z,t
-#    set Function expression = if(t<5e5,z/1000,0);if(t<5e5,0,x/1000);0; ## Annotation: set velocity condition 
-#  end
+subsection Prescribed Stokes solution
+  set Model name = function
+  subsection Velocity function
+    set Variable names = x,y,z,t
+    set Function expression = if(t<5e5,z/1000,0);if(t<5e5,0,x/1000);0; ## Annotation: set velocity condition 
+  end
 
-#end
+end
 
 # The following two sections describe first the
 # direction (vertical) and magnitude of gravity and the
@@ -136,7 +136,7 @@ subsection Material model
 
   subsection AnisotropicViscosity
     set Reference viscosity           = 1e20
-    set Minimum strain rate           = 1e-15 
+    set Minimum strain rate           = 1e-19 
     set Grain size                    = 1000 #give it in microns
   end
 end

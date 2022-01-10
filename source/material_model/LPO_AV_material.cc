@@ -20,6 +20,7 @@
  */
 
 #include <aspect/material_model/LPO_AV_material.h>
+#include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/introspection.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/plugins.h>
@@ -763,10 +764,11 @@ namespace aspect
           fe_values[this->introspection().extractors.velocities]
           .get_function_gradients(this->get_solution(), velocity_gradients);
         }
-
+      EquationOfStateOutputs<dim> eos_outputs (1);
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
-          out.densities[q] = 0;//Change this to 0 for the simple shear box test
+          equation_of_state.evaluate(in, q, eos_outputs);
+          out.densities[q] = eos_outputs.densities[0];//Change this to 0 for the simple shear box test
           out.viscosities[q] = eta; //Later it is going to be overwritten by the effective viscosity
           out.thermal_expansion_coefficients[q] = 1e-10;
           out.specific_heat[q] = 1;
@@ -915,12 +917,12 @@ namespace aspect
 
 
 
-    template <int dim>
+    /*template <int dim>
     double
     LPO_AV<dim>::reference_density () const
     {
       return 1.0;
-    }
+    }*/
 
 
 
@@ -941,6 +943,8 @@ namespace aspect
       {
         prm.enter_subsection("AnisotropicViscosity");
         {
+          
+
           eta = prm.get_double("Reference viscosity");
           min_strain_rate = prm.get_double("Minimum strain rate");
           grain_size = prm.get_double("Grain size");

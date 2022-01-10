@@ -3225,7 +3225,7 @@
                 "pattern_description": "[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]"
             },
             "Minimum_20strain_20rate": {
-                "value": "1e-19",
+                "value": "1e-15",
                 "default_value": "1.4e-20",
                 "documentation": "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}",
                 "pattern": "780",
