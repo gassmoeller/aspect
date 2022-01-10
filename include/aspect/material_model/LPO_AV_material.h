@@ -52,7 +52,7 @@ namespace aspect
         virtual void parse_parameters (ParameterHandler &prm);
         virtual bool is_compressible () const;
         virtual double reference_viscosity () const;
-        virtual double reference_density () const;
+        // virtual double reference_density () const;
         virtual void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
       private:
         double eta; //reference viscosity
@@ -62,6 +62,7 @@ namespace aspect
          */
         double min_strain_rate;
         double grain_size; 
+        EquationOfState::LinearizedIncompressible<dim> equation_of_state;
         void set_assemblers(const SimulatorAccess<dim> &,
                             Assemblers::Manager<dim> &assemblers) const;
 
