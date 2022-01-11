@@ -1,7 +1,7 @@
 # A description of convection in a 3d box. See the manual for more information.
-set CFL number = 0.1
+set CFL number = 0.5
 
-set Timing output frequency = 5
+set Timing output frequency = 1
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
@@ -11,10 +11,10 @@ set Dimension                              = 3
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
 set Use years in output instead of seconds = false
-set End time                               = 10 #100. #00.0 #0.0125 #5.0
+set End time                               = 0.125 #100. #00.0 #0.0125 #5.0
 set Nonlinear solver scheme = single Advection, single Stokes
-set Output directory                       = shearbox_test_LPOAV_density0
-set No temperature advection = true
+set Output directory                       = shearbox_test_AV_10_10_10_T1300_onAVbranch
+#set No temperature advection = true
 
 # Then there are variables that describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
@@ -33,9 +33,9 @@ subsection Initial composition model
   set List of model names = function
 
   subsection Function
-    set Function expression = 25;\
-                              35;\
-                              45; #if(z<-0.5*x+300000, 800, 25)
+    set Function expression = 10;\
+                              10;\
+                              10; #if(z<-0.5*x+300000, 800, 25)
   end
 end
 
@@ -75,7 +75,7 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Function expression = 1600 ## Annotation: Temperature function
+    set Function expression = 1300 ## Annotation: Temperature function
   end
 end
 
@@ -91,29 +91,24 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top, left, right, front, back
 
   subsection Box
-    set Bottom temperature = 1600
-    set Left temperature   = 1600
-    set Right temperature  = 1600
-    set Top temperature    = 1600
-    set Front temperature  = 1600
-    set Back temperature   = 1600
+    set Bottom temperature = 1300
+    set Left temperature   = 1300
+    set Right temperature  = 1300
+    set Top temperature    = 1300
+    set Front temperature  = 1300
+    set Back temperature   = 1300
   end
 end
 
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function, bottom:function,left:function, right:function, front:function, back:function
   subsection Function
     set Variable names = x,y,z,t
     set Function expression = z;0;0; ## Annotation: set velocity condition 
   end
 end
 
-#subsection Prescribed Stokes solution
-#  set Model name = function
-#  subsection Velocity function
-#    set Variable names = x,y,z,t
-#    set Function expression = if(t<5e5,z/1000,0);if(t<5e5,0,x/1000);0; ## Annotation: set velocity condition 
-#  end
 
 #end
 
@@ -132,10 +127,10 @@ end
 
 
 subsection Material model
-  set Model name = simpler
+  set Model name = AnisotropicViscosity material
 
   subsection AnisotropicViscosity
-    set Reference viscosity           = 1e20
+    set Reference viscosity           = 1e6
     set Minimum strain rate           = 1e-19 
     set Grain size                    = 1000 #give it in microns
   end
@@ -173,7 +168,7 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0.5 #0.024999
-    set List of output variables = density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor#, named additional outputs
+    set List of output variables = density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
   end
   #subsection Particles
    # set Number of particles        = 27 #0
@@ -232,3 +227,4 @@ end
 subsection Solver parameters
   set Temperature solver tolerance = 1e-10
 end
+
