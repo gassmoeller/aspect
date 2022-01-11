@@ -49,21 +49,21 @@ Termination requested by criterion: end time
 
 
 +----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |        43s |            |
+| Total wallclock time elapsed since start     |        48s |            |
 |                                              |            |            |
 | Section                          | no. calls |  wall time | % of total |
 +----------------------------------+-----------+------------+------------+
-| Assemble Stokes system           |         2 |      6.72s |        16% |
-| Assemble composition system      |         6 |      16.7s |        39% |
-| Build Stokes preconditioner      |         1 |      2.71s |       6.3% |
-| Build composition preconditioner |         6 |     0.219s |      0.51% |
-| Initialization                   |         1 |     0.757s |       1.8% |
-| Postprocessing                   |         2 |      8.17s |        19% |
-| Setup dof systems                |         1 |     0.394s |      0.92% |
-| Setup initial conditions         |         1 |      2.41s |       5.6% |
-| Setup matrices                   |         1 |      1.52s |       3.5% |
-| Solve Stokes system              |         2 |    0.0969s |      0.23% |
-| Solve composition system         |         6 |    0.0157s |         0% |
+| Assemble Stokes system           |         2 |      7.02s |        15% |
+| Assemble composition system      |         6 |      18.3s |        38% |
+| Build Stokes preconditioner      |         1 |       2.7s |       5.6% |
+| Build composition preconditioner |         6 |     0.223s |      0.46% |
+| Initialization                   |         1 |     0.992s |       2.1% |
+| Postprocessing                   |         2 |      9.62s |        20% |
+| Setup dof systems                |         1 |     0.523s |       1.1% |
+| Setup initial conditions         |         1 |      2.92s |       6.1% |
+| Setup matrices                   |         1 |      1.55s |       3.2% |
+| Solve Stokes system              |         2 |    0.0927s |      0.19% |
+| Solve composition system         |         6 |    0.0159s |         0% |
 +----------------------------------+-----------+------------+------------+
 
 -----------------------------------------------------------------------------
