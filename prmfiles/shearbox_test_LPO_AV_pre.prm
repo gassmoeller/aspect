@@ -1,5 +1,5 @@
 # A description of convection in a 3d box. See the manual for more information.
-set CFL number = 0.5
+set CFL number = 0.25
 
 set Timing output frequency = 1
 
@@ -11,7 +11,7 @@ set Dimension                              = 3
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
 set Use years in output instead of seconds = false
-set End time                               = 0.125 #100. #00.0 #0.0125 #5.0
+set End time                               = 0.25 #100. #00.0 #0.0125 #5.0
 set Nonlinear solver scheme = single Advection, single Stokes
 set Output directory                       = shearbox_test_AV_10_10_10_T1300_onAVbranch
 #set No temperature advection = true
@@ -34,8 +34,8 @@ subsection Initial composition model
 
   subsection Function
     set Function expression = 10;\
-                              10;\
-                              10; #if(z<-0.5*x+300000, 800, 25)
+                              20;\
+                              30; #if(z<-0.5*x+300000, 800, 25)
   end
 end
 
@@ -105,7 +105,7 @@ subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:function, bottom:function,left:function, right:function, front:function, back:function
   subsection Function
     set Variable names = x,y,z,t
-    set Function expression = z;0;0; ## Annotation: set velocity condition 
+    set Function expression = z/2;z/2;0; ## Annotation: set velocity condition 
   end
 end
 
@@ -130,7 +130,7 @@ subsection Material model
   set Model name = AnisotropicViscosity material
 
   subsection AnisotropicViscosity
-    set Reference viscosity           = 1e6
+    set Reference viscosity           = 1e10
     set Minimum strain rate           = 1e-19 
     set Grain size                    = 1000 #give it in microns
   end
@@ -144,7 +144,7 @@ end
 # on. We here use a globally refined mesh without
 # adaptive mesh refinement.
 subsection Mesh refinement
-  set Initial global refinement                = 3
+  set Initial global refinement                = 1
   set Initial adaptive refinement              = 0
 #  set Time steps between mesh refinement       = 5
 #  set Strategy = strain rate
@@ -164,10 +164,14 @@ end
 # our start time (zero) and final time (0.5) this means that
 # we will obtain 50 output files.
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, composition statistics
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, composition statistics, point values
+  
+  subsection Point values
+    set Evaluation points = 0,0,0
+  end
 
   subsection Visualization
-    set Time between graphical output = 0.5 #0.024999
+    set Time between graphical output = 0.125 #0.024999
     set List of output variables = density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
   end
   #subsection Particles
