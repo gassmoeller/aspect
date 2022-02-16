@@ -869,9 +869,9 @@ namespace aspect
               // Overwrite the scalar viscosity with an effective viscosity
               out.viscosities[q] = std::abs(Stress_eq/E_eq);
               AssertThrow(out.viscosities[q] != 0,
-                  ExcMessage("EViscosity should not be 0")); 
+                  ExcMessage("Viscosity should not be 0")); 
               AssertThrow(isfinite(out.viscosities[q]),
-                  ExcMessage("EViscosity should not be finite")); 
+                  ExcMessage("Viscosity should not be finite")); 
               if (anisotropic_viscosity != nullptr)
               {
                 anisotropic_viscosity->stress_strain_directors[q] = ViscoTensor_r4/(Stress_eq/E_eq);
