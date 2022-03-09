@@ -20,7 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/aniso_stress.h>
-
+#include <aspect/material_model/LPO_AV_material.h>
 
 
 namespace aspect
@@ -56,11 +56,13 @@ namespace aspect
                                                    this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+
+        
+        const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
+          out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
         
         // Compute the viscosity...
         this->get_material_model().evaluate(in, out);
-        
-        this->get_material_model().create_additional_named_outputs(out);
 
         // ...and use it to compute the stresses
         for (unsigned int q=0; q<n_quadrature_points; ++q)
@@ -74,12 +76,16 @@ namespace aspect
                  strain_rate);
 
             const double eta = out.viscosities[q];
-            const SymmetricTensor<4,dim>  stress_strain_directors=out.additional_outputs[q]
-            // Compressive stress is positive in geoscience applications
-            SymmetricTensor<2,dim> aniso_stress = -2.*eta*deviatoric_strain_rate*stress_strain_directors;
-
             
+            SymmetricTensor<2,dim> aniso_stress;
+            if (anisotropic_viscosity != nullptr) // when this statement is not used, model runs into segmentation fault. With this though, it's always the second term that is evaluated
+            {
+              aniso_stress= -2.*eta*deviatoric_strain_rate*anisotropic_viscosity->stress_strain_directors[q];
+            }
 
+            aniso_stress= -2.*eta*deviatoric_strain_rate;
+            
+            
             for (unsigned int d=0; d<dim; ++d)
               for (unsigned int e=0; e<dim; ++e)
                 computed_quantities[q][Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(d,e))]
@@ -104,17 +110,18 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(AnisoStress,
-                                                  "aniso stress",
+                                                  "Aniso stress",
                                                   "A visualization output object that generates output "
-                                                  "for the 6 (in 3d) components of the anisotropic stress "
+                                                  "for the 6 (in 3d) components of the shear stress "
                                                   "tensor, i.e., for the components of the tensor "
                                                   "$-2\\eta\\varepsilon(\\mathbf u)$ "
-                                                  "*the stress_strain_directors 4th rank tensor in the incompressible case and "
+                                                  "in the incompressible case and "
                                                   "$-2\\eta\\left[\\varepsilon(\\mathbf u)-"
                                                   "\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I\\right]$ "
-                                                  "*the stress_strain_directors 4th rank tensor in the compressible case.  The anisotropic "
-                                                  "stress is a deviatoric stress tensor "
-                                                  "Note that the convention "
+                                                  "in the compressible case. If elasticity is used, the "
+                                                  "elastic contribution is being accounted for. The shear "
+                                                  "stress differs from the full stress tensor "
+                                                  "by the absence of the pressure. Note that the convention "
                                                   "of positive compressive stress is followed. ")
     }
   }

@@ -42,6 +42,35 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
+    class AnisotropicViscosity : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        AnisotropicViscosity(const unsigned int n_points);
+
+        static double J2_second_invariant(const SymmetricTensor<2,dim> t, const double min_strain_rate);
+
+        static FullMatrix<double> Voigt_transform_Symmetric3x3_matrix_to_6D_vector(const SymmetricTensor<2,3> &tensor);
+
+        static SymmetricTensor<2,3> Voigt_transform_6D_vector_to_Symmetric3x3_matrix(const FullMatrix<double> &matrix); 
+
+        static Tensor <2,3> euler_angles_to_rotation_matrix(double phi1_d, double theta_d, double phi2_d);
+
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+
+        /**
+         * Stress-strain "director" tensors at the given positions. This
+         * variable is used to implement anisotropic viscosity.
+         *
+         * @note The strain rate term in equation (1) of the manual will be
+         * multiplied by this tensor *and* the viscosity scalar ($\eta$ /i.e. effective viscosity), as
+         * described in the manual section titled "Constitutive laws". This
+         * variable is assigned the rank-four identity tensor by default.
+         * This leaves the isotropic constitutive law unchanged if the material
+         * model does not explicitly assign a value.
+         */
+        std::vector<SymmetricTensor<4,dim> > stress_strain_directors;
+    };
+    template <int dim>
     class LPO_AV : public MaterialModel::Simple<dim>
     {
       public:

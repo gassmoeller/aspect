@@ -11,7 +11,7 @@ set Dimension                              = 3
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
 set Use years in output instead of seconds = false
-set End time                               = 0.25 #100. #00.0 #0.0125 #5.0
+set End time                               = 0.55 #100. #00.0 #0.0125 #5.0
 set Nonlinear solver scheme = single Advection, single Stokes
 set Output directory                       = shearbox_test_AV_10_10_10_T1300_onAVbranch
 #set No temperature advection = true
@@ -172,7 +172,7 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0.125 #0.024999
-    set List of output variables = density, viscosity, gravity, shear stress, aniso stress, strain rate, strain rate tensor, named additional outputs
+    set List of output variables = density, viscosity, gravity, Aniso stress, strain rate, strain rate tensor, named additional outputs
   end
   #subsection Particles
    # set Number of particles        = 27 #0
