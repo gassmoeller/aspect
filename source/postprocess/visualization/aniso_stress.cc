@@ -36,7 +36,7 @@ namespace aspect
         DataPostprocessorTensor<dim> ("aniso_stress",
                                       update_values | update_gradients | update_quadrature_points)
       {}
-
+    
 
 
       template <int dim>
@@ -61,7 +61,8 @@ namespace aspect
         const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
           out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
         
-        // Compute the viscosity...
+        //this->get_material_model().create_additional_named_outputs(out);
+        
         this->get_material_model().evaluate(in, out);
 
         // ...and use it to compute the stresses
@@ -81,21 +82,31 @@ namespace aspect
             if (anisotropic_viscosity != nullptr) // when this statement is not used, model runs into segmentation fault. With this though, it's always the second term that is evaluated
             {
               aniso_stress= -2.*eta*deviatoric_strain_rate*anisotropic_viscosity->stress_strain_directors[q];
+              std::cout << "Anisotropic stress: " << aniso_stress << std::endl;
             }
-
+            else
+            {
             aniso_stress= -2.*eta*deviatoric_strain_rate;
-            
+            }
             
             for (unsigned int d=0; d<dim; ++d)
               for (unsigned int e=0; e<dim; ++e)
                 computed_quantities[q][Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(d,e))]
                   = aniso_stress[d][e];
           }
-
+      
         // average the values if requested
         const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim> >();
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(computed_quantities);
+      }
+    
+      template <int dim>
+      void
+      AnisoStress<dim>::
+      create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        this->get_material_model().create_additional_named_outputs(out);
       }
     }
   }
