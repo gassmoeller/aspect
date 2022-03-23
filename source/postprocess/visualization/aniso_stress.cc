@@ -57,11 +57,9 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
-        
+        this->get_material_model().create_additional_named_outputs(out);
         const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
           out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
-        
-        //this->get_material_model().create_additional_named_outputs(out);
         
         this->get_material_model().evaluate(in, out);
 
