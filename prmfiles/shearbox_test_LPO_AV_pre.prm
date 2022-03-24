@@ -172,7 +172,7 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0.125 #0.024999
-    set List of output variables = density, viscosity, gravity, Aniso stress, strain rate, strain rate tensor, named additional outputs
+    set List of output variables = density, viscosity, gravity, Aniso stress, stress, strain rate, strain rate tensor, named additional outputs
   end
   #subsection Particles
    # set Number of particles        = 27 #0
