@@ -34,16 +34,16 @@
 /**
  * Name of the local git branch of the source directory.
  */
-#define ASPECT_GIT_BRANCH "AV_3D_simpler_AnisoStressOut"
+#define ASPECT_GIT_BRANCH "AV_3D_simpler"
 
 /**
  * Full sha1 revision of the current git HEAD.
  */
-#define ASPECT_GIT_REVISION "c4d708b20e52149353291f8cc722057f37faa4e2"
+#define ASPECT_GIT_REVISION "c8834e073a0db7500d1dc9a2715f50a2bc3f759e"
 
 /**
  * Short sha1 revision of the current git HEAD.
  */
-#define ASPECT_GIT_SHORTREV "c4d708b20"
+#define ASPECT_GIT_SHORTREV "c8834e073"
 
 #endif

@@ -79,7 +79,7 @@ namespace aspect
             SymmetricTensor<2,dim> aniso_stress;
             if (anisotropic_viscosity != nullptr) // when this statement is not used, model runs into segmentation fault. With this though, it's always the second term that is evaluated
             {
-              aniso_stress= -2.*eta*deviatoric_strain_rate*anisotropic_viscosity->stress_strain_directors[q];
+              aniso_stress= -2.*eta*anisotropic_viscosity->stress_strain_directors[q]*deviatoric_strain_rate;
               //std::cout << "Anisotropic stress: " << aniso_stress << std::endl;
             }
             else

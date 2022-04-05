@@ -11,9 +11,9 @@ set Dimension                              = 3
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
 set Use years in output instead of seconds = false
-set End time                               = 0.55 #100. #00.0 #0.0125 #5.0
+set End time                               = 0.5 #100. #00.0 #0.0125 #5.0
 set Nonlinear solver scheme = single Advection, single Stokes
-set Output directory                       = shearbox_test_AV_10_10_10_T1300_onAVbranch
+set Output directory                       = shearbox_test_AV_90_45_0_T1600_vx_vy_not_resolved
 #set No temperature advection = true
 
 # Then there are variables that describe how the pressure should
@@ -33,9 +33,9 @@ subsection Initial composition model
   set List of model names = function
 
   subsection Function
-    set Function expression = 10;\
-                              20;\
-                              30; #if(z<-0.5*x+300000, 800, 25)
+    set Function expression = 90;\
+                              45;\
+                              0; #if(z<-0.5*x+300000, 800, 25)
   end
 end
 
@@ -75,7 +75,7 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Function expression = 1300 ## Annotation: Temperature function
+    set Function expression = 1600 ## Annotation: Temperature function
   end
 end
 
@@ -91,12 +91,12 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top, left, right, front, back
 
   subsection Box
-    set Bottom temperature = 1300
-    set Left temperature   = 1300
-    set Right temperature  = 1300
-    set Top temperature    = 1300
-    set Front temperature  = 1300
-    set Back temperature   = 1300
+    set Bottom temperature = 1600
+    set Left temperature   = 1600
+    set Right temperature  = 1600
+    set Top temperature    = 1600
+    set Front temperature  = 1600
+    set Back temperature   = 1600
   end
 end
 
@@ -144,7 +144,7 @@ end
 # on. We here use a globally refined mesh without
 # adaptive mesh refinement.
 subsection Mesh refinement
-  set Initial global refinement                = 1
+  set Initial global refinement                = 2
   set Initial adaptive refinement              = 0
 #  set Time steps between mesh refinement       = 5
 #  set Strategy = strain rate

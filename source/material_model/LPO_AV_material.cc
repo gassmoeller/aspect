@@ -690,7 +690,7 @@ namespace aspect
 
       // Get the grad_u tensor, at the center of this cell, if possible. DO I NEED THIS? I NEED THE CURRENT STRAIN RATE
 
-      std::vector<Tensor<2,dim> > velocity_gradients (in.n_evaluation_points());
+      /*std::vector<Tensor<2,dim> > velocity_gradients (in.n_evaluation_points());
       if (in.current_cell.state() == IteratorState::valid)
         {
           std::vector<Point<dim> > quadrature_positions(in.n_evaluation_points());
@@ -706,7 +706,7 @@ namespace aspect
           fe_values.reinit (in.current_cell);
           fe_values[this->introspection().extractors.velocities]
           .get_function_gradients(this->get_solution(), velocity_gradients);
-        }
+        }*/
       EquationOfStateOutputs<dim> eos_outputs (1);
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
@@ -847,7 +847,7 @@ namespace aspect
                   ExcMessage("Viscosity should not be finite")); 
               if (anisotropic_viscosity != nullptr)
               {
-                anisotropic_viscosity->stress_strain_directors[q] = ViscoTensor_r4/(Stress_eq/E_eq);
+                anisotropic_viscosity->stress_strain_directors[q] = ViscoTensor_r4/(2.0*Stress_eq/E_eq);
                 
                 SymmetricTensor<2,6> ViscoTensor;
                 ViscoTensor[0][0]=anisotropic_viscosity->stress_strain_directors[q][0][0][0][0] * out.viscosities[q];
