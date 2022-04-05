@@ -20,7 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/aniso_stress.h>
-#include <aspect/material_model/LPO_AV_material.h>
+#include <aspect/material_model/AV_3D_simpler.h>
 
 
 namespace aspect
