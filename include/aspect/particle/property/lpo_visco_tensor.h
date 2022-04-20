@@ -73,11 +73,8 @@ namespace aspect
            * set.
            */
           virtual
-          SymmetricTensor<2,6>
-          compute_Visco_tensor (const std::vector<double> &volume_fraction_minerals,
-                                  const std::vector<std::vector<double> > &volume_fractions_grains,
-                                  const std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
-                                  const std::vector<unsigned int> &deformation_type) const; //change this
+          SymmetricTensor<2,dim>
+          Stress_strain_aggregate((const SymmetricTensor<2,dim,double> rate,const std::vector<std::vector<Tensor<2,dim, double> > > R_matrix, const double temperature, const std::vector<std::vector<double> > grain_size, const std::vector<unsigned int> deformation_type));
 
           /**
            * Initialization function. This function is called once at the
@@ -157,7 +154,7 @@ namespace aspect
           void
           load_particle_data(unsigned int lpo_index,
                              const ArrayView<double> &data,
-                             SymmetricTensor<2,6> &elastic_tensor);
+                             Tensor<2,6> &Sstensor);
 
           /**
            * Stores information in variables into the data array
@@ -166,67 +163,13 @@ namespace aspect
           void
           store_particle_data(unsigned int lpo_data_position,
                               const ArrayView<double> &data,
-                              SymmetricTensor<2,6> &elastic_tensor);
+                              Tensor<2,6> &Sstensor);
 
           
           //Not likely that I will need all of these
-          /**
-           * Rotate a 3D 4th order tensor with an other 3D 4th
-           */
-          static
-          Tensor<4,3> rotate_4th_order_tensor(const Tensor<4,3> &input_tensor, const Tensor<2,3> &rotation_tensor);
+          
 
-
-          /**
-           * Rotate a 6x6 voigt matrix with an other 3D 4th
-           */
-          static
-          SymmetricTensor<2,6> rotate_6x6_matrix(const Tensor<2,6> &input_tensor, const Tensor<2,3> &rotation_tensor);
-
-          /**
-           * Transform a 4th order tensor into a 6x6 matrix
-           */
-          static
-          SymmetricTensor<2,6> transform_4th_order_tensor_to_6x6_matrix(const Tensor<4,3> &input_tensor);
-
-
-          /**
-           * Transform a 6x6 matrix into a 4th order tensor
-           */
-          static
-          Tensor<4,3> transform_6x6_matrix_to_4th_order_tensor(const SymmetricTensor<2,6> &input_tensor);
-
-
-          /**
-           * From a 21D vector from a 6xt matrix
-           */
-          static
-          Tensor<1,21> transform_6x6_matrix_to_21D_vector(const SymmetricTensor<2,6> &input_tensor);
-
-          /**
-           * From a 21D vector from a 6xt matrix
-           */
-          static
-          SymmetricTensor<2,6> transform_21D_vector_to_6x6_matrix(const Tensor<1,21> &input_tensor);
-
-          /**
-           * Tranform a 4th order tensor directly into a 21D vector.
-           */
-          static
-          Tensor<1,21> transform_4th_order_tensor_to_21D_vector(const Tensor<4,3> &input);
-
-          /**
-           * todo
-           */
-          std::array<std::array<double,3>,3> compute_s_wave_anisotropy(SymmetricTensor<2,6> &elastic_tensor) const;
-
-          /**
-           * todo
-           */
-          std::vector<Tensor<2,3> >
-          random_draw_volume_weighting(std::vector<double> fv,
-                                       std::vector<Tensor<2,3>> matrices,
-                                       unsigned int n_output_grains) const;
+          
 
 
           /**
@@ -264,8 +207,6 @@ namespace aspect
           Tensor<2,3,unsigned int> indices_tensor;
           std::vector<double> indices_vector_1;
           std::vector<double> indices_vector_2;
-          SymmetricTensor<2,6> stiffness_matrix_olivine;
-          SymmetricTensor<2,6> stiffness_matrix_enstatite;
 
           double rad_to_degree = 180.0/M_PI;
           double degree_to_rad = M_PI/180.0;
