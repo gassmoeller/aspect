@@ -28,18 +28,20 @@
 
 namespace aspect
 {
-  namespace internal
-  {
-    
-  }
   namespace Particle
   {
     namespace Property
     {
+      
       template <int dim>
       LpoViscoTensor<dim>::LpoViscoTensor ()
       {
-       
+        permutation_operator_3d[0][1][2]  = 1;
+        permutation_operator_3d[1][2][0]  = 1;
+        permutation_operator_3d[2][0][1]  = 1;
+        permutation_operator_3d[0][2][1]  = -1;
+        permutation_operator_3d[1][0][2]  = -1;
+        permutation_operator_3d[2][1][0]  = -1;
       }
 
       template <int dim>
@@ -68,12 +70,12 @@ namespace aspect
 
       template <int dim>
       SymmetricTensor<2,dim>
-      LpoViscoTensor<dim>::Stress_strain_aggregate((const SymmetricTensor<2,dim,double> rate,const std::vector<std::vector<Tensor<2,dim, double> > > R_matrix, const double temperature, const std::vector<std::vector<double> > grain_size, const std::vector<unsigned int> deformation_type));
-
+      LpoViscoTensor<dim>::Stress_strain_aggregate(const SymmetricTensor<2,dim,double> rate,const std::vector<std::vector<Tensor<2,dim, double> > > R_matrix, const double temperature, const std::vector<std::vector<double> > grain_size, const std::vector<unsigned int> deformation_type);
       {
         if(dim == 2)
         {
           Assert(false,ExcMessage("This PROPERTY is not implemented for 2D."));
+          
         }
         else
         {
@@ -176,7 +178,9 @@ namespace aspect
           } //end loop  for number of mineral phases
           S_sum=S_sum/m_minerals; //stress for particle
           S_sum *= 1e6; //convert from MPa to Pa 
+          
         }
+        return S_sum;
       }  
         
 
