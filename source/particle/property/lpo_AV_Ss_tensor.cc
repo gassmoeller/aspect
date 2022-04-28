@@ -34,7 +34,7 @@ namespace aspect
 
 
       template <int dim>
-      LpoSsTensor<dim>::LpoElasticTensor ()
+      LpoSsTensor<dim>::LpoSsTensor ()
       {
         permutation_operator_3d[0][1][2]  = 1;
         permutation_operator_3d[1][2][0]  = 1;
@@ -45,16 +45,18 @@ namespace aspect
 
         // The following values are directly form Hansen et al., 2016.
         // Slip system activity for Olivine
-        A_ss_olivine[0][0] = 139.2525;
-        A_ss_olivine[0][1] = 214.4907;
-        A_ss_olivine[0][2] = 0.3520;
+        
+        A_ss_olivine[0] = 139.2525;
+        A_ss_olivine[1] = 214.4907;
+        A_ss_olivine[2] = 0.3520;
         
 
 
         // Slip system activity for enstatite assuming isotropic behavior
-        A_ss_enstatite[0][0] = 1;
-        A_ss_enstatite[0][1] = 1;
-        A_ss_enstatite[0][2] = 1;
+        Tensor<1,3> A_ss_enstatite;
+        A_ss_enstatite[0] = 1;
+        A_ss_enstatite[1] = 1;
+        A_ss_enstatite[2] = 1;
 
         // tensors of indices
         indices_tensor[0][0] = 0;
@@ -99,10 +101,10 @@ namespace aspect
         AssertThrow(manager.plugin_name_exists("lpo"),
                     ExcMessage("No lpo property plugin found."));
         Assert(manager.plugin_name_exists("lpo Ss tensor"),
-               ExcMessage("No s wave anisotropy property plugin found."));
+               ExcMessage("No LPO aniso stress property plugin found."));
 
         AssertThrow(manager.check_plugin_order("lpo","lpo Ss tensor"),
-                    ExcMessage("To use the lpo elastic tensor plugin, the lpo plugin need to be defined before this plugin."));
+                    ExcMessage("To use the lpo Ss tensor plugin, the lpo plugin need to be defined before this plugin."));
 
         lpo_data_position = manager.get_data_info().get_position_by_plugin_index(manager.get_plugin_index_by_name("lpo"));
 
@@ -121,11 +123,11 @@ namespace aspect
 
       template <int dim>
       SymmetricTensor<2,3>
-      LpoElasticTensor<dim>::compute_Ss_tensor (const SymmetricTensor<2,3> &strain_rate,
-                                  const std::vector<std::vector<double> > &grain_size,
-                                  const std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
-                                  const std::vector<unsigned int> &deformation_type
-                                  const double &temperature) const;
+      LpoSsTensor<dim>::compute_S_tensor (const SymmetricTensor<2,3> &strain_rate,
+                                          const std::vector<std::vector<double> > &grain_size,
+                                          const std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
+                                          const std::vector<unsigned int> &deformation_type,
+                                          const double &temperature) const;
       {
         if(dim == 2)
         {
@@ -153,11 +155,15 @@ namespace aspect
           {
             if (deformation_type[mineral_i] == (unsigned int)DeformationTypeSelector::Enstatite)
               {
-                A_ss = A_ss_enstatite;
+                A_ss[0][0] = A_ss_enstatite[0];
+                A_ss[0][1] = A_ss_enstatite[1];
+                A_ss[0][2] = A_ss_enstatite[2];
               }
             else
               {
-                A_ss = A_ss_olivine;
+                A_ss[0][0] = A_ss_olivine[0];
+                A_ss[0][1] = A_ss_olivine[1];
+                A_ss[0][2] = A_ss_olivine[2];
               }
             for (size_t i = 0; i < n_grains_local; mineral_i++)
               {
@@ -200,13 +206,13 @@ namespace aspect
                     r_ss[i][0]=r_ss[i][0]*std::pow(inv2/inv2best,0);
                   }
                 FullMatrix<double> tau_ss(3,1);
-		        tau_ss[0][0]= std::copysignf(1.0,r_ss[0][0])*std::pow(1.0/A_ss[0]*1.0/A0*std::pow(grain_size,0.73)*std::fabs(r_ss[0][0]/2),1.0/nFo);
-		        tau_ss[1][0]= std::copysignf(1.0,r_ss[1][0])*std::pow(1.0/A_ss[1]*1.0/A0*std::pow(grain_size,0.73)*std::fabs(r_ss[1][0]/2),1.0/nFo);
-		        tau_ss[2][0]= std::copysignf(1.0,r_ss[2][0])*std::pow(1.0/A_ss[2]*1.0/A0*std::pow(grain_size,0.73)*std::fabs(r_ss[2][0]/2),1.0/nFo);
+		            tau_ss[0][0]= std::copysignf(1.0,r_ss[0][0])*std::pow(1.0/A_ss[0]*1.0/A0*std::pow(grain_size,0.73)*std::fabs(r_ss[0][0]/2),1.0/nFo);
+		            tau_ss[1][0]= std::copysignf(1.0,r_ss[1][0])*std::pow(1.0/A_ss[1]*1.0/A0*std::pow(grain_size,0.73)*std::fabs(r_ss[1][0]/2),1.0/nFo);
+		            tau_ss[2][0]= std::copysignf(1.0,r_ss[2][0])*std::pow(1.0/A_ss[2]*1.0/A0*std::pow(grain_size,0.73)*std::fabs(r_ss[2][0]/2),1.0/nFo);
 
                 FullMatrix<double>  S_gc_v(6,1);
                 Schm.mmult(S_gc_v,tau_ss); //Voigt notation of the resolved stress on the grain
-		        SymmetricTensor<2,3> S_gc;
+		            SymmetricTensor<2,3> S_gc;
                 S_gc[0][0] = S_gc_v[0][0];
                 S_gc[1][1] = S_gc_v[1][0];
                 S_gc[2][2] = S_gc_v[2][0];
@@ -215,7 +221,7 @@ namespace aspect
                 S_gc[0][1] = S_gc_v[5][0];
 
                 SymmetricTensor<2,3> S_g= symmetrize(transpose(R)*S_gc*R); //Here instead of making a multidimensional array what I sum at the end, I create S_g and add it to S_sum
-		          
+                //SymmetricTensor<2,3> S_sum;
                 S_sum += S_g;
 
               }
@@ -232,7 +238,7 @@ namespace aspect
 
       template <int dim>
       void
-      LpoElasticTensor<dim>::initialize_one_particle_property(const Point<dim> &,
+      LpoSsTensor<dim>::initialize_one_particle_property(const Point<dim> &,
                                                               std::vector<double> &data) const
       {
         std::vector<unsigned int> deformation_type;
@@ -248,49 +254,25 @@ namespace aspect
                                                          a_cosine_matrices_grains);
 
 
-
-        SymmetricTensor<2,6> Ss_tensor;
+        //Do I need to assign values to it at the initializing phase?
+        Tensor<2,6> Ss_tensor; //The Ss tensor is a compilation of the stresses needed for the calculation of the viscosity tensor
 
         // There is a bug up to dealii 9.3.0, so we have to work around it.
-        for (unsigned int i = 0; i < SymmetricTensor<2,6>::n_independent_components ; ++i)
-#if DEAL_II_VERSION_GTE(9,3,0)
+        for (unsigned int i = 0; i < Tensor<2,6>::n_independent_components ; ++i)
+
           {
-            data.push_back(Ss_tensor[SymmetricTensor<2,6>::unrolled_to_component_indices(i)]);
+            data.push_back(Ss_tensor[Tensor<2,6>::unrolled_to_component_indices(i)]);
           }
-#else
-          {
-            if (i < 6)
-              {
-                data.push_back(Ss_tensor[ {i,i}]);
-              }
-            else
-              {
-                [&]
-                {
-                  for (unsigned int d = 0, c = 6; d < 6; ++d)
-                    {
-                      for (unsigned int e = d + 1; e < 6; ++e, ++c)
-                        {
-                          if (c == i)
-                            {
-                              data.push_back(Ss_tensor[ {d,e}]);
-                              return;
-                            }
-                        }
-                    }
-                }();
-              }
-          }
-#endif
+
 
       }
 
       template <int dim>
       void
-      LpoElasticTensor<dim>::update_one_particle_property(const unsigned int data_position,
+      LpoSsTensor<dim>::update_one_particle_property(const unsigned int data_position,
                                                           const Point<dim> &,
-                                                          const Vector<double> &,
-                                                          const std::vector<Tensor<1,dim> > &,
+                                                          const Vector<double> &solution,
+                                                          const std::vector<Tensor<1,dim> > &gradients,
                                                           const ArrayView<double> &data) const
       {
         std::vector<unsigned int> deformation_type;
@@ -304,14 +286,72 @@ namespace aspect
                                                          volume_fraction_mineral,
                                                          volume_fractions_grains,
                                                          a_cosine_matrices_grains);
+        
+        const size_t n_minerals_local = volume_fractions_grains.size();
+        const size_t n_grains_local = volume_fractions_grains[0].size();
+        const double grainsize_init=1000.0; //micron --> should be an input?
+        Tensor<2,dim> velocity_gradient;
+        for (unsigned int d=0; d<dim; ++d)
+        {
+          velocity_gradient[d] = gradients[d]; 
+        }
+        double temperature = solution[this->introspection().component_indices.temperature];
+        const SymmetricTensor<2,dim> strain_rate = symmetrize (velocity_gradient);
+        std::vector<std::vector<double> > grain_size;
+        for (size_t mineral_i = 0; mineral_i < n_minerals_local; mineral_i++)
+        {
+          for (unsigned int grain_i = 0; grain_i < n_grains_local; ++grain_i)
+          {
+            grain_size[mineral_i][grain_i]=grainsize_init*std::cbrt(n_minerals_local*n_grains_local*volume_fractions_grains[mineral_i][grain_i]);
+          }
+        }
+        double E_eq;
+        SymmetricTensor<2,dim> e1, e2, e3, e4, e5, E;
+        E=strain_rate;
+        E_eq=(1.0/6.0*(std::pow(double (E[0][0] - E[1][1]),2) + std::pow(double (E[1][1] - E[2][2]),2)+std::pow(double (E[2][2] - E[0][0]),2)))+(std::pow(E[0][1],2)+std::pow(E[1][2],2)+std::pow(E[2][0],2));//J2
+        E_eq= std::sqrt((4./3.)*E_eq);// Second invariant of strain-rate
+        
+        AssertThrow(isfinite(1/E.norm()),
+                  ExcMessage("Strain rate should be finite")); 
+        
+        //We define 5 independent strainrates, of which E is the linear combination
+        e1[0][0]=E_eq;
+        e1[1][1]=E_eq;
+        e1[2][2]=-2*E_eq;
+        e2[0][0]=E_eq;
+        e2[1][1]=-2*E_eq;
+        e2[2][2]=E_eq;
+        e3[0][1]=E_eq;
+        e3[1][0]=E_eq;
+        e4[0][2]=E_eq;
+        e4[2][0]=E_eq;
+        e5[1][2]=E_eq;
+        e5[2][1]=E_eq;
 
-        SymmetricTensor<2,6> Ss_tensor = compute_elastic_tensor(volume_fraction_mineral,
-                                                                volume_fractions_grains,
-                                                                a_cosine_matrices_grains,
-                                                                deformation_type);
+        //We calculate the stress response for each strain rate with the micromechanical model
+        // AssertThrow(in.temperature[q] != 0,
+        //     ExcMessage("Temperature is 0")); 
+        SymmetricTensor<2,dim> stress1, stress2, stress3, stress4, stress5, Stress;
+        stress1=compute_S_tensor(e1, grain_size, a_cosine_matrices_grains, deformation_type, temperature);
+        stress2=compute_S_tensor(e2, grain_size, a_cosine_matrices_grains, deformation_type, temperature);
+        stress3=compute_S_tensor(e3, grain_size, a_cosine_matrices_grains, deformation_type, temperature);
+        stress4=compute_S_tensor(e4, grain_size, a_cosine_matrices_grains, deformation_type, temperature);
+        stress5=compute_S_tensor(e5, grain_size, a_cosine_matrices_grains, deformation_type, temperature);
+        Stress =compute_S_tensor(E, grain_size, a_cosine_matrices_grains, deformation_type, temperature);
 
+        Tensor<2,6> Ss_tensor;
+        for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
+        {
+          Ss_tensor[0][i] = Stress[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)];
+          Ss_tensor[1][i] = stress1[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)];
+          Ss_tensor[2][i] = stress2[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)];
+          Ss_tensor[3][i] = stress3[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)];
+          Ss_tensor[4][i] = stress4[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)];
+          Ss_tensor[5][i] = stress5[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)];
 
-        Particle::Property::LpoElasticTensor<dim>::store_particle_data(data_position,
+        }  
+
+        Particle::Property::LpoSsTensor<dim>::store_particle_data(data_position,
                                                                        data,
                                                                        Ss_tensor);
 
@@ -321,40 +361,17 @@ namespace aspect
 
       template <int dim>
       void
-      LpoElasticTensor<dim>::load_particle_data(unsigned int lpo_data_position,
+      LpoSsTensor<dim>::load_particle_data(unsigned int lpo_data_position,
                                                 const ArrayView<double> &data,
-                                                SymmetricTensor<2,6> &elastic_tensor)
+                                                Tensor<2,6> &Ss_tensor)
       {
 
         // There is a bug up to dealii 9.3.0, so we have to work around it.
-        for (unsigned int i = 0; i < SymmetricTensor<2,6>::n_independent_components ; ++i)
-#if DEAL_II_VERSION_GTE(9,3,0)
-          elastic_tensor[SymmetricTensor<2,6>::unrolled_to_component_indices(i)] = data[lpo_data_position + i];
-#else
+        for (unsigned int i = 0; i < Tensor<2,6>::n_independent_components ; ++i)
           {
-            if (i < 6)
-              {
-                elastic_tensor[ {i,i}] = data[lpo_data_position + i];
-              }
-            else
-              {
-                [&]
-                {
-                  for (unsigned int d = 0, c = 6; d < 6; ++d)
-                    {
-                      for (unsigned int e = d + 1; e < 6; ++e, ++c)
-                        {
-                          if (c == i)
-                            {
-                              elastic_tensor[ {d,e}] = data[lpo_data_position + i];
-                              return;
-                            }
-                        }
-                    }
-                }();
-              }
+            Ss_tensor[Tensor<2,6>::unrolled_to_component_indices(i)] = data[lpo_data_position + i];
           }
-#endif
+
         //for (unsigned int i = 0; i < SymmetricTensor<2,6>::n_independent_components ; ++i)
         //elastic_tensor[SymmetricTensor<2,6>::unrolled_to_component_indices(i)] = data[lpo_data_position + i];
       }
@@ -362,47 +379,22 @@ namespace aspect
 
       template <int dim>
       void
-      LpoElasticTensor<dim>::store_particle_data(unsigned int lpo_data_position,
+      LpoSsTensor<dim>::store_particle_data(unsigned int lpo_data_position,
                                                  const ArrayView<double> &data,
-                                                 SymmetricTensor<2,6> &elastic_tensor)
+                                                 Tensor<2,6> &Ss_tensor)
       {
         // There is a bug up to dealii 9.3.0, so we have to work around it.
-        for (unsigned int i = 0; i < SymmetricTensor<2,6>::n_independent_components ; ++i)
-#if DEAL_II_VERSION_GTE(9,3,0)
-          data[lpo_data_position + i] = elastic_tensor[SymmetricTensor<2,6>::unrolled_to_component_indices(i)];
-#else
+        for (unsigned int i = 0; i < Tensor<2,6>::n_independent_components ; ++i)
           {
-            if (i < 6)
-              {
-                data[lpo_data_position + i] = elastic_tensor[ {i,i}];
-              }
-            else
-              {
-                [&]
-                {
-                  for (unsigned int d = 0, c = 6; d < 6; ++d)
-                    {
-                      for (unsigned int e = d + 1; e < 6; ++e, ++c)
-                        {
-                          if (c == i)
-                            {
-                              data[lpo_data_position + i] = elastic_tensor[ {d,e}];
-                              return;
-                            }
-                        }
-                    }
-                }();
-              }
+            data[lpo_data_position + i] = Ss_tensor[Tensor<2,6>::unrolled_to_component_indices(i)];
           }
-#endif
-        //for (unsigned int i = 0; i < SymmetricTensor<2,6>::n_independent_components ; ++i)
-        //  data[lpo_data_position + i] = elastic_tensor[SymmetricTensor<2,6>::unrolled_to_component_indices(i)];
+
       }
 
 
       template<int dim>
       Tensor<4,3>
-      LpoElasticTensor<dim>::rotate_4th_order_tensor(const Tensor<4,3> &input_tensor, const Tensor<2,3> &rotation_tensor)
+      LpoSsTensor<dim>::rotate_4th_order_tensor(const Tensor<4,3> &input_tensor, const Tensor<2,3> &rotation_tensor)
       {
         Tensor<4,3> output;
 
@@ -437,7 +429,7 @@ namespace aspect
 
       template<int dim>
       SymmetricTensor<2,6>
-      LpoElasticTensor<dim>::rotate_6x6_matrix(const Tensor<2,6> &input_tensor, const Tensor<2,3> &rotation_tensor)
+      LpoSsTensor<dim>::rotate_6x6_matrix(const Tensor<2,6> &input_tensor, const Tensor<2,3> &rotation_tensor)
       {
         // we can represent the roation of the 4th order tensor as a rotation in the voigt
         // notation by computing $C'=MCM^{-1}$. Because M is orhtogonal we can replace $M^{-1}$
@@ -498,7 +490,7 @@ namespace aspect
 
       template<int dim>
       SymmetricTensor<2,6>
-      LpoElasticTensor<dim>::transform_4th_order_tensor_to_6x6_matrix(const Tensor<4,3> &input_tensor)
+      LpoSsTensor<dim>::transform_4th_order_tensor_to_6x6_matrix(const Tensor<4,3> &input_tensor)
       {
         SymmetricTensor<2,6> output;
 
@@ -549,7 +541,7 @@ namespace aspect
 
       template<int dim>
       Tensor<4,3>
-      LpoElasticTensor<dim>::transform_6x6_matrix_to_4th_order_tensor(const SymmetricTensor<2,6> &input_tensor)
+      LpoSsTensor<dim>::transform_6x6_matrix_to_4th_order_tensor(const SymmetricTensor<2,6> &input_tensor)
       {
         Tensor<4,3> output;
 
@@ -571,7 +563,7 @@ namespace aspect
 
       template<int dim>
       Tensor<1,21>
-      LpoElasticTensor<dim>::transform_6x6_matrix_to_21D_vector(const SymmetricTensor<2,6> &input)
+      LpoSsTensor<dim>::transform_6x6_matrix_to_21D_vector(const SymmetricTensor<2,6> &input)
       {
         return Tensor<1,21,double> (
         {
@@ -604,7 +596,7 @@ namespace aspect
 
       template<int dim>
       SymmetricTensor<2,6>
-      LpoElasticTensor<dim>::transform_21D_vector_to_6x6_matrix(const Tensor<1,21> &input)
+      LpoSsTensor<dim>::transform_21D_vector_to_6x6_matrix(const Tensor<1,21> &input)
       {
         SymmetricTensor<2,6> result;
 
@@ -639,7 +631,7 @@ namespace aspect
 
       template<int dim>
       Tensor<1,21>
-      LpoElasticTensor<dim>::transform_4th_order_tensor_to_21D_vector(const Tensor<4,3> &input_tensor)
+      LpoSsTensor<dim>::transform_4th_order_tensor_to_21D_vector(const Tensor<4,3> &input_tensor)
       {
         return Tensor<1,21,double> (
         {
@@ -670,7 +662,7 @@ namespace aspect
 
       template<int dim>
       std::vector<Tensor<2,3> >
-      LpoElasticTensor<dim>::random_draw_volume_weighting(std::vector<double> fv,
+      LpoSsTensor<dim>::random_draw_volume_weighting(std::vector<double> fv,
                                                           std::vector<Tensor<2,3>> matrices,
                                                           unsigned int n_output_grains) const
       {
@@ -749,32 +741,32 @@ namespace aspect
 
       template <int dim>
       UpdateTimeFlags
-      LpoElasticTensor<dim>::need_update() const
+      LpoSsTensor<dim>::need_update() const
       {
         return update_output_step;
       }
 
       template <int dim>
       UpdateFlags
-      LpoElasticTensor<dim>::get_needed_update_flags () const
+      LpoSsTensor<dim>::get_needed_update_flags () const
       {
         return update_default;
       }
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
-      LpoElasticTensor<dim>::get_property_information() const
+      LpoSsTensor<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int> > property_information;
 
-        property_information.push_back(std::make_pair("lpo_Ss_tensor",SymmetricTensor<2,6>::n_independent_components));
+        property_information.push_back(std::make_pair("lpo_Ss_tensor",Tensor<2,6>::n_independent_components));
 
         return property_information;
       }
 
       template <int dim>
       void
-      LpoElasticTensor<dim>::declare_parameters (ParameterHandler &prm)
+      LpoSsTensor<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {
@@ -812,7 +804,7 @@ namespace aspect
 
       template <int dim>
       void
-      LpoElasticTensor<dim>::parse_parameters (ParameterHandler &prm)
+      LpoSsTensor<dim>::parse_parameters (ParameterHandler &prm)
       {
 
         prm.enter_subsection("Postprocess");
@@ -851,12 +843,11 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_PROPERTY(LpoSsTensor,
                                         "lpo Ss tensor",
                                         "A plugin in which the particle property tensor is "
-                                        "defined as the deformation gradient tensor "
-                                        "$\\mathbf F$ this particle has experienced. "
-                                        "$\\mathbf F$ can be polar-decomposed into the left stretching tensor "
-                                        "$\\mathbf L$ (the finite strain we are interested in), and the "
-                                        "rotation tensor $\\mathbf Q$. See the corresponding cookbook in "
-                                        "the manual for more detailed information.")
+                                        "defined as he collection of stresses resulted from "
+                                        "the micromechanical model for olivine aggregate deformation "
+                                        "with the current strain rate and 5 independent strain rates "
+                                        "with the same amplitude. These stresses can be used to construct "
+                                        "the full rank4 viscosity tensor.")
     }
   }
 }

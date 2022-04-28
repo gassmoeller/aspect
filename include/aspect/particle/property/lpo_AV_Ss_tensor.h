@@ -73,11 +73,11 @@ namespace aspect
            */
           virtual
           SymmetricTensor<2,3>
-          compute_Ss_tensor (const SymmetricTensor<2,3> &strain_rate,
+          compute_S_tensor (const SymmetricTensor<2,3> &strain_rate,
                                   const std::vector<std::vector<double> > &grain_size,
                                   const std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
-                                  const std::vector<unsigned int> &deformation_type
-                                  const double &temperature) const;
+                                  const std::vector<unsigned int> &deformation_type,
+                                  const double &temperature ) const;
 
           /**
            * Initialization function. This function is called once at the
@@ -157,7 +157,7 @@ namespace aspect
           void
           load_particle_data(unsigned int lpo_index,
                              const ArrayView<double> &data,
-                             SymmetricTensor<2,6> &Sstensor);
+                             Tensor<2,6> &Ss_tensor);
 
           /**
            * Stores information in variables into the data array
@@ -166,7 +166,7 @@ namespace aspect
           void
           store_particle_data(unsigned int lpo_data_position,
                               const ArrayView<double> &data,
-                              SymmetricTensor<2,6> &Sstensor);
+                              Tensor<2,6> &Ss_tensor);
 
           /**
            * Rotate a 3D 4th order tensor with an other 3D 4th
