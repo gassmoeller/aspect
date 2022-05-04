@@ -25,6 +25,12 @@
 
 #include <aspect/utilities.h>
 
+#include <array>
+#include <cmath>
+#include <functional>
+#include <iostream>
+#include <string>
+#include <vector>
 namespace aspect
 {
   namespace Particle
@@ -43,20 +49,7 @@ namespace aspect
         permutation_operator_3d[1][0][2]  = -1;
         permutation_operator_3d[2][1][0]  = -1;
 
-        // The following values are directly form Hansen et al., 2016.
-        // Slip system activity for Olivine
         
-        A_ss_olivine[0] = 139.2525;
-        A_ss_olivine[1] = 214.4907;
-        A_ss_olivine[2] = 0.3520;
-        
-
-
-        // Slip system activity for enstatite assuming isotropic behavior
-        Tensor<1,3> A_ss_enstatite;
-        A_ss_enstatite[0] = 1;
-        A_ss_enstatite[1] = 1;
-        A_ss_enstatite[2] = 1;
 
         // tensors of indices
         indices_tensor[0][0] = 0;
@@ -118,24 +111,38 @@ namespace aspect
       }
 
 
-
-
-
       template <int dim>
-      SymmetricTensor<2,3>
-      LpoSsTensor<dim>::compute_S_tensor (const SymmetricTensor<2,3> &strain_rate,
-                                          const std::vector<std::vector<double> > &grain_size,
+      SymmetricTensor<2,dim>
+      LpoSsTensor<dim>::compute_S_tensor (const SymmetricTensor<2,dim> &strain_rate,
+                                          const double grain_size,
+                                          const std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
+                                          const std::vector<unsigned int> &deformation_type,
+                                          const double &temperature) const
+      {
+        Assert(false,ExcMessage("This PROPERTY is not implemented for 2D."));
+      }
+      /*template <>
+      SymmetricTensor<2,2>
+      LpoSsTensor<2>::compute_S_tensor (const SymmetricTensor<2,2> &strain_rate,
+                                          const double &grain_size,
                                           const std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
                                           const std::vector<unsigned int> &deformation_type,
                                           const double &temperature) const;
+      
       {
-        if(dim == 2)
-        {
-          Assert(false,ExcMessage("This PROPERTY is not implemented for 2D."));
-          
-        }
-        const size_t n_minerals_local = grain_size.size();
-        const size_t n_grains_local = grain_size[0].size();
+          Assert(false,ExcMessage("This PROPERTY is not implemented for 2D."));  
+      }*/
+      template <>
+      SymmetricTensor<2,3>
+      LpoSsTensor<3>::compute_S_tensor (const SymmetricTensor<2,3> &strain_rate,
+                                          const double grain_size,
+                                          const std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
+                                          const std::vector<unsigned int> &deformation_type,
+                                          const double &temperature) const
+      
+      {
+        const size_t n_minerals_local = a_cosine_matrices_grains.size();
+        const size_t n_grains_local = a_cosine_matrices_grains[0].size();
         SymmetricTensor<2,3, double> S_sum;
         const int dim=3;
         double nFo = 4.1;
@@ -151,23 +158,25 @@ namespace aspect
         pinvschm[1][4] = 1;
         pinvschm[2][3] = 1;
 
-        for (size_t i_mineral = 0; i_mineral < n_minerals_local; mineral_i++)
+        for (size_t mineral_i = 0; mineral_i < n_minerals_local; mineral_i++)
           {
             if (deformation_type[mineral_i] == (unsigned int)DeformationTypeSelector::Enstatite)
               {
-                A_ss[0][0] = A_ss_enstatite[0];
-                A_ss[0][1] = A_ss_enstatite[1];
-                A_ss[0][2] = A_ss_enstatite[2];
+                Tensor<1,3> A_ss;
+                A_ss[0] = 1.;
+                A_ss[1] = 1.;
+                A_ss[2] = 1.;
               }
             else
               {
-                A_ss[0][0] = A_ss_olivine[0];
-                A_ss[0][1] = A_ss_olivine[1];
-                A_ss[0][2] = A_ss_olivine[2];
+                Tensor<1,3> A_ss;
+                A_ss[0] = 139.2525;
+                A_ss[1] = 214.4907;
+                A_ss[2] = 0.3520;
               }
-            for (size_t i = 0; i < n_grains_local; mineral_i++)
+            for (size_t i = 0; i < n_grains_local; i++)
               {
-                Tensor<2,3> R = a_cosine_matrices_grains[i_mineral][i];
+                Tensor<2,3> R = a_cosine_matrices_grains[mineral_i][i];
                 SymmetricTensor<2,3> Rate_grain=symmetrize(R*strain_rate*transpose(R));
                 std::array<std::pair<double, Tensor<1, 3>>, 3> Rate_gr_eig = eigenvectors(Rate_grain,SymmetricTensorEigenvectorMethod::jacobi);
                 double inv2=std::pow(Rate_gr_eig[0].first-Rate_gr_eig[1].first,2)
@@ -201,7 +210,7 @@ namespace aspect
                               +std::pow(r_gc_eig[1].first-r_gc_eig[2].first,2)
                               +std::pow(r_gc_eig[0].first-r_gc_eig[2].first,2);
 
-		        for (unsigned int i=0; i<dim; ++i)
+		          for (unsigned int i=0; i<dim; ++i)
                   {
                     r_ss[i][0]=r_ss[i][0]*std::pow(inv2/inv2best,0);
                   }
@@ -225,10 +234,10 @@ namespace aspect
                 S_sum += S_g;
 
               }
-            S_sum=S_sum/n_grains; //Stress for mineralphase
+            S_sum=S_sum/n_grains_local; //Stress for mineralphase
 
           }
-        S_sum=S_sum/m_minerals; //stress for particle
+        S_sum=S_sum/n_minerals_local; //stress for particle
         S_sum *= 1e6;
 
         return S_sum;
@@ -287,9 +296,8 @@ namespace aspect
                                                          volume_fractions_grains,
                                                          a_cosine_matrices_grains);
         
-        const size_t n_minerals_local = volume_fractions_grains.size();
-        const size_t n_grains_local = volume_fractions_grains[0].size();
-        const double grainsize_init=1000.0; //micron --> should be an input?
+        
+        const double grain_size=1000.0; //micron --> should be an input?
         Tensor<2,dim> velocity_gradient;
         for (unsigned int d=0; d<dim; ++d)
         {
@@ -297,14 +305,7 @@ namespace aspect
         }
         double temperature = solution[this->introspection().component_indices.temperature];
         const SymmetricTensor<2,dim> strain_rate = symmetrize (velocity_gradient);
-        std::vector<std::vector<double> > grain_size;
-        for (size_t mineral_i = 0; mineral_i < n_minerals_local; mineral_i++)
-        {
-          for (unsigned int grain_i = 0; grain_i < n_grains_local; ++grain_i)
-          {
-            grain_size[mineral_i][grain_i]=grainsize_init*std::cbrt(n_minerals_local*n_grains_local*volume_fractions_grains[mineral_i][grain_i]);
-          }
-        }
+        
         double E_eq;
         SymmetricTensor<2,dim> e1, e2, e3, e4, e5, E;
         E=strain_rate;
