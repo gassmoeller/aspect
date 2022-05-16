@@ -25,6 +25,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/simple.h>
 #include <aspect/material_model/equation_of_state/interface.h>
+#include <aspect/simulator/assemblers/interface.h>
 
 
 namespace aspect
