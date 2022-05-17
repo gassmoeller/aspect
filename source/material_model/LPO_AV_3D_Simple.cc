@@ -598,7 +598,7 @@ namespace aspect
           c_idx_s5.push_back (this->introspection().compositional_index_for_name("s54"));
           c_idx_s5.push_back (this->introspection().compositional_index_for_name("s55"));
           c_idx_s5.push_back (this->introspection().compositional_index_for_name("s56"));
-          
+
 
           Tensor<1,2*dim> Sv, s1v, s2v, s3v, s4v, s5v;
           for (unsigned int i=0; i<2*dim; ++i)
