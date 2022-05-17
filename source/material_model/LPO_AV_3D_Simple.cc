@@ -830,7 +830,7 @@ namespace aspect
   namespace HeatingModel
   {
     ASPECT_REGISTER_HEATING_MODEL(ShearHeatingAV,
-                                  "anisotropic shear heating",
+                                  "LPO_AV_Simple anisotropic shear heating",
                                   "Implementation of a standard model for shear heating. "
                                   "Adds the term: "
                                   "$  2 \\eta \\left( \\varepsilon - \\frac{1}{3} \\text{tr} "
