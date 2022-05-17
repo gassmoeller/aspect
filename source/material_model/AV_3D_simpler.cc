@@ -990,12 +990,12 @@ namespace aspect
 {
   namespace Assemblers
   {
-#define INSTANTIATE(dim) \
+#define INSTANTIATE_AnisotropicViscosity(dim) \
   template class StokesPreconditionerAnisotropicViscosity<dim>; \
   template class StokesIncompressibleTermsAnisotropicViscosity<dim>; \
   //template class StokesBoundaryTractionAnisotropicViscosity<dim>;
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
+    ASPECT_INSTANTIATE(INSTANTIATE_AnisotropicViscosity)
   }
 
   namespace HeatingModel

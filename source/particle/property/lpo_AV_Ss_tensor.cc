@@ -166,20 +166,23 @@ namespace aspect
           {
             //std::cout<<"Def style: "<<deformation_type[mineral_i]<<std::endl;
             Tensor<1,3> A_ss; //A_ss is the invers of the minimum resolved stress on the slip systems on the nth power
-            A_ss[0] = 139.2525;
-            A_ss[1] = 214.4907;
-            A_ss[2] = 0.3520;
             //std::cout<<"A_ss: "<<A_ss<<  std::endl; //correct values
             if (deformation_type[mineral_i] == (unsigned int)DeformationTypeSelector::Enstatite)
               {
-                Tensor<1,3> A_ss; //for enstatite we have no AV data, let it behave isotropically
                 A_ss[0] = 1.;
                 A_ss[1] = 1.;
                 A_ss[2] = 1.;
-                //std::cout<<"A_ss: "<<A_ss<<  std::endl;
+                //std::cout<<"Setting Enstatite A_ss: "<<A_ss<<std::endl;
+              }
+            else
+              {
+                A_ss[0] = 139.2525;
+                A_ss[1] = 214.4907;
+                A_ss[2] = 0.3520;
+                //std::cout<<"Setting Olivine A_ss: "<<A_ss<<std::endl;
               }
 
-            //std::cout<<"A_ss: "<<A_ss<<  std::endl; //0,0,0 but WHY?
+            //std::cout<<"A_ss: "<<A_ss<<std::endl;
             for (size_t i = 0; i < n_grains_local; i++)
               {
                 //std::cout<<"strain rate: "<<strain_rate<<  std::endl;
@@ -330,15 +333,16 @@ namespace aspect
 
         const double grain_size=1000.0; //micron --> should be an input?
         Tensor<2,6> Ss_tensor; //Initial value 0, because at initial timestep we don't have strain rate
+        double temperature = solution[this->introspection().component_indices.temperature];
 
-        if  (this->get_timestep_number() > 0)
+        if  (this->get_timestep_number() > 0 && temperature > 1000)
           {
             Tensor<2,dim> velocity_gradient;
             for (unsigned int d=0; d<dim; ++d)
               {
                 velocity_gradient[d] = gradients[d];
               }
-            double temperature = solution[this->introspection().component_indices.temperature];
+
             const SymmetricTensor<2,dim> strain_rate = symmetrize (velocity_gradient);
             //std::cout<<"strain rate: "<< strain_rate<< std::endl;
             double E_eq;

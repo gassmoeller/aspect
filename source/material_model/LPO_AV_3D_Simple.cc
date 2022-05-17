@@ -516,6 +516,48 @@ namespace aspect
                   ExcMessage("Olivine has 3 independent slip systems, allowing for deformation in 3 independent directions, hence these models only work in 3D"));
 
       //move c_idx_S part here (right?)
+      std::vector<unsigned int> c_idx_S, c_idx_s1, c_idx_s2, c_idx_s3, c_idx_s4, c_idx_s5;
+      c_idx_S.push_back (this->introspection().compositional_index_for_name("S1"));
+      c_idx_S.push_back (this->introspection().compositional_index_for_name("S2"));
+      c_idx_S.push_back (this->introspection().compositional_index_for_name("S3"));
+      c_idx_S.push_back (this->introspection().compositional_index_for_name("S4"));
+      c_idx_S.push_back (this->introspection().compositional_index_for_name("S5"));
+      c_idx_S.push_back (this->introspection().compositional_index_for_name("S6"));
+
+      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s11"));
+      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s12"));
+      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s13"));
+      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s14"));
+      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s15"));
+      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s16"));
+
+      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s21"));
+      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s22"));
+      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s23"));
+      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s24"));
+      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s25"));
+      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s26"));
+
+      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s31"));
+      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s32"));
+      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s33"));
+      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s34"));
+      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s35"));
+      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s36"));
+
+      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s41"));
+      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s42"));
+      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s43"));
+      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s44"));
+      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s45"));
+      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s46"));
+
+      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s51"));
+      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s52"));
+      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s53"));
+      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s54"));
+      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s55"));
+      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s56"));
 
     }
 
@@ -556,48 +598,7 @@ namespace aspect
           out.entropy_derivative_temperature[q] = 0.0;
           // calculate effective viscosity
           const std::vector<double> &composition = in.composition[q];
-          std::vector<unsigned int> c_idx_S, c_idx_s1, c_idx_s2, c_idx_s3, c_idx_s4, c_idx_s5;
-          c_idx_S.push_back (this->introspection().compositional_index_for_name("S1"));
-          c_idx_S.push_back (this->introspection().compositional_index_for_name("S2"));
-          c_idx_S.push_back (this->introspection().compositional_index_for_name("S3"));
-          c_idx_S.push_back (this->introspection().compositional_index_for_name("S4"));
-          c_idx_S.push_back (this->introspection().compositional_index_for_name("S5"));
-          c_idx_S.push_back (this->introspection().compositional_index_for_name("S6"));
 
-          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s11"));
-          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s12"));
-          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s13"));
-          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s14"));
-          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s15"));
-          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s16"));
-
-          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s21"));
-          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s22"));
-          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s23"));
-          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s24"));
-          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s25"));
-          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s26"));
-
-          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s31"));
-          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s32"));
-          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s33"));
-          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s34"));
-          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s35"));
-          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s36"));
-
-          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s41"));
-          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s42"));
-          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s43"));
-          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s44"));
-          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s45"));
-          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s46"));
-
-          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s51"));
-          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s52"));
-          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s53"));
-          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s54"));
-          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s55"));
-          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s56"));
 
 
           Tensor<1,2*dim> Sv, s1v, s2v, s3v, s4v, s5v;
@@ -819,12 +820,12 @@ namespace aspect
 {
   namespace Assemblers
   {
-#define INSTANTIATE(dim) \
+#define INSTANTIATE_AV(dim) \
   template class StokesPreconditionerAV<dim>; \
   template class StokesIncompressibleTermsAV<dim>; \
   //template class StokesBoundaryTractionAV<dim>;
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
+    ASPECT_INSTANTIATE(INSTANTIATE_AV)
   }
 
   namespace HeatingModel
