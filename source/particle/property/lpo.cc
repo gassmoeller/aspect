@@ -860,7 +860,7 @@ namespace aspect
 
       }
 
-      
+
 
       template<int dim>
       DeformationType

@@ -18,16 +18,14 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_LPO_AV_3D_diffusion_dislocation_h
-#define _aspect_material_model_LPO_AV_3D_diffusion_dislocation_h
+#ifndef _aspect_material_model_LPO_AV_3D_Simple_h
+#define _aspect_material_model_LPO_AV_3D_Simple_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/simple.h>
 #include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/simulator/assemblers/interface.h>
-#include <aspect/material_model/rheology/diffusion_creep.h>
-#include <aspect/material_model/rheology/dislocation_creep.h>
 
 namespace aspect
 {
@@ -37,21 +35,21 @@ namespace aspect
 
     /**
      * A material model that implements the micromechanical behaviour of olivine grains to create anisotropic viscosity.
-     * Based on Hansen et al., 2016 (JGR) and Kiraly et al., 2020 (G3). 
-     * The micromechanical model requires the euler angles of the olivine grains (now stored on 3 compositional field), 
+     * Based on Hansen et al., 2016 (JGR) and Kiraly et al., 2020 (G3).
+     * The micromechanical model requires the euler angles of the olivine grains (now stored on 3 compositional field),
      * the grainsize, tempreature, and strain rate to calculate the stress that is needed to create the input strain rate.
      * The material model otherwise is based on the Simple material model.
      * @ingroup MaterialModels
      */
     template <int dim>
-    class AnisotropicViscosity : public NamedAdditionalMaterialOutputs<dim>
+    class AV : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
-        AnisotropicViscosity(const unsigned int n_points);
+        AV(const unsigned int n_points);
 
         static double J2_second_invariant(const SymmetricTensor<2,dim> t, const double min_strain_rate);
 
-        
+
         virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
         /**
@@ -66,12 +64,12 @@ namespace aspect
          * model does not explicitly assign a value.
          */
         std::vector<SymmetricTensor<4,dim> > stress_strain_directors;
-     
-        
+
+
 
     };
     template <int dim>
-    class LPO_AV_3D : public MaterialModel::Simple<dim> //DiffusionDislocation<dim> ????
+    class LPO_AV_3D_Simple : public MaterialModel::Simple<dim>
     {
       public:
         virtual void initialize();
@@ -90,12 +88,9 @@ namespace aspect
          * which involves a division by the strain rate. Units: 1/s.
          */
         double min_strain_rate;
-        double grain_size; 
-        std::vector<double>
-        calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
-                                          const double &pressure,
-                                          const double &temperature,
-                                          const SymmetricTensor<2,dim> &strain_rate) const;
+        //double grain_size;
+
+
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;
         void set_assemblers(const SimulatorAccess<dim> &,
                             Assemblers::Manager<dim> &assemblers) const;

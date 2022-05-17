@@ -36,7 +36,7 @@ namespace aspect
         DataPostprocessorTensor<dim> ("aniso_stress",
                                       update_values | update_gradients | update_quadrature_points)
       {}
-    
+
 
 
       template <int dim>
@@ -60,7 +60,7 @@ namespace aspect
         this->get_material_model().create_additional_named_outputs(out);
         const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
           out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
-        
+
         this->get_material_model().evaluate(in, out);
 
         // ...and use it to compute the stresses
@@ -75,30 +75,30 @@ namespace aspect
                  strain_rate);
 
             const double eta = out.viscosities[q];
-            
+
             SymmetricTensor<2,dim> aniso_stress;
             if (anisotropic_viscosity != nullptr) // when this statement is not used, model runs into segmentation fault. With this though, it's always the second term that is evaluated
-            {
-              aniso_stress= -2.*eta*anisotropic_viscosity->stress_strain_directors[q]*deviatoric_strain_rate;
-              //std::cout << "Anisotropic stress: " << aniso_stress << std::endl;
-            }
+              {
+                aniso_stress= -2.*eta*anisotropic_viscosity->stress_strain_directors[q]*deviatoric_strain_rate;
+                //std::cout << "Anisotropic stress: " << aniso_stress << std::endl;
+              }
             else
-            {
-            aniso_stress= -2.*eta*deviatoric_strain_rate;
-            }
-            
+              {
+                aniso_stress= -2.*eta*deviatoric_strain_rate;
+              }
+
             for (unsigned int d=0; d<dim; ++d)
               for (unsigned int e=0; e<dim; ++e)
                 computed_quantities[q][Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(d,e))]
                   = aniso_stress[d][e];
           }
-      
+
         // average the values if requested
         const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim> >();
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(computed_quantities);
       }
-    
+
       template <int dim>
       void
       AnisoStress<dim>::

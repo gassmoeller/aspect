@@ -19,7 +19,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/material_model/LPO_AV_3D_diffusion_dislocation.h>
+#include <aspect/material_model/LPO_AV_3D_Simple.h>
 #include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/introspection.h>
 #include <aspect/material_model/interface.h>
@@ -82,13 +82,13 @@ namespace aspect
      * the MaterialModel::MaterialModelOutputs structure and filled in the
      * MaterialModel::Interface::evaluate() function.
      */
-    
+
 
     namespace
     {
 
       template <int dim>
-      std::vector<std::string> make_AnisotropicViscosity_additional_outputs_names()
+      std::vector<std::string> make_AV_additional_outputs_names()
       {
         std::vector<std::string> names;
 
@@ -104,9 +104,9 @@ namespace aspect
 
 
     template <int dim>
-    AnisotropicViscosity<dim>::AnisotropicViscosity (const unsigned int n_points)
+    AV<dim>::AV (const unsigned int n_points)
       :
-      NamedAdditionalMaterialOutputs<dim>(make_AnisotropicViscosity_additional_outputs_names<dim>()),
+      NamedAdditionalMaterialOutputs<dim>(make_AV_additional_outputs_names<dim>()),
       stress_strain_directors(n_points, dealii::identity_tensor<dim> ())
     {}
 
@@ -114,7 +114,7 @@ namespace aspect
 
     template <int dim>
     std::vector<double>
-    AnisotropicViscosity<dim>::get_nth_output(const unsigned int idx) const
+    AV<dim>::get_nth_output(const unsigned int idx) const
     {
       std::vector<double> output(stress_strain_directors.size());
       for (unsigned int i = 0; i < stress_strain_directors.size() ; ++i)
@@ -134,7 +134,7 @@ namespace aspect
      * A class containing the functions to assemble the Stokes preconditioner.
      */
     template <int dim>
-    class StokesPreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>,
+    class StokesPreconditionerAV : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:
@@ -154,7 +154,7 @@ namespace aspect
      * Stokes equation for the current cell.
      */
     template <int dim>
-    class StokesIncompressibleTermsAnisotropicViscosity : public Assemblers::Interface<dim>,
+    class StokesIncompressibleTermsAV : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:
@@ -173,15 +173,15 @@ namespace aspect
 
     template <int dim>
     void
-    StokesPreconditionerAnisotropicViscosity<dim>::
+    StokesPreconditionerAV<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>& > (data_base);
 
-      const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-        scratch.material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
+      const MaterialModel::AV<dim> *anisotropic_viscosity =
+        scratch.material_model_outputs.template get_additional_output<MaterialModel::AV<dim> >();
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -246,15 +246,15 @@ namespace aspect
 
     template <int dim>
     void
-    StokesPreconditionerAnisotropicViscosity<dim>::
+    StokesPreconditionerAV<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       const unsigned int n_points = outputs.viscosities.size();
 
-      if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == nullptr)
+      if (outputs.template get_additional_output<MaterialModel::AV<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::AV<dim>> (n_points));
         }
     }
 
@@ -262,15 +262,15 @@ namespace aspect
 
     template <int dim>
     void
-    StokesIncompressibleTermsAnisotropicViscosity<dim>::
+    StokesIncompressibleTermsAV<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
 
-      const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-        scratch.material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
+      const MaterialModel::AV<dim> *anisotropic_viscosity =
+        scratch.material_model_outputs.template get_additional_output<MaterialModel::AV<dim> >();
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -346,15 +346,15 @@ namespace aspect
 
     template <int dim>
     void
-    StokesIncompressibleTermsAnisotropicViscosity<dim>::
+    StokesIncompressibleTermsAV<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       const unsigned int n_points = outputs.viscosities.size();
 
-      if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == nullptr)
+      if (outputs.template get_additional_output<MaterialModel::AV<dim> >() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::AV<dim>> (n_points));
         }
 
       if (this->get_parameters().enable_additional_stokes_rhs
@@ -373,7 +373,7 @@ namespace aspect
   namespace HeatingModel
   {
     template <int dim>
-    class ShearHeatingAnisotropicViscosity : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class ShearHeatingAV : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -397,7 +397,7 @@ namespace aspect
 
     template <int dim>
     void
-    ShearHeatingAnisotropicViscosity<dim>::
+    ShearHeatingAV<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
               const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
@@ -413,8 +413,8 @@ namespace aspect
       const MaterialModel::DislocationViscosityOutputs<dim> *disl_viscosities_out =
         material_model_outputs.template get_additional_output<MaterialModel::DislocationViscosityOutputs<dim> >();
 
-      const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-        material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
+      const MaterialModel::AV<dim> *anisotropic_viscosity =
+        material_model_outputs.template get_additional_output<MaterialModel::AV<dim> >();
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
@@ -460,21 +460,21 @@ namespace aspect
 
     template <int dim>
     void
-    ShearHeatingAnisotropicViscosity<dim>::
+    ShearHeatingAV<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
     {
       const unsigned int n_points = material_model_outputs.viscosities.size();
 
-      if (material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >() == nullptr)
+      if (material_model_outputs.template get_additional_output<MaterialModel::AV<dim> >() == nullptr)
         {
           material_model_outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::AV<dim>> (n_points));
         }
 
       this->get_material_model().create_additional_named_outputs(material_model_outputs);
     }
   }
-  
+
 }
 
 namespace aspect
@@ -485,19 +485,19 @@ namespace aspect
   {
     template <int dim>
     void
-    LPO_AV_3D<dim>::set_assemblers(const SimulatorAccess<dim> &,
-                            Assemblers::Manager<dim> &assemblers) const
+    LPO_AV_3D_Simple<dim>::set_assemblers(const SimulatorAccess<dim> &,
+                                          Assemblers::Manager<dim> &assemblers) const
     {
       for (unsigned int i=0; i<assemblers.stokes_preconditioner.size(); ++i)
         {
           if (Plugins::plugin_type_matches<Assemblers::StokesPreconditioner<dim>>(*(assemblers.stokes_preconditioner[i])))
-            assemblers.stokes_preconditioner[i] = std_cxx14::make_unique<Assemblers::StokesPreconditionerAnisotropicViscosity<dim> > ();
+            assemblers.stokes_preconditioner[i] = std_cxx14::make_unique<Assemblers::StokesPreconditionerAV<dim> > ();
         }
 
       for (unsigned int i=0; i<assemblers.stokes_system.size(); ++i)
         {
           if (Plugins::plugin_type_matches<Assemblers::StokesIncompressibleTerms<dim>>(*(assemblers.stokes_system[i])))
-            assemblers.stokes_system[i] = std_cxx14::make_unique<Assemblers::StokesIncompressibleTermsAnisotropicViscosity<dim> > ();
+            assemblers.stokes_system[i] = std_cxx14::make_unique<Assemblers::StokesIncompressibleTermsAV<dim> > ();
         }
     }
 
@@ -505,10 +505,10 @@ namespace aspect
 
     template <int dim>
     void
-    LPO_AV_3D<dim>::
+    LPO_AV_3D_Simple<dim>::
     initialize()
     {
-      this->get_signals().set_assemblers.connect (std::bind(&LPO_AV_3D<dim>::set_assemblers,
+      this->get_signals().set_assemblers.connect (std::bind(&LPO_AV_3D_Simple<dim>::set_assemblers,
                                                             std::cref(*this),
                                                             std::placeholders::_1,
                                                             std::placeholders::_2));
@@ -519,214 +519,35 @@ namespace aspect
 
     }
 
-    
+
+
+
     template <int dim>
-    std::vector<double>
-    LPO_AV_3D<dim>::
-    calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
-                                      const double &pressure,
-                                      const double &temperature,
-                                      const SymmetricTensor<2,dim> &strain_rate) const
-    {
-      // This function calculates viscosities assuming that all the compositional fields
-      // experience the same strain rate (isostrain).
-
-      // If strain rate is zero (like during the first time step) set it to some very small number
-      // to prevent a division-by-zero, and a floating point exception.
-      // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
-      // strain rate (often simplified as epsilondot_ii)
-      const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
-                                      min_strain_rate);
-
-
-      // Find effective viscosities for each of the individual phases
-      // Viscosities should have same number of entries as compositional fields
-      std::vector<double> composition_viscosities(volume_fractions.size());
-      for (unsigned int j=0; j < volume_fractions.size(); ++j)
-        {
-          // Power law creep equation
-          // edot_ii_i = A_i * stress_ii_i^{n_i} * d^{-m} \exp\left(-\frac{E_i^\ast + PV_i^\ast}{n_iRT}\right)
-          // where ii indicates the square root of the second invariant and
-          // i corresponds to diffusion or dislocation creep
-
-          // For diffusion creep, viscosity is grain size dependent
-          const Rheology::DiffusionCreepParameters diffusion_creep_parameters = diffusion_creep.compute_creep_parameters(j);
-
-          // For dislocation creep, viscosity is grain size independent (m=0)
-          const Rheology::DislocationCreepParameters dislocation_creep_parameters = dislocation_creep.compute_creep_parameters(j);
-
-          // For diffusion creep, viscosity is grain size dependent
-          const double prefactor_stress_diffusion = diffusion_creep_parameters.prefactor *
-                                                    std::pow(grain_size, -diffusion_creep_parameters.grain_size_exponent) *
-                                                    std::exp(-(std::max(diffusion_creep_parameters.activation_energy + pressure*diffusion_creep_parameters.activation_volume,0.0))/
-                                                             (constants::gas_constant*temperature));
-
-          // Because the ratios of the diffusion and dislocation strain rates are not known, stress is also unknown
-          // We use Newton's method to find the second invariant of the stress tensor.
-          // Start with the assumption that all strain is accommodated by diffusion creep:
-          // If the diffusion creep prefactor is very small, that means that the diffusion viscosity is very large.
-          // In this case, use the maximum viscosity instead to compute the starting guess.
-          double stress_ii = (prefactor_stress_diffusion > (0.5 / max_visc)
-                              ?
-                              edot_ii/prefactor_stress_diffusion
-                              :
-                              0.5 / max_visc);
-          double strain_rate_residual = 2*strain_rate_residual_threshold;
-          double strain_rate_deriv = 0;
-          unsigned int stress_iteration = 0;
-          while (std::abs(strain_rate_residual) > strain_rate_residual_threshold
-                 && stress_iteration < stress_max_iteration_number)
-            {
-
-              const std::pair<double, double> diff_edot_and_deriv = diffusion_creep.compute_strain_rate_and_derivative(stress_ii, pressure, temperature, diffusion_creep_parameters);
-              const std::pair<double, double> disl_edot_and_deriv = dislocation_creep.compute_strain_rate_and_derivative(stress_ii, pressure, temperature, dislocation_creep_parameters);
-
-              strain_rate_residual = diff_edot_and_deriv.first + disl_edot_and_deriv.first - edot_ii;
-              strain_rate_deriv = diff_edot_and_deriv.second + disl_edot_and_deriv.second ;
-
-              // If the strain rate derivative is zero, we catch it below.
-              if (strain_rate_deriv>std::numeric_limits<double>::min())
-                stress_ii -= strain_rate_residual/strain_rate_deriv;
-              stress_iteration += 1;
-
-              // In case the Newton iteration does not succeed, we do a fixpoint iteration.
-              // This allows us to bound both the diffusion and dislocation viscosity
-              // between a minimum and maximum value, so that we can compute the correct
-              // viscosity values even if the parameters lead to one or both of the
-              // viscosities being essentially zero or infinity.
-              // If anything that would be used in the next iteration is not finite, the
-              // Newton iteration would trigger an exception and we want to do the fixpoint
-              // iteration instead.
-              const bool abort_newton_iteration = !numbers::is_finite(stress_ii)
-                                                  || !numbers::is_finite(strain_rate_residual)
-                                                  || !numbers::is_finite(strain_rate_deriv)
-                                                  || strain_rate_deriv < std::numeric_limits<double>::min()
-                                                  || !numbers::is_finite(std::pow(stress_ii, diffusion_creep_parameters.stress_exponent-1))
-                                                  || !numbers::is_finite(std::pow(stress_ii, dislocation_creep_parameters.stress_exponent-1))
-                                                  || stress_iteration == stress_max_iteration_number;
-              if (abort_newton_iteration)
-                {
-                  double diffusion_strain_rate = edot_ii;
-                  double dislocation_strain_rate = min_strain_rate;
-                  stress_iteration = 0;
-
-                  do
-                    {
-                      const double old_diffusion_strain_rate = diffusion_strain_rate;
-
-                      const double diffusion_prefactor = 0.5 * std::pow(diffusion_creep_parameters.prefactor,-1.0/diffusion_creep_parameters.stress_exponent);
-                      const double diffusion_grain_size_dependence = std::pow(grain_size, diffusion_creep_parameters.grain_size_exponent/diffusion_creep_parameters.stress_exponent);
-                      const double diffusion_strain_rate_dependence = std::pow(diffusion_strain_rate, (1.-diffusion_creep_parameters.stress_exponent)/diffusion_creep_parameters.stress_exponent);
-                      const double diffusion_T_and_P_dependence = std::exp(std::max(diffusion_creep_parameters.activation_energy + pressure*diffusion_creep_parameters.activation_volume,0.0)/
-                                                                           (constants::gas_constant*temperature));
-
-                      const double diffusion_viscosity = std::min(std::max(diffusion_prefactor * diffusion_grain_size_dependence
-                                                                           * diffusion_strain_rate_dependence * diffusion_T_and_P_dependence,
-                                                                           min_visc), max_visc);
-
-                      const double dislocation_prefactor = 0.5 * std::pow(dislocation_creep_parameters.prefactor,-1.0/dislocation_creep_parameters.stress_exponent);
-                      const double dislocation_strain_rate_dependence = std::pow(dislocation_strain_rate, (1.-dislocation_creep_parameters.stress_exponent)/dislocation_creep_parameters.stress_exponent);
-                      const double dislocation_T_and_P_dependence = std::exp(std::max(dislocation_creep_parameters.activation_energy + pressure*dislocation_creep_parameters.activation_volume,0.0)/
-                                                                             (dislocation_creep_parameters.stress_exponent*constants::gas_constant*temperature));
-
-                      const double dislocation_viscosity = std::min(std::max(dislocation_prefactor * dislocation_strain_rate_dependence
-                                                                             * dislocation_T_and_P_dependence,
-                                                                             min_visc), max_visc);
-
-                      diffusion_strain_rate = dislocation_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
-                      dislocation_strain_rate = diffusion_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
-
-                      stress_iteration++;
-                      AssertThrow(stress_iteration < stress_max_iteration_number,
-                                  ExcMessage("No convergence has been reached in the loop that determines "
-                                             "the ratio of diffusion/dislocation viscosity. Aborting! "
-                                             "Residual is " + Utilities::to_string(strain_rate_residual) +
-                                             " after " + Utilities::to_string(stress_iteration) + " iterations. "
-                                             "You can increase the number of iterations by adapting the "
-                                             "parameter 'Maximum strain rate ratio iterations'."));
-
-                      strain_rate_residual = std::abs((diffusion_strain_rate-old_diffusion_strain_rate) / diffusion_strain_rate);
-                      stress_ii = 2.0 * edot_ii * 1./(1./diffusion_viscosity + 1./dislocation_viscosity);
-                    }
-                  while (strain_rate_residual > strain_rate_residual_threshold);
-
-                  break;
-                }
-            }
-
-          // The effective viscosity, with minimum and maximum bounds
-          composition_viscosities[j] = std::min(std::max(stress_ii/edot_ii/2, min_visc), max_visc);
-        }
-      return composition_viscosities;
-    }
-
-    template <int dim> 
     double
-    AnisotropicViscosity<dim>::J2_second_invariant(const SymmetricTensor<2,dim> t, const double min_strain_rate)
+    AV<dim>::J2_second_invariant(const SymmetricTensor<2,dim> t, const double min_strain_rate)
     {
-      const double J2_strict = (1.0/6.0*(std::pow(double (t[0][0] - t[1][1]),2) + std::pow(double (t[1][1] - t[2][2]),2)+std::pow(double (t[2][2] - t[0][0]),2)))+(std::pow(t[0][1],2)+std::pow(t[1][2],2)+std::pow(t[2][0],2)); 
+      const double J2_strict = (1.0/6.0*(std::pow(double (t[0][0] - t[1][1]),2) + std::pow(double (t[1][1] - t[2][2]),2)+std::pow(double (t[2][2] - t[0][0]),2)))+(std::pow(t[0][1],2)+std::pow(t[1][2],2)+std::pow(t[2][0],2));
       const double J2 = std::max(J2_strict, std::pow(min_strain_rate,2)); //prevents having too small values (also used in compute_second_invariant for strain rate)
       return J2;
-    } 
+    }
 
-    template <int dim> 
+    template <int dim>
     void
-    LPO_AV_3D<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
-                                    MaterialModel::MaterialModelOutputs<dim> &out) const
+    LPO_AV_3D_Simple<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+                                     MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity;
-        anisotropic_viscosity = out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim> >();
+      MaterialModel::AV<dim> *anisotropic_viscosity;
+      anisotropic_viscosity = out.template get_additional_output<MaterialModel::AV<dim> >();
 
-      const std::vector<double> &composition = in.composition[i];
-      std::vector<unsigned int> c_idx_euler;
-      c_idx_S.push_back (this->introspection().compositional_index_for_name("S1"));
-      c_idx_S.push_back (this->introspection().compositional_index_for_name("S2"));
-      c_idx_S.push_back (this->introspection().compositional_index_for_name("S3"));
-      c_idx_S.push_back (this->introspection().compositional_index_for_name("S4"));
-      c_idx_S.push_back (this->introspection().compositional_index_for_name("S5"));
-      c_idx_S.push_back (this->introspection().compositional_index_for_name("S6"));
 
-      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s11"));
-      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s12"));
-      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s13"));
-      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s14"));
-      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s15"));
-      c_idx_s1.push_back (this->introspection().compositional_index_for_name("s16"));
 
-      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s21"));
-      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s22"));
-      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s23"));
-      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s24"));
-      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s25"));
-      c_idx_s2.push_back (this->introspection().compositional_index_for_name("s26"));
-
-      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s31"));
-      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s32"));
-      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s33"));
-      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s34"));
-      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s35"));
-      c_idx_s3.push_back (this->introspection().compositional_index_for_name("s36"));
-
-      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s41"));
-      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s42"));
-      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s43"));
-      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s44"));
-      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s45"));
-      c_idx_s4.push_back (this->introspection().compositional_index_for_name("s46"));
-
-      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s51"));
-      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s52"));
-      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s53"));
-      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s54"));
-      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s55"));
-      c_idx_s5.push_back (this->introspection().compositional_index_for_name("s56"));
-      
       EquationOfStateOutputs<dim> eos_outputs (1);
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
           //change these according to diffusion dislocation material model I guess
           equation_of_state.evaluate(in, q, eos_outputs);
           out.densities[q] = eos_outputs.densities[0];//Change this to 0 for the simple shear box test
+          out.viscosities[q] = eta; //Later it is going to be overwritten by the effective viscosity
           out.thermal_expansion_coefficients[q] = 1e-10;
           out.specific_heat[q] = 1;
           out.thermal_conductivities[q] = 1;
@@ -734,33 +555,60 @@ namespace aspect
           out.entropy_derivative_pressure[q] = 0.0;
           out.entropy_derivative_temperature[q] = 0.0;
           // calculate effective viscosity
-          if (in.requests_property(MaterialProperties::viscosity))
-            {
-              // Currently, the viscosities for each of the compositional fields are calculated assuming
-              // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
-              // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
-              // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
-              const std::vector<double> composition_viscosities =
-                calculate_isostrain_viscosities(volume_fractions, pressure, temperature, in.strain_rate[i]);
+          const std::vector<double> &composition = in.composition[q];
+          std::vector<unsigned int> c_idx_S, c_idx_s1, c_idx_s2, c_idx_s3, c_idx_s4, c_idx_s5;
+          c_idx_S.push_back (this->introspection().compositional_index_for_name("S1"));
+          c_idx_S.push_back (this->introspection().compositional_index_for_name("S2"));
+          c_idx_S.push_back (this->introspection().compositional_index_for_name("S3"));
+          c_idx_S.push_back (this->introspection().compositional_index_for_name("S4"));
+          c_idx_S.push_back (this->introspection().compositional_index_for_name("S5"));
+          c_idx_S.push_back (this->introspection().compositional_index_for_name("S6"));
 
-              // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
-              // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
-              // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
-              // of compositional field viscosities is consistent with any averaging scheme.
-              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, composition_viscosities, viscosity_averaging);
-            }
-          for (unsigned int c=0; c<in.composition[q].size(); ++c)
-            out.reaction_terms[q][c] = 0.0;
+          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s11"));
+          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s12"));
+          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s13"));
+          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s14"));
+          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s15"));
+          c_idx_s1.push_back (this->introspection().compositional_index_for_name("s16"));
+
+          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s21"));
+          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s22"));
+          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s23"));
+          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s24"));
+          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s25"));
+          c_idx_s2.push_back (this->introspection().compositional_index_for_name("s26"));
+
+          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s31"));
+          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s32"));
+          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s33"));
+          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s34"));
+          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s35"));
+          c_idx_s3.push_back (this->introspection().compositional_index_for_name("s36"));
+
+          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s41"));
+          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s42"));
+          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s43"));
+          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s44"));
+          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s45"));
+          c_idx_s4.push_back (this->introspection().compositional_index_for_name("s46"));
+
+          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s51"));
+          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s52"));
+          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s53"));
+          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s54"));
+          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s55"));
+          c_idx_s5.push_back (this->introspection().compositional_index_for_name("s56"));
+          
 
           Tensor<1,2*dim> Sv, s1v, s2v, s3v, s4v, s5v;
           for (unsigned int i=0; i<2*dim; ++i)
             {
-                Sv[i] = in.composition[q][c_idx_S[i]];
-                s1v[i] = in.composition[q][c_idx_s1[i]];
-                s2v[i] = in.composition[q][c_idx_s1[i]];
-                s3v[i] = in.composition[q][c_idx_s1[i]];
-                s4v[i] = in.composition[q][c_idx_s1[i]];
-                s5v[i] = in.composition[q][c_idx_s1[i]];
+              Sv[i] = in.composition[q][c_idx_S[i]];
+              s1v[i] = in.composition[q][c_idx_s1[i]];
+              s2v[i] = in.composition[q][c_idx_s1[i]];
+              s3v[i] = in.composition[q][c_idx_s1[i]];
+              s4v[i] = in.composition[q][c_idx_s1[i]];
+              s5v[i] = in.composition[q][c_idx_s1[i]];
 
             }
 
@@ -770,27 +618,27 @@ namespace aspect
             {
               double E_eq;
               SymmetricTensor<2,dim> E;
-              E_eq= std::sqrt((4./3.)*AnisotropicViscosity<dim>::J2_second_invariant(in.strain_rate[q], min_strain_rate));// Second invariant of strain-rate
-                //std::cout<<"E_eq is:"<<E_eq<<std::endl;
+              E_eq= std::sqrt((4./3.)*AV<dim>::J2_second_invariant(in.strain_rate[q], min_strain_rate));// Second invariant of strain-rate
+              //std::cout<<"E_eq is:"<<E_eq<<std::endl;
               E=in.strain_rate[q];
-                
+
               AssertThrow(isfinite(1/E.norm()),
-                  ExcMessage("Strain rate should be finite")); 
-            
+                          ExcMessage("Strain rate should be finite"));
+
               //We calculate all the stress tensors needed for the viscosity calculations on the particles based on the current LPO and strain rate
               SymmetricTensor<2,dim> stress1, stress2, stress3, stress4, stress5, Stress, s1, s2, s3, s4, s5, S;
               for (int k = 0; k < dim; k++)
-               {
-                   for (int l = 0; l < dim; l++)
+                {
+                  for (int l = 0; l < dim; l++)
                     {
-                     stress1[k][l]=s1v[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))]
-                     stress2[k][l]=s2v[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))]
-                     stress3[k][l]=s3v[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))]
-                     stress4[k][l]=s4v[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))]
-                     stress5[k][l]=s5v[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))]
-                     Stress[k][l]=Sv[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))]
+                      stress1[k][l]=s1v[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))];
+                      stress2[k][l]=s2v[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))];
+                      stress3[k][l]=s3v[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))];
+                      stress4[k][l]=s4v[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))];
+                      stress5[k][l]=s5v[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))];
+                      Stress[k][l]=Sv[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))];
                     }
-               }
+                }
               /*std::cout<<"The stress is:"<<std::endl;
               for (int i = 0; i < dim; i++)
                {
@@ -801,27 +649,27 @@ namespace aspect
                 std::cout << std::endl;
               }*/
 
-              const double Stress_eq= std::sqrt(3.0*AnisotropicViscosity<dim>::J2_second_invariant(Stress, min_strain_rate));
+              const double Stress_eq= std::sqrt(3.0*AV<dim>::J2_second_invariant(Stress, min_strain_rate));
               /* std::cout<<"Stress eq is: "<<Stress_eq<<std::endl;
-              std::cout<<"Stress coeff is: "<<std::pow(AnisotropicViscosity<dim>::J2_second_invariant(Stress, min_strain_rate),1.25)<<std::endl; */
+              std::cout<<"Stress coeff is: "<<std::pow(AV<dim>::J2_second_invariant(Stress, min_strain_rate),1.25)<<std::endl; */
               AssertThrow(Stress_eq != 0,
-                  ExcMessage("Equivalent stress should not be 0"));
+                          ExcMessage("Equivalent stress should not be 0"));
               AssertThrow(isfinite(Stress_eq),
-                  ExcMessage("Stress should be finite")); 
-              //To calculate a "stress independent viscosity" (i.e. inverse of fluidty) 
+                          ExcMessage("Stress should be finite"));
+              //To calculate a "stress independent viscosity" (i.e. inverse of fluidty)
               //we have to convert the stress to a "non-Newtonian modified stress" which is the stress *second invariant on the power of (n-1)/2
               for (int i = 0; i < dim; i++)
-               {
-                for (int j = 0; j < dim; j++)
                 {
-                  s1[i][j]= stress1[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(stress1, min_strain_rate),1.25);//assuming n=3.5, so (n-1)/2=1.25
-                  s2[i][j]= stress2[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(stress2, min_strain_rate),1.25);
-                  s3[i][j]= stress3[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(stress3, min_strain_rate),1.25);
-                  s4[i][j]= stress4[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(stress4, min_strain_rate),1.25);
-                  s5[i][j]= stress5[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(stress5, min_strain_rate),1.25);
-                  S[i][j]= Stress[i][j]*std::pow(AnisotropicViscosity<dim>::J2_second_invariant(Stress, min_strain_rate),1.25);
+                  for (int j = 0; j < dim; j++)
+                    {
+                      s1[i][j]= stress1[i][j]*std::pow(AV<dim>::J2_second_invariant(stress1, min_strain_rate),1.25);//assuming n=3.5, so (n-1)/2=1.25
+                      s2[i][j]= stress2[i][j]*std::pow(AV<dim>::J2_second_invariant(stress2, min_strain_rate),1.25);
+                      s3[i][j]= stress3[i][j]*std::pow(AV<dim>::J2_second_invariant(stress3, min_strain_rate),1.25);
+                      s4[i][j]= stress4[i][j]*std::pow(AV<dim>::J2_second_invariant(stress4, min_strain_rate),1.25);
+                      s5[i][j]= stress5[i][j]*std::pow(AV<dim>::J2_second_invariant(stress5, min_strain_rate),1.25);
+                      S[i][j]= Stress[i][j]*std::pow(AV<dim>::J2_second_invariant(Stress, min_strain_rate),1.25);
+                    }
                 }
-              }
               /* std::cout<<"Stress * second invariant on the factor of.. is:"<<std::endl;
               for (int i = 0; i < dim; i++)
                {
@@ -832,46 +680,46 @@ namespace aspect
                 std::cout << std::endl;
               } */
 
-              //Build the stress independent V tensor 
+              //Build the stress independent V tensor
               SymmetricTensor<4,dim> V, ViscoTensor_r4;
               for (int i = 0; i < dim; i++)
-               {
-                for (int j = 0; j < dim; j++)
                 {
-                  V[i][j][2][2] = (S[i][j] - ((2.0/3.0*s1[i][j]/E_eq)+(1.0/3.0*s2[i][j]/E_eq)) *E[0][0] 
-                                         - ((1.0/3.0*s1[i][j]/E_eq)-(1.0/3.0*s2[i][j]/E_eq)) *E[1][1]
-                                         - s3[i][j]*E[0][1]/E_eq - s4[i][j]*E[0][2]/E_eq - s5[i][j]*E[1][2]/E_eq)/
-                                         (E[0][0]/3.0 + 2.0*E[1][1]/3.0 + E[2][2]);
-                  V[i][j][0][0] = (2.0/3.0* s1[i][j] + 1.0/3.0*s2[i][j])/E_eq + 1.0/3.0*V[i][j][2][2];
-                  V[i][j][1][1] = (1.0/3.0* s1[i][j] - 1.0/3.0*s2[i][j])/E_eq + 2.0/3.0*V[i][j][2][2];
-                  V[i][j][0][1] = 0.5*s3[i][j]/E_eq;
-                  V[i][j][0][2] = 0.5*s4[i][j]/E_eq;
-                  V[i][j][1][2] = 0.5*s5[i][j]/E_eq; 
-                  for (int k = 0; k<dim; k++)
-                  {
-                    for (int l = 0; l<dim; l++)
+                  for (int j = 0; j < dim; j++)
                     {
-                      //std::cout<<"V"<<i+1<<j+1<<k+1<<l+1<<"is: "<<V[i][j][k][l]<<std::endl;
-                      ViscoTensor_r4[i][j][k][l]= V[i][j][k][l]/std::pow(AnisotropicViscosity<dim>::J2_second_invariant(Stress, min_strain_rate),1.25);
+                      V[i][j][2][2] = (S[i][j] - ((2.0/3.0*s1[i][j]/E_eq)+(1.0/3.0*s2[i][j]/E_eq)) *E[0][0]
+                                       - ((1.0/3.0*s1[i][j]/E_eq)-(1.0/3.0*s2[i][j]/E_eq)) *E[1][1]
+                                       - s3[i][j]*E[0][1]/E_eq - s4[i][j]*E[0][2]/E_eq - s5[i][j]*E[1][2]/E_eq)/
+                                      (E[0][0]/3.0 + 2.0*E[1][1]/3.0 + E[2][2]);
+                      V[i][j][0][0] = (2.0/3.0* s1[i][j] + 1.0/3.0*s2[i][j])/E_eq + 1.0/3.0*V[i][j][2][2];
+                      V[i][j][1][1] = (1.0/3.0* s1[i][j] - 1.0/3.0*s2[i][j])/E_eq + 2.0/3.0*V[i][j][2][2];
+                      V[i][j][0][1] = 0.5*s3[i][j]/E_eq;
+                      V[i][j][0][2] = 0.5*s4[i][j]/E_eq;
+                      V[i][j][1][2] = 0.5*s5[i][j]/E_eq;
+                      for (int k = 0; k<dim; k++)
+                        {
+                          for (int l = 0; l<dim; l++)
+                            {
+                              //std::cout<<"V"<<i+1<<j+1<<k+1<<l+1<<"is: "<<V[i][j][k][l]<<std::endl;
+                              ViscoTensor_r4[i][j][k][l]= V[i][j][k][l]/std::pow(AV<dim>::J2_second_invariant(Stress, min_strain_rate),1.25);
+                            }
+                        }
                     }
-                  }
                 }
-              }
-              
+
               // Overwrite the scalar viscosity with an effective viscosity
               out.viscosities[q] = std::abs(Stress_eq/E_eq);
               AssertThrow(out.viscosities[q] != 0,
-                  ExcMessage("Viscosity should not be 0")); 
+                          ExcMessage("Viscosity should not be 0"));
               AssertThrow(isfinite(out.viscosities[q]),
-                  ExcMessage("Viscosity should not be finite")); 
+                          ExcMessage("Viscosity should not be finite"));
               if (anisotropic_viscosity != nullptr)
-              {
-                anisotropic_viscosity->stress_strain_directors[q] = ViscoTensor_r4/(2.0*Stress_eq/E_eq);
-                
+                {
+                  anisotropic_viscosity->stress_strain_directors[q] = ViscoTensor_r4/(2.0*Stress_eq/E_eq);
+
                 }
             }
 
-      }      
+        }
     }
 
 
@@ -879,7 +727,7 @@ namespace aspect
 
     template <int dim>
     bool
-    LPO_AV_3D<dim>::is_compressible () const
+    LPO_AV_3D_Simple<dim>::is_compressible () const
     {
       return false;
     }
@@ -888,35 +736,35 @@ namespace aspect
 
     /*template <int dim>
     double
-    AV_3D<dim>::reference_density () const
+    AV_3D_Simple<dim>::reference_density () const
     {
       return 1.0;
     }*/
 
 
 
-    /*template <int dim>
+    template <int dim>
     double
-    LPO_AV_3D<dim>::reference_viscosity () const
+    LPO_AV_3D_Simple<dim>::reference_viscosity () const
     {
       return 1e20;
-    }*/
+    }
 
 
 
     template <int dim>
     void
-    LPO_AV_3D<dim>::parse_parameters (ParameterHandler &prm)
+    LPO_AV_3D_Simple<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("AnisotropicViscosity");
+        prm.enter_subsection("AV");
         {
-          
+
           equation_of_state.parse_parameters (prm);
           eta = prm.get_double("Reference viscosity");
           min_strain_rate = prm.get_double("Minimum strain rate");
-          grain_size = prm.get_double("Grain size");
+          //grain_size = prm.get_double("Grain size");
         }
         prm.leave_subsection();
       }
@@ -927,21 +775,21 @@ namespace aspect
 
     template <int dim>
     void
-    LPO_AV_3D<dim>::declare_parameters (ParameterHandler &prm)
+    LPO_AV_3D_Simple<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("AnisotropicViscosity");
+        prm.enter_subsection("AV");
         {
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
           prm.declare_entry ("Reference viscosity", "1e20",
                              Patterns::Double(),
                              "Magnitude of reference viscosity.");
           prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(),
-                             "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}"); 
-          prm.declare_entry ("Grain size", "1000",
+                             "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}");
+          /*prm.declare_entry ("Grain size", "1000",
                              Patterns::Double(),
-                             "Olivine anisotropic viscosity is dependent of grain size. Value is given in microns");                  
+                             "Olivine anisotropic viscosity is dependent of grain size. Value is given in microns");   */
         }
         prm.leave_subsection();
       }
@@ -952,13 +800,13 @@ namespace aspect
 
     template <int dim>
     void
-    LPO_AV_3D<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
+    LPO_AV_3D_Simple<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<AnisotropicViscosity<dim> >() == nullptr)
+      if (out.template get_additional_output<AV<dim> >() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+            std_cxx14::make_unique<MaterialModel::AV<dim>> (n_points));
         }
     }
   }
@@ -972,16 +820,16 @@ namespace aspect
   namespace Assemblers
   {
 #define INSTANTIATE(dim) \
-  template class StokesPreconditioner<dim>; \
-  template class StokesIncompressibleTerms<dim>; \
-  template class StokesBoundaryTraction<dim>;
+  template class StokesPreconditionerAV<dim>; \
+  template class StokesIncompressibleTermsAV<dim>; \
+  //template class StokesBoundaryTractionAV<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
 
   namespace HeatingModel
   {
-    ASPECT_REGISTER_HEATING_MODEL(ShearHeatingAnisotropicViscosity,
+    ASPECT_REGISTER_HEATING_MODEL(ShearHeatingAV,
                                   "anisotropic shear heating",
                                   "Implementation of a standard model for shear heating. "
                                   "Adds the term: "
@@ -995,8 +843,8 @@ namespace aspect
 
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(LPO_AV_3D,
+    ASPECT_REGISTER_MATERIAL_MODEL(LPO_AV_3D_Simple,
                                    "LPO Anisotropic Viscosity material",
-                                   "Olivine LPO related viscous anisotropy")
+                                   "Olivine LPO related viscous anisotropy based on the Simple material model")
   }
 }

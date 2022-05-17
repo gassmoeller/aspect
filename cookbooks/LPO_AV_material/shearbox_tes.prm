@@ -81,7 +81,7 @@ end
 # Then follows a section that describes the boundary conditions for the
 # temperature. The model we choose is called 'box' and allows to set a constant
 # temperature on each of the four sides of the box geometry. In our case, we
-# choose something that is heated from below and cooled from above. 
+# choose something that is heated from below and cooled from above.
 # All other parts of the boundary are insulated (i.e., no heat flux through
 # these boundaries; this is also often used to specify symmetry boundaries).
 subsection Boundary temperature model
@@ -102,7 +102,7 @@ end
 subsection Boundary velocity model
   subsection Function
     set Variable names = x,y,z,t
-    set Function expression = if(t<2.5,z-1,0);if(t<2.5,0,x-1);0; ## Annotation: set velocity condition 
+    set Function expression = if(t<2.5,z-1,0);if(t<2.5,0,x-1);0; ## Annotation: set velocity condition
   end
 end
 
@@ -110,7 +110,7 @@ subsection Prescribed Stokes solution
   set Model name = function
   subsection Velocity function
     set Variable names = x,y,z,t
-    set Function expression = if(t<2.5,z-1,0);if(t<2.5,0,x-1);0; ## Annotation: set velocity condition 
+    set Function expression = if(t<2.5,z-1,0);if(t<2.5,0,x-1);0; ## Annotation: set velocity condition
   end
 
 end
@@ -182,10 +182,10 @@ subsection Postprocess
     set Data output format       = vtu
     #set List of particle properties =  integrated strain invariant, lpo s wave anisotropy  #function, initial composition, initial position, pT path
     #set List of particle properties = lpo, lpo bingham average, integrated strain invariant #, lpo s wave anisotropy  #function, initial composition, initial position, pT path
-    #set Exclude output properties = a_cosine_matrix, volume fraction #lpo average olivine a axis, lpo average olivine b axis, lpo average olivine c axis, lpo average enstatite a axis, lpo average enstatite b axis, lpo average enstatite c axis, integrated strain invariant  
-    set List of particle properties = lpo, lpo bingham average,lpo elastic tensor, decompose elastic matrix, integrated strain invariant 
-    set Exclude output properties = a_cosine_matrix, volume fraction 
-    set Particle generator name = ascii file 
+    #set Exclude output properties = a_cosine_matrix, volume fraction #lpo average olivine a axis, lpo average olivine b axis, lpo average olivine c axis, lpo average enstatite a axis, lpo average enstatite b axis, lpo average enstatite c axis, integrated strain invariant
+    set List of particle properties = lpo, lpo bingham average,lpo elastic tensor, decompose elastic matrix, integrated strain invariant
+    set Exclude output properties = a_cosine_matrix, volume fraction
+    set Particle generator name = ascii file
     subsection Generator
       subsection Ascii file
         set  Data directory =  /Volumes/GoogleDrive/My Drive/ASPECT/ASPECT_parameter_files/LPO_testing/
@@ -219,7 +219,7 @@ subsection Postprocess
     set Write out draw volume weighted lpo data = mineral 0: volume fraction, mineral 0: Euler angles, mineral 1: volume fraction, mineral 1: Euler angles
   end
 end
-set Output directory  = test_shearbox3d #v10_3Dshearbox_BE_FE_g1000_vfo7e-1_vz-1-0-0_M50_N5_GBS3e-1 #macdougall_2017_case_b_v08_0_0_y_l5_ng50_x3e-1_Atype_gc1000_og1000 ## Annotation: Output directory   
+set Output directory  = test_shearbox3d #v10_3Dshearbox_BE_FE_g1000_vfo7e-1_vz-1-0-0_M50_N5_GBS3e-1 #macdougall_2017_case_b_v08_0_0_y_l5_ng50_x3e-1_Atype_gc1000_og1000 ## Annotation: Output directory
 
 
 subsection Checkpointing

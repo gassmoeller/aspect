@@ -74,10 +74,10 @@ namespace aspect
           virtual
           SymmetricTensor<2,dim>
           compute_S_tensor (const SymmetricTensor<2,dim> &strain_rate,
-                                  const double grain_size,
-                                  const std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
-                                  const std::vector<unsigned int> &deformation_type,
-                                  const double &temperature ) const;
+                            const double grain_size,
+                            const std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
+                            const std::vector<unsigned int> &deformation_type,
+                            const double &temperature ) const;
 
           /**
            * Initialization function. This function is called once at the

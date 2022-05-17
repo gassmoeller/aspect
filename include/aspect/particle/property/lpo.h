@@ -232,7 +232,7 @@ namespace aspect
            * Find nearest orthogonal matrix using a SVD if the
            * deteriminant is more than a tolerance away from one.
            */
-         
+
           /**
            * todo
            */
