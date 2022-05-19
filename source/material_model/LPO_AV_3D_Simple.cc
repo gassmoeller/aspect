@@ -606,10 +606,10 @@ namespace aspect
             {
               Sv[i] = in.composition[q][c_idx_S[i]];
               s1v[i] = in.composition[q][c_idx_s1[i]];
-              s2v[i] = in.composition[q][c_idx_s1[i]];
-              s3v[i] = in.composition[q][c_idx_s1[i]];
-              s4v[i] = in.composition[q][c_idx_s1[i]];
-              s5v[i] = in.composition[q][c_idx_s1[i]];
+              s2v[i] = in.composition[q][c_idx_s2[i]];
+              s3v[i] = in.composition[q][c_idx_s3[i]];
+              s4v[i] = in.composition[q][c_idx_s4[i]];
+              s5v[i] = in.composition[q][c_idx_s5[i]];
 
             }
 
