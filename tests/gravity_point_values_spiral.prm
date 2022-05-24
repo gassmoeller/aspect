@@ -57,7 +57,7 @@ subsection Postprocess
   set List of postprocessors = gravity calculation
   subsection Gravity calculation
     set Sampling scheme                      = fibonacci spiral
-    set Number points fibonacci spiral       = 10
+    set Number points fibonacci spiral       = 100000
     set Minimum radius                       = 4
   end
 end

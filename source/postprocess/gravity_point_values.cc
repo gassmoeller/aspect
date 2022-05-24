@@ -395,44 +395,57 @@ namespace aspect
               {
                 // We are inside the inner radius
                 g_theory[p] = 0;
+                const double model_inner_radius_squared = model_inner_radius * model_inner_radius;
+                const double model_outer_radius_squared = model_outer_radius * model_outer_radius;
+
                 g_potential_theory[p] = 2.0 * G * numbers::PI * reference_density *
-                                        (boost::math::pow<2>(model_inner_radius) - boost::math::pow<2>(model_outer_radius,2));
+                                        (model_inner_radius_squared - model_outer_radius_squared);
               }
             else if ((satellite_positions_spherical[p][0] > model_inner_radius)
                      && (satellite_positions_spherical[p][0] < model_outer_radius))
               {
+                const double model_inner_radius_cubed = model_inner_radius * model_inner_radius * model_inner_radius;
+                const double satellite_radius_squared = satellite_positions_spherical[p][0] * satellite_positions_spherical[p][0];
+                const double model_outer_radius_squared = model_outer_radius * model_outer_radius;
+
                 // We are in the spherical shell
                 g_theory[p] = G * numbers::PI * 4./3. * reference_density *
                               (satellite_positions_spherical[p][0] -
-                               (boost::math::pow<3>(model_inner_radius)
-                                /  boost::math::pow<2>(satellite_positions_spherical[p][0])));
+                               (model_inner_radius_cubed
+                                /  satellite_radius_squared));
                 g_potential_theory[p] = G * numbers::PI * 4./3. * reference_density *
-                                        ((boost::math::pow<2>(satellite_positions_spherical[p][0])/2.0) +
-                                         (boost::math::pow<3>(model_inner_radius) / satellite_positions_spherical[p][0]))
+                                        ((satellite_radius_squared/2.0) +
+                                         (model_inner_radius_cubed / satellite_positions_spherical[p][0]))
                                         -
                                         G * numbers::PI * 2.0 * reference_density *
-                                        boost::math::pow<2>(model_outer_radius);
+                                        model_outer_radius_squared;
               }
             else
               {
+                const double model_outer_radius_cubed = model_outer_radius * model_outer_radius * model_outer_radius;
+                const double model_inner_radius_cubed = model_inner_radius * model_inner_radius * model_inner_radius;
+                const double satellite_radius_squared = satellite_positions_spherical[p][0] * satellite_positions_spherical[p][0];
+                const double satellite_radius_cubed = satellite_radius_squared * satellite_positions_spherical[p][0];
+                const double satellite_radius_fifth = satellite_radius_cubed * satellite_radius_squared;
+
                 const double common_factor = G * numbers::PI * 4./3. * reference_density
-                                             * (boost::math::pow<3>(model_outer_radius) - boost::math::pow<3>(model_inner_radius));
+                                             * (model_outer_radius_cubed - model_inner_radius_cubed);
                 const double r = satellite_positions_spherical[p][0];
 
-                g_theory[p] = common_factor / boost::math::pow<2>(r);
+                g_theory[p] = common_factor / satellite_radius_squared;
                 g_potential_theory[p] = - common_factor / r;
 
                 // For the gradient of g, start with the common part of
                 // the diagonal elements:
                 g_gradient_theory[p][0][0] =
                   g_gradient_theory[p][1][1] =
-                    g_gradient_theory[p][2][2] = -1./boost::math::pow<3>(r);
+                    g_gradient_theory[p][2][2] = -1./satellite_radius_cubed;
 
                 // Then do the off-diagonal elements:
                 for (unsigned int e=0; e<dim; ++e)
                   for (unsigned int f=e; f<dim; ++f)
                     g_gradient_theory[p][e][f] += -(- 3.0 * satellite_position[e] * satellite_position[f])
-                                                  /  boost::math::pow<5>(r);
+                                                  /  satellite_radius_fifth;
                 g_gradient_theory[p] *= common_factor;
               }
           }
