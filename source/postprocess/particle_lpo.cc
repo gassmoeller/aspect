@@ -632,15 +632,15 @@ namespace aspect
 
       AssertThrow(rotation_matrix[2][2] <= 1.0, ExcMessage("rot_matrix[2][2] > 1.0"));
 
-      const double theta = std::acos(rotation_matrix[2][2]);
+      const double theta = -std::acos(rotation_matrix[2][2]);//Mod Agi 2022.06.22
       double phi1 = 0.0;
       double phi2 = 0.0;
 
       if (theta != 0.0 && theta != dealii::numbers::PI)
         {
           //
-          phi1  = std::atan2(rotation_matrix[2][0]/-sin(theta),rotation_matrix[2][1]/-sin(theta));
-          phi2  = std::atan2(rotation_matrix[0][2]/-sin(theta),rotation_matrix[1][2]/sin(theta));
+          phi1  = -std::atan2(rotation_matrix[2][0]/sin(theta),rotation_matrix[2][1]/-sin(theta));//Mod Agi 2022.06.22
+          phi2  = -std::atan2(rotation_matrix[0][2]/sin(theta),rotation_matrix[1][2]/sin(theta));//Mod Agi 2022.06.22
         }
       else
         {
