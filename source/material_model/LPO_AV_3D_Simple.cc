@@ -620,7 +620,7 @@ namespace aspect
               double E_eq;
               SymmetricTensor<2,dim> E;
               E_eq= std::sqrt((4./3.)*AV<dim>::J2_second_invariant(in.strain_rate[q], min_strain_rate));// Second invariant of strain-rate
-              std::cout<<"E_eq is:"<<E_eq<<std::endl;
+              //std::cout<<"E_eq is:"<<E_eq<<std::endl;
               E=in.strain_rate[q];
 
               AssertThrow(isfinite(1/E.norm()),
@@ -651,7 +651,7 @@ namespace aspect
               }*/
 
               const double Stress_eq= std::sqrt(3.0*AV<dim>::J2_second_invariant(Stress, min_strain_rate));
-              std::cout<<"Stress eq is: "<<Stress_eq<<std::endl;
+              //std::cout<<"Stress eq is: "<<Stress_eq<<std::endl;
               /*std::cout<<"Stress coeff is: "<<std::pow(AV<dim>::J2_second_invariant(Stress, min_strain_rate),1.25)<<std::endl; */
               AssertThrow(Stress_eq != 0,
                           ExcMessage("Equivalent stress should not be 0"));
