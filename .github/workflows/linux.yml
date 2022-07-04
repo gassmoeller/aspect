@@ -92,6 +92,7 @@ jobs:
   tests:
     #linux build including tests
     name: tests
+    # if: contains(github.event.pull_request.labels.*.name, 'ready to test')
     runs-on: [ubuntu-latest]
     strategy:
       matrix:
@@ -99,15 +100,15 @@ jobs:
           - image: "geodynamics/aspect-tester:focal-dealii-9.3-v2"
             run-tests: "ON"
             compare-tests: "ON"
-            container-options:
+            container-options: '--name container'
           - image: "geodynamics/aspect-tester:focal-dealii-9.4-v2"
             run-tests: "ON"
             compare-tests: "OFF"
-            container-options:
+            container-options: '--name container'
           - image: dealii/dealii:master-focal
-            run-tests: "OFF"
+            run-tests: "ON"
             compare-tests: "OFF"
-            container-options: '--user 0'
+            container-options: '--user 0 --name container'
 
     container: 
       image: ${{ matrix.image }}
@@ -116,6 +117,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: compile
+      if: ${{ matrix.run_tests }} == 'ON'
       run: |
         mkdir build
         cd build
@@ -132,11 +134,13 @@ jobs:
         ninja
         ./aspect --test
     - name: prebuild tests
+      if: ${{ matrix.run_tests }} == 'ON'
       run: |
         # prebuilding tests...
         cd build/tests
         ninja -k 0 tests || true
     - name: report test results
+      if: ${{ matrix.run_tests == 'ON' }}
       continue-on-error: true
       run: |
         cd build
@@ -145,17 +149,20 @@ jobs:
         --test-action Test \
         --output-on-failure || touch test_run_failed
     - name: write test results
+      if: matrix.run_tests == 'ON'
       continue-on-error: true
       run: |
         cd build
         ninja generate_reference_output
         git diff ../tests > changes-test-results.diff
     - name: archive test results
+      if: matrix.run_tests == 'ON'
       uses: actions/upload-artifact@v2
       with:
         name: changes-test-results.diff
         path: build/changes-test-results.diff
     - name: check test results
+      if: matrix.run_tests == 'ON'
       run: |
         if [ -f build/test_run_failed ] || [ -s build/changes-test-results.diff ]; then
           exit 1

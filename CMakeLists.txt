@@ -342,6 +342,13 @@ ADD_CUSTOM_TARGET(indent
   COMMENT "Indenting all ASPECT header and source files..."
   )
 
+# Provide "indent" target for indenting all headers and source files
+ADD_CUSTOM_TARGET(update_parameters
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  COMMAND ${CMAKE_SOURCE_DIR}/doc/update_parameters.sh ${CMAKE_CURRENT_BINARY_DIR}/aspect
+  COMMENT "Updating ASPECT parameter documentation..."
+  )
+
 IF(CMAKE_GENERATOR MATCHES "Ninja")
   SET(_make_command "$ ninja")
 ELSE()
