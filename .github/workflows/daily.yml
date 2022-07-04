@@ -1,0 +1,72 @@
+name: daily
+
+on:
+  push:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    # Run workflow daily at 1:30 am
+    - cron:  '30 1 * * *'
+
+jobs:
+  tests:
+    name: test deal.II dev
+    runs-on: [ubuntu-latest]
+    strategy:
+      matrix:
+        include:
+          - unity: "ON"
+            tests: "ON"
+          - unity: "OFF"
+            tests: "OFF"
+    container:
+      image: dealii/dealii:master-focal
+      options: --user 0
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: compile
+      run: |
+        mkdir build
+        cd build
+        cmake \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_PRECOMPILE_HEADERS='${{ matrix.unity }}' \
+        -D ASPECT_UNITY_BUILD='${{ matrix.unity }}' \
+        -D ASPECT_RUN_ALL_TESTS='${{ matrix.tests }}' \
+        ..
+        ninja
+        ./aspect --test
+    - name: prebuild tests
+      run: |
+        # prebuilding tests...
+        cd build/tests
+        ninja -k 0 tests || true
+    - name: report test results
+      continue-on-error: true
+      run: |
+        cd build
+        ctest \
+        --no-compress-output \
+        --test-action Test \
+        --output-on-failure || touch test_run_failed
+    - name: write test results
+      continue-on-error: true
+      run: |
+        cd build
+        ninja generate_reference_output
+        git diff ../tests > changes-test-results.diff
+    - name: archive test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: changes-test-results.diff
+        path: build/changes-test-results.diff
+    - name: check test results
+      run: |
+        if [ -f build/test_run_failed ] || [ -s build/changes-test-results.diff ]; then
+          exit 1
+        else
+          exit 0
+        fi
