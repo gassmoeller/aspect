@@ -7,7 +7,7 @@ LABEL maintainer <rene.gassmoeller@mailbox.org>
  ENV PATH $HOME/cmake-3.17.3-Linux-x86_64/bin:$PATH
 
 # Build aspect, replace git checkout command to create image for release
-RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \ 
+# RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \ 
 #     mkdir aspect/build-release && \
 #     cd aspect/build-release && \
 #     git checkout main && \
