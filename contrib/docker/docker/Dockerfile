@@ -8,22 +8,22 @@ LABEL maintainer <rene.gassmoeller@mailbox.org>
 
 # Build aspect, replace git checkout command to create image for release
 RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \ 
-    mkdir aspect/build-release && \
-    cd aspect/build-release && \
-    git checkout main && \
-    cmake -DCMAKE_BUILD_TYPE=Release \
-          .. && \
-    make -j 2 && \
-    mv aspect ../aspect-release && \
-    make clean && \
-    cd .. && \
-    mkdir build-debug && \
-    cd build-debug && \
-    cmake -DCMAKE_BUILD_TYPE=Debug \
-          .. && \
-    make -j 2 && \
-    mv aspect $HOME/aspect/aspect && \
-    make clean
+#     mkdir aspect/build-release && \
+#     cd aspect/build-release && \
+#     git checkout main && \
+#     cmake -DCMAKE_BUILD_TYPE=Release \
+#           .. && \
+#     make -j 2 && \
+#     mv aspect ../aspect-release && \
+#     make clean && \
+#     cd .. && \
+#     mkdir build-debug && \
+#     cd build-debug && \
+#     cmake -DCMAKE_BUILD_TYPE=Debug \
+#           .. && \
+#     make -j 2 && \
+#     mv aspect $HOME/aspect/aspect && \
+#     make clean
 
 ENV ASPECT_DIR /home/dealii/aspect/build-debug
 
