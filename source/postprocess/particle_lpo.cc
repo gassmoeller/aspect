@@ -659,7 +659,7 @@ namespace aspect
           // (cosine matrix) should be the same.
           if (theta == 0.0)
             {
-              phi2 = - phi1 - std::atan2(rotation_matrix[0][1],rotation_matrix[0][0]);
+              phi2 = - phi1 - std::atan2(-rotation_matrix[0][1],rotation_matrix[0][0]);// Mod Yijun
             }
           else
             {
