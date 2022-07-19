@@ -189,7 +189,7 @@ namespace aspect
                 //std::cout<<"A_ss: "<<A_ss<<  std::endl;
                 Tensor<2,3> R = a_cosine_matrices_grains[mineral_i][i];
                 //std::cout<<"Rotation matrix: "<<R<<  std::endl;
-                SymmetricTensor<2,3> Rate_grain=symmetrize(transpose(R)*strain_rate*R);
+                SymmetricTensor<2,3> Rate_grain=symmetrize(R*strain_rate*transpose(R));
                 //std::cout<<"Rate_grain "<<Rate_grain<<  std::endl;
                 std::array<std::pair<double, Tensor<1, 3>>, 3> Rate_gr_eig = eigenvectors(Rate_grain,SymmetricTensorEigenvectorMethod::jacobi);
                 //std::cout<<"Rate_grain eigen values: "<<Rate_gr_eig[0].first<<"; "<<Rate_gr_eig[1].first<<"; "<<Rate_gr_eig[2].first<<std::endl;
@@ -258,7 +258,7 @@ namespace aspect
                 S_gc[0][2] = S_gc_v[4][0];
                 S_gc[0][1] = S_gc_v[5][0];
 
-                SymmetricTensor<2,3> S_g= symmetrize(R*S_gc*transpose(R)); //Here instead of making a multidimensional array what I sum at the end, I create S_g and add it to S_sum
+                SymmetricTensor<2,3> S_g= symmetrize(transpose(R)*S_gc*R); //Here instead of making a multidimensional array what I sum at the end, I create S_g and add it to S_sum
                 //SymmetricTensor<2,3> S_sum;
                 //std::cout<<"Stress on grain: "<<S_g<<  std::endl;
                 S_sum += S_g;
@@ -381,6 +381,8 @@ namespace aspect
             stress4=compute_S_tensor(e4, grain_size, a_cosine_matrices_grains, deformation_type, temperature);
             stress5=compute_S_tensor(e5, grain_size, a_cosine_matrices_grains, deformation_type, temperature);
             Stress =compute_S_tensor(E, grain_size, a_cosine_matrices_grains, deformation_type, temperature);
+            std::cout << "Strain rate particle " << E << std::endl;
+            std::cout << "Stress tensor particle " << Stress << std::endl;
 
 
             for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
@@ -394,7 +396,7 @@ namespace aspect
 
               }
           }
-        //std::cout << "Ss tensor " << Ss_tensor << std::endl;
+        std::cout << "Ss tensor " << Ss_tensor << std::endl;
         Particle::Property::LpoSsTensor<dim>::store_particle_data(data_position,
                                                                   data,
                                                                   Ss_tensor);

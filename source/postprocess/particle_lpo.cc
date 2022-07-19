@@ -631,6 +631,15 @@ namespace aspect
 
 
       AssertThrow(rotation_matrix[2][2] <= 1.0, ExcMessage("rot_matrix[2][2] > 1.0"));
+      /*std::cout<<"The rotation matrix is:"<<std::endl;
+      for (int i = 0; i < dim; i++)
+               {
+                for (int j = 0; j < dim; j++)
+                {
+                  std::cout << rotation_matrix[i][j] << ", ";
+                }
+                std::cout << std::endl;
+              }*/
 
       const double theta = std::acos(rotation_matrix[2][2]);//Mod Agi 2022.06.22
       double phi1 = 0.0;
@@ -659,6 +668,8 @@ namespace aspect
 
         }
 
+      
+
       AssertThrow(!std::isnan(phi1), ExcMessage(" phi1 is nan. theta = " + std::to_string(theta) + ", rotation_matrix[2][2]= " + std::to_string(rotation_matrix[2][2])
                                                 + ", acos(rotation_matrix[2][2]) = " + std::to_string(std::acos(rotation_matrix[2][2])) + ", acos(1.0) = " + std::to_string(std::acos(1.0))));
       AssertThrow(!std::isnan(theta), ExcMessage(" theta is nan."));
@@ -667,6 +678,9 @@ namespace aspect
       euler_angles[0] = wrap_angle(phi1 * rad_to_degree);
       euler_angles[1] = wrap_angle(theta * rad_to_degree);
       euler_angles[2] = wrap_angle(phi2 * rad_to_degree);
+      //std::cout<<"phi1 is: "<<euler_angles[0]<<std::endl;
+      //std::cout<<"theta is: "<<euler_angles[1]<<std::endl;
+      //std::cout<<"phi2 is: "<<euler_angles[2]<<std::endl;
 
 
       AssertThrow(!std::isnan(euler_angles[0]), ExcMessage(" euler_angles[0] is nan."));
@@ -689,14 +703,14 @@ namespace aspect
 
       rot_matrix[0][0] = cos(phi2)*cos(phi1) - cos(theta)*sin(phi1)*sin(phi2);
       rot_matrix[0][1] = -cos(phi2)*sin(phi1) - cos(theta)*cos(phi1)*sin(phi2);
-      rot_matrix[0][2] = -sin(phi2)*sin(theta);
+      rot_matrix[0][2] = sin(phi2)*sin(theta); //Mod Agi 2022.06.23.
 
       rot_matrix[1][0] = sin(phi2)*cos(phi1) + cos(theta)*sin(phi1)*cos(phi2);
       rot_matrix[1][1] = -sin(phi2)*sin(phi1) + cos(theta)*cos(phi1)*cos(phi2);
-      rot_matrix[1][2] = cos(phi2)*sin(theta);
+      rot_matrix[1][2] = -cos(phi2)*sin(theta);//Mod Agi 2022.06.23.
 
-      rot_matrix[2][0] = -sin(theta)*sin(phi1);
-      rot_matrix[2][1] = -sin(theta)*cos(phi1);
+      rot_matrix[2][0] = sin(theta)*sin(phi1);//Mod Agi 2022.06.23.
+      rot_matrix[2][1] = sin(theta)*cos(phi1);//Mod Agi 2022.06.23.
       rot_matrix[2][2] = cos(theta);
       AssertThrow(rot_matrix[2][2] <= 1.0, ExcMessage("rot_matrix[2][2] > 1.0"));
       return rot_matrix;
