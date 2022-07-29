@@ -75,6 +75,8 @@ namespace aspect
           SymmetricTensor<2,dim>
           compute_S_tensor (const SymmetricTensor<2,dim> &strain_rate,
                             const double grain_size,
+                            std::vector<double> volume_fraction_mineral,
+                            std::vector<std::vector<double>> volume_fractions_grains,
                             const std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
                             const std::vector<unsigned int> &deformation_type,
                             const double &temperature ) const;
