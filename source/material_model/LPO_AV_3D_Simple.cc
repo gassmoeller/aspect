@@ -622,15 +622,8 @@ namespace aspect
               E_eq= std::sqrt((4./3.)*AV<dim>::J2_second_invariant(in.strain_rate[q], min_strain_rate));// Second invariant of strain-rate
               //std::cout<<"E_eq is:"<<E_eq<<std::endl;
               E=in.strain_rate[q];
-              std::cout<<"The strain rate is:"<<std::endl;
-              for (int i = 0; i < dim; i++)
-               {
-                for (int j = 0; j < dim; j++)
-                {
-                  std::cout << E[i][j] << ", ";
-                }
-                std::cout << std::endl;
-              }
+              //std::cout<<"The strain rate is:"<< E << std::endl;
+              
 
               AssertThrow(isfinite(1/E.norm()),
                           ExcMessage("Strain rate should be finite"));
@@ -649,16 +642,9 @@ namespace aspect
                       Stress[k][l]=Sv[SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(k,l))];
                     }
                 }
-              std::cout<<"Svector is: "<<Sv<<std::endl;
-              std::cout<<"The stress is:"<<std::endl;
-              for (int i = 0; i < dim; i++)
-               {
-                for (int j = 0; j < dim; j++)
-                {
-                  std::cout << Stress[i][j] << ", ";
-                }
-                std::cout << std::endl;
-              }
+              //std::cout<<"Svector is: "<<Sv<<std::endl;
+              //std::cout<<"The stress is:"<< Stress << std::endl;
+              
 
               const double Stress_eq= std::sqrt(3.0*AV<dim>::J2_second_invariant(Stress, min_strain_rate));
               //std::cout<<"Stress eq is: "<<Stress_eq<<std::endl;
@@ -719,7 +705,7 @@ namespace aspect
 
               // Overwrite the scalar viscosity with an effective viscosity
               out.viscosities[q] = std::abs(Stress_eq/E_eq);
-              std::cout << "Effective viscosity " << std::abs(Stress_eq/E_eq) << std::endl;
+              //std::cout << "Effective viscosity " << std::abs(Stress_eq/E_eq) << std::endl;
               AssertThrow(out.viscosities[q] != 0,
                           ExcMessage("Viscosity should not be 0"));
               AssertThrow(isfinite(out.viscosities[q]),

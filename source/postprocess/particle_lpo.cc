@@ -631,8 +631,8 @@ namespace aspect
 
 
       AssertThrow(rotation_matrix[2][2] <= 1.0, ExcMessage("rot_matrix[2][2] > 1.0"));
-      /*std::cout<<"The rotation matrix is:"<<std::endl;
-      for (int i = 0; i < dim; i++)
+      std::cout<<"The rotation matrix is: "<<rotation_matrix << std::endl;
+      /*for (int i = 0; i < dim; i++)
                {
                 for (int j = 0; j < dim; j++)
                 {
@@ -678,9 +678,9 @@ namespace aspect
       euler_angles[0] = wrap_angle(phi1 * rad_to_degree);
       euler_angles[1] = wrap_angle(theta * rad_to_degree);
       euler_angles[2] = wrap_angle(phi2 * rad_to_degree);
-      //std::cout<<"phi1 is: "<<euler_angles[0]<<std::endl;
-      //std::cout<<"theta is: "<<euler_angles[1]<<std::endl;
-      //std::cout<<"phi2 is: "<<euler_angles[2]<<std::endl;
+      std::cout<<"phi1 is: "<<euler_angles[0]<<std::endl;
+      std::cout<<"theta is: "<<euler_angles[1]<<std::endl;
+      std::cout<<"phi2 is: "<<euler_angles[2]<<std::endl;
 
 
       AssertThrow(!std::isnan(euler_angles[0]), ExcMessage(" euler_angles[0] is nan."));
