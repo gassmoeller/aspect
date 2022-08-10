@@ -189,11 +189,11 @@ namespace aspect
             //std::cout<<"A_ss: "<<A_ss<<std::endl;
             for (size_t i = 0; i < n_grains_local; i++) //NOTE:  need to use volume fractions for the final stress per particle for enstatite and olivine
               {
-                std::cout<<"strain rate: "<<strain_rate<<  "A_ss: "<<A_ss<<  std::endl;
+                //std::cout<<"strain rate: "<<strain_rate<<  "A_ss: "<<A_ss<<  std::endl;
                 //std::cout<<"A_ss: "<<A_ss<<  std::endl;
                 //std::cout<<"Volume fraction grains: "<< volume_fractions_grains[mineral_i][i]<<  std::endl; 
                 Tensor<2,3> R = a_cosine_matrices_grains[mineral_i][i];
-                std::cout<<"Rotation matrix: "<<R<<  std::endl;
+                //std::cout<<"Rotation matrix: "<<R<<  std::endl;
                 SymmetricTensor<2,3> Rate_grain=symmetrize(R*strain_rate*transpose(R));
                 //std::cout<<"Rate_grain "<<Rate_grain<<  std::endl;
                 std::array<std::pair<double, Tensor<1, 3>>, 3> Rate_gr_eig = eigenvectors(Rate_grain,SymmetricTensorEigenvectorMethod::jacobi);
@@ -243,15 +243,10 @@ namespace aspect
                 //std::cout<<"1.0/A0: "<<1.0/A0<<std::endl;
                 AssertThrow(isfinite(1./A0),
                             ExcMessage("1/A0 is infinite"))
-                //std::cout<<"std::pow(grain_size,0.73): "<<std::pow(grain_size,0.73)<<std::endl;
-                //std::cout<<"std::fabs(r_ss[0][0]/2) "<<std::fabs(r_ss[0][0]/2)<<std::endl;
-                //std::cout<<"tau_ss(1) "<<std::copysignf(1.0,r_ss[0][0])*std::pow(1.0/A_ss[0]*1.0/A0*std::pow(grain_size,0.73)*std::fabs(r_ss[0][0]/2),1.0/nFo)<<std::endl;
                 tau_ss[0][0]= std::copysignf(1.0,r_ss[0][0])*std::pow(1.0/A_ss[0]*1.0/A0*std::pow(grain_size,0.73)*std::fabs(r_ss[0][0]/2),1.0/nFo);
                 tau_ss[1][0]= std::copysignf(1.0,r_ss[1][0])*std::pow(1.0/A_ss[1]*1.0/A0*std::pow(grain_size,0.73)*std::fabs(r_ss[1][0]/2),1.0/nFo);
                 tau_ss[2][0]= std::copysignf(1.0,r_ss[2][0])*std::pow(1.0/A_ss[2]*1.0/A0*std::pow(grain_size,0.73)*std::fabs(r_ss[2][0]/2),1.0/nFo);
-                //std::cout<<"Tau_ss(0,0): "<<tau_ss[0][0]<<  std::endl;
-                //std::cout<<"Tau_ss(1,0): "<<tau_ss[1][0]<<  std::endl;
-                //std::cout<<"Tau_ss(2,0): "<<tau_ss[2][0]<<  std::endl;
+                
 
                 FullMatrix<double>  S_gc_v(6,1);
                 Schm.mmult(S_gc_v,tau_ss); //Voigt notation of the resolved stress on the grain
@@ -265,9 +260,9 @@ namespace aspect
 
                 SymmetricTensor<2,3> S_g= symmetrize(transpose(R)*S_gc*R); //Here instead of making a multidimensional array what I sum at the end, I create S_g and add it to S_sum
                 //SymmetricTensor<2,3> S_sum;
-                std::cout<<"Stress on grain: "<<S_g<<  std::endl;
-                SymmetricTensor<2,3> S_g_contrib = S_g*volume_fraction_mineral[mineral_i]/n_grains_local; //Each particle has n grains that have multiple mineral fractions (with some volume fraction) 
-                std::cout<<"gtains contribution of total stress MPa: "<<S_g_contrib<<  std::endl;
+                //std::cout<<"Stress on grain: "<<S_g<<  std::endl;
+                SymmetricTensor<2,3> S_g_contrib = S_g*volume_fraction_mineral[mineral_i]*volume_fractions_grains[mineral_i][i]; //Each particle has n grains that have multiple mineral fractions (with some volume fraction) 
+                //std::cout<<"gtains contribution of total stress MPa: "<<S_g_contrib<<  std::endl;
                 S_sum += S_g_contrib;
                 //std::cout<<"S_sum: "<<S_sum<<  std::endl;
 
@@ -277,7 +272,7 @@ namespace aspect
           }
         
         S_sum *= 1e6;
-        std::cout<<"S_sum final Pa: "<<S_sum<<  std::endl;
+        //std::cout<<"S_sum final Pa: "<<S_sum<<  std::endl;
 
         return S_sum;
       }
@@ -388,8 +383,8 @@ namespace aspect
             stress4=compute_S_tensor(e4, grain_size, volume_fraction_mineral, volume_fractions_grains, a_cosine_matrices_grains, deformation_type, temperature);
             stress5=compute_S_tensor(e5, grain_size, volume_fraction_mineral, volume_fractions_grains, a_cosine_matrices_grains, deformation_type, temperature);
             Stress =compute_S_tensor(E, grain_size, volume_fraction_mineral, volume_fractions_grains, a_cosine_matrices_grains, deformation_type, temperature);
-            std::cout << "Strain rate particle " << E << std::endl;
-            std::cout << "Stress tensor particle " << Stress << std::endl;
+            //std::cout << "Strain rate particle " << E << std::endl;
+            //std::cout << "Stress tensor particle " << Stress << std::endl;
 
 
             for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
