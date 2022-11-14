@@ -236,6 +236,16 @@ namespace aspect
     }
 
     template <int dim>
+    std::vector<unsigned int>
+    Box<dim>::get_repetitions () const
+    {
+      std::vector<unsigned int> repetition(dim);
+      for (unsigned int i=0; i<dim; ++i)
+        repetition[i] = repetitions[i];
+      return repetition;
+    }
+
+    template <int dim>
     double
     Box<dim>::
     length_scale () const

@@ -357,6 +357,28 @@ namespace aspect
               out.densities[i] *= (1.0 - relative_depletion_density);
             }
 
+          /*
+           * We use the adiabatic pressure for the latent heat and melting, since dynamic pressure does not contribute much
+           * and is often negative close to the surface, which would be compensated in reality by a free surface.
+          */
+          const double adiabatic_pressure = (this->get_adiabatic_conditions().is_initialized())
+                                  ?
+                                  this->get_adiabatic_conditions().pressure(in.position[i])
+                                  :
+                                  in.pressure[i];
+          out.entropy_derivative_pressure[i]    = entropy_derivative            (in.temperature[i], adiabatic_pressure, in.composition[i], in.position[i], NonlinearDependence::pressure);
+          out.entropy_derivative_temperature[i] = entropy_derivative            (in.temperature[i], adiabatic_pressure, in.composition[i], in.position[i], NonlinearDependence::temperature);
+          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+            out.reaction_terms[i][c]            = 0;
+
+          if (this->introspection().compositional_name_exists("maximum_melt_fraction"))
+            {
+              const double melt_index = this->introspection().compositional_index_for_name("maximum_melt_fraction");
+              const double melt_frac = melt_fraction(in.temperature[i], adiabatic_pressure, in.composition[i], in.position[i]);
+              if (in.composition[i][melt_index] < melt_frac)
+                out.reaction_terms[i][melt_index] = melt_frac - in.composition[i][melt_index];
+            }
+
           fill_prescribed_outputs(i, volume_fractions[i], in, out);
         }
 

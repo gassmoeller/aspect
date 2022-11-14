@@ -79,6 +79,13 @@ namespace aspect
         Point<dim> get_origin () const;
 
         /**
+         * Return a point that denotes the lower left corner of the box
+         * domain.
+         */
+        virtual
+        std::vector<unsigned int> get_repetitions () const;
+
+        /**
          * Return the typical length scale one would expect of features in
          * this geometry, assuming realistic parameters.
          *
