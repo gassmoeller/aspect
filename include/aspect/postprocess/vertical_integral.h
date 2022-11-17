@@ -156,14 +156,14 @@ namespace aspect
          * there is no way to store the simulation time inside the .pvtu or
          * .vtu files).
          */
-        std::vector<std::pair<double,std::string> > times_and_vtu_names;
+        std::vector<std::pair<double,std::string>> times_and_vtu_names;
 
         /**
          * A list of list of filenames, sorted by timestep, that correspond to
          * what has been created as output. This is used to create a master
          * .visit file for the entire simulation.
          */
-        std::vector<std::vector<std::string> > output_file_names_by_timestep;
+        std::vector<std::vector<std::string>> output_file_names_by_timestep;
     };
   }
 }

@@ -362,10 +362,10 @@ namespace aspect
            * and is often negative close to the surface, which would be compensated in reality by a free surface.
           */
           const double adiabatic_pressure = (this->get_adiabatic_conditions().is_initialized())
-                                  ?
-                                  this->get_adiabatic_conditions().pressure(in.position[i])
-                                  :
-                                  in.pressure[i];
+                                            ?
+                                            this->get_adiabatic_conditions().pressure(in.position[i])
+                                            :
+                                            in.pressure[i];
           out.entropy_derivative_pressure[i]    = entropy_derivative            (in.temperature[i], adiabatic_pressure, in.composition[i], in.position[i], NonlinearDependence::pressure);
           out.entropy_derivative_temperature[i] = entropy_derivative            (in.temperature[i], adiabatic_pressure, in.composition[i], in.position[i], NonlinearDependence::temperature);
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
@@ -509,8 +509,8 @@ namespace aspect
     Steinberger<dim>::
     peridotite_melt_fraction (const double temperature,
                               const double pressure,
-                              const std::vector<double> &composition, /*composition*/
-                              const Point<dim> &position) const
+                              const std::vector<double> &/*composition*/,
+                              const Point<dim> &/*position*/) const
     {
       // anhydrous melting of peridotite after Katz, 2003
       const double T_solidus  = A1 + 273.15
@@ -550,8 +550,8 @@ namespace aspect
     Steinberger<dim>::
     pyroxenite_melt_fraction (const double temperature,
                               const double pressure,
-                              const std::vector<double> &composition, /*composition*/
-                              const Point<dim> &position) const
+                              const std::vector<double> &/*composition*/,
+                              const Point<dim> &/*position*/) const
     {
       // melting of pyroxenite after Sobolev et al., 2011
       const double T_melting = D1 + 273.15
@@ -589,6 +589,21 @@ namespace aspect
              :
              peridotite_melt_fraction(temperature, pressure, composition, position);
 
+    }
+
+
+
+    template <int dim>
+    void
+    Steinberger<dim>::
+    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                    std::vector<double> &melt_fractions) const
+    {
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
+        melt_fractions[q] = melt_fraction(in.temperature[q],
+                                          std::max(0.0, in.pressure[q]),
+                                          in.composition[q],
+                                          in.position[q]);
     }
 
 

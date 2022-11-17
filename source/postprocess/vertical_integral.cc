@@ -99,7 +99,7 @@ namespace aspect
       const Point<dim> model_extent = geometry_model->get_extents();
 
       const unsigned int refinement = this->get_parameters().initial_global_refinement +
-                                        this->get_parameters().initial_adaptive_refinement;
+                                      this->get_parameters().initial_adaptive_refinement;
       const unsigned int intervals = std::pow(2,refinement);
       std::vector<unsigned int> repetitions = geometry_model->get_repetitions();
       repetitions.resize(dim-1);
@@ -147,7 +147,7 @@ namespace aspect
 
       std::vector<double> composition(quadrature_formula.size());
       std::vector<double> old_composition(quadrature_formula.size());
-      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());

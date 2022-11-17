@@ -23,6 +23,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/thermodynamic_table_lookup.h>
+#include <aspect/melt.h>
 
 #include <aspect/simulator_access.h>
 #include <deal.II/fe/component_mask.h>
@@ -124,7 +125,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Steinberger: public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class Steinberger: public MaterialModel::Interface<dim>, public MaterialModel::MeltFractionModel<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -379,6 +380,17 @@ namespace aspect
         double melt_thermal_alpha;
 
         double pyroxenite_melting_entropy_change;
+
+        /**
+         * Compute the equilibrium melt fractions for the given input conditions.
+         * @p in and @p melt_fractions need to have the same size.
+         *
+         * @param in Object that contains the current conditions.
+         * @param melt_fractions Vector of doubles that is filled with the
+         * equilibrium melt fraction for each given input conditions.
+         */
+        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                     std::vector<double> &melt_fractions) const;
 
         /**
          * Percentage of material that is molten. Melting model after Katz,
