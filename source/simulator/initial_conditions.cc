@@ -279,7 +279,7 @@ namespace aspect
 
 
     const std::vector<Point<dim>> support_points
-      = finite_element.base_element(base_element_index).get_unit_support_points();
+                               = finite_element.base_element(base_element_index).get_unit_support_points();
 
     Assert (support_points.size() != 0,
             ExcInternalError());

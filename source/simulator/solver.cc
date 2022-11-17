@@ -328,7 +328,7 @@ namespace aspect
       if (do_solve_A == true)
         {
           SolverControl solver_control(10000, utmp.l2_norm() * A_block_tolerance);
-          TrilinosWrappers::SolverCG solver(solver_control);
+          TrilinosWrappers::SolverGMRES solver(solver_control);
           try
             {
               dst.block(0) = 0.0;

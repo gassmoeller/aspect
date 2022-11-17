@@ -668,7 +668,7 @@ namespace aspect
 
         }
 
-      
+
 
       AssertThrow(!std::isnan(phi1), ExcMessage(" phi1 is nan. theta = " + std::to_string(theta) + ", rotation_matrix[2][2]= " + std::to_string(rotation_matrix[2][2])
                                                 + ", acos(rotation_matrix[2][2]) = " + std::to_string(std::acos(rotation_matrix[2][2])) + ", acos(1.0) = " + std::to_string(std::acos(1.0))));

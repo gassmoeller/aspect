@@ -41,6 +41,10 @@
 #include <string>
 #include <vector>
 
+#include <deal.II/lac/full_matrix.h>
+#include <deal.II/lac/lapack_full_matrix.h>
+#include <deal.II/lac/vector.h>
+
 //#include <world_builder/utilities.h>
 
 #include <aspect/simulator_access.h>
@@ -483,6 +487,46 @@ namespace aspect
 //Next session is a more evolved implementation of anisotropic viscosity in the material model based on Hansen et al 2016 and Kiraly et al 2020
   namespace MaterialModel
   {
+    namespace
+    {
+      /**
+       * A function that checks that a second rank tensor (not
+       * necessarily symmetric) has only positive eigenvalues.
+      */
+      template <int matrix_size>
+      void check_eigenvalues_positive(const Tensor<2,matrix_size> &matrix)
+      {
+        // This is a good matrix to test, it has a negative eigenvalue
+        // const double left[4][4] = {{1.75, -0.433012701892219, 0.0, 0.0},
+        //                      {-0.433012701892219, -1.25, 0.0, 0.0},
+        //                      {0.0, 0.0, 3.5, -0.5},
+        //                      {0.0, 0.0, -0.5, 3.5}};
+        // FullMatrix<double>       A(4, 4, &left[0][0]);
+
+        FullMatrix<double> A(matrix_size, matrix_size);
+        for (unsigned int i=0; i<matrix_size; ++i)
+          for (unsigned int j=0; j<matrix_size; ++j)
+            A[i][j] = matrix[i][j];
+
+        LAPACKFullMatrix<double> LA(matrix_size, matrix_size);
+        LA = A;
+
+        LA.compute_eigenvalues();
+
+        for (unsigned int i = 0; i < LA.m(); ++i)
+          {
+            const double eigenvalue = LA.eigenvalue(i).real();
+            if (eigenvalue < 0.0)
+              {
+                std::stringstream error_message;
+                error_message << "eigenvalue " << i << ": " << std::scientific << eigenvalue << std::endl;
+
+                AssertThrow (false, ExcMessage(error_message.str()));
+              }
+          }
+      }
+    }
+
     template <int dim>
     void
     LPO_AV_3D_Simple<dim>::set_assemblers(const SimulatorAccess<dim> &,
@@ -516,7 +560,7 @@ namespace aspect
                   ExcMessage("Olivine has 3 independent slip systems, allowing for deformation in 3 independent directions, hence these models only work in 3D"));
 
       //move c_idx_S part here (right?)
-      
+
       c_idx_S.push_back (this->introspection().compositional_index_for_name("S1"));
       c_idx_S.push_back (this->introspection().compositional_index_for_name("S2"));
       c_idx_S.push_back (this->introspection().compositional_index_for_name("S3"));
@@ -623,7 +667,7 @@ namespace aspect
               //std::cout<<"E_eq is:"<<E_eq<<std::endl;
               E=in.strain_rate[q];
               //std::cout<<"The strain rate is:"<< E << std::endl;
-              
+
 
               AssertThrow(isfinite(1/E.norm()),
                           ExcMessage("Strain rate should be finite"));
@@ -644,7 +688,7 @@ namespace aspect
                 }
               //std::cout<<"Svector is: "<<Sv<<std::endl;
               //std::cout<<"The stress is:"<< Stress << std::endl;
-              
+
 
               const double Stress_eq= std::sqrt(3.0*AV<dim>::J2_second_invariant(Stress, min_strain_rate));
               //std::cout<<"Stress eq is: "<<Stress_eq<<std::endl;
@@ -710,6 +754,17 @@ namespace aspect
                           ExcMessage("Viscosity should not be 0"));
               AssertThrow(isfinite(out.viscosities[q]),
                           ExcMessage("Viscosity should not be finite"));
+
+              // This is a good test tensor, it has a negative eigenvalue.
+              // if you change -1.25 to 1.25 on the main diagonal it has
+              // only positive eigenvalues
+              const Tensor<2,4> tensor (ArrayView<const double>({1.75, -0.433012701892219, 0.0, 0.0,
+                      -0.433012701892219, -1.25, 0.0, 0.0,
+                      0.0, 0.0, 3.5, -0.5,
+                      0.0, 0.0, -0.5, 3.5
+              }));
+              check_eigenvalues_positive(tensor);
+
               if (anisotropic_viscosity != nullptr)
                 {
                   anisotropic_viscosity->stress_strain_directors[q] = ViscoTensor_r4/(2.0*Stress_eq/E_eq);
