@@ -4,15 +4,13 @@
 #
 # See the manual for more information.
 
-############### Global parameters
-# We use a 2d setup. Since we are only interested
-# in a steady state solution, we set the end time
-# equal to the start time to force a single time
-# step before the program terminates.
+# Most parameters are identical to the instantaneous version
+# of the benchmark. Refer to that parameter file for most settings.
+include $ASPECT_SOURCE_DIR/benchmarks/annulus/annulus.prm
 
+# Only list parameters that are specific for the transient benchmark
 set Additional shared libraries            = ../plugin/libannulus.so
 set Dimension                              = 2
-set Start time                             = 0
 
 # for visualization: t = log(1 + 2 pi) = 1.9855683087099188711207438626228625913235123943706611263321188546
 # for visualization: t = log(1 + 4 pi) = 1.9855683087099188711207438626228625913235123943706611263321188546
@@ -20,33 +18,7 @@ set Start time                             = 0
 set End time                                = 2.6075939815049280917817614240391581472837221358084918109292273672
 #set End time                               = 1.9855683087099188711207438626228625913235123943706611263321188546
 
-set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
-set Output directory                       = output
-set Pressure normalization                 = surface
-
-############### Parameters describing the model
-# Because the temperature plays no role in this model we need not
-# bother to describe temperature boundary conditions or
-# the material parameters that pertain to the temperature.
-
-subsection Geometry model
-  set Model name = spherical shell
-  # NOTE: the analytical solutions are hard-coded
-  # to these geometry values: do not change them.
-  subsection Spherical shell
-    set Inner radius = 1
-    set Outer radius = 2
-    set Opening angle = 360
-  end
-end
-
-#Boundary conditions
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 0  : AnnulusBoundary, \
-                                                1  : AnnulusBoundary
-end
 
 subsection Discretization
   set Use discontinuous composition discretization = true
@@ -63,52 +35,18 @@ subsection Initial composition model
 end
 
 subsection Material model
-  set Model name = AnnulusMaterial
   set Material averaging = harmonic average only viscosity
 end
 
-subsection Gravity model
-  set Model name = annulus gravity
-end
-
-#Viscosity parameter is k, which controls the number
-#of mantle convection cells
-
 subsection Annulus benchmark
-   set Use analytical density          = false
-   set Viscosity parameter             = 4
+   set Use analytical density  = false
+   set Use transient solution  = true
+   set k                       = 4
 end
-
-subsection Boundary temperature model
-  set List of model names =
-end
-
-subsection Initial temperature model
-  set Model name = function
-
-  subsection Function
-    set Function expression = 0
-  end
-end
-
-
-############### Parameters describing the discretization
-# The following parameters describe how often we want to refine
-# the mesh globally and adaptively, what fraction of cells should
-# be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively.
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0
-  set Initial global refinement          = 3
-  set Refinement fraction                = 0.2
-  set Strategy                           = velocity
-  set Time steps between mesh refinement = 0
+  set Initial global refinement          = 2
 end
-
-############### Parameters describing what to do with the solution
-# The final section allows us to choose which postprocessors to
-# run at the end of each time step.
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor, rotation statistics
@@ -125,13 +63,13 @@ subsection Postprocess
 
   subsection Particles
     set Time between data output = 2.6
-    set Integration scheme = rk2 # or rk4
-    set Interpolation scheme = bilinear least squares # or cell average
+    set Integration scheme = rk2
+    set Interpolation scheme = bilinear least squares
     set List of particle properties = particle density
     set Update ghost particles = true
     set Particle generator name = random uniform
     set Number of particles = 49152
-    set Load balancing strategy = add particles # not necessary for uniform mesh
+    set Load balancing strategy = add particles
     set Minimum particles per cell = 12
   end
 end
@@ -143,8 +81,4 @@ subsection Solver parameters
     set Stokes solver type = block GMG
     set Krylov method for cheap solver steps = IDR(s)
   end
-end
-
-subsection Checkpointing
-  set Time between checkpoint = 1800
 end

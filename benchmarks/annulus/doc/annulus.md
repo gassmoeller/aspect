@@ -9,14 +9,14 @@ annulus geometry. The velocity and pressure fields are as follows:
 v_r(r,\theta)     &=  g(r) k \sin(k\theta), \\
 v_\theta(r,\theta)&=  f(r) \cos(k \theta), \\
 p(r,\theta)       &=  k h(r) \sin(k \theta), \\
-\rho (r,\theta)   &= \aleph(r) k \sin (k \theta),
+\rho (r,\theta)   &= \m(r) k \sin (k \theta),
 ```
 with
 ```{math}
 f(r)&=Ar+B/r, \\
 g(r) &= \frac{A}{2}r  +  \frac{B}{r} \ln r + \frac{C}{r}, \\
 h(r)&= \frac{2g(r)-f(r)}{r},  \\
-\aleph(r) &= g'' - \frac{g'}{r}  - \frac{g}{r^2} (k^2 - 1)  + \frac{f}{r^2}   + \frac{f'}{r}, \\
+\m(r) &= g'' - \frac{g'}{r}  - \frac{g}{r^2} (k^2 - 1)  + \frac{f}{r^2}   + \frac{f'}{r}, \\
 A &= -C\frac{2(\ln R_1 - \ln R_2)} { R_2^2 \ln R_1  - R_1^2 \ln R_2}, \\
 B &= -C \frac{R_2^2-R_1^2}{R_2^2 \ln R_1 - R_1^2 \ln R_2}.
 ```
@@ -31,19 +31,19 @@ domain, as shown in {numref}`fig:annulus-vp1` through {numref}`fig:annulus-vp3`.
 ```{figure-md} fig:annulus-vp1
 <img src="pressures.png" width="100%"/>
 
- Pressure fields for k=0,1,2,3 for the 2D annulus benchmark.
+ Pressure fields for k=0,1,2,4 for the 2D annulus benchmark.
 ```
 
 ```{figure-md} fig:annulus-vp2
 <img src="density.png" width="100%"/>
 
-Density fields for k=0,1,2,3 for the 2D annulus benchmark.
+Density fields for k=0,1,2,4 for the 2D annulus benchmark.
 ```
 
 ```{figure-md} fig:annulus-vp3
 <img src="velocities2.png" width="100%"/>
 
-Velocity fields for k=0,1,2,3 for the 2D annulus benchmark.
+Velocity fields for k=0,1,2,4 for the 2D annulus benchmark.
 ```
 
 In the present case, we set $R_1=1$, $R_2=2$ and $C=-1$. {numref}`fig:annulus-errors` shows

@@ -3,25 +3,21 @@
 #
 # See the manual for more information.
 
-############### Global parameters
 # We use a 2d setup. Since we are only interested
-# in a steady state solution, we set the end time
+# in an instantaneous solution, we set the end time
 # equal to the start time to force a single time
 # step before the program terminates.
 
 set Additional shared libraries            = ./plugin/libannulus.so
 set Dimension                              = 2
 set Start time                             = 0
-
-#t = W(2 π)≈1.459668031931907631609261850867606339157809499424392505715135150675824156227404522963194005578792121
-set End time                               = 6.28 #1.459668031931907631609261850 #6.28
+set End time                               = 0
 
 set Use years in output instead of seconds = false
-set Nonlinear solver scheme                = no Advection, iterated Stokes
+set Nonlinear solver scheme                = no Advection, single Stokes
 set Output directory                       = output
 set Pressure normalization                 = surface
 
-############### Parameters describing the model
 # Because the temperature plays no role in this model we need not
 # bother to describe temperature boundary conditions or
 # the material parameters that pertain to the temperature.
@@ -37,40 +33,25 @@ subsection Geometry model
   end
 end
 
-#Boundary conditions
-
 subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 0  : AnnulusBoundary, \
-                                                1  : AnnulusBoundary
+  set Prescribed velocity boundary indicators = bottom : AnnulusBoundary, \
+                                                top : AnnulusBoundary
 end
-
-#subsection Discretization
-#set Stokes velocity polynomial degree = 1
-#set Use locally conservative discretization = true
-#end
 
 subsection Material model
   set Model name = AnnulusMaterial
 end
 
 subsection Gravity model
-  set Model name = radial constant
-  subsection Radial constant
-    set Magnitude =  1
-  end
+  set Model name = annulus gravity
 end
 
-#Viscosity parameter is k, which controls the number
-#of mantle convection cells
-
+# k controls the number of convection cells.
 subsection Annulus benchmark
-   set Viscosity parameter             = 4
+   set k = 4
 end
 
-############### Parameters describing the temperature field
-# As above, there is no need to set anything for the
-# temperature boundary conditions.
-
+# Temperature does not influence this benchmark
 subsection Initial temperature model
   set Model name = function
 
@@ -79,40 +60,31 @@ subsection Initial temperature model
   end
 end
 
-
-############### Parameters describing the discretization
-# The following parameters describe how often we want to refine
-# the mesh globally and adaptively, what fraction of cells should
-# be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively.
-
+# Disable adaptive mesh refinement
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 3
-  set Refinement fraction                = 0.2
-  set Strategy                           = velocity
+  set Initial global refinement          = 5
   set Time steps between mesh refinement = 0
 end
 
-############### Parameters describing what to do with the solution
-# The final section allows us to choose which postprocessors to
-# run at the end of each time step.
-
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor, depth average, rotation statistics
+  set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor
+
   subsection Dynamic topography
     set Density above = 0
     set Density below = 0
   end
+
   subsection Visualization
-    set List of output variables = density, viscosity, strain rate, dynamic topography
+    set List of output variables = density, viscosity, strain rate, dynamic topography, AnnulusVisualizationPostprocessor
     set Time between graphical output = 0
   end
 end
 
+# Increase Stokes solver accuracy to ensure convergence to
+# very low error values
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-12
-    set Number of cheap Stokes solver steps = 0
   end
 end
