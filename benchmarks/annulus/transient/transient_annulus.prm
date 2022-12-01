@@ -6,7 +6,7 @@
 
 # Most parameters are identical to the instantaneous version
 # of the benchmark. Refer to that parameter file for most settings.
-include $ASPECT_SOURCE_DIR/benchmarks/annulus/annulus.prm
+include $ASPECT_SOURCE_DIR/benchmarks/annulus/instantaneous/annulus.prm
 
 # Only list parameters that are specific for the transient benchmark
 set Additional shared libraries            = ../plugin/libannulus.so
