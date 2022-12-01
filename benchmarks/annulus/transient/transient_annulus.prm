@@ -2,7 +2,7 @@
 # analytical solution is available. This is the rotating
 # version of the benchmark described in Gassmoeller et al. 2023.
 #
-# See the manual for more information.
+# See the doc/ directory or manual for more information.
 
 # Most parameters are identical to the instantaneous version
 # of the benchmark. Refer to that parameter file for most settings.
@@ -12,11 +12,8 @@ include $ASPECT_SOURCE_DIR/benchmarks/annulus/annulus.prm
 set Additional shared libraries            = ../plugin/libannulus.so
 set Dimension                              = 2
 
-# for visualization: t = log(1 + 2 pi) = 1.9855683087099188711207438626228625913235123943706611263321188546
-# for visualization: t = log(1 + 4 pi) = 1.9855683087099188711207438626228625913235123943706611263321188546
-# for benchmark: t = log(1+pi/4) = 0.5796414510841191875793214691134667815528212002807962352303566450
+# for benchmark: t = log(1 + 4 pi)
 set End time                                = 2.6075939815049280917817614240391581472837221358084918109292273672
-#set End time                               = 1.9855683087099188711207438626228625913235123943706611263321188546
 
 set Nonlinear solver scheme                = single Advection, single Stokes
 
@@ -27,7 +24,6 @@ end
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields = density_field
-  #set Compositional field methods = particles
 end
 
 subsection Initial composition model
@@ -57,7 +53,7 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set List of output variables = density, gravity, AnnulusVisualizationPostprocessor #dynamic topography
+    set List of output variables = density, gravity, AnnulusVisualizationPostprocessor
     set Time between graphical output = 0.1
   end
 
