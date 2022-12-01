@@ -8,7 +8,7 @@
 # equal to the start time to force a single time
 # step before the program terminates.
 
-set Additional shared libraries            = ./plugin/libannulus.so
+set Additional shared libraries            = ../plugin/libannulus.so
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0

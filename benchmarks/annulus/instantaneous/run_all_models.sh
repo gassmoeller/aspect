@@ -3,7 +3,7 @@
 # Instructions for how to use this scipt are provided in the README.
 
 processes=8
-ASPECT_EXEC="./plugin/aspect"
+ASPECT_EXEC="../plugin/aspect"
 
 for refinement in 6 7; do #0 1 2 3 4 5
   for k in 0 1 2 4 8; do
