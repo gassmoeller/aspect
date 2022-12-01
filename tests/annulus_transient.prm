@@ -1,9 +1,10 @@
 # A test for the instantaneous 2D annulus benchmark.
 
-include $ASPECT_SOURCE_DIR/benchmarks/annulus/instantaneous/annulus.prm
+include $ASPECT_SOURCE_DIR/benchmarks/annulus/transient/transient_annulus.prm
 
 set Additional shared libraries            = ./libannulus.so
 set Dimension                              = 2
+set End time                               = 0.1
 
 subsection Mesh refinement
   set Initial global refinement          = 2
