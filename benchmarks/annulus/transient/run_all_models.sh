@@ -10,7 +10,7 @@ run_particle_models=true
 processes=8
 ASPECT_EXEC="../plugin/aspect"
 
-for refinement in 2 3 4 5 6 7; do
+for refinement in 2 3 4; do
   echo "subsection Mesh refinement" > resolution.prm
   echo "  set Initial global refinement = $refinement" >> resolution.prm
   echo "end" >> resolution.prm
