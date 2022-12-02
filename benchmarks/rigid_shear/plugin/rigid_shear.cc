@@ -66,23 +66,21 @@ namespace aspect
     namespace AnalyticSolutions
     {
       double
-      phase(const double t)
+      phase_function(const double t)
       {
-        // stationary form of benchmark, v = 0
-        // return 0;
-        // constant velocity, v = 1
-        // return t;
-        // exponential velocity, v = exp(t)
         return std::exp(t)-1;
       }
 
       template<int dim>
       double
       density(const Point<dim> &p,
-              const double t)
+              const double t,
+              const bool transient)
       {
         const double pi = numbers::PI;
-        return std::sin(pi*(p[0]-phase(t))) * std::sin(pi*p[1]) + 2.0;
+        const double phase = (transient == true) ? phase_function(t) : 0.0;
+
+        return std::sin(pi*(p[0]-phase)) * std::sin(pi*p[1]) + 2.0;
       }
 
       /**
@@ -92,46 +90,33 @@ namespace aspect
       class FunctionRigidShear : public Function<dim>
       {
         public:
-          FunctionRigidShear(unsigned int n_components) : Function<dim>(n_components) {}
+          FunctionRigidShear(const unsigned int n_components,
+          const bool transient) 
+          : Function<dim>(n_components),
+          transient_(transient) {}
 
           virtual void vector_value(const Point<dim> &p,
                                     Vector<double> &values) const
           {
             const double pi = numbers::PI;
             const double t = this->get_time();
+            const double phase = (transient_ == true) ? phase_function(t) : 0.0;
 
-            values[0] = std::sin(pi*(p[0]-phase(t))) * std::cos(pi*p[1]) + std::exp(t);
-            values[1] = -std::cos(pi*(p[0]-phase(t))) * std::sin(pi*p[1]);
-            values[2] = 2.0 * pi * std::cos(pi*(p[0]-phase(t))) * std::cos(pi*p[1]);
-            values[4] = density(p,t);
+            values[0] = std::sin(pi*(p[0]-phase)) * std::cos(pi*p[1]);
+
+            if (transient_ == true)
+               values[0] += std::exp(t);
+
+            values[1] = -std::cos(pi*(p[0]-phase)) * std::sin(pi*p[1]);
+            values[2] = 2.0 * pi * std::cos(pi*(p[0]-phase)) * std::cos(pi*p[1]);
+            values[4] = density(p,t,transient_);
             return;
           }
+
+          private:
+          bool transient_;
       };
     }
-
-
-
-    /**
-     * Gravity model for the Rigid shear benchmark
-     */
-    template <int dim>
-    class RigidShearGravity : public aspect::GravityModel::Interface<dim>, public aspect::SimulatorAccess<dim>
-    {
-      public:
-        virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const
-        {
-          const double pi = numbers::PI;
-          double t = 0.0;
-          if (this->simulator_is_past_initialization() == true)
-            t = this->get_time();
-
-          Tensor<1,dim> gravity;
-          gravity[0] =  0.0;
-          gravity[1] = - 4.0 * pi * pi * std::cos(pi*(pos[0] - AnalyticSolutions::phase(t))) * std::sin(pi*pos[1]) / AnalyticSolutions::density(pos,t);
-
-          return gravity;
-        }
-    };
 
 
 
@@ -153,7 +138,7 @@ namespace aspect
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
               if (use_analytical_density == true)
-                out.densities[i] = AnalyticSolutions::density(in.position[i],t);
+                out.densities[i] = AnalyticSolutions::density(in.position[i],t,use_transient_flow_solution);
               else
                 out.densities[i] = in.composition[i][0];
 
@@ -168,11 +153,23 @@ namespace aspect
             }
         }
 
-        virtual bool is_compressible() const
+
+
+        bool is_compressible() const override
         {
           return false;
         }
 
+
+
+        bool use_transient_solution() const
+        {
+          return use_transient_flow_solution;
+        }
+
+
+
+        static
         void
         declare_parameters (ParameterHandler &prm)
         {
@@ -187,16 +184,22 @@ namespace aspect
                               Patterns::Bool(),
                               "Whether to use the analytical density solution, or to look for a "
                               "compositional field named <density_field> to use as density.");
+
+            prm.declare_entry("Use transient solution", "false",
+                              Patterns::Bool(),
+                              "Whether to use the transient flow solution, or to use the "
+                              "default steady-state solution.");
           }
           prm.leave_subsection();
         }
 
         void
-        parse_parameters(ParameterHandler &prm)
+        parse_parameters(ParameterHandler &prm) override
         {
           prm.enter_subsection("Rigid shear benchmark");
           {
             use_analytical_density = prm.get_bool ("Use analytical density");
+            use_transient_flow_solution = prm.get_bool ("Use transient solution");
           }
           prm.leave_subsection();
 
@@ -208,6 +211,40 @@ namespace aspect
         }
 
         bool use_analytical_density;
+        bool use_transient_flow_solution;
+    };
+
+
+
+
+    /**
+     * Gravity model for the Rigid shear benchmark
+     */
+    template <int dim>
+    class RigidShearGravity : public aspect::GravityModel::Interface<dim>, public aspect::SimulatorAccess<dim>
+    {
+      public:
+        virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const
+        {
+          const double pi = numbers::PI;
+          double t = 0.0;
+          if (this->simulator_is_past_initialization() == true)
+            t = this->get_time();
+
+          const RigidShearMaterial<dim> &
+          material_model
+            = Plugins::get_plugin_as_type<const RigidShearMaterial<dim>>(this->get_material_model());
+          const bool transient = material_model.use_transient_solution();
+          const double phase = (transient == true) ? AnalyticSolutions::phase_function(t) : 0.0;
+
+        const double forcing_term = - 4.0 * pi * pi * std::cos(pi*(pos[0] - phase)) * std::sin(pi*pos[1]);
+
+          Tensor<1,dim> gravity;
+          gravity[0] =  0.0;
+          gravity[1] =  forcing_term / AnalyticSolutions::density(pos,t,transient);
+
+          return gravity;
+        }
     };
 
     /**
@@ -227,7 +264,12 @@ namespace aspect
         std::pair<std::string, std::string>
         execute(TableHandler &statistics)
         {
-          AnalyticSolutions::FunctionRigidShear<dim> ref_func(this->introspection().n_components);
+          const RigidShearMaterial<dim> &
+          material_model
+            = Plugins::get_plugin_as_type<const RigidShearMaterial<dim>>(this->get_material_model());
+
+          AnalyticSolutions::FunctionRigidShear<dim> ref_func(this->introspection().n_components,
+          material_model.use_transient_solution());
           ref_func.set_time(this->get_time());
 
           AssertThrow(Plugins::plugin_type_matches<const RigidShearMaterial<dim>>(this->get_material_model()),
