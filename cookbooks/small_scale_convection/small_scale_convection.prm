@@ -1,0 +1,253 @@
+# This model simulates the cooling and thickening of an oceanic plate.
+# When the thermal boundary layer becomes too thick, small-scale
+# convection begins to develop at the bottom of the plate.
+# This process is highly sensitive to the viscosity, which in this model
+# is parametrized as a temperature-, stress-, and grain-size dependent
+# quantity. See the manual for a more complete description.
+
+set Dimension                              = 2
+set End time                               = 2e8
+set Use years in output instead of seconds = true
+
+set Resume computation                     = false
+set Output directory                       = output-small_scale_convection
+set Adiabatic surface temperature          = 1623
+
+# This model is highly nonlinear, and requires an iterative solver for
+# accurate results. Additionally, the grain size evolution is very quick
+# compared to the time-step, so starting with a small first time step
+# and then gradually lengthening the time step helps the stability of
+# the solver.
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 10
+set CFL number                             = 0.15
+set Maximum first time step                = 500
+set Maximum relative increase in time step = 10
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+  end
+end
+
+# The model is a box with a width of 4000 km and a depth of 410 km.
+# The number of X and Y repetitions determine the shape of the coarsest
+# mesh cells relative to the
+# shape of the box. To achienve an aspect ratio of approximately one
+# for the cells, we choose more X than Y repetitions.
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 4000000
+    set Y extent  = 410000
+    set X repetitions = 10
+    set Y repetitions = 1
+  end
+end
+
+# The initial temperature field is a cooled half-space model
+# above an adiabatic mantle temperature.
+subsection Initial temperature model
+  set List of model names = adiabatic, function
+  subsection Adiabatic
+    set Age top boundary layer      = 1e7
+    set Age bottom boundary layer   = 0.0
+    set Top boundary layer age model = function
+
+    subsection Age function
+      set Function expression = 0.01 + x / 0.05
+    end
+  end
+
+  subsection Function
+    set Function constants  = DeltaT = 1000, b = 0, width = 10000, c=410000
+    set Function expression = DeltaT * exp(-((x-b)*(x-b)+(y-c)*(y-c))/(2*width*width))
+    set Variable names      = x,y
+  end
+end
+
+# We also have to define the velocity of inflowing plume material.
+# This is done by
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left
+  set Prescribed velocity boundary indicators = top: function, bottom x:function, right x:function
+
+  subsection Function
+    set Function constants  = b = 2000000, c = 100000
+    set Variable names      = x,y
+    set Function expression = if(y>310000,0.05,0.05*y/310000); 0
+  end
+end
+
+
+# The temperature at the boundary is taken from the initial conditions.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom, right
+  set Allow fixed temperature on outflow boundaries = false
+
+  set List of model names = initial temperature
+  subsection Initial temperature
+    set Minimal temperature = 293
+    set Maximal temperature = 1623
+  end
+end
+
+# The lithosphere has a different chemical composition (entailing different
+# material properties) than the rest of the model. Hence, we include one
+# compositional field in the model that tracks where lithospheric material goes.
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = grain_size
+  set Compositional field methods = particles
+  set Mapped particle properties = grain_size:grain_size
+end
+
+# This compositional field that represents the lithosphere is initially
+# distributed as a layer in the uppermost 100 km of the model.
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function constants  = DeltaC = -29e-4, b = 0, width = 30000, c=397000
+    set Function expression = 5e-3 + DeltaC * exp(-((x-b)*(x-b)+(y-c)*(y-c))/(2*width*width))
+    set Variable names      = x,y
+  end
+end
+
+# The composition at the boundary is taken from the initial conditions.
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = bottom, right
+#  set Allow fixed composition on outflow boundaries = true
+  set List of model names = initial composition
+end
+
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = right y:initial lithostatic pressure, bottom y:initial lithostatic pressure
+
+  subsection Function
+    set Function constants  = DeltaP = 1e7, b = 0, width = 100000, c=310000
+    set Function expression = 1e-3 + DeltaC * exp(-((y-c)*(y-c))/(2*width*width)); 0
+    set Variable names      = x,y
+  end
+
+  subsection Initial lithostatic pressure
+    set Number of integration points = 1000
+    set Representative point         = 2000000,0
+  end
+end
+
+subsection Material model
+
+  set Material averaging = project to Q1 only viscosity
+
+  set Model name = grain size
+  subsection Grain size model
+
+    # A lower density is assigned to the lithosphere (compared to the
+    #  background mantle).
+    set Reference density                         = 3300
+    set Reference specific heat                   = 1200
+    set Thermal expansion coefficient             = 3.3e-5
+
+    # Diffusion creep has a prefactor, a temperature dependence defined by the
+    # activation energy, and pressure dependence defined by the activation volume
+    # and a grain size dependence.
+    set Diffusion creep prefactor                   = 5e-15 #5e-15 #5e-16 #5e-17 #5e-18 #1.25e-15
+    set Diffusion activation energy                 = 3.75e5 #3.75e5
+    set Diffusion activation volume                 = 4e-6
+    set Diffusion creep grain size exponent         = 3
+    set Diffusion creep exponent                    = 1.
+
+    set Dislocation creep prefactor                 = 1e-15 #8.33e-17
+    set Dislocation activation energy               = 5.3e5 #5.3e5
+    set Dislocation activation volume               = 1.4e-5 #1.4e-5
+    set Dislocation viscosity iteration number      = 10000
+    set Dislocation creep exponent                  = 3.5
+
+    #set Use constant work fraction                  = true
+    set Work fraction for boundary area change      = 0.1 #0.001 (T-dependent)
+    set Grain growth rate constant                  = 1.92e-10 #1.5e-5
+    set Grain growth activation energy              = 4e5 #4e5
+    set Grain growth activation volume              = 0 #???
+
+    # Viscosity is cut off at a minimum value of 10^16 Pa s
+    # and a maximum value of 10^23 Pa s.
+    set Maximum viscosity                         = 1e23
+    set Minimum viscosity                         = 1e16
+    set Maximum temperature dependence of viscosity = 1e8
+  end
+end
+
+# The gravity points downward and is set to 10.
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# For now, we use a globally refined mesh.
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
+  set Time steps between mesh refinement       = 0
+end
+
+# The model includes shear (dissipation) heating.
+subsection Heating model
+  set List of model names = shear heating, adiabatic heating
+end
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+# Below, we describe the variables we want to include in the graphical output.
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics, velocity statistics, mass flux statistics, particles
+
+  subsection Particles
+    set Interpolation scheme = bilinear least squares #nearest neighbor
+    set Number of particles = 500000
+    set Time between data output = 1e6
+    set List of particle properties = grain size
+    set Load balancing strategy = remove and add particles
+    set Minimum particles per cell = 40
+    set Maximum particles per cell = 250
+    set Integration scheme = rk2 #first order time
+    set Update ghost particles = true
+
+    subsection Interpolator
+      subsection Bilinear least squares
+        set Use linear least squares limiter = true
+      end
+    end
+  end
+
+  subsection Visualization
+    set List of output variables      = material properties, nonadiabatic temperature, nonadiabatic pressure, strain rate, melt fraction, named additional outputs
+    set Point-wise stress and strain  = true
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity
+    end
+
+    set Number of grouped files       = 0
+    set Interpolate output            = false
+    set Output format                 = vtu
+    set Time between graphical output = 1e6
+  end
+
+end
+
+# Every 10 minutes (600 seconds) we write a restart file, that could be used to
+# restart a simulation.
+subsection Checkpointing
+  set Time between checkpoint = 600
+end
+
+subsection Termination criteria
+  set Checkpoint on termination = true
+end
