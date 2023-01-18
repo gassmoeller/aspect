@@ -63,9 +63,9 @@ end
 
 subsection Initial composition model
   set Model name = slab model
-  # The following lines needs to be modified such that 
+  # The following lines needs to be modified such that
   # they point to the location of the output slab2 model
-  # datafile, generated using the jupyter notebook in 
+  # datafile, generated using the jupyter notebook in
   # (contrib/python) folder in the aspect base directory.
   subsection Slab model
     set Data directory       = /home/postdoc/Documents/

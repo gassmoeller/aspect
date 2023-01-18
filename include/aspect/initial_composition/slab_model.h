@@ -35,11 +35,11 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements slab2 model (Hayes et al., 2018) as a compositional 
-     * field determined from the input Ascii file. The file defines the depth to 
+     * A class that implements slab2 model (Hayes et al., 2018) as a compositional
+     * field determined from the input Ascii file. The file defines the depth to
      * the top of the slab and the slab thickness.
-     * Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M., 
-     * & Smoczyk, G. M. (2018). Slab2, a comprehensive subduction zone geometry model. 
+     * Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M.,
+     * & Smoczyk, G. M. (2018). Slab2, a comprehensive subduction zone geometry model.
      * Science, 362(6410), 58-61.
      *
      * @ingroup InitialCompositionModels
@@ -78,7 +78,7 @@ namespace aspect
          */
         void
         parse_parameters (ParameterHandler &prm) override;
-        
+
       protected:
         /**
          * An object of ascii data boundary to input crustal depths.

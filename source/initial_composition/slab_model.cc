@@ -59,12 +59,12 @@ namespace aspect
 
       // The input ascii file is structure and as a result has many data points where slabs are absent. We give a very high
       // number at those locations and therefore the first two conditions check if we are within the slabs.
-      // In the input file, slab depths are to the top of the slab surface. 
+      // In the input file, slab depths are to the top of the slab surface.
       // The hyperbolic tangent function smooths the slabs in the depth direction.
       if ( (compositional_index == slab_index) && (slab_depths < 1e10) && (slab_thickness < 1e10) &&
            (depth >= slab_depths) && (depth <= slab_depths + slab_thickness) )
         {
-          const double slab_center    = slab_depths + slab_thickness/2.; 
+          const double slab_center    = slab_depths + slab_thickness/2.;
           const double half_thickness = slab_thickness/2;
           slab_composition            = ( 1 - std::tanh( 10 * (std::abs (slab_center - depth) - half_thickness)/half_thickness ) )/2;
         }
