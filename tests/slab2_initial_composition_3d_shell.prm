@@ -11,7 +11,6 @@ subsection Geometry model
   set Model name = spherical shell
 
   subsection Spherical shell
-#    set Opening angle = 90
     set Inner radius = 3481000
     set Outer radius = 6336000
   end
@@ -64,6 +63,10 @@ end
 
 subsection Initial composition model
   set Model name = slab model
+  # The following lines needs to be modified such that 
+  # they point to the location of the output slab2 model
+  # datafile, generated using the jupyter notebook in 
+  # (contrib/python) folder in the aspect base directory.
   subsection Slab model
     set Data directory       = /home/postdoc/Documents/
     set Data file name       = slab2_depth_thickness.txt
@@ -89,8 +92,8 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement                = 2
-  set Initial adaptive refinement              = 2
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
   set Strategy                                 = composition threshold, temperature
   subsection Composition threshold
@@ -100,8 +103,8 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, visualization
-  subsection Visualization
-    set Output format  = vtu
-  end
+  set List of postprocessors = velocity statistics, temperature statistics, composition statistics
+ # subsection Visualization
+ #   set Output format  = vtu
+ # end
 end

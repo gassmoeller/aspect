@@ -20,7 +20,7 @@
 
 
 #include <aspect/global.h>
-#include <aspect/initial_composition/slab2_model.h>
+#include <aspect/initial_composition/slab_model.h>
 #include <aspect/utilities.h>
 
 

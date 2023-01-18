@@ -1,0 +1,22 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: RMS velocity (m/year)
+# 14: Max. velocity (m/year)
+# 15: Minimal temperature (K)
+# 16: Average temperature (K)
+# 17: Maximal temperature (K)
+# 18: Average nondimensional temperature (K)
+# 19: Minimal value for composition slabs
+# 20: Maximal value for composition slabs
+# 21: Global mass for composition slabs
+0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 6930 0 4294967295 40 42 472 1.00018845e+00 1.03718119e+00 2.73000000e+02 1.55078451e+03 3.00000000e+03 4.68567845e-01 0.00000000e+00 9.98530584e-01 5.52973104e+17 

@@ -1,0 +1,36 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 768 (on 2 levels)
+Number of degrees of freedom: 35,620 (20,790+970+6,930+6,930)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 43+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         1 m/year, 1.04 m/year
+     Temperature min/avg/max:   273 K, 1551 K, 3000 K
+     Compositions min/max/mass: 0/0.9985/5.53e+17
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
