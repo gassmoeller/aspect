@@ -22,6 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/initial_composition/slab_model.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator_access.h>
 
 
 namespace aspect
@@ -32,12 +33,16 @@ namespace aspect
     void
     SlabModel<dim>::initialize ()
     {
+      AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
+                   ExcMessage ("This initial composition plugin can only be used when the "
+                               "preferred coordinate system of the geometry model is spherical "
+                               "(e.g. spherical shell, chunk, sphere)."));
+
       // The input slabs are defined from the surface of the model
-      std::set<types::boundary_id> surface_boundary_set;
-      surface_boundary_set.insert(this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"));
+      const unsigned int surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
       // The two columns correspond to slabs depth and thickness
-      slab_boundary.initialize(surface_boundary_set, 2);
+      slab_boundary.initialize({surface_boundary_id}, 2);
     }
 
 
@@ -47,27 +52,28 @@ namespace aspect
     initial_composition (const Point<dim> &position,
                          const unsigned int compositional_index) const
     {
+      AssertThrow(this->introspection().compositional_name_exists("slabs"),
+                  ExcMessage("The initial composition plugin `slabs' did not find a "
+                             "compositional field called `porosity' to initialize. Please add a "
+                             "compositional field with this name."));
+
       const unsigned int surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       const unsigned int slab_index          = this->introspection().compositional_index_for_name("slabs");
 
       const double depth                     = this->get_geometry_model().depth(position);
-      double slab_composition                = 0;
+      double slab_composition                = 0.0;
 
       // The first column after the points correspond to the slabs depth and the second to the slabs thickness
-      double slab_depths    = slab_boundary.get_data_component(surface_boundary_id, position, 0);
-      double slab_thickness = slab_boundary.get_data_component(surface_boundary_id, position, 1);
+      const double slab_depth     = slab_boundary.get_data_component(surface_boundary_id, position, 0);
+      const double slab_thickness = slab_boundary.get_data_component(surface_boundary_id, position, 1);
 
-      // The input ascii file is structure and as a result has many data points where slabs are absent. We give a very high
+      // The input ascii file is structured and as a result has many data points outside of slabs. We give a very high
       // number at those locations and therefore the first two conditions check if we are within the slabs.
       // In the input file, slab depths are to the top of the slab surface.
       // The hyperbolic tangent function smooths the slabs in the depth direction.
-      if ( (compositional_index == slab_index) && (slab_depths < 1e10) && (slab_thickness < 1e10) &&
-           (depth >= slab_depths) && (depth <= slab_depths + slab_thickness) )
-        {
-          const double slab_center    = slab_depths + slab_thickness/2.;
-          const double half_thickness = slab_thickness/2;
-          slab_composition            = ( 1 - std::tanh( 10 * (std::abs (slab_center - depth) - half_thickness)/half_thickness ) )/2;
-        }
+      if ( (compositional_index == slab_index) && (slab_depth < 1e10) && (slab_thickness < 1e10) &&
+           (depth >= slab_depth) && (depth <= slab_depth + slab_thickness) )
+          slab_composition = 1 ;
 
       return slab_composition;
     }
@@ -79,7 +85,8 @@ namespace aspect
     {
       prm.enter_subsection("Initial composition model");
       {
-        Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "../../input_data/", "slab2_depth_thickness_2D.txt", "Slab model");
+        Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "$ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/", 
+                                                             "slab2_depth_thickness_2D.txt", "Slab model");
       }
       prm.leave_subsection();
     }
@@ -106,18 +113,18 @@ namespace aspect
   {
     ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(SlabModel,
                                               "slab model",
-                                              "An initial composition model computed to define slabs "
+                                              "An initial composition model that defines slabs "
                                               "using the slab2 model (Hayes et al., 2018) input in "
                                               "an ascii format. The file describes the depths to the "
                                               "top of the slabs and their thickness."
                                               "The computed compositional value is 1 within the slabs "
-                                              "and zero elsewhere. In order to prevent sharp jumps, the "
-                                              "slabs are smoothened in the depth direction. "
+                                              "and zero elsewhere. "
                                               "More details on the slab2 model can be found in "
                                               "Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., "
                                               "Flamme, H., Furtney, M., & Smoczyk, G. M. (2018). Slab2, "
                                               "a comprehensive subduction zone geometry model. Science, "
                                               "362(6410), 58-61. The script to convert the slab2 model "
-                                              "into an aspect input data file is available.")
+                                              "into an aspect input data file is available in the directory "
+                                              "data/initial_composition/slab/.")
   }
 }

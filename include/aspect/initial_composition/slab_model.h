@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_initial_composition_slab2_model_h
-#define _aspect_initial_composition_slab2_model_h
+#ifndef _aspect_initial_composition_slab_model_h
+#define _aspect_initial_composition_slab_model_h
 
 #include <aspect/initial_composition/interface.h>
 
@@ -35,7 +35,7 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements slab2 model (Hayes et al., 2018) as a compositional
+     * A class that implements the slab2 model (Hayes et al., 2018) as a compositional
      * field determined from the input Ascii file. The file defines the depth to
      * the top of the slab and the slab thickness.
      * Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M.,
@@ -45,7 +45,7 @@ namespace aspect
      * @ingroup InitialCompositionModels
      */
     template <int dim>
-    class SlabModel : public Interface<dim>, public Utilities::AsciiDataBoundary<dim>
+    class SlabModel : public Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -55,12 +55,9 @@ namespace aspect
         void
         initialize () override;
 
-        // avoid -Woverloaded-virtual:
-        using Utilities::AsciiDataBoundary<dim>::initialize;
-
         /**
          * Return the initial composition as a function of position. For the
-         * current class, this function returns value from the text files.
+         * current class, this function returns 1.0 inside subducted slabs and 0.0 outside.
          */
         double
         initial_composition (const Point<dim> &position,

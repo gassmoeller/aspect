@@ -68,7 +68,7 @@ subsection Initial composition model
   # datafile, generated using the jupyter notebook in
   # (contrib/python) folder in the aspect base directory.
   subsection Slab model
-    set Data directory       = /home/postdoc/Documents/
+    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/slab/
     set Data file name       = slab2_depth_thickness.txt
   end
 end
@@ -104,7 +104,4 @@ end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, composition statistics
- # subsection Visualization
- #   set Output format  = vtu
- # end
 end
