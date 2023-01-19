@@ -236,8 +236,7 @@ namespace aspect
           });
         }
 
-      if (update_ghost_particles &&
-          dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
+      if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
         {
           auto do_ghost_exchange = [&] (typename parallel::distributed::Triangulation<dim> &)
           {
@@ -262,7 +261,7 @@ namespace aspect
     World<dim>::apply_particle_per_cell_bounds()
     {
       // If any load balancing technique is selected that creates/destroys particles
-      if (particle_load_balancing & ParticleLoadBalancing::remove_and_add_particles)
+      if (min_particles_per_cell > 0 || max_particles_per_cell < std::numeric_limits<unsigned int>::max())
         {
           // First do some preparation for particle generation in poorly
           // populated areas. For this we need to know which particle ids to
@@ -271,7 +270,7 @@ namespace aspect
           // process is going to generate.
           particle_handler->update_cached_numbers();
           types::particle_index local_next_particle_index = particle_handler->get_next_free_particle_index();
-          if (particle_load_balancing & ParticleLoadBalancing::add_particles)
+          if (min_particles_per_cell > 0)
             {
               types::particle_index particles_to_add_locally = 0;
 
@@ -318,8 +317,7 @@ namespace aspect
                 const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
                 // Add particles if necessary
-                if ((particle_load_balancing & ParticleLoadBalancing::add_particles) &&
-                    (n_particles_in_cell < min_particles_per_cell))
+                if (n_particles_in_cell < min_particles_per_cell)
                   {
                     for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
                       {
@@ -340,8 +338,7 @@ namespace aspect
                   }
 
                 // Remove particles if necessary
-                else if ((particle_load_balancing & ParticleLoadBalancing::remove_particles) &&
-                         (n_particles_in_cell > max_particles_per_cell))
+                else if (n_particles_in_cell > max_particles_per_cell)
                   {
                     const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
 
@@ -793,8 +790,7 @@ namespace aspect
             local_initialize_particles(particle_handler->begin(),
                                        particle_handler->end());
 
-          if (update_ghost_particles &&
-              dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
+          if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
             {
               TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
               particle_handler->exchange_ghost_particles();
@@ -1441,8 +1437,7 @@ namespace aspect
 
       // Now that all particle information was updated, exchange the new
       // ghost particles.
-      if (update_ghost_particles &&
-          dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
+      if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
           particle_handler->exchange_ghost_particles();
@@ -1480,8 +1475,7 @@ namespace aspect
         prm.enter_subsection("Particles");
         {
           prm.declare_entry ("Load balancing strategy", "repartition",
-                             Patterns::MultipleSelection ("none|remove particles|add particles|"
-                                                          "remove and add particles|repartition"),
+                             Patterns::Selection ("none|repartition"),
                              "Strategy that is used to balance the computational "
                              "load across processors for adaptive meshes.");
           prm.declare_entry ("Minimum particles per cell", "0",
@@ -1498,7 +1492,7 @@ namespace aspect
                              "this cell. If the particles carry properties the "
                              "individual property plugins control how the "
                              "properties of the new particles are initialized.");
-          prm.declare_entry ("Maximum particles per cell", "100",
+          prm.declare_entry ("Maximum particles per cell", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                              Patterns::Integer (0),
                              "Upper limit for particle number per cell. This limit is "
                              "useful for adaptive meshes to prevent coarse cells from slowing down "
@@ -1521,8 +1515,8 @@ namespace aspect
                              "particle weight is recommended. Before adding the weights "
                              "of particles, each cell already carries a weight of 1000 to "
                              "account for the cost of field-based computations.");
-          prm.declare_entry ("Update ghost particles", "false",
-                             Patterns::Bool (),
+          prm.declare_entry ("Update ghost particles", "true",
+                             Patterns::Selection("true"),
                              "Some particle interpolation algorithms require knowledge "
                              "about particles in neighboring cells. To allow this, "
                              "particles in ghost cells need to be exchanged between the "
@@ -1573,41 +1567,16 @@ namespace aspect
 
           particle_weight = prm.get_integer("Particle weight");
 
-          update_ghost_particles = prm.get_bool("Update ghost particles");
-
-          const std::vector<std::string> strategies = Utilities::split_string_list(prm.get ("Load balancing strategy"));
-          AssertThrow(Utilities::has_unique_entries(strategies),
-                      ExcMessage("The list of strings for the parameter "
-                                 "'Postprocess/Particles/Load balancing strategy' contains entries more than once. "
-                                 "This is not allowed. Please check your parameter file."));
-
-          particle_load_balancing = ParticleLoadBalancing::no_balancing;
-
-          for (std::vector<std::string>::const_iterator strategy = strategies.begin(); strategy != strategies.end(); ++strategy)
-            {
-              if (*strategy == "remove particles")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_particles);
-              else if (*strategy == "add particles")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::add_particles);
-              else if (*strategy == "remove and add particles")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_and_add_particles);
-              else if (*strategy == "repartition")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::repartition);
-              else if (*strategy == "none")
-                {
-                  particle_load_balancing = ParticleLoadBalancing::no_balancing;
-                  AssertThrow(strategies.size() == 1,
-                              ExcMessage("The particle load balancing strategy `none' is not compatible "
-                                         "with any other strategy, yet it seems another is selected as well. "
-                                         "Please check the parameter file."));
-                }
-              else
-                AssertThrow(false,
-                            ExcMessage("The 'Load balancing strategy' parameter contains an unknown value: <" + *strategy
-                                       + ">. This value does not correspond to any known load balancing strategy. Possible values "
-                                       "are listed in the corresponding manual subsection."));
-            }
-
+          const std::string strategy = prm.get ("Load balancing strategy");
+          if (strategy == "repartition")
+            particle_load_balancing = ParticleLoadBalancing::repartition;
+          else if (strategy == "none")
+            particle_load_balancing = ParticleLoadBalancing::no_balancing;
+          else
+            AssertThrow(false,
+                        ExcMessage("The 'Load balancing strategy' parameter contains an unknown value: <" + strategy
+                                   + ">. This value does not correspond to any known load balancing strategy. Possible values "
+                                   "are listed in the documentation of the parameter."));
         }
         prm.leave_subsection ();
       }
