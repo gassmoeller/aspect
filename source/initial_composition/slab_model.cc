@@ -72,7 +72,7 @@ namespace aspect
       // The hyperbolic tangent function smooths the slabs in the depth direction.
       if ( (compositional_index == slab_index) && (slab_depth < 1e10) && (slab_thickness < 1e10) &&
            (depth >= slab_depth) && (depth <= slab_depth + slab_thickness) )
-          slab_composition = 1 ;
+        slab_composition = 1 ;
 
       return slab_composition;
     }
@@ -84,8 +84,8 @@ namespace aspect
     {
       prm.enter_subsection("Initial composition model");
       {
-        Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "$ASPECT_SOURCE_DIR/data/initial-composition/slab/", 
-                                                             "slab2_depth_thickness.txt", "Slab model");
+        Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "$ASPECT_SOURCE_DIR/data/initial-composition/slab/",
+                                                              "slab2_depth_thickness.txt", "Slab model");
       }
       prm.leave_subsection();
     }
