@@ -81,6 +81,8 @@ namespace aspect
          * An object of ascii data boundary to input crustal depths.
          */
         Utilities::AsciiDataBoundary<dim> slab_boundary;
+
+        types::boundary_id surface_boundary_id;
     };
   }
 }

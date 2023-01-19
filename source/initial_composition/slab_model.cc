@@ -22,7 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/initial_composition/slab_model.h>
 #include <aspect/utilities.h>
-#include <aspect/simulator_access.h>
+#include <aspect/geometry_model/interface.h>
 
 
 namespace aspect
@@ -39,7 +39,7 @@ namespace aspect
                                "(e.g. spherical shell, chunk, sphere)."));
 
       // The input slabs are defined from the surface of the model
-      const unsigned int surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
       // The two columns correspond to slabs depth and thickness
       slab_boundary.initialize({surface_boundary_id}, 2);
@@ -57,7 +57,6 @@ namespace aspect
                              "compositional field called `porosity' to initialize. Please add a "
                              "compositional field with this name."));
 
-      const unsigned int surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       const unsigned int slab_index          = this->introspection().compositional_index_for_name("slabs");
 
       const double depth                     = this->get_geometry_model().depth(position);
@@ -85,8 +84,8 @@ namespace aspect
     {
       prm.enter_subsection("Initial composition model");
       {
-        Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "$ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/", 
-                                                             "slab2_depth_thickness_2D.txt", "Slab model");
+        Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "$ASPECT_SOURCE_DIR/data/initial-composition/slab/", 
+                                                             "slab2_depth_thickness.txt", "Slab model");
       }
       prm.leave_subsection();
     }
@@ -125,6 +124,6 @@ namespace aspect
                                               "a comprehensive subduction zone geometry model. Science, "
                                               "362(6410), 58-61. The script to convert the slab2 model "
                                               "into an aspect input data file is available in the directory "
-                                              "data/initial_composition/slab/.")
+                                              "data/initial-composition/slab/.")
   }
 }
