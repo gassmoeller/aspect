@@ -13,6 +13,7 @@ subsection Geometry model
   subsection Spherical shell
     set Inner radius = 3481000
     set Outer radius = 6336000
+    set Opening angle = 90
   end
 end
 
@@ -27,30 +28,13 @@ end
 
 
 subsection Boundary temperature model
-  set List of model names = spherical constant
-  subsection Spherical constant
-    set Inner temperature = 3000
-    set Outer temperature = 273
-  end
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = bottom, top, west, east, south
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = inner, outer
-end
 
 subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = inner:function, outer:function
-end
-
-subsection Boundary velocity model
-  subsection Function
-    set Function expression = 1;0;0
-  end
+  set Tangential velocity boundary indicators = bottom, top, west, east, south
 end
 
 
@@ -68,8 +52,8 @@ subsection Initial composition model
   # datafile, generated using the jupyter notebook in
   # (contrib/python) folder in the aspect base directory.
   subsection Slab model
-    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/slab/
-    set Data file name       = slab2_depth_thickness.txt
+    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/slab-model/
+    set Data file name       = shell_3d.txt
   end
 end
 
@@ -92,7 +76,11 @@ end
 
 
 subsection Mesh refinement
+<<<<<<< HEAD
   set Initial global refinement                = 1
+=======
+  set Initial global refinement                = 2
+>>>>>>> 9d5fe27691c7445d22c53a4a82e9558bbf29eef6
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
   set Strategy                                 = composition threshold, temperature
@@ -103,5 +91,5 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, composition statistics
+  set List of postprocessors = velocity statistics, temperature statistics, composition statistics, visualization
 end

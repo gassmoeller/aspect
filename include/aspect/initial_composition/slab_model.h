@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,7 +25,7 @@
 #include <aspect/initial_composition/interface.h>
 
 #include <aspect/simulator_access.h>
-#include <aspect/utilities.h>
+#include <aspect/structured_data.h>
 
 
 namespace aspect
@@ -35,9 +35,11 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements the slab2 model (Hayes et al., 2018) as a compositional
-     * field determined from the input Ascii file. The file defines the depth to
+     * A class that implements subducted slab geometries as a compositional
+     * field determined from an input file. The file defines the depth to
      * the top of the slab and the slab thickness.
+     *
+     * An example model that is included is Slab2 described in
      * Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M.,
      * & Smoczyk, G. M. (2018). Slab2, a comprehensive subduction zone geometry model.
      * Science, 362(6410), 58-61.
@@ -82,7 +84,16 @@ namespace aspect
          */
         Utilities::AsciiDataBoundary<dim> slab_boundary;
 
+        /**
+         * Cache the surface boundary id to avoid unnecessary lookups.
+         */
         types::boundary_id surface_boundary_id;
+
+        /**
+         * Cache the compositional field index that corresponds to
+         * the slab composition to avoid unnecessary lookups.
+         */
+        unsigned int slab_index;
     };
   }
 }
