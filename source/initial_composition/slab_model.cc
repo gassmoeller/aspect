@@ -82,7 +82,8 @@ namespace aspect
         Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
                                                               "$ASPECT_SOURCE_DIR/data/initial-composition/slab-model/",
                                                               "shell_3d.txt",
-                                                              "Slab model");
+                                                              "Slab model",
+                                                              /*time dependent = */ false);
       }
       prm.leave_subsection();
     }
@@ -95,7 +96,7 @@ namespace aspect
       prm.enter_subsection("Initial composition model");
       {
         slab_boundary.initialize_simulator (this->get_simulator());
-        slab_boundary.parse_parameters(prm, "Slab model");
+        slab_boundary.parse_parameters(prm, "Slab model", /*time dependent = */ false);
       }
       prm.leave_subsection();
 
