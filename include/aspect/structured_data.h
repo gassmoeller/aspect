@@ -373,39 +373,47 @@ namespace aspect
 
         /**
          * Declare the parameters all derived classes take from input files.
+         *
+         * @param prm The parameter handler in which the parameters are declared.
+         * @param default_directory The default value for the data directory parameter.
+         * @param default_filename The default value for the filename parameter.
+         * @param subsection_name The name of the parameter file subsection all
+         * parameters will be declared in. The function will enter this subsection,
+         * declare all parameters, then leave this subsection, to return @p prm in
+         * the same subsection it was in before.
+         * @param declare_time_dependent_parameters Whether to declare the parameter
+         * that are only needed for time dependent AsciiDataBoundary objects. If
+         * the caller already knows time dependence is not supported for the current
+         * application, disabling this parameter avoids introducing these parameters
+         * to the parameter handler.
          */
         static
         void
         declare_parameters (ParameterHandler  &prm,
                             const std::string &default_directory,
                             const std::string &default_filename,
-                            const std::string &subsection_name = "Ascii data model");
+                            const std::string &subsection_name = "Ascii data model",
+                            const bool declare_time_dependent_parameters = true);
 
         /**
          * Read the parameters from the parameter file.
+         *
+         * @param prm The parameter handler from which the parameters are parsed.
+         * @param subsection_name The name of the parameter file subsection all
+         * parameters will be parsed from. The function will enter this subsection,
+         * parse all parameters, then leave this subsection, to return @p prm in
+         * the same subsection it was in before.
+         * @param parse_time_dependent_parameters Whether to parse the parameter
+         * that are only needed for time dependent AsciiDataBoundary objects. This
+         * parameter always needs to be set to the same value that was handed over
+         * to declare_parameters().
          */
         void
         parse_parameters (ParameterHandler &prm,
-                          const std::string &subsection_name = "Ascii data model");
+                          const std::string &subsection_name = "Ascii data model",
+                          const bool parse_time_dependent_parameters = true);
 
       protected:
-
-        /**
-         * Determines which of the dimensions of the position is used to find
-         * the data point in the data grid. E.g. the left boundary of a box
-         * model extents in the y and z direction (position[1] and
-         * position[2]), therefore the function would return [1,2] for dim==3
-         * or [1] for dim==2. We are lucky that these indices are identical
-         * for the box and the spherical shell (if we use spherical
-         * coordinates for the spherical shell), therefore we do not need to
-         * distinguish between them. For the initial condition this function
-         * is trivial, because the position in the data grid is the same as
-         * the actual position (the function returns [0,1,2] or [0,1]), but
-         * for the boundary conditions it matters.
-         */
-        std::array<unsigned int,dim-1>
-        get_boundary_dimensions (const types::boundary_id boundary_id) const;
-
         /**
          * A variable that stores the currently used data file of a series. It
          * gets updated if necessary by update().
@@ -486,7 +494,7 @@ namespace aspect
      * A base class that implements initial conditions determined from a
      * AsciiData input file.
      */
-    template <int dim, int spacedim=dim>
+    template <int dim>
     class AsciiDataInitial : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -508,15 +516,52 @@ namespace aspect
          * Returns the data component at the given position.
          */
         double
-        get_data_component (const Point<spacedim>               &position,
-                            const unsigned int                   component) const;
+        get_data_component (const Point<dim> &position,
+                            const unsigned int component) const;
+
+        /**
+         * Declare the parameters all derived classes take from input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler  &prm,
+                            const std::string &default_directory,
+                            const std::string &default_filename,
+                            const std::string &subsection_name = "Ascii data model");
+
+        /**
+         * Read the parameters from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm,
+                          const std::string &subsection_name = "Ascii data model");
 
       protected:
         /**
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::unique_ptr<aspect::Utilities::StructuredDataLookup<spacedim>> lookup;
+        std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim>> lookup;
+
+        /**
+         * Pointer to an object that reads and processes data we get from text
+         * files if the current model is a slice of the input file (e.g. a 2D
+         * model and a 3D data file).
+         */
+        std::unique_ptr<aspect::Utilities::StructuredDataLookup<3>> slice_lookup;
+
+        /**
+         * Whether to use a dataset that has the same spatial dimensions as
+         * the model or not. If true only a 2D slice of a 3D dataset is used.
+         */
+        bool slice_data;
+
+        /**
+         * The matrix that describes the rotation by which a 2D model
+         * needs to be transformed to a plane that contains the origin and
+         * the two prescribed points given in the input.
+         */
+        Tensor<2,3> rotation_matrix;
     };
 
 

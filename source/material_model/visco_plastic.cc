@@ -96,7 +96,7 @@ namespace aspect
             }
           else
             {
-              EquationOfStateOutputs<dim> eos_outputs_all_phases (this->n_compositional_fields()+1+phase_function.n_phase_transitions());
+              EquationOfStateOutputs<dim> eos_outputs_all_phases (phase_function.n_phases());
               equation_of_state.evaluate(in, 0, eos_outputs_all_phases);
               reference_density = eos_outputs_all_phases.densities[0];
             }
@@ -137,7 +137,7 @@ namespace aspect
       const ComponentMask volumetric_compositions = rheology->get_volumetric_composition_mask();
 
       EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
-      EquationOfStateOutputs<dim> eos_outputs_all_phases (this->n_compositional_fields()+1+phase_function.n_phase_transitions());
+      EquationOfStateOutputs<dim> eos_outputs_all_phases (phase_function.n_phases());
 
       std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
 
@@ -353,9 +353,6 @@ namespace aspect
     void
     ViscoPlastic<dim>::parse_parameters (ParameterHandler &prm)
     {
-      // increment by one for background:
-      const unsigned int n_fields = this->n_compositional_fields() + 1;
-
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection ("Visco Plastic");
@@ -364,33 +361,33 @@ namespace aspect
           phase_function.initialize_simulator (this->get_simulator());
           phase_function.parse_parameters (prm);
 
-          std::vector<unsigned int> n_phase_transitions_for_each_composition
-          (phase_function.n_phase_transitions_for_each_composition());
-
-          // We require one more entry for density, etc as there are phase transitions
-          // (for the low-pressure phase before any transition).
-          for (unsigned int &n : n_phase_transitions_for_each_composition)
-            n += 1;
-
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters (prm,
-                                              std::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
+                                              std::make_unique<std::vector<unsigned int>>(phase_function.n_phases_for_each_composition()));
 
 
-          thermal_diffusivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal diffusivities"))),
-                                                                          n_fields,
-                                                                          "Thermal diffusivities");
+          // Retrieve the list of composition names
+          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+
+          // Establish that a background field is required here
+          const bool has_background_field = true;
+
+          thermal_diffusivities = Utilities::parse_map_to_double_array (prm.get("Thermal diffusivities"),
+                                                                        list_of_composition_names,
+                                                                        has_background_field,
+                                                                        "Thermal diffusivities");
 
           define_conductivities = prm.get_bool ("Define thermal conductivities");
 
-          thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
-                                                                           n_fields,
-                                                                           "Thermal conductivities");
+          thermal_conductivities = Utilities::parse_map_to_double_array (prm.get("Thermal conductivities"),
+                                                                         list_of_composition_names,
+                                                                         has_background_field,
+                                                                         "Thermal conductivities");
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
-          rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
+          rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(phase_function.n_phases_for_each_composition()));
         }
         prm.leave_subsection();
       }

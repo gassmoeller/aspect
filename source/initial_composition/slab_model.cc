@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,10 +33,12 @@ namespace aspect
     void
     SlabModel<dim>::initialize ()
     {
-      AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
-                   ExcMessage ("This initial composition plugin can only be used when the "
-                               "preferred coordinate system of the geometry model is spherical "
-                               "(e.g. spherical shell, chunk, sphere)."));
+      AssertThrow(this->introspection().compositional_name_exists("slabs"),
+                  ExcMessage("The initial composition plugin `slab model' did not find a "
+                             "compositional field called `slabs' to initialize. Please add a "
+                             "compositional field with this name."));
+
+      slab_index = this->introspection().compositional_index_for_name("slabs");
 
       // The input slabs are defined from the surface of the model
       surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
@@ -52,29 +54,30 @@ namespace aspect
     initial_composition (const Point<dim> &position,
                          const unsigned int compositional_index) const
     {
-      AssertThrow(this->introspection().compositional_name_exists("slabs"),
-                  ExcMessage("The initial composition plugin `slabs' did not find a "
-                             "compositional field called `porosity' to initialize. Please add a "
-                             "compositional field with this name."));
+      if (compositional_index != slab_index)
+        return 0.0;
 
-      const unsigned int slab_index          = this->introspection().compositional_index_for_name("slabs");
-
-      const double depth                     = this->get_geometry_model().depth(position);
-      double slab_composition                = 0.0;
-
-      // The first column after the points correspond to the slabs depth and the second to the slabs thickness
+      // The first data column corresponds to the slab depth and the second column to the slab thickness.
+      // 'Slab depth' stands for the depth of the upper surface of the slab, 'Slab thickness'
+      // for the vertical distance between upper and lower surface.
       const double slab_depth     = slab_boundary.get_data_component(surface_boundary_id, position, 0);
       const double slab_thickness = slab_boundary.get_data_component(surface_boundary_id, position, 1);
 
-      // The input ascii file is structured and as a result has many data points outside of slabs. We give a very high
-      // number at those locations and therefore the first two conditions check if we are within the slabs.
-      // In the input file, slab depths are to the top of the slab surface.
-      // The hyperbolic tangent function smooths the slabs in the depth direction.
-      if ( (compositional_index == slab_index) && (slab_depth < 1e10) && (slab_thickness < 1e10) &&
-           (depth >= slab_depth) && (depth <= slab_depth + slab_thickness) )
-        slab_composition = 1 ;
+      // Return 0.0 if there is no slab in this location in the data. No slab is encoded in
+      // the data file as a slab thickness of 0.0 and/or a depth larger than the depth of
+      // the domain.
+      if (slab_thickness == 0.0 ||
+          slab_depth > this->get_geometry_model().maximal_depth())
+        return 0.0;
 
-      return slab_composition;
+      // Return 1.0 if we are inside the depth range of the slab.
+      // We use a semi-closed interval so that a slab thickness of 0.0
+      // means no slab exists.
+      const double depth = this->get_geometry_model().depth(position);
+      if ((depth >= slab_depth) && (depth < slab_depth + slab_thickness))
+        return 1.0;
+
+      return 0.0;
     }
 
 
@@ -84,8 +87,11 @@ namespace aspect
     {
       prm.enter_subsection("Initial composition model");
       {
-        Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "$ASPECT_SOURCE_DIR/data/initial-composition/slab/",
-                                                              "slab2_depth_thickness.txt", "Slab model");
+        Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
+                                                              "$ASPECT_SOURCE_DIR/data/initial-composition/slab-model/",
+                                                              "shell_3d.txt",
+                                                              "Slab model",
+                                                              /*time dependent = */ false);
       }
       prm.leave_subsection();
     }
@@ -98,7 +104,7 @@ namespace aspect
       prm.enter_subsection("Initial composition model");
       {
         slab_boundary.initialize_simulator (this->get_simulator());
-        slab_boundary.parse_parameters(prm, "Slab model");
+        slab_boundary.parse_parameters(prm, "Slab model", /*time dependent = */ false);
       }
       prm.leave_subsection();
     }
@@ -112,18 +118,22 @@ namespace aspect
   {
     ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(SlabModel,
                                               "slab model",
-                                              "An initial composition model that defines slabs "
-                                              "using the slab2 model (Hayes et al., 2018) input in "
-                                              "an ascii format. The file describes the depths to the "
-                                              "top of the slabs and their thickness."
+                                              "An initial composition model that implements subducted "
+                                              "slab geometries as a compositional field determined from "
+                                              "an input file. The file defines the depth to the top of "
+                                              "the slab and the slab thickness. "
                                               "The computed compositional value is 1 within the slabs "
                                               "and zero elsewhere. "
-                                              "More details on the slab2 model can be found in "
+                                              "An example model that is included is Slab2 described in "
                                               "Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., "
-                                              "Flamme, H., Furtney, M., & Smoczyk, G. M. (2018). Slab2, "
+                                              "Flamme, H., Furtney, M., \\& Smoczyk, G. M. (2018). Slab2, "
                                               "a comprehensive subduction zone geometry model. Science, "
-                                              "362(6410), 58-61. The script to convert the slab2 model "
+                                              "362(6410), 58-61. The script to convert the Slab2 model "
                                               "into an aspect input data file is available in the directory "
-                                              "data/initial-composition/slab/.")
+                                              "data/initial-composition/slab-model/. Please note that "
+                                              "Slab2 and the example data file assume spherical geometry "
+                                              "(latitude, longitude coordinates), however, that is not "
+                                              "necessary for this plugin, data files in "
+                                              "cartesian coordinates will work with box geometries.")
   }
 }

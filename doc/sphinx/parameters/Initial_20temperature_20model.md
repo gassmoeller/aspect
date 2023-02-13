@@ -149,6 +149,38 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Documentation:** The amplitude (in K) of the initial spherical temperature perturbation at the bottom of the model domain. This perturbation will be added to the adiabatic temperature profile, but not to the bottom thermal boundary layer. Instead, the maximum of the perturbation and the bottom boundary layer temperature will be used.
 
+(parameters:Initial_20temperature_20model/Adiabatic/Cooling_20model)=
+### __Parameter name:__ Cooling model
+**Default value:** half-space cooling
+
+**Pattern:** [Selection half-space cooling|plate cooling ]
+
+**Documentation:** Whether to use the half space cooling model or the plate cooling model
+
+(parameters:Initial_20temperature_20model/Adiabatic/Data_20directory)=
+### __Parameter name:__ Data directory
+**Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/adiabatic/
+
+**Pattern:** [DirectoryName]
+
+**Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+
+(parameters:Initial_20temperature_20model/Adiabatic/Data_20file_20name)=
+### __Parameter name:__ Data file name
+**Default value:** adiabatic.txt
+
+**Pattern:** [Anything]
+
+**Documentation:** The file name of the model data.
+
+(parameters:Initial_20temperature_20model/Adiabatic/Lithosphere_20thickness)=
+### __Parameter name:__ Lithosphere thickness
+**Default value:** 125e3
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Thickness of the lithosphere for plate cooling model. \si{\m}
+
 (parameters:Initial_20temperature_20model/Adiabatic/Position)=
 ### __Parameter name:__ Position
 **Default value:** center
@@ -165,6 +197,14 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Documentation:** The Radius (in m) of the initial spherical temperature perturbation at the bottom of the model domain.
 
+(parameters:Initial_20temperature_20model/Adiabatic/Scale_20factor)=
+### __Parameter name:__ Scale factor
+**Default value:** 1.
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+
 (parameters:Initial_20temperature_20model/Adiabatic/Subadiabaticity)=
 ### __Parameter name:__ Subadiabaticity
 **Default value:** 0.
@@ -174,6 +214,52 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 **Documentation:** If this value is larger than 0, the initial temperature profile will not be adiabatic, but subadiabatic. This value gives the maximal deviation from adiabaticity. Set to 0 for an adiabatic temperature profile. Units: \si{\kelvin}.
 
 The function object in the Function subsection represents the compositional fields that will be used as a reference profile for calculating the thermal diffusivity. This function is one-dimensional and depends only on depth. The format of this functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
+(parameters:Initial_20temperature_20model/Adiabatic/Top_20boundary_20layer_20age_20model)=
+### __Parameter name:__ Top boundary layer age model
+**Default value:** constant
+
+**Pattern:** [Selection constant|function|ascii data ]
+
+**Documentation:** How to define the age of the top thermal boundary layer. Options are: &rsquo;constant&rsquo; for a constant age specified by the parameter &rsquo;Age top boundary layer&rsquo;; &rsquo;function&rsquo; for an analytical function describing the age as specified in the subsection &rsquo;Age function&rsquo;; and &rsquo;ascii data&rsquo; to use an &rsquo;ascii data&rsquo; file specified by the parameter &rsquo;Data file name&rsquo;.
+
+(parameters:Initial_20temperature_20model/Adiabatic/Age_20function)=
+## **Subsection:** Initial temperature model / Adiabatic / Age function
+(parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Coordinate_20system)=
+### __Parameter name:__ Coordinate system
+**Default value:** cartesian
+
+**Pattern:** [Selection cartesian|spherical ]
+
+**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+
+(parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Function_20constants)=
+### __Parameter name:__ Function constants
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
+
+A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+
+(parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Function_20expression)=
+### __Parameter name:__ Function expression
+**Default value:** 0
+
+**Pattern:** [Anything]
+
+**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+(parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Variable_20names)=
+### __Parameter name:__ Variable names
+**Default value:** x,y,t
+
+**Pattern:** [Anything]
+
+**Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
 
 (parameters:Initial_20temperature_20model/Adiabatic/Function)=
 ## **Subsection:** Initial temperature model / Adiabatic / Function

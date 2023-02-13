@@ -357,7 +357,7 @@ namespace aspect
 
 
   template <int dim>
-  const std::vector<typename Parameters<dim>::CompositionalFieldDescription> &
+  const std::vector<CompositionalFieldDescription> &
   Introspection<dim>::get_composition_descriptions () const
   {
     return composition_descriptions;
@@ -367,7 +367,7 @@ namespace aspect
 
   template <int dim>
   bool
-  Introspection<dim>::composition_type_exists (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const
+  Introspection<dim>::composition_type_exists (const CompositionalFieldDescription::Type &type) const
   {
     for (unsigned int c=0; c<composition_descriptions.size(); ++c)
       if (composition_descriptions[c].type == type)
@@ -379,7 +379,7 @@ namespace aspect
 
   template <int dim>
   unsigned int
-  Introspection<dim>::find_composition_type (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const
+  Introspection<dim>::find_composition_type (const typename CompositionalFieldDescription::Type &type) const
   {
     for (unsigned int c=0; c<composition_descriptions.size(); ++c)
       if (composition_descriptions[c].type == type)
@@ -398,6 +398,36 @@ namespace aspect
             true
             :
             false);
+  }
+
+
+
+  template <int dim>
+  const std::vector<unsigned int>
+  Introspection<dim>::get_indices_for_fields_of_type (const CompositionalFieldDescription::Type &type) const
+  {
+    std::vector<unsigned int> indices;
+
+    for (unsigned int i=0; i<n_compositional_fields; ++i)
+      if (composition_descriptions[i].type == type)
+        indices.push_back(i);
+
+    return indices;
+  }
+
+
+
+  template <int dim>
+  const std::vector<std::string>
+  Introspection<dim>::get_names_for_fields_of_type (const CompositionalFieldDescription::Type &type) const
+  {
+    std::vector<std::string> names;
+
+    for (unsigned int i=0; i<n_compositional_fields; ++i)
+      if (composition_descriptions[i].type == type)
+        names.push_back(composition_names[i]);
+
+    return names;
   }
 
 
