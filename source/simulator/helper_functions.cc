@@ -1968,7 +1968,7 @@ namespace aspect
     distributed_vector.block(advection_block).compress(VectorOperation::insert);
 
     if (adv_field.is_temperature() ||
-        adv_field.compositional_variable != introspection.find_composition_type(Parameters<dim>::CompositionalFieldDescription::density))
+        adv_field.compositional_variable != introspection.find_composition_type(CompositionalFieldDescription::density))
       current_constraints.distribute (distributed_vector);
 
     solution.block(advection_block) = distributed_vector.block(advection_block);
@@ -2115,7 +2115,8 @@ namespace aspect
                   }
 
                 // ... and change the boundary id of any outflow boundary faces.
-                if (integrated_flow > 0)
+                // If there is no flow, we do not want to apply dirichlet boundary conditions either.
+                if (integrated_flow >= 0)
                   face->set_boundary_id(face->boundary_id() + offset);
               }
           }

@@ -80,7 +80,8 @@ namespace aspect
 
       protected:
         /**
-         * An object of ascii data boundary to input crustal depths.
+         * An object of ascii data boundary to input subducted slab depths
+         * and thicknesses.
          */
         Utilities::AsciiDataBoundary<dim> slab_boundary;
 

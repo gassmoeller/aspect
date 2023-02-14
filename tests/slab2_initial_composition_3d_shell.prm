@@ -47,10 +47,9 @@ end
 
 subsection Initial composition model
   set Model name = slab model
-  # The following lines needs to be modified such that
-  # they point to the location of the output slab2 model
-  # datafile, generated using the jupyter notebook in
-  # (contrib/python) folder in the aspect base directory.
+  # The following lines point to the location of the slab2 model
+  # data file, generated using the jupyter notebook in the
+  # /data/initial-composition/slab-model/ folder.
   subsection Slab model
     set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/slab-model/
     set Data file name       = shell_3d.txt
@@ -76,17 +75,9 @@ end
 
 
 subsection Mesh refinement
-<<<<<<< HEAD
-  set Initial global refinement                = 1
-=======
   set Initial global refinement                = 2
->>>>>>> 9d5fe27691c7445d22c53a4a82e9558bbf29eef6
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
-  set Strategy                                 = composition threshold, temperature
-  subsection Composition threshold
-    set Compositional field thresholds = 0.2
-  end
 end
 
 

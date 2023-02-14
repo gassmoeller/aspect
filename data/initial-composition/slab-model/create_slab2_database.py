@@ -2,8 +2,12 @@
 # coding: utf-8
 
 # This script uses the slab2 model data, available to download from
-# https://www.sciencebase.gov/catalog/item/5aa1b00ee4b0b1c392e86467, and
-# formats it into an ascii data boundary for an input in Aspect.
+# https://www.sciencebase.gov/catalog/item/5aa1b00ee4b0b1c392e86467
+# (Choose the file "Slab2Distribute_Mar2018.tar.gz" under the
+# "Attached files" heading and unpack it in this directory).
+# 
+# This script then formats the data in a way that it can be used by
+# the slab model plugin in ASPECT.
 # 
 # Input files: Each input file contains attributes representing either depth
 # "dep", dip ("dip"), strike ("str"), and thickness ("thk") information for
@@ -145,7 +149,7 @@ for i in range(len(input_filenames)):
     slab_depths, slab_thickness = slab2_into_asciiboundary (input_filenames[i])
 
 # Save the arrays in the format for aspect ascii boundary :
-# 1. use radians in longitudes and latitudes, 2. first longitudes increase then latitudes
+# 1. use radians in longitudes and co-latitudes, 2. first longitudes increase then co-latitudes
 # 3. convert depth and thickness from km to meters 4. depth is negative in the downward
 # direction of the slab2 database, convert to positive values. 5. Add necessary header
 # information.

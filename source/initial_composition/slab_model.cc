@@ -33,6 +33,13 @@ namespace aspect
     void
     SlabModel<dim>::initialize ()
     {
+      AssertThrow(this->introspection().compositional_name_exists("slabs"),
+                  ExcMessage("The initial composition plugin `slab model' did not find a "
+                             "compositional field called `slabs' to initialize. Please add a "
+                             "compositional field with this name."));
+
+      slab_index = this->introspection().compositional_index_for_name("slabs");
+
       // The input slabs are defined from the surface of the model
       surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
@@ -50,14 +57,15 @@ namespace aspect
       if (compositional_index != slab_index)
         return 0.0;
 
-      // The first data column correspond to the slab depth and the second to slab thickness
+      // The first data column corresponds to the slab depth and the second column to the slab thickness.
       // 'Slab depth' stands for the depth of the upper surface of the slab, 'Slab thickness'
-      // for the vertical distance between upper and lower surface. Both values are set to
-      // unrealistically large values in lateral positions that do not have a slab.
+      // for the vertical distance between upper and lower surface.
       const double slab_depth     = slab_boundary.get_data_component(surface_boundary_id, position, 0);
       const double slab_thickness = slab_boundary.get_data_component(surface_boundary_id, position, 1);
 
-      // Return 0.0 if there is no slab in this location in the data
+      // Return 0.0 if there is no slab in this location in the data. No slab is encoded in
+      // the data file as a slab thickness of 0.0 and/or a depth larger than the depth of
+      // the domain.
       if (slab_thickness == 0.0 ||
           slab_depth > this->get_geometry_model().maximal_depth())
         return 0.0;
@@ -82,7 +90,8 @@ namespace aspect
         Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
                                                               "$ASPECT_SOURCE_DIR/data/initial-composition/slab-model/",
                                                               "shell_3d.txt",
-                                                              "Slab model");
+                                                              "Slab model",
+                                                              /*time dependent = */ false);
       }
       prm.leave_subsection();
     }
@@ -95,16 +104,9 @@ namespace aspect
       prm.enter_subsection("Initial composition model");
       {
         slab_boundary.initialize_simulator (this->get_simulator());
-        slab_boundary.parse_parameters(prm, "Slab model");
+        slab_boundary.parse_parameters(prm, "Slab model", /*time dependent = */ false);
       }
       prm.leave_subsection();
-
-      AssertThrow(this->introspection().compositional_name_exists("slabs"),
-                  ExcMessage("The initial composition plugin `slabs' did not find a "
-                             "compositional field called `slabs' to initialize. Please add a "
-                             "compositional field with this name."));
-
-      slab_index = this->introspection().compositional_index_for_name("slabs");
     }
   }
 }
@@ -126,12 +128,12 @@ namespace aspect
                                               "Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., "
                                               "Flamme, H., Furtney, M., \\& Smoczyk, G. M. (2018). Slab2, "
                                               "a comprehensive subduction zone geometry model. Science, "
-                                              "362(6410), 58-61. The script to convert the slab2 model "
+                                              "362(6410), 58-61. The script to convert the Slab2 model "
                                               "into an aspect input data file is available in the directory "
                                               "data/initial-composition/slab-model/. Please note that "
                                               "Slab2 and the example data file assume spherical geometry "
-                                              "(latitude, longitude coordinates), however that is not "
-                                              "a limitation of this plugin, data files in "
+                                              "(latitude, longitude coordinates), however, that is not "
+                                              "necessary for this plugin, data files in "
                                               "cartesian coordinates will work with box geometries.")
   }
 }
