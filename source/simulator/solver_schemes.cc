@@ -148,6 +148,7 @@ namespace aspect
       {
         case Parameters<dim>::AdvectionFieldMethod::fem_field:
         case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
+        case Parameters<dim>::AdvectionFieldMethod::particles:
         {
           const AdvectionField adv_field (AdvectionField::temperature());
 

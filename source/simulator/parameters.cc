@@ -1154,7 +1154,7 @@ namespace aspect
     prm.enter_subsection ("Temperature field");
     {
       prm.declare_entry ("Temperature method", "field",
-                         Patterns::Selection("field|prescribed field|prescribed field with diffusion|static"),
+                         Patterns::Selection("field|particles|prescribed field|prescribed field with diffusion|static"),
                          "A comma separated list denoting the solution method of the "
                          "temperature field. Each entry of the list must be "
                          "one of the currently implemented field types."
@@ -1166,6 +1166,11 @@ namespace aspect
                          "method, then its values are computed in each time step by "
                          "solving the temperature advection-diffusion equation. In other words, "
                          "this corresponds to the usual notion of a temperature. "
+                         "\n"
+                         "\\item ``particles'': If the temperature is marked with this "
+                         "method, then its values are computed in each time step by "
+                         "advecting particles. WARNING: Do not use this method at the "
+                         "moment, since it can only simulate advection."
                          "\n"
                          "\\item ``prescribed field'': The value of the temperature is determined "
                          "in each time step from the material model. If a compositional field is "
@@ -1781,6 +1786,8 @@ namespace aspect
 
       if (x_temperature_method == "field")
         temperature_method = AdvectionFieldMethod::fem_field;
+      else if (x_temperature_method == "particles")
+        temperature_method = AdvectionFieldMethod::particles;
       else if (x_temperature_method == "prescribed field")
         temperature_method = AdvectionFieldMethod::prescribed_field;
       else if (x_temperature_method == "prescribed field with diffusion")

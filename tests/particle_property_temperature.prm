@@ -51,6 +51,10 @@ end
 ############### Parameters describing the temperature field
 # Note: The temperature plays no role in this model
 
+subsection Temperature field
+  set Temperature method = particles
+end
+
 subsection Initial temperature model
   set Model name = function
   subsection Function
