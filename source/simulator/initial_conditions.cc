@@ -238,7 +238,13 @@ namespace aspect
 
     for (const auto &advection_field: advection_fields)
       {
-        if (parameters.mapped_particle_properties.size() != 0)
+        if (advection_field.is_temperature())
+          {
+            const unsigned int particle_property_index = particle_property_manager->get_data_info().get_position_by_field_name("T");
+            particle_property_indices.push_back(particle_property_index);
+            property_mask.set(particle_property_index,true);
+          }
+        else if (parameters.mapped_particle_properties.size() != 0)
           {
             const std::pair<std::string,unsigned int> particle_property_and_component = parameters.mapped_particle_properties.find(advection_field.compositional_variable)->second;
 

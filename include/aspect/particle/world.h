@@ -240,6 +240,12 @@ namespace aspect
         void update_particles();
 
         /**
+         * Advect the particle positions by one integration step. Needs to be
+         * called until integrator->continue() returns false.
+         */
+        void advect_particles();
+
+        /**
          * Serialize the contents of this class.
          */
         template <class Archive>
@@ -390,11 +396,6 @@ namespace aspect
         void
         apply_particle_per_cell_bounds();
 
-        /**
-         * Advect the particle positions by one integration step. Needs to be
-         * called until integrator->continue() returns false.
-         */
-        void advect_particles();
 
         /**
          * Initialize the particle properties of one cell.

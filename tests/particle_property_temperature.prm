@@ -7,7 +7,7 @@
 # MPI: 2
 
 set Dimension                              = 2
-set End time                               = 70
+set End time                               = 2000
 set Use years in output instead of seconds = false
 
 subsection Geometry model
@@ -88,6 +88,12 @@ subsection Material model
   end
 end
 
+subsection Solver parameters
+  subsection Diffusion solver parameters
+    set Diffusion length scale = 1e-4 #1.e4
+  end
+end
+
 
 ############### Parameters describing the discretization
 
@@ -105,12 +111,17 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, composition statistics,particles
+  set List of postprocessors = velocity statistics, temperature statistics, composition statistics, particles, visualization
+
+  subsection Visualization
+    set List of output variables = material properties
+    set Time between graphical output = 50
+  end
 
   subsection Particles
-    set Number of particles = 10
-    set Time between data output = 70
-    set Data output format = gnuplot
+    set Number of particles = 10000
+    set Time between data output = 50
+    set Data output format = vtu
     set List of particle properties = temperature, function
 
     subsection Function
@@ -119,5 +130,13 @@ subsection Postprocess
     end
 
     set Particle generator name = random uniform
+    set Interpolation scheme = bilinear least squares
+    set Update ghost particles = true
+
+    subsection Interpolator
+      subsection Bilinear least squares
+        set Use linear least squares limiter = true
+      end
+    end
   end
 end

@@ -80,7 +80,9 @@ namespace aspect
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
       if (advection_field.advection_method (introspection)
-          == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
+          == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion
+          || advection_field.advection_method (introspection)
+          == Parameters<dim>::AdvectionFieldMethod::particles)
         return;
 
       for (unsigned int q=0; q<n_q_points; ++q)
@@ -328,7 +330,9 @@ namespace aspect
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
 
       if (advection_field.advection_method(introspection)
-          != Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
+          != Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion
+          && advection_field.advection_method(introspection)
+          != Parameters<dim>::AdvectionFieldMethod::particles)
         return;
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;

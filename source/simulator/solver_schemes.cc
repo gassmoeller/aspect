@@ -142,13 +142,28 @@ namespace aspect
   double Simulator<dim>::assemble_and_solve_temperature (const bool compute_initial_residual,
                                                          double *initial_residual)
   {
+    // Advect the particles before they are potentially used to
+    // set up the compositional fields.
+    if (particle_world.get() != nullptr &&
+        parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::particles)
+      {
+        // Do not advect the particles in the initial refinement stage
+        const bool in_initial_refinement = (timestep_number == 0)
+                                           && (pre_refinement_step < parameters.initial_adaptive_refinement);
+        if (!in_initial_refinement)
+          // Advance the particles in the world to the current time
+          particle_world->advance_timestep();
+
+        if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
+          particle_world->update_particles();
+      }
+
     double current_residual = 0.0;
 
     switch (parameters.temperature_method)
       {
         case Parameters<dim>::AdvectionFieldMethod::fem_field:
         case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
-        case Parameters<dim>::AdvectionFieldMethod::particles:
         {
           const AdvectionField adv_field (AdvectionField::temperature());
 
@@ -175,6 +190,48 @@ namespace aspect
             }
 
           current_residual = solve_advection(adv_field);
+          break;
+        }
+
+        case Parameters<dim>::AdvectionFieldMethod::particles:
+        {
+          // Do not advect the particles in the initial refinement stage
+          const bool in_initial_refinement = (timestep_number == 0)
+                                             && (pre_refinement_step < parameters.initial_adaptive_refinement);
+          if (!in_initial_refinement)
+            {
+              const AdvectionField adv_field (AdvectionField::temperature());
+
+              particle_world->advect_particles();
+
+              {
+                // interpolate to field
+                interpolate_particle_properties({adv_field});
+
+                // Also set the old_solution block to the prescribed field. The old
+                // solution is the one that is used to assemble the diffusion system in
+                // assemble_advection_system() for this solver scheme.
+                old_solution.block(adv_field.block_index(introspection)) = solution.block(adv_field.block_index(introspection));
+                current_linearization_point.block(adv_field.block_index(introspection)) = solution.block(adv_field.block_index(introspection));
+              }
+
+              // solve_diffusion
+              {
+                assemble_advection_system (adv_field);
+
+                if (compute_initial_residual)
+                  {
+                    Assert(initial_residual != nullptr, ExcInternalError());
+                    *initial_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
+                  }
+
+                current_residual = solve_advection(adv_field);
+              }
+
+              particle_world->update_particles();
+
+              particle_world->advect_particles();
+            }
           break;
         }
 
@@ -227,21 +284,6 @@ namespace aspect
   std::vector<double> Simulator<dim>::assemble_and_solve_composition (const bool compute_initial_residual,
                                                                       std::vector<double> *initial_residual)
   {
-    // Advect the particles before they are potentially used to
-    // set up the compositional fields.
-    if (particle_world.get() != nullptr)
-      {
-        // Do not advect the particles in the initial refinement stage
-        const bool in_initial_refinement = (timestep_number == 0)
-                                           && (pre_refinement_step < parameters.initial_adaptive_refinement);
-        if (!in_initial_refinement)
-          // Advance the particles in the world to the current time
-          particle_world->advance_timestep();
-
-        if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
-          particle_world->update_particles();
-      }
-
     std::vector<double> current_residual(introspection.n_compositional_fields,0.0);
 
     if (compute_initial_residual)
