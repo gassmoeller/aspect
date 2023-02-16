@@ -68,11 +68,11 @@ def interpolate_data (name_key, type_key):
 
 # Slabs with 0.02 degree spacing
 file_name_key = ['hin', 'man', 'mue', 'pam', 'puy']
-file_type_key = ['dep', 'thk']
+file_type_key = ['dep', 'thk', 'dip']
 
-for i in range(len(file_name_key)): 
-    interpolate_data (file_name_key[i], 'dep')
-    interpolate_data (file_name_key[i], 'thk')  
+for i in range(len(file_name_key)):
+    for j in range(len(file_type_key)):
+        interpolate_data (file_name_key[i], file_type_key[j])
 
 # Create the grid for aspect, with global longitudes and colatitudes and
 # resolution same as all the slabs (0.05 degrees)
@@ -85,7 +85,7 @@ longitude_grid, latitude_grid = np.meshgrid (longitudes_target, latitudes_target
 # without slabs.
 depths_target       = np.finfo(np.float64).max / 1e4 * np.ones (len(longitude_grid.flatten()),)
 thickness_target    = np.zeros (len(longitude_grid.flatten()),)
-
+dips_target         = np.zeros (len(longitude_grid.flatten()),)
 
 nan_indx = 0 
 def slab2_into_asciiboundary (slab_filename):
@@ -135,18 +135,28 @@ def slab2_into_asciiboundary (slab_filename):
     thk_file  = slab_filename.replace ('dep', 'thk')
     thk_data  = np.loadtxt (thk_file, delimiter=",", usecols=2)
     
-    # We checked that slab thickness is defined at points where
-    # slab depths are defined.
-    thickness_target[indx_not_a_nan] = thk_data[np.where(~np.isnan (depths))]
+    # do the same for the dip file
+    dip_file  = slab_filename.replace ('dep', 'dip')
+    dip_data  = np.loadtxt (dip_file, delimiter=",", usecols=2)
 
-    return (depths_target, thickness_target)
+    # We checked that slab thickness and dips are defined at points where
+    # slab depths are defined.
+    target_indx_not_a_nan            = np.where(~np.isnan (depths))
+    thickness_target[indx_not_a_nan] = thk_data[target_indx_not_a_nan]
+    dips_target[indx_not_a_nan]      = dip_data[target_indx_not_a_nan]
+
+    return (depths_target, thickness_target, dips_target)
 
 
 input_filenames = glob('*_slab2*' + file_type_key[0]  + '*.xyz')
 
 for i in range(len(input_filenames)):
     print (input_filenames[i])
-    slab_depths, slab_thickness = slab2_into_asciiboundary (input_filenames[i])
+    slab_depths, slab_thickness, slab_dips = slab2_into_asciiboundary (input_filenames[i])
+
+# The thickness in the slab2 model is perpendicular to the slab surface, therefore, we need
+# to convert it into equivalent distance vertically from the slab surface.
+thickness_vertical = slab_thickness/np.cos(np.deg2rad(slab_dips))
 
 # Save the arrays in the format for aspect ascii boundary :
 # 1. use radians in longitudes and co-latitudes, 2. first longitudes increase then co-latitudes
@@ -158,7 +168,7 @@ km_to_m          = 1e3
 output_dir       = cwd
 output_filename  = '/slab2_depth_thickness_highres.txt'
 output_data      = np.column_stack ((np.deg2rad(longitude_grid.flatten()), np.deg2rad(latitude_grid.flatten()),
-                                     abs(depths_target.flatten())*km_to_m, thickness_target.flatten()*km_to_m))
+                                     abs(depths_target.flatten())*km_to_m, thickness_vertical.flatten()*km_to_m))
 
 aspect_header    = 'Test data for ascii data initial conditions.\n' + \
                    'Only next line is parsed in format: [nx] [ny] because of keyword "POINTS"\n' + \
