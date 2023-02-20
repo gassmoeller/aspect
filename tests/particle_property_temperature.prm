@@ -37,6 +37,7 @@ subsection Material model
     set Reference density             = 1010
     set Viscosity                     = 1e2
     set Thermal expansion coefficient = 0
+    set Thermal conductivity = 0.0
   end
 end
 
@@ -130,12 +131,15 @@ subsection Postprocess
     end
 
     set Particle generator name = random uniform
-    set Interpolation scheme = bilinear least squares
+    set Interpolation scheme = quadratic least squares
     set Update ghost particles = true
 
     subsection Interpolator
       subsection Bilinear least squares
         set Use linear least squares limiter = true
+      end
+      subsection Quadratic least squares
+        set Use quadratic least squares limiter = true
       end
     end
   end

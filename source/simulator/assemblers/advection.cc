@@ -80,9 +80,7 @@ namespace aspect
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
       if (advection_field.advection_method (introspection)
-          == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion
-          || advection_field.advection_method (introspection)
-          == Parameters<dim>::AdvectionFieldMethod::particles)
+          == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
         return;
 
       for (unsigned int q=0; q<n_q_points; ++q)
@@ -159,6 +157,10 @@ namespace aspect
           if (this->get_parameters().mesh_deformation_enabled)
             current_u -= scratch.mesh_velocity_values[q];
 
+          if (advection_field.advection_method (introspection)
+              == Parameters<dim>::AdvectionFieldMethod::particles)
+            current_u = 0.0;
+
           const double JxW = scratch.finite_element_values.JxW(q);
 
           // For the diffusion constant, use the larger of the physical
@@ -177,7 +179,9 @@ namespace aspect
                                        :
                                        0.0);
 
-          const double diffusion_constant = (use_supg)
+          const double diffusion_constant = (use_supg ||
+                                             advection_field.advection_method (introspection)
+                                             == Parameters<dim>::AdvectionFieldMethod::particles)
                                             ?
                                             conductivity
                                             :

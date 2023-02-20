@@ -69,7 +69,7 @@ namespace aspect
                                                  const std::vector<Tensor<1,dim>> &/*gradients*/,
                                                  typename ParticleHandler<dim>::particle_iterator &particle) const
       {
-        particle->get_properties()[data_position] = solution[this->introspection().component_indices.temperature];
+        particle->get_properties()[data_position] += solution[this->introspection().component_indices.temperature];
       }
 
 

@@ -228,9 +228,12 @@ namespace aspect
                 current_residual = solve_advection(adv_field);
               }
 
+              solution.block(adv_field.block_index(introspection)) -= old_solution.block(adv_field.block_index(introspection));
               particle_world->update_particles();
+              solution.block(adv_field.block_index(introspection)) += old_solution.block(adv_field.block_index(introspection));
 
               particle_world->advect_particles();
+              interpolate_particle_properties({adv_field});
             }
           break;
         }
