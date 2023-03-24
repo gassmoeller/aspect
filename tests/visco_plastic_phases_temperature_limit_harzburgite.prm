@@ -77,11 +77,11 @@ subsection Material model
         set Phase transition temperature upper limits = background:1e31|1e31|1e31|1e31|1662.0|1662.0|1e31
         set Phase transition Clapeyron slopes = background:4e6|4.1e6|4e6|-2e6|4e6|-3.1e6|1.3e6
         set Thermal diffusivities = 1.0e-6
-        set Heat capacities = background: 3235.0|3372.3|3441.7|3441.7|3680.8|3717.8|3759.4|3836.6
+        set Heat capacities = background: 3235.0|3372.3|3441.7|3441.7|3680.8|3478.7|3759.4|3759.4
         set Densities = 3300.0
         set Thermal expansivities = 0.0
         set Viscous flow law = diffusion
-        set Prefactors for diffusion creep = background:5e-22|5e-22|5e-22|5e-22|5e-24|5e-24|5e-24|5e-24
+        set Prefactors for diffusion creep = background:5e-22|5e-22|5e-22|5e-22|5e-24|5e-22|5e-24|5e-24
         set Grain size exponents for diffusion creep = 0.0
         set Activation energies for diffusion creep = 0.0
         set Activation volumes for diffusion creep = 0.0
