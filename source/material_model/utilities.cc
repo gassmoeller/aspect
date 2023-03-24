@@ -1042,10 +1042,10 @@ namespace aspect
                   {
                     // First average by log values and then take the exponential.
                     // This is used for averaging prefactors in flow laws.
-                    averaged_parameter += phase_function_values[phase_index-composition_index] * log(parameter_values[phase_index+1] / parameter_values[phase_index]);
+                    averaged_parameter += phase_function_values[phase_index-composition_index] * (std::log(parameter_values[phase_index+1]) - averaged_parameter);
                   }
                 else if (operation == PhaseUtilities::arithmetic)
-                  averaged_parameter += phase_function_values[phase_index-composition_index] * (parameter_values[phase_index+1] - parameter_values[phase_index]);
+                  averaged_parameter += phase_function_values[phase_index-composition_index] * (parameter_values[phase_index+1] - averaged_parameter);
 
                 else
                   AssertThrow(false, ExcInternalError());
