@@ -1164,9 +1164,15 @@ namespace aspect
         solution[component_indices.pressure] = pressure->get_value(evaluation_point);
         solution[component_indices.temperature] = temperature.get_value(evaluation_point);
 
-        const typename FEPointEvaluation<n_compositional_fields, dim>::value_type composition_values = compositions.get_value(evaluation_point);
+        // The following is a bit ugly, but we need to copy the values from the
+        // composition evaluators into the solution vector. We can't simply assign
+        // FEPointEvaluation::get_value() to solution because for 1 composition
+        // it returns a double, but we expect a double*.
         for (unsigned int j=0; j<n_compositional_fields; ++j)
-          solution[component_indices.compositional_fields[j]] = dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::access(composition_values,j);
+          dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::write_value(
+            solution[component_indices.compositional_fields[j]],
+            j,
+            compositions.get_value(evaluation_point));
 
         const unsigned int n_additional_compositions = additional_compositions.size();
         for (unsigned int j=0; j<n_additional_compositions; ++j)
