@@ -875,9 +875,9 @@ namespace aspect
           scratch.mesh_velocity_values);
 
     // compute material properties and heating terms
-    scratch.material_model_inputs.reinit  (scratch.finite_element_values,
-                                           cell,
-                                           this->introspection,
+    scratch.material_model_inputs.reinit  (*this,
+    cell,
+    scratch.finite_element_values.get_quadrature().get_points(),
                                            current_linearization_point,
                                            true);
 

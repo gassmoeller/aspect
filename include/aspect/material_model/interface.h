@@ -341,6 +341,12 @@ namespace aspect
                   const LinearAlgebra::BlockVector                     &solution_vector,
                   const bool                                            compute_strain_rate = true);
 
+      void reinit(const SimulatorAccess<dim> &simulator_access,
+                  const typename DoFHandler<dim>::active_cell_iterator &cell_x,
+                  const std::vector<Point<dim>> &evaluation_points,
+                  const LinearAlgebra::BlockVector &solution_vector,
+                  const bool compute_strain_rate);
+
       /**
        * Function that returns the number of points at which
        * the material model is to be evaluated.
