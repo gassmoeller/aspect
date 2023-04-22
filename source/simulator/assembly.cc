@@ -834,8 +834,6 @@ namespace aspect
     Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
     Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
 
-    const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
-
     const unsigned int solution_component = advection_field.component_index(introspection);
 
     scratch.reinit(cell);

@@ -462,46 +462,128 @@ namespace aspect
 
         scratch.finite_element_values.reinit (cell);
 
+        auto &evaluators = scratch.evaluators;
+        evaluators.mapping_info.reinit (cell,scratch.finite_element_values.get_quadrature().get_points());
+
+        boost::container::small_vector<double, 200> fe_solution(cell->get_fe().dofs_per_cell);
+        ArrayView<double> fe_solution_view(fe_solution.data(), fe_solution.size());
+
+        const EvaluationFlags::EvaluationFlags evaluation_values = EvaluationFlags::values;
+        const EvaluationFlags::EvaluationFlags evaluation_both = EvaluationFlags::values | EvaluationFlags::gradients;
+        const unsigned int n_compositional_fields = evaluators.compositions.size();
+
+        {
+          cell->get_dof_values(old_solution,
+                               fe_solution.begin(),
+                               fe_solution.end());
+
+          evaluators.velocity.evaluate(fe_solution_view, evaluation_both);
+          evaluators.pressure->evaluate(fe_solution_view, evaluation_both);
+          evaluators.temperature.evaluate(fe_solution_view, advection_field.is_temperature() ? evaluation_both : evaluation_values);
+
+
+          for (unsigned int j=0; j<n_compositional_fields; ++j)
+            {
+              EvaluationFlags::EvaluationFlags flags = (!advection_field.is_temperature() && advection_field.compositional_variable == j)
+                                                       ?
+                                                       evaluation_both
+                                                       :
+                                                       evaluation_values;
+              evaluators.compositions[j].evaluate(fe_solution_view, flags);
+            }
+
+          for (unsigned int i=0; i<n_q_points; ++i)
+            {
+              scratch.old_temperature_values[i] = evaluators.temperature.get_value(i);
+              if (advection_field.is_temperature())
+                scratch.old_field_grads[i] = evaluators.temperature.get_gradient(i);
+
+              scratch.old_pressure[i] = evaluators.pressure->get_value(i);
+
+              for (unsigned int d=0; d<dim; ++d)
+                scratch.old_velocity_values[i][d] = evaluators.velocity.get_value(i)[d];
+
+              for (unsigned int c=0; c<n_compositional_fields; ++c)
+                {
+                  scratch.old_composition_values[i][c] = evaluators.compositions[c].get_value(i);
+                  if (!advection_field.is_temperature() && advection_field.compositional_variable == c)
+                    scratch.old_field_grads[i] = evaluators.compositions[c].get_gradient(i);
+                }
+
+              scratch.old_pressure_gradients[i] = evaluators.pressure->get_gradient(i);
+
+              Tensor<2,dim> velocity_gradient;
+              for (unsigned int d=0; d<dim; ++d)
+                for (unsigned int e=0; e<dim; ++e)
+                  velocity_gradient[d][e] = evaluators.velocity.get_gradient(i)[d][e];
+
+              scratch.old_strain_rates[i] = symmetrize(velocity_gradient);
+            }
+        }
+
+        {
+          cell->get_dof_values(old_old_solution,
+                               fe_solution.begin(),
+                               fe_solution.end());
+
+          evaluators.velocity.evaluate(fe_solution_view, evaluation_both);
+          evaluators.pressure->evaluate(fe_solution_view, evaluation_both);
+          evaluators.temperature.evaluate(fe_solution_view, advection_field.is_temperature() ? evaluation_both : evaluation_values);
+
+
+          for (unsigned int j=0; j<n_compositional_fields; ++j)
+            {
+              EvaluationFlags::EvaluationFlags flags = (!advection_field.is_temperature() && advection_field.compositional_variable == j)
+                                                       ?
+                                                       evaluation_both
+                                                       :
+                                                       evaluation_values;
+              evaluators.compositions[j].evaluate(fe_solution_view, flags);
+            }
+
+          for (unsigned int i=0; i<n_q_points; ++i)
+            {
+              scratch.old_old_temperature_values[i] = evaluators.temperature.get_value(i);
+              if (advection_field.is_temperature())
+                scratch.old_old_field_grads[i] = evaluators.temperature.get_gradient(i);
+
+              scratch.old_old_pressure[i] = evaluators.pressure->get_value(i);
+
+              for (unsigned int d=0; d<dim; ++d)
+                scratch.old_old_velocity_values[i][d] = evaluators.velocity.get_value(i)[d];
+
+              for (unsigned int c=0; c<n_compositional_fields; ++c)
+                {
+                  scratch.old_old_composition_values[i][c] = evaluators.compositions[c].get_value(i);
+                  if (!advection_field.is_temperature() && advection_field.compositional_variable == c)
+                    scratch.old_old_field_grads[i] = evaluators.compositions[c].get_gradient(i);
+                }
+              scratch.old_old_pressure_gradients[i] = evaluators.pressure->get_gradient(i);
+
+              Tensor<2,dim> velocity_gradient;
+              for (unsigned int d=0; d<dim; ++d)
+                for (unsigned int e=0; e<dim; ++e)
+                  velocity_gradient[d][e] = evaluators.velocity.get_gradient(i)[d][e];
+
+              scratch.old_old_strain_rates[i] = symmetrize(velocity_gradient);
+            }
+        }
+
+        {
+          cell->get_dof_values(current_linearization_point,
+                               fe_solution.begin(),
+                               fe_solution.end());
+
+          evaluators.velocity.evaluate(fe_solution_view, evaluation_values);
+
+          for (unsigned int i=0; i<n_q_points; ++i)
+            for (unsigned int d=0; d<dim; ++d)
+              scratch.old_old_velocity_values[i][d] = evaluators.velocity.get_value(i)[d];
+        }
+
         // get all dof indices on the current cell, then extract those
         // that correspond to the solution_field we are interested in
         cell->get_dof_indices (scratch.local_dof_indices);
-
-        // initialize all of the scratch fields for further down
-        scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_solution,
-            scratch.old_temperature_values);
-        scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_old_solution,
-            scratch.old_old_temperature_values);
-
-        scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_solution,
-            scratch.old_strain_rates);
-        scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_old_solution,
-            scratch.old_old_strain_rates);
-
-        scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_solution,
-            scratch.old_pressure);
-        scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_old_solution,
-            scratch.old_old_pressure);
-
-        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-          {
-            scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_solution,
-                scratch.old_composition_values[c]);
-            scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_old_solution,
-                scratch.old_old_composition_values[c]);
-          }
-
-        scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_solution,
-            scratch.old_velocity_values);
-        scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_old_solution,
-            scratch.old_old_velocity_values);
-        scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
-            scratch.current_velocity_values);
-
-        scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_solution,
-            scratch.old_pressure_gradients);
-        scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_old_solution,
-            scratch.old_old_pressure_gradients);
-
 
         scratch.old_field_values = (advection_field.is_temperature()
                                     ?
@@ -513,11 +595,6 @@ namespace aspect
                                         scratch.old_old_temperature_values
                                         :
                                         scratch.old_old_composition_values[advection_field.compositional_variable]);
-
-        scratch.finite_element_values[solution_field].get_function_gradients (old_solution,
-                                                                              scratch.old_field_grads);
-        scratch.finite_element_values[solution_field].get_function_gradients (old_old_solution,
-                                                                              scratch.old_old_field_grads);
 
         if (update_flags & update_hessians)
           {
