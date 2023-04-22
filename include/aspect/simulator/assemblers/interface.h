@@ -24,6 +24,7 @@
 #include <aspect/global.h>
 #include <aspect/heating_model/interface.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/evaluators.h>
 
 #include <deal.II/fe/fe_values.h>
 
@@ -222,10 +223,14 @@ namespace aspect
                            const UpdateFlags         update_flags,
                            const UpdateFlags         face_update_flags,
                            const unsigned int        n_compositional_fields,
-                           const typename Simulator<dim>::AdvectionField     &field);
+                           const typename Simulator<dim>::AdvectionField     &field,
+                           const SimulatorAccess<dim> &simulator_access);
           AdvectionSystem (const AdvectionSystem &scratch);
 
           FEValues<dim> finite_element_values;
+          SolutionEvaluators::SolutionEvaluators<dim> evaluators;
+          const SimulatorAccess<dim> &simulator_access;
+          const UpdateFlags update_flags;
 
           void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
 

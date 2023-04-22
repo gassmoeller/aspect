@@ -189,13 +189,17 @@ namespace aspect
                          const UpdateFlags         update_flags,
                          const UpdateFlags         face_update_flags,
                          const unsigned int        n_compositional_fields,
-                         const typename Simulator<dim>::AdvectionField &field)
+                         const typename Simulator<dim>::AdvectionField &field,
+                         const SimulatorAccess<dim> &simulator_access)
           :
           ScratchBase<dim>(),
 
           finite_element_values (mapping,
                                  finite_element, quadrature,
                                  update_flags),
+          evaluators(simulator_access, update_flags),
+          simulator_access(simulator_access),
+          update_flags(update_flags),
           face_finite_element_values (face_quadrature.size() > 0
                                       ?
                                       std::make_unique<FEFaceValues<dim>> (mapping,
@@ -284,6 +288,9 @@ namespace aspect
                                  scratch.finite_element_values.get_fe(),
                                  scratch.finite_element_values.get_quadrature(),
                                  scratch.finite_element_values.get_update_flags()),
+          evaluators(scratch.simulator_access, scratch.update_flags),
+          simulator_access (scratch.simulator_access),
+          update_flags (scratch.update_flags),
           face_finite_element_values (scratch.face_finite_element_values.get()
                                       ?
                                       std::make_unique<FEFaceValues<dim>> (scratch.face_finite_element_values->get_mapping(),
@@ -365,6 +372,7 @@ namespace aspect
           this->cell = cell_ref;
           this->face_number = numbers::invalid_unsigned_int;
           finite_element_values.reinit (cell_ref);
+          evaluators.mapping_info.reinit (cell_ref,finite_element_values.get_quadrature().get_points());
         }
 
       }

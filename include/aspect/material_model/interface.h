@@ -42,6 +42,11 @@ namespace aspect
   template <int dim>
   struct Introspection;
 
+  namespace SolutionEvaluators
+  {
+    template <int dim>
+    class SolutionEvaluators;
+  }
 
   /**
    * A namespace in which we define everything that has to do with modeling
@@ -341,9 +346,9 @@ namespace aspect
                   const LinearAlgebra::BlockVector                     &solution_vector,
                   const bool                                            compute_strain_rate = true);
 
-      void reinit(const SimulatorAccess<dim> &simulator_access,
-                  const typename DoFHandler<dim>::active_cell_iterator &cell_x,
-                  const std::vector<Point<dim>> &evaluation_points,
+      void reinit(SolutionEvaluators::SolutionEvaluators<dim> &evaluators,
+                  const typename DoFHandler<dim>::active_cell_iterator &cell,
+                  const std::vector<Point<dim>> &real_points,
                   const LinearAlgebra::BlockVector &solution_vector,
                   const bool compute_strain_rate);
 

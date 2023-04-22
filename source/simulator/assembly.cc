@@ -856,14 +856,46 @@ namespace aspect
     data.local_matrix = 0;
     data.local_rhs = 0;
 
-    scratch.finite_element_values[solution_field].get_function_values (old_solution,
-                                                                       scratch.old_field_values);
-    scratch.finite_element_values[solution_field].get_function_values (old_old_solution,
-                                                                       scratch.old_old_field_values);
+    boost::container::small_vector<double, 100> fe_solution(cell->get_fe().dofs_per_cell);
+    ArrayView<double> fe_solution_view(fe_solution.data(), fe_solution.size());
 
+    const EvaluationFlags::EvaluationFlags evaluation_values = EvaluationFlags::values;
 
-    scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
-        scratch.current_velocity_values);
+    const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+
+    {
+      cell->get_dof_values(solution,
+                           fe_solution.begin(),
+                           fe_solution.end());
+
+      scratch.evaluators.temperature.evaluate(fe_solution_view, evaluation_values);
+
+      for (unsigned int i=0; i<n_q_points; ++i)
+        scratch.old_field_values[i] = scratch.evaluators.temperature.get_value(i);
+    }
+
+    {
+      cell->get_dof_values(old_solution,
+                           fe_solution.begin(),
+                           fe_solution.end());
+
+      scratch.evaluators.temperature.evaluate(fe_solution_view, evaluation_values);
+
+      for (unsigned int i=0; i<n_q_points; ++i)
+        scratch.old_old_field_values[i] = scratch.evaluators.temperature.get_value(i);
+    }
+
+    {
+      cell->get_dof_values(current_linearization_point,
+                           fe_solution.begin(),
+                           fe_solution.end());
+
+      scratch.evaluators.velocity.evaluate(fe_solution_view, evaluation_values);
+
+      for (unsigned int i=0; i<n_q_points; ++i)
+        for (unsigned int d=0; d<dim; ++d)
+          scratch.current_velocity_values[i][d] = scratch.evaluators.velocity.get_value(i)[d];
+    }
 
     if (parameters.include_melt_transport)
       scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,
@@ -875,9 +907,9 @@ namespace aspect
           scratch.mesh_velocity_values);
 
     // compute material properties and heating terms
-    scratch.material_model_inputs.reinit  (*this,
-    cell,
-    scratch.finite_element_values.get_quadrature().get_points(),
+    scratch.material_model_inputs.reinit  (scratch.evaluators,
+                                           cell,
+                                           scratch.finite_element_values.get_quadrature().get_points(),
                                            current_linearization_point,
                                            true);
 
@@ -1190,7 +1222,8 @@ namespace aspect
                                update_flags,
                                face_update_flags,
                                introspection.n_compositional_fields,
-                               advection_field),
+                               advection_field,
+                               *this),
          internal::Assembly::CopyData::
          AdvectionSystem<dim> (finite_element.base_element(advection_field.base_element(introspection)),
                                allocate_neighbor_contributions));

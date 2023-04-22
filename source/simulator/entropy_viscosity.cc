@@ -312,7 +312,8 @@ namespace aspect
                                   update_flags,
                                   face_update_flags,
                                   introspection.n_compositional_fields,
-                                  advection_field);
+                                  advection_field,
+                                  *this);
 
     std::vector<Tensor<1,dim>> face_old_velocity_values (scratch.face_finite_element_values->n_quadrature_points);
     std::vector<Tensor<1,dim>> face_old_old_velocity_values (scratch.face_finite_element_values->n_quadrature_points);
