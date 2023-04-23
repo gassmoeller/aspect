@@ -862,7 +862,7 @@ namespace aspect
     const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
 
     {
-      cell->get_dof_values(solution,
+      cell->get_dof_values(old_solution,
                            fe_solution.begin(),
                            fe_solution.end());
 
@@ -873,7 +873,7 @@ namespace aspect
     }
 
     {
-      cell->get_dof_values(old_solution,
+      cell->get_dof_values(old_old_solution,
                            fe_solution.begin(),
                            fe_solution.end());
 

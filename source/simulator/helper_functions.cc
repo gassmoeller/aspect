@@ -24,6 +24,7 @@
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/global.h>
+#include <aspect/evaluators.h>
 
 #include <aspect/geometry_model/interface.h>
 #include <aspect/heating_model/interface.h>
@@ -411,10 +412,13 @@ namespace aspect
     FEValues<dim> fe_values (*mapping,
                              finite_element,
                              quadrature_formula,
-                             update_values |
-                             update_gradients |
-                             update_quadrature_points |
                              update_JxW_values);
+
+    SolutionEvaluators::SolutionEvaluators<dim> evaluators(*this,
+                                                           UpdateFlags::update_values |
+                                                           UpdateFlags::update_JxW_values |
+                                                           UpdateFlags::update_quadrature_points |
+                                                           UpdateFlags::update_gradients);
 
     const unsigned int n_q_points = quadrature_formula.size();
 
@@ -433,10 +437,12 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          in.reinit(fe_values,
+          evaluators.mapping_info.reinit(cell, quadrature_formula.get_points());
+          in.reinit(evaluators,
                     cell,
-                    introspection,
-                    solution);
+                    quadrature_formula.get_points(),
+                    solution,
+                    true);
 
           // We do not call the cell-wise average function of the
           // material model, because we average globally below
@@ -450,7 +456,12 @@ namespace aspect
                      ExcMessage ("The viscosity needs to be a "
                                  "positive quantity."));
 
+              // The following does not work because the JxW values are not
+              // initialized in the SolutionEvaluators class for some reason.
+              const double JxW1 = evaluators.mapping_info.get_mapping_data(numbers::invalid_unsigned_int, numbers::invalid_unsigned_int).JxW_values[q];
               const double JxW = fe_values.JxW(q);
+              Assert(std::abs(JxW1 - JxW) < 1e-12,
+                     ExcMessage("The Jacobian values do not match."));
               local_integrated_viscosity_logarithm += std::log(out.viscosities[q]) * JxW;
               local_volume += JxW;
             }
