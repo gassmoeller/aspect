@@ -147,7 +147,7 @@ namespace aspect
   set_advection_assemblers()
   {
     assemblers->advection_system.push_back(
-      std::make_unique<aspect::Assemblers::AdvectionSystem<dim>>());
+      std::make_unique<aspect::Assemblers::OptimizedAdvectionSystem<dim>>());
 
     // add the diffusion assemblers if we have fields that use this method
     if (std::find(parameters.compositional_field_methods.begin(), parameters.compositional_field_methods.end(),

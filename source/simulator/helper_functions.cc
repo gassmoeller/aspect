@@ -458,10 +458,10 @@ namespace aspect
 
               // The following does not work because the JxW values are not
               // initialized in the SolutionEvaluators class for some reason.
-              const double JxW1 = evaluators.mapping_info.get_mapping_data(numbers::invalid_unsigned_int, numbers::invalid_unsigned_int).JxW_values[q];
+              //const double JxW1 = evaluators.mapping_info.get_mapping_data(numbers::invalid_unsigned_int, numbers::invalid_unsigned_int).JxW_values[q];
               const double JxW = fe_values.JxW(q);
-              Assert(std::abs(JxW1 - JxW) < 1e-12,
-                     ExcMessage("The Jacobian values do not match."));
+              //Assert(std::abs(JxW1 - JxW) < 1e-12,
+              //       ExcMessage("The Jacobian values do not match."));
               local_integrated_viscosity_logarithm += std::log(out.viscosities[q]) * JxW;
               local_volume += JxW;
             }

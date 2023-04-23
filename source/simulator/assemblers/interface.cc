@@ -197,7 +197,10 @@ namespace aspect
           finite_element_values (mapping,
                                  finite_element, quadrature,
                                  update_flags),
-          evaluators(simulator_access, update_flags),
+          evaluators(simulator_access, update_values | update_gradients),
+          fe_eval(mapping, advection_element,
+                  QGauss<1>(advection_element.degree+1), 
+                  update_values | update_gradients | update_JxW_values),
           simulator_access(simulator_access),
           update_flags(update_flags),
           face_finite_element_values (face_quadrature.size() > 0
@@ -289,6 +292,7 @@ namespace aspect
                                  scratch.finite_element_values.get_quadrature(),
                                  scratch.finite_element_values.get_update_flags()),
           evaluators(scratch.simulator_access, scratch.update_flags),
+          fe_eval (scratch.fe_eval),
           simulator_access (scratch.simulator_access),
           update_flags (scratch.update_flags),
           face_finite_element_values (scratch.face_finite_element_values.get()
@@ -373,6 +377,7 @@ namespace aspect
           this->face_number = numbers::invalid_unsigned_int;
           finite_element_values.reinit (cell_ref);
           evaluators.mapping_info.reinit (cell_ref,finite_element_values.get_quadrature().get_points());
+          fe_eval.reinit(cell_ref);
         }
 
       }

@@ -315,6 +315,250 @@ namespace aspect
 
     template <int dim>
     void
+    OptimizedAdvectionSystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                                            internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>&> (data_base);
+      // old code
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+
+      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+
+      const bool   use_bdf2_scheme = (this->get_timestep_number() > 1);
+      const double time_step = this->get_timestep();
+      const double old_time_step = this->get_old_timestep();
+      const double bdf2_factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
+                                                     (time_step + old_time_step)) : 1.0;
+
+      const bool advection_field_is_temperature = advection_field.is_temperature();
+      const unsigned int solution_component = advection_field.component_index(introspection);
+
+      const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
+
+      if (advection_field.advection_method (introspection)
+          == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
+        return;
+
+      std::vector<double> value_coefficient(n_q_points);
+      std::vector<Tensor<1,dim>> gradient_coefficient(n_q_points);
+      std::vector<double> gradient_gradient_coefficient(n_q_points);
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          // precompute the values of shape functions and their gradients.
+          // We only need to look up values of shape functions if they
+          // belong to 'our' component. They are zero otherwise anyway.
+          // Note that we later only look at the values that we do set here.
+          for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
+            {
+              if (fe.system_to_component_index(i).first == solution_component)
+                {
+                  scratch.phi_field[i_advection]      = scratch.finite_element_values[solution_field].value (i,q);
+                  ++i_advection;
+                }
+              ++i;
+            }
+
+          const double density_c_P              =
+            ((advection_field_is_temperature)
+             ?
+             scratch.material_model_outputs.densities[q] *
+             scratch.material_model_outputs.specific_heat[q]
+             :
+             1.0);
+
+          AssertThrow (density_c_P >= 0,
+                       ExcMessage ("The product of density and c_P needs to be a "
+                                   "non-negative quantity."));
+
+          const double latent_heat_LHS =
+            ((advection_field_is_temperature)
+             ?
+             scratch.heating_model_outputs.lhs_latent_heat_terms[q]
+             :
+             0.0);
+          AssertThrow (density_c_P + latent_heat_LHS >= 0,
+                       ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                   "to the left hand side needs to be a non-negative quantity."));
+
+          const double gamma =
+            ((advection_field_is_temperature)
+             ?
+             scratch.heating_model_outputs.heating_source_terms[q]
+             :
+             0.0);
+
+          const double reaction_term =
+            ((advection_field_is_temperature)
+             ?
+             0.0
+             :
+             scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+
+          const double field_term_for_rhs
+            = (use_bdf2_scheme ?
+               (scratch.old_field_values[q] *
+                (1 + time_step/old_time_step)
+                -
+                scratch.old_old_field_values[q] *
+                (time_step * time_step) /
+                (old_time_step * (time_step + old_time_step)))
+               :
+               scratch.old_field_values[q])
+              *
+              (density_c_P + latent_heat_LHS);
+
+          Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+          // Subtract off the mesh velocity for ALE corrections if necessary
+          if (this->get_parameters().mesh_deformation_enabled)
+            current_u -= scratch.mesh_velocity_values[q];
+
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          // For the diffusion constant, use the larger of the physical
+          // and the artificial viscosity/conductivity/diffusion constant.
+          // One could also choose the sum of the two, but if the
+          // physical diffusion is larger than the artificial one,
+          // then (because the latter is chosen sufficiently large to
+          // make the problem stable) one may as well stick with the
+          // physical one. And if the physical diffusion is too small to
+          // make the problem stable, then we ought to choose the smallest
+          // diffusivity value that makes the problem stable -- which is
+          // exactly the artificial viscosity.
+          const double conductivity = (advection_field_is_temperature
+                                       ?
+                                       scratch.material_model_outputs.thermal_conductivities[q]
+                                       :
+                                       0.0);
+
+          const double diffusion_constant = std::max (conductivity, scratch.artificial_viscosity);
+
+          value_coefficient[q] = bdf2_factor * (density_c_P + latent_heat_LHS);
+          gradient_gradient_coefficient[q] = diffusion_constant * time_step;
+          gradient_coefficient[q] = time_step * current_u * (density_c_P + latent_heat_LHS);
+
+          // do the actual assembly. note that we only need to loop over the advection
+          // shape functions because these are the only contributions we compute here
+          for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+            {
+              data.local_rhs(i)
+              += (field_term_for_rhs * scratch.phi_field[i]
+                  + time_step *
+                  scratch.phi_field[i]
+                  * gamma
+                  + scratch.phi_field[i]
+                  * reaction_term)
+                 *
+                 JxW;
+            }
+        }
+
+      const unsigned int dofs_per_cell = advection_dofs_per_cell;
+      auto &fe_eval = scratch.fe_eval;
+      for (unsigned int i=0; i<dofs_per_cell;
+           i += VectorizedArray<double>::size())
+        {
+          const unsigned int n_items =
+            i+VectorizedArray<double>::size() > dofs_per_cell ?
+            (dofs_per_cell - i) :
+            VectorizedArray<double>::size();
+
+          // Set n_items unit vectors
+          for (unsigned int j=0; j<dofs_per_cell; ++j)
+            fe_eval.submit_dof_value(VectorizedArray<double>(), j);
+
+          for (unsigned int v=0; v<n_items; ++v)
+            {
+              VectorizedArray<double> one_value = VectorizedArray<double>();
+              one_value[v] = 1.;
+              fe_eval.submit_dof_value(one_value, i+v);
+            }
+
+          // Apply operator on unit vector to generate the next few matrix
+          // columns
+          fe_eval.evaluate(EvaluationFlags::values|EvaluationFlags::gradients);
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              fe_eval.submit_value(value_coefficient[q]*fe_eval.get_value(q) + gradient_coefficient[q] * fe_eval.get_gradient(q), q);
+              fe_eval.submit_gradient(gradient_gradient_coefficient[q] * fe_eval.get_gradient(q), q);
+            }
+          fe_eval.integrate(EvaluationFlags::values|EvaluationFlags::gradients);
+
+          // Insert computed entries in matrix
+          for (unsigned int v=0; v<n_items; ++v)
+            for (unsigned int j=0; j<dofs_per_cell; ++j)
+              data.local_matrix(fe_eval.get_internal_dof_numbering()[j],
+                                fe_eval.get_internal_dof_numbering()[i+v])
+                = fe_eval.get_dof_value(j)[v];
+        }
+    }
+
+
+
+    template <int dim>
+    std::vector<double>
+    OptimizedAdvectionSystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+
+      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      std::vector<double> residuals(n_q_points);
+
+      if (advection_field.is_temperature())
+        this->get_heating_model_manager().evaluate(scratch.material_model_inputs,
+                                                   scratch.material_model_outputs,
+                                                   scratch.heating_model_outputs);
+
+      for (unsigned int q=0; q < n_q_points; ++q)
+        {
+          const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
+                                   scratch.old_old_velocity_values[q]) / 2;
+
+          const double dField_dt = (this->get_old_timestep() == 0.0) ? 0.0 :
+                                   (
+                                     ((scratch.old_field_values)[q] - (scratch.old_old_field_values)[q])
+                                     / this->get_old_timestep());
+          const double u_grad_field = u * (scratch.old_field_grads[q] +
+                                           scratch.old_old_field_grads[q]) / 2;
+
+          if (advection_field.is_temperature())
+            {
+              const double density       = scratch.material_model_outputs.densities[q];
+              const double conductivity  = scratch.material_model_outputs.thermal_conductivities[q];
+              const double c_P           = scratch.material_model_outputs.specific_heat[q];
+              // Note that we assume that the conductivity is constant, otherwise we would need to
+              // compute div (kappa grad T), which we don't have access to.
+              const double k_Delta_field = conductivity * (scratch.old_field_laplacians[q] +
+                                                           scratch.old_old_field_laplacians[q]) / 2;
+
+              const double gamma           = scratch.heating_model_outputs.heating_source_terms[q];
+              const double latent_heat_LHS = scratch.heating_model_outputs.lhs_latent_heat_terms[q];
+
+              residuals[q]
+                = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma);
+            }
+          else
+            {
+              const double dreaction_term_dt = (this->get_old_timestep() == 0) ? 0.0 :
+                                               scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
+                                               / this->get_old_timestep();
+
+              residuals[q] = std::abs(dField_dt + u_grad_field - dreaction_term_dt);
+            }
+        }
+      return residuals;
+    }
+
+
+
+    template <int dim>
+    void
     DiffusionSystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                    internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
@@ -1578,6 +1822,7 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template class AdvectionSystem<dim>; \
+  template class OptimizedAdvectionSystem<dim>; \
   template class DiffusionSystem<dim>; \
   template class DarcySystem<dim>; \
   template class AdvectionSystemBoundaryFace<dim>; \

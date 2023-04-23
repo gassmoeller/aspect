@@ -27,6 +27,7 @@
 #include <aspect/evaluators.h>
 
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/matrix_free/fe_evaluation.h>
 
 namespace aspect
 {
@@ -229,6 +230,7 @@ namespace aspect
 
           FEValues<dim> finite_element_values;
           SolutionEvaluators::SolutionEvaluators<dim> evaluators;
+          FEEvaluation<dim,2> fe_eval;
           const SimulatorAccess<dim> &simulator_access;
           const UpdateFlags update_flags;
 
