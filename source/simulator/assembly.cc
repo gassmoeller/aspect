@@ -830,7 +830,7 @@ namespace aspect
     // the system we are currently trying to assemble
     const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
 
-    Assert (advection_dofs_per_cell < scratch.finite_element_values.get_fe().dofs_per_cell, ExcInternalError());
+    Assert (advection_dofs_per_cell == scratch.fe_eval.dofs_per_cell, ExcInternalError());
     Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
     Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
 
@@ -859,7 +859,7 @@ namespace aspect
 
     const EvaluationFlags::EvaluationFlags evaluation_values = EvaluationFlags::values;
 
-    const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+    const unsigned int n_q_points = scratch.fe_eval.n_q_points;
 
     {
       cell->get_dof_values(old_solution,
@@ -926,7 +926,7 @@ namespace aspect
     if (parameters.formulation_temperature_equation ==
         Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
       {
-        const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+        const unsigned int n_q_points = scratch.fe_eval.n_q_points;
         for (unsigned int q=0; q<n_q_points; ++q)
           {
             scratch.material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
@@ -1172,11 +1172,7 @@ namespace aspect
                            == Parameters<dim>::AdvectionStabilizationMethod::supg);
 
     // When using SUPG, we need to compute hessians to be able to compute the residual:
-    const UpdateFlags update_flags = update_values |
-                                     update_gradients |
-                                     update_quadrature_points |
-                                     update_JxW_values |
-                                     ((use_supg) ? update_hessians : UpdateFlags(0));
+    const UpdateFlags update_flags = update_quadrature_points;
 
     const UpdateFlags face_update_flags = (allocate_face_quadrature ?
                                            update_values |

@@ -291,7 +291,7 @@ namespace aspect
                                  scratch.finite_element_values.get_fe(),
                                  scratch.finite_element_values.get_quadrature(),
                                  scratch.finite_element_values.get_update_flags()),
-          evaluators(scratch.simulator_access, scratch.update_flags),
+          evaluators(scratch.simulator_access, update_values | update_gradients),
           fe_eval (scratch.fe_eval),
           simulator_access (scratch.simulator_access),
           update_flags (scratch.update_flags),

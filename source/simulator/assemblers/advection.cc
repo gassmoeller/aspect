@@ -323,10 +323,9 @@ namespace aspect
       // old code
 
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = this->get_fe();
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
-      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const unsigned int n_q_points = scratch.material_model_inputs.n_evaluation_points();
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
 
       const bool   use_bdf2_scheme = (this->get_timestep_number() > 1);
@@ -336,9 +335,6 @@ namespace aspect
                                                      (time_step + old_time_step)) : 1.0;
 
       const bool advection_field_is_temperature = advection_field.is_temperature();
-      const unsigned int solution_component = advection_field.component_index(introspection);
-
-      const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
       if (advection_field.advection_method (introspection)
           == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
@@ -347,23 +343,10 @@ namespace aspect
       std::vector<double> value_coefficient(n_q_points);
       std::vector<Tensor<1,dim>> gradient_coefficient(n_q_points);
       std::vector<double> gradient_gradient_coefficient(n_q_points);
+      std::vector<double> rhs_coefficient(n_q_points);
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
-          // precompute the values of shape functions and their gradients.
-          // We only need to look up values of shape functions if they
-          // belong to 'our' component. They are zero otherwise anyway.
-          // Note that we later only look at the values that we do set here.
-          for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
-            {
-              if (fe.system_to_component_index(i).first == solution_component)
-                {
-                  scratch.phi_field[i_advection]      = scratch.finite_element_values[solution_field].value (i,q);
-                  ++i_advection;
-                }
-              ++i;
-            }
-
           const double density_c_P              =
             ((advection_field_is_temperature)
              ?
@@ -418,8 +401,6 @@ namespace aspect
           if (this->get_parameters().mesh_deformation_enabled)
             current_u -= scratch.mesh_velocity_values[q];
 
-          const double JxW = scratch.finite_element_values.JxW(q);
-
           // For the diffusion constant, use the larger of the physical
           // and the artificial viscosity/conductivity/diffusion constant.
           // One could also choose the sum of the two, but if the
@@ -442,24 +423,21 @@ namespace aspect
           gradient_gradient_coefficient[q] = diffusion_constant * time_step;
           gradient_coefficient[q] = time_step * current_u * (density_c_P + latent_heat_LHS);
 
-          // do the actual assembly. note that we only need to loop over the advection
-          // shape functions because these are the only contributions we compute here
-          for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
-            {
-              data.local_rhs(i)
-              += (field_term_for_rhs * scratch.phi_field[i]
-                  + time_step *
-                  scratch.phi_field[i]
-                  * gamma
-                  + scratch.phi_field[i]
-                  * reaction_term)
-                 *
-                 JxW;
-            }
+          rhs_coefficient[q] = field_term_for_rhs + time_step * gamma + reaction_term;
         }
 
       const unsigned int dofs_per_cell = advection_dofs_per_cell;
       auto &fe_eval = scratch.fe_eval;
+
+      // do the rhx assembly
+      for (unsigned int q=0; q<n_q_points; ++q)
+        fe_eval.submit_value (rhs_coefficient[q], q);
+
+      fe_eval.integrate (EvaluationFlags::values);
+
+      for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+        data.local_rhs(fe_eval.get_internal_dof_numbering()[i]) = fe_eval.get_dof_value(i)[0];
+
       for (unsigned int i=0; i<dofs_per_cell;
            i += VectorizedArray<double>::size())
         {
@@ -507,7 +485,7 @@ namespace aspect
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
-      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const unsigned int n_q_points = scratch.material_model_inputs.n_evaluation_points();
       std::vector<double> residuals(n_q_points);
 
       if (advection_field.is_temperature())
