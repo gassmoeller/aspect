@@ -531,7 +531,7 @@ namespace aspect
                                            cell,
                                            this->introspection,
                                            current_linearization_point,
-                                           need_viscosity);
+                                           /*compute_strain_rate=*/ true);
     scratch.material_model_inputs.requested_properties
       =
         MaterialModel::MaterialProperties::equation_of_state_properties |
