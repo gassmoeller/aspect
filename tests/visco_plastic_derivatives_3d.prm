@@ -6,7 +6,8 @@ set Additional shared libraries = tests/libvisco_plastic_derivatives.so
 set Dimension                              = 3
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = no Advection, no Stokes
+set Max nonlinear iterations = 2
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
@@ -33,11 +34,11 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top, left, right
+  set Fixed temperature boundary indicators   = bottom, top, left, right, front, back
 end
 
 subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+  set Zero velocity boundary indicators = bottom, top, left, right, front, back
 end
 
 # Velocity on boundaries characterized by functions
@@ -104,7 +105,7 @@ end
 # Post processing
 # named additional outputs includes the weakened cohesions and friction angles
 subsection Postprocess
-  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  set List of postprocessors =
   subsection Visualization
     set Interpolate output = false
     set List of output variables = viscosity, strain rate, named additional outputs
