@@ -6,7 +6,8 @@ set Additional shared libraries = tests/libvisco_plastic_derivatives.so
 set Dimension                              = 2
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = no Advection, no Stokes
+set Max nonlinear iterations = 2
+set Nonlinear solver scheme                = no Advection, iterated Stokes
 
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model

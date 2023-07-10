@@ -26,6 +26,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/newton.h>
 #include <aspect/parameters.h>
+#include <deal.II/lac/solver_control.h>
 
 #include <deal.II/grid/tria.h>
 #include <deal.II/base/exceptions.h>
@@ -36,11 +37,14 @@
 
 template <int dim>
 void f(const aspect::SimulatorAccess<dim> &simulator_access,
-       aspect::Assemblers::Manager<dim> &,
+       unsigned int,
+       unsigned int,
+       const dealii::SolverControl &,
+       const dealii::SolverControl &,
        std::string averaging_parameter)
 {
 
-  std::cout << std::endl << "Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter " << averaging_parameter << std::endl;
+  std::cout << std::endl << "Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter " << averaging_parameter << ", time = " << simulator_access.get_timestep_number() << std::endl;
 
   using namespace aspect::MaterialModel;
 
@@ -238,7 +242,10 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 
 template <>
 void f(const aspect::SimulatorAccess<3> &,
-       aspect::Assemblers::Manager<3> &,
+       unsigned int,
+       unsigned int,
+       const dealii::SolverControl &,
+       const dealii::SolverControl &,
        std::string )
 {
   AssertThrow(false,dealii::ExcInternalError());
@@ -249,25 +256,37 @@ void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   using namespace dealii;
   std::cout << "* Connecting signals" << std::endl;
-  signals.set_assemblers.connect (std::bind(&f<dim>,
-                                            std::placeholders::_1,
-                                            std::placeholders::_2,
-                                            "harmonic"));
+  signals.post_stokes_solver.connect (std::bind(&f<dim>,
+                                                std::placeholders::_1,
+                                                std::placeholders::_2,
+                                                std::placeholders::_3,
+                                                std::placeholders::_4,
+                                                std::placeholders::_5,
+                                                "harmonic"));
 
-  signals.set_assemblers.connect (std::bind(&f<dim>,
-                                            std::placeholders::_1,
-                                            std::placeholders::_2,
-                                            "geometric"));
+  signals.post_stokes_solver.connect (std::bind(&f<dim>,
+                                                std::placeholders::_1,
+                                                std::placeholders::_2,
+                                                std::placeholders::_3,
+                                                std::placeholders::_4,
+                                                std::placeholders::_5,
+                                                "geometric"));
 
-  signals.set_assemblers.connect (std::bind(&f<dim>,
-                                            std::placeholders::_1,
-                                            std::placeholders::_2,
-                                            "arithmetic"));
+  signals.post_stokes_solver.connect (std::bind(&f<dim>,
+                                                std::placeholders::_1,
+                                                std::placeholders::_2,
+                                                std::placeholders::_3,
+                                                std::placeholders::_4,
+                                                std::placeholders::_5,
+                                                "arithmetic"));
 
-  signals.set_assemblers.connect (std::bind(&f<dim>,
-                                            std::placeholders::_1,
-                                            std::placeholders::_2,
-                                            "maximum composition"));
+  signals.post_stokes_solver.connect (std::bind(&f<dim>,
+                                                std::placeholders::_1,
+                                                std::placeholders::_2,
+                                                std::placeholders::_3,
+                                                std::placeholders::_4,
+                                                std::placeholders::_5,
+                                                "maximum composition"));
 }
 
 ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
