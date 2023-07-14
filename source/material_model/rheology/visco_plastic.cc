@@ -226,16 +226,11 @@ namespace aspect
                   }
                   case composite:
                   {
-<<<<<<< HEAD
-                    non_yielding_viscosity = (viscosity_diffusion * viscosity_dislocation)/
-                                             (viscosity_diffusion + viscosity_dislocation);
-=======
                     if (use_minimum_creep_viscosity)
-                      viscosity_pre_yield = std::min(viscosity_diffusion, viscosity_dislocation);
+                      non_yielding_viscosity = std::min(viscosity_diffusion, viscosity_dislocation);
                     else
-                      viscosity_pre_yield = (viscosity_diffusion * viscosity_dislocation)/
-                                            (viscosity_diffusion + viscosity_dislocation);
->>>>>>> 03bc23c1a (Update VEP implementation)
+                      non_yielding_viscosity = (viscosity_diffusion * viscosity_dislocation)/
+                                               (viscosity_diffusion + viscosity_dislocation);
                     break;
                   }
                   default:
@@ -280,7 +275,7 @@ namespace aspect
                 if (!this->simulator_is_past_initialization() ||
                     (this->get_timestep_number() == 0 && this->get_timestep() == 0))
                   dtc = std::min(std::min(this->get_parameters().maximum_time_step, this->get_parameters().maximum_first_time_step), elastic_rheology.elastic_timestep());
-                viscosity_pre_yield = dtc / elastic_rheology.elastic_timestep() * elastic_rheology.calculate_viscoelastic_viscosity(viscosity_pre_yield, elastic_shear_modulus);
+                non_yielding_viscosity = dtc / elastic_rheology.elastic_timestep() * elastic_rheology.calculate_viscoelastic_viscosity(non_yielding_viscosity, elastic_shear_modulus);
 
                 if (use_reference_strainrate == true)
                   effective_edot_ii = ref_strain_rate;
@@ -298,18 +293,14 @@ namespace aspect
 
                     // The square root of the second moment invariant is returned.
                     const double effective_strain_rate_invariant = elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
-                                                                                                                       stress_0_advected,
-                                                                                                                       stress_old,
-                                                                                                                       viscosity_pre_yield,
-                                                                                                                       elastic_shear_modulus);
+                                                                   stress_0_advected,
+                                                                   stress_old,
+                                                                   non_yielding_viscosity,
+                                                                   elastic_shear_modulus);
 
                     effective_edot_ii = std::max(effective_strain_rate_invariant,
                                                  min_strain_rate);
                   }
-
-                // Step 3a: calculate the viscoelastic (effective) viscosity
-                non_yielding_viscosity = elastic_rheology.calculate_viscoelastic_viscosity(non_yielding_viscosity,
-                                                                                           elastic_shear_moduli[j]);
               }
 
             // Step 3b: calculate non yielding (viscous or viscous + elastic) stress magnitude
