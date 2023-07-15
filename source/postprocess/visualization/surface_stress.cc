@@ -138,7 +138,7 @@ namespace aspect
                 elastic_viscosity *= timestep_ratio;
 
                 // The total stress of timestep t.
-                stress = 2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old;
+                stress = in.pressure[q] * unit_symmetric_tensor<dim>() - (2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old);
               }
 
             for (unsigned int d=0; d<dim; ++d)
