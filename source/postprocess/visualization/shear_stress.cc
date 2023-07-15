@@ -20,8 +20,8 @@
 
 
 #include <aspect/postprocess/visualization/shear_stress.h>
-
-
+#include <aspect/material_model/visco_plastic.h>
+#include <aspect/material_model/viscoelastic.h>
 
 namespace aspect
 {
