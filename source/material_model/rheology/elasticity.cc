@@ -20,7 +20,6 @@
 
 
 #include <aspect/material_model/rheology/elasticity.h>
-#include <aspect/heating_model/shear_heating.h>
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
