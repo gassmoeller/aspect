@@ -58,8 +58,10 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
-        // We do not need to compute anything but the viscosity
-        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
+        // We do not need to compute anything but the viscosity and ElasticAdditionalOutputs
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
+
+        this->get_material_model().create_additional_named_outputs(out);
 
         // Compute the viscosity...
         this->get_material_model().evaluate(in, out);
@@ -106,6 +108,8 @@ namespace aspect
 
                 const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
+                Assert (elastic_out != null_ptr, ExcMess("Elastic Additional Outputs are needed for the 'shear stress' postprocessor,
+                                                         but they have not been created."));
                 const double shear_modulus = elastic_out->elastic_shear_moduli[q];
 
                 // Retrieve the elastic timestep and viscosity, only two material models
