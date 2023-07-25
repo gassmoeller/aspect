@@ -1033,14 +1033,20 @@ namespace aspect
 
     do
       {
-        // Restore particles through stored copy of particle handler,
-        // but only if they have already been displaced in a nonlinear
-        // iteration (in the assemble_and_solve_composition call).
-        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
+        if (particle_world.get() != nullptr)
           {
-            particle_world->restore_particles();
+            // Restore particles through stored copy of particle handler,
+            // but only if they have already been displaced in a nonlinear
+            // iteration (in the assemble_and_solve_composition call).
+            if (nonlinear_iteration > 0)
+              particle_world->restore_particles();
 
-            // Apply a particle update if required by the particle properties
+            // Apply a particle update if required by the particle properties.
+            // Apply the update even if nonlinear_iteration == 0,
+            // because the signal can be used to apply for example operator
+            // splitting on the particles, and this would need to be
+            // applied at the beginning of the timestep and after
+            // every restore_particles().
             signals.post_restore_particles(*particle_world.get());
           }
 
@@ -1160,14 +1166,20 @@ namespace aspect
 
     do
       {
-        // Restore particles through stored copy of particle handler,
-        // but only if they have already been displaced in a nonlinear
-        // iteration (in the assemble_and_solve_composition call).
-        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
+        if (particle_world.get() != nullptr)
           {
-            particle_world->restore_particles();
+            // Restore particles through stored copy of particle handler,
+            // but only if they have already been displaced in a nonlinear
+            // iteration (in the assemble_and_solve_composition call).
+            if (nonlinear_iteration > 0)
+              particle_world->restore_particles();
 
-            // Apply a particle update if required by the particle properties
+            // Apply a particle update if required by the particle properties.
+            // Apply the update even if nonlinear_iteration == 0,
+            // because the signal can be used to apply for example operator
+            // splitting on the particles, and this would need to be
+            // applied at the beginning of the timestep and after
+            // every restore_particles().
             signals.post_restore_particles(*particle_world.get());
           }
 
@@ -1320,14 +1332,20 @@ namespace aspect
 
     do
       {
-        // Restore particles through stored copy of particle handler,
-        // but only if they have already been displaced in a nonlinear
-        // iteration (in the assemble_and_solve_composition call).
-        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
+        if (particle_world.get() != nullptr)
           {
-            particle_world->restore_particles();
+            // Restore particles through stored copy of particle handler,
+            // but only if they have already been displaced in a nonlinear
+            // iteration (in the assemble_and_solve_composition call).
+            if (nonlinear_iteration > 0)
+              particle_world->restore_particles();
 
             // Apply a particle update if required by the particle properties.
+            // Apply the update even if nonlinear_iteration == 0,
+            // because the signal can be used to apply for example operator
+            // splitting on the particles, and this would need to be
+            // applied at the beginning of the timestep and after
+            // every restore_particles().
             signals.post_restore_particles(*particle_world.get());
           }
 
