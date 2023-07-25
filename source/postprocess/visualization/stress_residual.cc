@@ -104,6 +104,7 @@ namespace aspect
 
                 const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
+                Assert(elastic_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'shear stress' postprocessor, but they have not been created."));
                 const double shear_modulus = elastic_out->elastic_shear_moduli[q];
 
                 const MaterialModel::ViscoPlastic<dim> &vp = Plugins::get_plugin_as_type<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model());
@@ -118,8 +119,8 @@ namespace aspect
                 elastic_viscosity *= timestep_ratio;
 
                 // Apply the stress update to get the total stress of timestep t.
-                stress = in.pressure[q] * unit_symmetric_tensor<dim>() - 
-                (2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old);
+                stress = in.pressure[q] * unit_symmetric_tensor<dim>() -
+                         (2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old);
               }
 
             // Compute the deviatoric stress
