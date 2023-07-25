@@ -75,7 +75,7 @@ namespace aspect
       ElasticStress<dim>::update_particles(typename Particle::World<dim> &particle_world) const
       {
         // There is no update of the stress to apply during the first (0th) timestep
-        if (this->get_timestep_number() == 0)
+        if (this->simulator_is_past_initialization() == false || this->get_timestep_number() == 0)
           return;
 
         // Determine the data position of the first stress tensor component
