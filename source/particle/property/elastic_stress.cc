@@ -43,13 +43,6 @@ namespace aspect
       void
       ElasticStress<dim>::initialize ()
       {
-        material_inputs = MaterialModel::MaterialModelInputs<dim>(1, this->n_compositional_fields());
-
-        material_outputs = MaterialModel::MaterialModelOutputs<dim>(1, this->n_compositional_fields());
-
-        // The reaction rates are stored in additional outputs
-        this->get_material_model().create_additional_named_outputs(material_outputs);
-
         AssertThrow((Plugins::plugin_type_matches<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model())
                      ||
                      Plugins::plugin_type_matches<const MaterialModel::Viscoelastic<dim>>(this->get_material_model())),
@@ -57,6 +50,17 @@ namespace aspect
 
         AssertThrow(this->get_parameters().enable_elasticity == true,
                     ExcMessage ("This particle property should only be used if 'Enable elasticity' is set to true"));
+
+        const auto &manager = this->get_particle_world().get_property_manager();
+        AssertThrow(!manager.plugin_name_exists("composition"),
+                    ExcMessage("The 'elastic stress' plugin cannot be used in combination with the 'composition' plugin."));
+
+        material_inputs = MaterialModel::MaterialModelInputs<dim>(1, this->n_compositional_fields());
+
+        material_outputs = MaterialModel::MaterialModelOutputs<dim>(1, this->n_compositional_fields());
+
+        // The reaction rates are stored in additional outputs
+        this->get_material_model().create_additional_named_outputs(material_outputs);
 
         // Connect to the signal after particles are restored at the beginning of
         // a nonlinear iteration of iterative advection schemes.
