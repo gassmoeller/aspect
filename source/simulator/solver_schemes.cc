@@ -337,40 +337,46 @@ namespace aspect
     if (fields_advected_by_particles.size() > 0)
       interpolate_particle_properties(fields_advected_by_particles);
 
-    // If the field is a stress field, we want to include all stress tensor components in the computation of the residual
+    // If elasticity is switched on and the field is a stress field,
+    // we want to include all stress tensor components in the computation of the residual
+    // for those fields that belong to the same stress tensor. I.e. compute a residual
+    // for those fields that belong to ve_stress and ve_stress_old.
     double stress_initial_residual = 0.0;
     double old_stress_initial_residual = 0.0;
     std::vector<unsigned int> stress_indices;
     std::vector<unsigned int> old_stress_indices;
-    stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xx"));
-    stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yy"));
-    old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xx_old"));
-    old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yy_old"));
-    if (dim == 2)
+    if (parameters.enable_elasticity == true)
       {
-        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy"));
-        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy_old"));
-      }
-    else if (dim == 3)
-      {
-        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_zz"));
-        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy"));
-        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xz"));
-        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yz"));
-        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_zz_old"));
-        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy_old"));
-        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xz_old"));
-        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yz_old"));
-      }
+        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xx"));
+        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yy"));
+        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xx_old"));
+        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yy_old"));
+        if (dim == 2)
+          {
+            stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy"));
+            old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy_old"));
+          }
+        else if (dim == 3)
+          {
+            stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_zz"));
+            stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy"));
+            stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xz"));
+            stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yz"));
+            old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_zz_old"));
+            old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy_old"));
+            old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xz_old"));
+            old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yz_old"));
+          }
 
 
-    if (compute_initial_residual)
-      {
-        const double n_stress_fields = stress_indices.size();
-        for (auto &c : stress_indices)
-          stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm() / n_stress_fields;
-        for (auto &c : old_stress_indices)
-          old_stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm() / n_stress_fields;
+        if (compute_initial_residual)
+          {
+            const double n_stress_fields = stress_indices.size();
+            for (auto &c : stress_indices)
+              stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm() / n_stress_fields;
+            for (auto &c : old_stress_indices)
+              old_stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm() / n_stress_fields;
+          }
       }
 
     // for consistency we update the current linearization point only after we have solved
