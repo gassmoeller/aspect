@@ -369,7 +369,7 @@ namespace aspect
           }
 
 
-        if (compute_initial_residual)
+        if (initial_residual.size() > 0)
           {
             const double n_stress_fields = stress_indices.size();
             for (auto &c : stress_indices)
@@ -386,14 +386,17 @@ namespace aspect
         current_linearization_point.block(introspection.block_indices.compositional_fields[c])
           = solution.block(introspection.block_indices.compositional_fields[c]);
 
-        if ((initial_residual.size() > 0) && std::find(stress_indices.begin(), stress_indices.end(), c) != stress_indices.end())
-          initial_residual[c] = stress_initial_residual;
-
-        if ((initial_residual.size() > 0) && std::find(old_stress_indices.begin(), old_stress_indices.end(), c) != old_stress_indices.end())
-          initial_residual[c] = old_stress_initial_residual;
-
         if ((initial_residual.size() > 0) && (initial_residual[c] > 0))
-          current_residual[c] /= initial_residual[c];
+          {
+            // replace initial_residual by the stress_initial_residual if this field is a stress field
+            if (std::find(stress_indices.begin(), stress_indices.end(), c) != stress_indices.end())
+              current_residual[c] /= stress_initial_residual;
+            // replace initial_residual by the old_stress_initial_residual if this field is an old stress field
+            else if (std::find(old_stress_indices.begin(), old_stress_indices.end(), c) != old_stress_indices.end())
+              current_residual[c] /= old_stress_initial_residual;
+            else
+              current_residual[c] /= initial_residual[c];
+          }
         else
           current_residual[c] = 0.0;
       }
