@@ -88,6 +88,7 @@ namespace aspect
                 }
 
               const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_out = material_model_outputs.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
+              AssertThrow(elastic_out != nullptr, ExcMessage("ElasticAdditionalOutputs are requested, but have not been computed."));
 
               const double shear_modulus = elastic_out->elastic_shear_moduli[q];
 

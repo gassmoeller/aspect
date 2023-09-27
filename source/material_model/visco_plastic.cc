@@ -309,9 +309,6 @@ namespace aspect
 
       if (this->get_parameters().enable_elasticity)
         {
-          // TODO check that in.requests_property(MaterialProperties::viscosity) is true,
-          // because we need the viscosities to fill the outputs below
-
           // Fill the force outputs with the body force term for the RHS.
           rheology->elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
           // Fill the reaction terms that account for the rotation of the stresses.
