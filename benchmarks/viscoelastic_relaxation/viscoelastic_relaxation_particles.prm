@@ -120,7 +120,7 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = composition statistics, velocity statistics, visualization, stress component statistics, particles
+  set List of postprocessors = composition statistics, velocity statistics, visualization, particles
 
   subsection Visualization
     set List of output variables = material properties, strain rate, named additional outputs, stress
