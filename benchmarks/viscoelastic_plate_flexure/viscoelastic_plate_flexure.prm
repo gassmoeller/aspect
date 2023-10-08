@@ -145,21 +145,12 @@ subsection Material model
   set Model name = viscoelastic
 
   subsection Viscoelastic
-<<<<<<< HEAD
-    set Densities                   =  2700,  2700,  2700,  2700,  2700,  1890
-    set Viscosities                 = 1.e17, 1.e17, 1.e17, 1.e17, 1.e35, 1.e35
-    set Elastic shear moduli        = 1.e50, 1.e50, 1.e50, 1.e50, 3.e10, 3.e10
-    set Fixed elastic time step     = 5
-    set Use fixed elastic time step = false
-    set Viscosity averaging scheme  = maximum composition
-=======
      set Densities                   =  2700,  2700,  2700,  2700,  2700,  2700,  2700,  2700,  1890
      set Viscosities                 = 1.e17, 1.e17, 1.e17, 1.e17, 1.e17, 1.e17, 1.e17, 1.e35, 1.e35
      set Elastic shear moduli        = 1.e50, 1.e50, 1.e50, 1.e50, 1.e50, 1.e50, 1.e50, 3.e10, 3.e10
      set Fixed elastic time step     = 5
      set Use fixed elastic time step = false
      set Viscosity averaging scheme  = maximum composition
->>>>>>> c817144c5 (Update VEP implementation)
   end
 end
 
