@@ -91,6 +91,12 @@ namespace aspect
         Tensor<1,dim-1> topo_derivatives;
         if (const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo))
           topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
+        else if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim> *> (topo))
+          {
+            // Gradient is zero (which it is already initialized to from before)
+          }
+        else
+          Assert (false, ExcNotImplemented());
 
         // Construct surface point in lon(,lat) coordinates
         Point<dim-1> surface_point;
@@ -517,8 +523,8 @@ namespace aspect
       },
       coarse_grid);
 
-      // Deal with a curved mesh
-      // Attach the real manifold to slot 15.
+      // Deal with a curved mesh by assigning a manifold. We arbitrarily
+      // choose manifold_id 15 for this.
       coarse_grid.set_manifold (15, manifold);
       for (const auto &cell : coarse_grid.active_cell_iterators())
         cell->set_all_manifold_ids (15);

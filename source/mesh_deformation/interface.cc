@@ -221,8 +221,8 @@ namespace aspect
         include_initial_topography(false)
     {
       // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
-      sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (mesh_deformation_dof_handler,
-                                                                            mesh_displacements));
+      sim.mapping = std::make_unique<MappingQ1Eulerian<dim, LinearAlgebra::Vector>> (mesh_deformation_dof_handler,
+                                                                                      mesh_displacements);
     }
 
 
@@ -587,7 +587,8 @@ namespace aspect
       // Now construct the mesh displacement constraints
       mesh_velocity_constraints.clear();
 #if DEAL_II_VERSION_GTE(9,6,0)
-      mesh_velocity_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(), mesh_locally_relevant);
+      mesh_velocity_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(),
+                                       mesh_locally_relevant);
 #else
       mesh_velocity_constraints.reinit(mesh_locally_relevant);
 #endif
@@ -689,7 +690,8 @@ namespace aspect
       // compute_mesh_displacements().
       mesh_velocity_constraints.clear();
 #if DEAL_II_VERSION_GTE(9,6,0)
-      mesh_velocity_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(), mesh_locally_relevant);
+      mesh_velocity_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(),
+                                       mesh_locally_relevant);
 #else
       mesh_velocity_constraints.reinit(mesh_locally_relevant);
 #endif
@@ -965,8 +967,8 @@ namespace aspect
         MatrixFree<dim, double>::AdditionalData::none;
       const UpdateFlags update_flags(update_values | update_JxW_values | update_gradients);
       additional_data.mapping_update_flags = update_flags;
-      std::shared_ptr<MatrixFree<dim, double>> system_mf_storage(
-        new MatrixFree<dim, double>());
+      std::shared_ptr<MatrixFree<dim, double>> system_mf_storage
+        = std::make_shared<MatrixFree<dim, double>>();
       system_mf_storage->reinit(*sim.mapping,
                                 mesh_deformation_dof_handler,
                                 mesh_velocity_constraints,
@@ -1041,7 +1043,8 @@ namespace aspect
                                                         relevant_dofs);
           AffineConstraints<double> level_constraints;
 #if DEAL_II_VERSION_GTE(9,6,0)
-          level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(), relevant_dofs);
+          level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
+                                   relevant_dofs);
 #else
           level_constraints.reinit(relevant_dofs);
 #endif
@@ -1056,7 +1059,8 @@ namespace aspect
             {
               AffineConstraints<double> user_level_constraints;
 #if DEAL_II_VERSION_GTE(9,6,0)
-              user_level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(), relevant_dofs);
+              user_level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
+                                            relevant_dofs);
 #else
               user_level_constraints.reinit(relevant_dofs);
 #endif
@@ -1084,8 +1088,8 @@ namespace aspect
             MatrixFree<dim, double>::AdditionalData::none;
           additional_data.mapping_update_flags = update_flags;
           additional_data.mg_level = level;
-          std::shared_ptr<MatrixFree<dim, double>> mg_mf_storage_level(
-            new MatrixFree<dim, double>());
+          std::shared_ptr<MatrixFree<dim, double>> mg_mf_storage_level
+            = std::make_shared<MatrixFree<dim, double>>();
 
           mg_mf_storage_level->reinit(mapping,
                                       mesh_deformation_dof_handler,
@@ -1223,10 +1227,7 @@ namespace aspect
 
           std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
 
-          typename DoFHandler<dim>::active_cell_iterator cell = mesh_deformation_dof_handler.begin_active(),
-                                                         endc = mesh_deformation_dof_handler.end();
-
-          for (; cell!=endc; ++cell)
+          for (const auto &cell : mesh_deformation_dof_handler.active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 cell->get_dof_indices (cell_dof_indices);
@@ -1236,7 +1237,7 @@ namespace aspect
                   {
                     Point<dim-1> surface_point;
                     std::array<double, dim> natural_coord = this->get_geometry_model().cartesian_to_natural_coordinates(fs_fe_values.quadrature_point(j));
-                    if (const GeometryModel::Box<dim> *geometry = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
+                    if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) != nullptr)
                       {
                         for (unsigned int d=0; d<dim-1; ++d)
                           surface_point[d] = natural_coord[d];
@@ -1400,7 +1401,8 @@ namespace aspect
       // refinement.
       mesh_vertex_constraints.clear();
 #if DEAL_II_VERSION_GTE(9,6,0)
-      mesh_vertex_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(), mesh_locally_relevant);
+      mesh_vertex_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(),
+                                     mesh_locally_relevant);
 #else
       mesh_vertex_constraints.reinit(mesh_locally_relevant);
 #endif

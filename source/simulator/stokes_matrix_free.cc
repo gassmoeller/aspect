@@ -1576,11 +1576,23 @@ namespace aspect
     stokes_matrix.initialize_dof_vector(rhs_correction);
     stokes_matrix.initialize_dof_vector(u0);
 
-    // The vector u0 is a zero vector, but with correct boundary values.
+    // The vector u0 is a zero vector, but we need to ensure that it
+    // has the correct boundary values:
     u0 = 0;
-    rhs_correction = 0;
+
+#if DEAL_II_VERSION_GTE(9,6,0)
+    IndexSet stokes_dofs (sim.dof_handler.n_dofs());
+    stokes_dofs.add_range (0, u0.size());
+    const AffineConstraints<double> current_stokes_constraints
+      = sim.current_constraints.get_view (stokes_dofs);
+    current_stokes_constraints.distribute(u0);
+#else
     sim.current_constraints.distribute(u0);
+#endif
+
     u0.update_ghost_values();
+
+    rhs_correction = 0;
 
     FEEvaluation<dim,velocity_degree,velocity_degree+1,dim,double>
     velocity (*stokes_matrix.get_matrix_free(), 0);
@@ -2256,7 +2268,15 @@ namespace aspect
     solution_copy.update_ghost_values();
     internal::ChangeVectorTypes::copy(distributed_stokes_solution,solution_copy);
 
-    sim.current_constraints.distribute (distributed_stokes_solution);
+#if DEAL_II_VERSION_GTE(9,6,0)
+    IndexSet stokes_dofs (sim.dof_handler.n_dofs());
+    stokes_dofs.add_range (0, distributed_stokes_solution.size());
+    const AffineConstraints<double> current_stokes_constraints
+      = sim.current_constraints.get_view (stokes_dofs);
+    current_stokes_constraints.distribute(distributed_stokes_solution);
+#else
+    sim.current_constraints.distribute(distributed_stokes_solution);
+#endif
 
     // now rescale the pressure back to real physical units
     distributed_stokes_solution.block(block_p) *= sim.pressure_scaling;
@@ -2477,7 +2497,7 @@ namespace aspect
             IndexSet relevant_dofs;
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
 #if DEAL_II_VERSION_GTE(9,6,0)
-            level_constraints_v.reinit(dof_handler_v.locally_owned_dofs(), relevant_dofs);
+            level_constraints_v.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
 #else
             level_constraints_v.reinit(relevant_dofs);
 #endif
@@ -2490,7 +2510,7 @@ namespace aspect
               {
                 AffineConstraints<double> user_level_constraints;
 #if DEAL_II_VERSION_GTE(9,6,0)
-                user_level_constraints.reinit(dof_handler_v.locally_owned_dofs(), relevant_dofs);
+                user_level_constraints.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
 #else
                 user_level_constraints.reinit(relevant_dofs);
 #endif
