@@ -1,0 +1,65 @@
+# A description of the van Keken et al. benchmark using smooth initial
+# conditions instead of the discontinuous ones in
+# van-keken-discontinuous.prm. See the manual for more information.
+# This test adds particles to the cookbook parameter file, and therefore
+# tests the behavior of the particles.
+
+include van-keken-discontinuous.prm
+
+set Output directory = output-van-keken-particles-rk2fot-case1c
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+subsection Material model
+  subsection Simple model
+    set Composition viscosity prefactor = 0.01
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = C_1
+  set Compositional field methods = particles
+  set Mapped particle properties = C_1:initial C_1
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics, particles, visualization
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 10
+  end
+
+  subsection Particles
+    set Particle generator name = random uniform
+    set Number of particles = 409600
+    set Load balancing strategy = repartition, add particles
+    set Minimum particles per cell = 10
+    set Time between data output = 10
+    set Data output format = vtu
+    set List of particle properties = initial composition
+    set Interpolation scheme = bilinear least squares
+    set Update ghost particles = true
+    set Integration scheme = rk2
+
+    subsection Integrator
+      subsection RK2
+        set Higher order accurate in time = false
+      end
+    end
+
+    subsection Interpolator
+      subsection Bilinear least squares
+        set Use linear least squares limiter = true
+      end
+    end
+
+    subsection Function
+      set Variable names      = x,z
+      set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )
+    end
+  end
+end
