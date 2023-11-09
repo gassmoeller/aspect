@@ -30,6 +30,7 @@ end
 
 subsection Boundary composition model
   set List of model names = ascii data
+  set Allow fixed composition on closed boundaries = true
   set Fixed composition boundary indicators   = bottom,left,top,front,back
 
   subsection Ascii data model

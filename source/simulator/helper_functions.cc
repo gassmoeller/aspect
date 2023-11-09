@@ -2170,9 +2170,9 @@ namespace aspect
                   {
                     Tensor<1,dim> flow_velocity;
                     // Use analytical boundary velocity, where known
-                    if (face_at_prescribed_velocity_boundary == true)
-                      flow_velocity = boundary_velocity_manager.boundary_velocity(face->boundary_id(), fe_face_values.quadrature_point(q));
-                    else
+                    //if (face_at_prescribed_velocity_boundary == true)
+                    //  flow_velocity = boundary_velocity_manager.boundary_velocity(face->boundary_id(), fe_face_values.quadrature_point(q));
+                    //else
                       flow_velocity = face_current_velocity_values[q];
 
                     const double normal_flow = flow_velocity * fe_face_values.normal_vector(q);
@@ -2182,6 +2182,8 @@ namespace aspect
                         // inflow
                         is_outflow_boundary = false;
                         is_noflow_boundary = false;
+                        // if any point has inflow, we can stop checking
+                        break;
                       }
                     else if (normal_flow > 0)
                       {

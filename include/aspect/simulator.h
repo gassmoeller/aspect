@@ -1522,7 +1522,7 @@ namespace aspect
        * by a fixed value given by the input parameter @p boundary_id_offset.
        *
        * The purpose of this function is to disable boundary conditions on the
-       * selected faces, which is necessary, because dirichlet boundary conditions
+       * selected faces, which is necessary because Dirichlet boundary conditions
        * do not make sense for the non-diffusive advection equation on outflow
        * or noflow boundaries. However, there are also cases where one wants to
        * disable Dirichlet boundary conditions on outflow faces, but not on noflow
@@ -1538,6 +1538,11 @@ namespace aspect
       /**
        * Undo the offset of the boundary ids done in replace_boundary_ids()
        * by resetting all boundary ids to their original value.
+       *
+       * Note, that we do not need to hand over the same parameters as
+       * for replace_boundary_ids(), because we assure that only replaced
+       * boundary ids are larger than @p boundary_id_offset. Therefore,
+       * we can restore all boundary ids that are larger than @p boundary_id_offset.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.

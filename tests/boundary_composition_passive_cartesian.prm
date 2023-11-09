@@ -42,7 +42,8 @@ subsection Boundary velocity model
 end
 
 subsection Boundary composition model
-  set Fixed composition boundary indicators   = top, bottom, left, right
+  set Fixed composition boundary indicators   = bottom, left, right, top
+  set Allow fixed composition on closed boundaries = true
   set List of model names = function
 
   subsection Function
@@ -86,7 +87,7 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
-    set Output format                 = gnuplot
+    set Output format                 = vtu
     set Time between graphical output = 0.1
   end
 end

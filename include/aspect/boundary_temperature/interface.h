@@ -289,8 +289,9 @@ namespace aspect
 
         /*
          * Return whether Dirichlet boundary conditions will be applied
-         * on parts of the boundaries where material flow is parallel
-         * to the boundary or zero.
+         * on parts of the boundaries where material flow is tangential
+         * to the boundary or where the velocity normal to the boundary
+         * is zero.
          */
         bool
         allows_fixed_temperature_on_closed_boundaries() const;
@@ -352,7 +353,7 @@ namespace aspect
 
         /**
          * Whether we allow the temperature to be fixed on parts of the boundary
-         * where material flow is zero normal to the boundary.
+         * where the material velocity is zero normal to the boundary.
          */
         bool allow_fixed_temperature_on_closed_boundaries;
     };
