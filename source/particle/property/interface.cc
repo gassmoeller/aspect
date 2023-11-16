@@ -525,20 +525,23 @@ namespace aspect
                   else
                     {
                       const types::boundary_id boundary_id = cell->face(boundary_face)->boundary_id();
+                      const std::string particle_property_name = property_information.get_field_name_by_index(property_index);
 
                       for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
                         {
+                          // We need to find the compositional field index that is associated with the current particle property
                           unsigned int composition_index = numbers::invalid_unsigned_int;
-                          const std::string name = property_information.get_field_name_by_index(property_index);
-
                           for (const std::pair<unsigned int,std::pair<std::string,unsigned int>> &item : this->get_parameters().mapped_particle_properties)
                             {
-                              if (item.second.first == name && item.second.second == property_component)
+                              const unsigned int composition_field_index = item.first;
+                              const std::string current_property_name = item.second.first;
+                              if (current_property_name == particle_property_name && item.second.second == property_component)
                                 composition_index = item.first;
                             }
+
                           Assert(composition_index != numbers::invalid_unsigned_int,
                                  ExcMessage("Could not find composition index " + std::to_string(property_index)
-                                            + " with name " + name + " in the list of compositions."));
+                                            + " with name " + particle_property_name + " in the list of mapped compositional fields."));
 
                           particle_properties.push_back(manager.boundary_composition(boundary_id,particle_location,composition_index));
                         }
