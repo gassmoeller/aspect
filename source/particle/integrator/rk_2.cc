@@ -42,7 +42,8 @@ namespace aspect
       RK2<dim>::initialize ()
       {
         const auto &property_information = this->get_particle_world().get_property_manager().get_data_info();
-        property_index_old_location = property_information.get_position_by_field_name("internal: integrator properties");
+        property_indices[0] = property_information.get_position_by_field_name("internal: integrator properties");
+        property_indices[1] = property_indices[0] + dim;
       }
 
 
@@ -55,6 +56,8 @@ namespace aspect
                                      const std::vector<Tensor<1,dim>> &velocities,
                                      const double dt)
       {
+        constexpr double alpha = 2.0 / 3.0;
+
         Assert(static_cast<unsigned int> (std::distance(begin_particle, end_particle)) == old_velocities.size(),
                ExcMessage("The particle integrator expects the old velocity vector to be of equal size "
                           "to the number of particles to advect. For some unknown reason they are different, "
@@ -77,34 +80,45 @@ namespace aspect
 
             if (integrator_substep == 0)
               {
-                const Tensor<1,dim> k1 = dt * (*old_velocity);
+                Tensor<1,dim> k1 = *old_velocity;
                 Point<dim> loc0 = it->get_location();
-                Point<dim> new_location = loc0 + 0.5 * k1;
+                Point<dim> new_location = loc0 + dt * alpha * k1;
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
                 if (geometry_has_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(new_location,
-                                                                              ArrayView<Point<dim>>(loc0));
+                                                                              ArrayView<Point<dim>>(loc0),
+                                                                              ArrayView<Tensor<1,dim>>(k1));
 
                 for (unsigned int i=0; i<dim; ++i)
-                  properties[property_index_old_location + i] = loc0[i];
+                  {
+                    properties[property_indices[0] + i] = loc0[i];
+                    properties[property_indices[1] + i] = k1[i];
+                  }
 
                 it->set_location(new_location);
               }
             else if (integrator_substep == 1)
               {
-                const Tensor<1,dim> k2 = (higher_order_in_time == true)
-                                         ?
-                                         dt * (*old_velocity + *velocity) / 2.0
-                                         :
-                                         dt * (*old_velocity);
-
                 Point<dim> loc0;
+                Tensor<1,dim> k1;
 
                 for (unsigned int i=0; i<dim; ++i)
-                  loc0[i] = properties[property_index_old_location + i];
+                  {
+                    loc0[i] = properties[property_indices[0] + i];
+                    k1[i] = properties[property_indices[1] + i];
+                  }
 
-                Point<dim> new_location = loc0 + k2;
+                const Tensor<1,dim> k2 = (higher_order_in_time == true)
+                                         ?
+                                         (*old_velocity * (1-alpha) + *velocity * alpha)
+                                         :
+                                         (*old_velocity);
+
+                const double prefactor_k1 = 1. - 1. / (2. * alpha);
+                const double prefactor_k2 = 1. / (2. * alpha);
+
+                Point<dim> new_location = loc0 + dt * (prefactor_k1 * k1 + prefactor_k2 * k2);
 
                 // no need to adjust loc0, because this is the last integrator step
                 if (geometry_has_periodic_boundary)
@@ -153,6 +167,13 @@ namespace aspect
                                    "'false' only the old velocity solution is evaluated to "
                                    "simulate a first order method in time. This is only "
                                    "recommended for benchmark purposes.");
+
+                prm.declare_entry ("Interpolation parameter alpha", "0.5",
+                                   Patterns::Double(),
+                                   "The interpolation parameter alpha of generalized RK2 methods. "
+                                   "A value of 0.5 corresponds to the midpoint method, "
+                                   "a value of 2/3 to Ralston's method with minimal truncation error, "
+                                   "and 1 to Heun's method.");
               }
               prm.leave_subsection();
             }
