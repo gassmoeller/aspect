@@ -109,9 +109,9 @@ namespace aspect
            * a static property of this class. Therefore, the property manager can access this variable even
            * before any object is constructed.
            *
-           * The Runge-Kutta 2 integrator requires a single point with dim components.
+           * The Runge-Kutta 2 integrator requires two tensors with dim components each.
            */
-          static const unsigned int n_integrator_properties = dim;
+          static const unsigned int n_integrator_properties = 2*dim;
 
         private:
           /**
@@ -121,15 +121,23 @@ namespace aspect
           unsigned int integrator_substep;
 
           /**
-           * The location of the RK2 data that is stored in the particle properties.
+           * The location of the 2 RK2 data fields stored in the particle properties.
            */
-          unsigned int property_index_old_location;
+          std::array<unsigned int,2> property_indices;
 
           /**
            * Whether to evaluate old and current velocity to compute a solution
            * that is higher order accurate in time.
            */
           bool higher_order_in_time;
+
+          /**
+           * The coefficient alpha for the general RK2 scheme. alpha = 0.5
+           * is the midpoint rule, alpha = 2/3 is Ralston's rule with minimal
+           * truncation error.
+           */
+          double alpha;
+
       };
 
     }
