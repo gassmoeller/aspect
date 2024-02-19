@@ -114,6 +114,8 @@ namespace aspect
            */
           virtual std::size_t get_data_size() const;
 
+          virtual std::array<bool, 3> required_solution_vectors() const;
+
           /**
            * Read integration related data for a particle specified by particle_id
            * from the data array. This function is called after transferring

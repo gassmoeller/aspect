@@ -87,6 +87,8 @@ namespace aspect
            */
           bool new_integration_step() override;
 
+          std::array<bool, 3> required_solution_vectors() const override;
+
           /**
            * Declare the parameters this class takes through input files.
            */

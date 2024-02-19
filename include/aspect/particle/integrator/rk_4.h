@@ -86,6 +86,8 @@ namespace aspect
            */
           bool new_integration_step() override;
 
+          std::array<bool, 3> required_solution_vectors() const override;
+
           /**
            * We need to tell the property manager how many intermediate properties this integrator requires,
            * so that it can allocate sufficient space for each particle. However, the integrator is not

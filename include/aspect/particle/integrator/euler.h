@@ -66,6 +66,8 @@ namespace aspect
                                const std::vector<Tensor<1,dim>> &velocities,
                                const double dt) override;
 
+          std::array<bool, 3> required_solution_vectors() const override;
+
           /**
            * We need to tell the property manager how many intermediate properties this integrator requires,
            * so that it can allocate sufficient space for each particle. However, the integrator is not
