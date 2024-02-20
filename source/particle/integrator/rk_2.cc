@@ -88,39 +88,36 @@ namespace aspect
             if (integrator_substep == 0)
               {
                 const Tensor<1,dim> k1 = dt * (*old_velocity);
-                Point<dim> loc0 = it->get_location();
-                Point<dim> new_location = loc0 + 0.5 * k1;
+                Point<dim> &location = it->get_location();
+                Point<dim> new_location = location + 0.5 * k1;
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
                 if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(new_location,
-                                                                              ArrayView<Point<dim>>(loc0));
+                                                                              ArrayView<Point<dim>>(location));
 
                 for (unsigned int i=0; i<dim; ++i)
-                  properties[property_index_old_location + i] = loc0[i];
-
-                it->set_location(new_location);
+                {
+                  properties[property_index_old_location + i] = location[i];
+                  location[i] = new_location[i];
+                }
               }
             else if (integrator_substep == 1)
               {
                 const Tensor<1,dim> k2 = (higher_order_in_time == true)
                                          ?
-                                         dt * (*old_velocity + *velocity) / 2.0
+                                         dt * (*old_velocity + *velocity) * 0.5
                                          :
                                          dt * (*old_velocity);
 
-                Point<dim> loc0;
+                Point<dim> &location = it->get_location();
 
                 for (unsigned int i=0; i<dim; ++i)
-                  loc0[i] = properties[property_index_old_location + i];
-
-                Point<dim> new_location = loc0 + k2;
+                  location[i] = properties[property_index_old_location + i] + k2[i];
 
                 // no need to adjust loc0, because this is the last integrator step
                 if (at_periodic_boundary)
-                  this->get_geometry_model().adjust_positions_for_periodicity(new_location);
-
-                it->set_location(new_location);
+                  this->get_geometry_model().adjust_positions_for_periodicity(location);
               }
             else
               {
