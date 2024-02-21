@@ -77,18 +77,20 @@ namespace aspect
                   break;
                 }
 
+        const auto particle_range = boost::make_iterator_range(
+              begin_particle,
+              end_particle);
         typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
         typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
 
-        for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
-             it != end_particle; ++it, ++velocity, ++old_velocity)
+        for (auto &it : particle_range)
           {
-            ArrayView<double> properties = it->get_properties();
+            ArrayView<double> properties = it.get_properties();
 
             if (integrator_substep == 0)
               {
                 const Tensor<1,dim> k1 = dt * (*old_velocity);
-                Point<dim> &location = it->get_location();
+                Point<dim> &location = it.get_location();
                 Point<dim> new_location = location + 0.5 * k1;
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
@@ -101,6 +103,7 @@ namespace aspect
                   properties[property_index_old_location + i] = location[i];
                   location[i] = new_location[i];
                 }
+                ++velocity;
               }
             else if (integrator_substep == 1)
               {
@@ -110,7 +113,7 @@ namespace aspect
                                          :
                                          dt * (*old_velocity);
 
-                Point<dim> &location = it->get_location();
+                Point<dim> &location = it.get_location();
 
                 for (unsigned int i=0; i<dim; ++i)
                   location[i] = properties[property_index_old_location + i] + k2[i];
@@ -118,6 +121,11 @@ namespace aspect
                 // no need to adjust loc0, because this is the last integrator step
                 if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(location);
+
+              if (higher_order_in_time == true)
+                ++velocity;
+
+              ++old_velocity;
               }
             else
               {
