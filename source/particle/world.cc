@@ -1323,12 +1323,6 @@ namespace aspect
                 }
             }
       }
-
-      {
-        TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Sort");
-        // Find the cells that the particles moved to
-        particle_handler->sort_particles_into_subdomains_and_cells();
-      }
     }
 
 
@@ -1340,9 +1334,23 @@ namespace aspect
       do
         {
           advect_particles();
+
+          if (integrator->new_integration_step())
+            {
+              TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Sort");
+              // Find the cells that the particles moved to
+              particle_handler->sort_particles_into_subdomains_and_cells(false);
+            }
+          else
+            {
+              TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Sort");
+              // Find the cells that the particles moved to
+              particle_handler->sort_particles_into_subdomains_and_cells(true);
+              break;
+            }
         }
       // Keep calling the integrator until it indicates it is finished
-      while (integrator->new_integration_step());
+      while (true);
 
       apply_particle_per_cell_bounds();
 
