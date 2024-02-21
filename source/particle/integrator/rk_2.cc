@@ -78,60 +78,53 @@ namespace aspect
                 }
 
         const auto particle_range = boost::make_iterator_range(
-              begin_particle,
-              end_particle);
-        typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
-        typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
-
+                                      begin_particle,
+                                      end_particle);
+        unsigned int i = 0;
         for (auto &it : particle_range)
           {
             ArrayView<double> properties = it.get_properties();
 
             if (integrator_substep == 0)
               {
-                const Tensor<1,dim> k1 = dt * (*old_velocity);
                 Point<dim> &location = it.get_location();
-                Point<dim> new_location = location + 0.5 * k1;
+                Point<dim> new_location = location + (0.5 * dt) * old_velocities[i];
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
                 if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(new_location,
                                                                               ArrayView<Point<dim>>(location));
 
-                for (unsigned int i=0; i<dim; ++i)
-                {
-                  properties[property_index_old_location + i] = location[i];
-                  location[i] = new_location[i];
-                }
-                ++velocity;
+                for (unsigned int j=0; j<dim; ++j)
+                  {
+                    properties[property_index_old_location + j] = location[j];
+                    location[j] = new_location[j];
+                  }
               }
             else if (integrator_substep == 1)
               {
                 const Tensor<1,dim> k2 = (higher_order_in_time == true)
                                          ?
-                                         dt * (*old_velocity + *velocity) * 0.5
+                                         (0.5 * dt) * (old_velocities[i] + velocities[i])
                                          :
-                                         dt * (*old_velocity);
+                                         dt * old_velocities[i];
 
                 Point<dim> &location = it.get_location();
 
-                for (unsigned int i=0; i<dim; ++i)
-                  location[i] = properties[property_index_old_location + i] + k2[i];
+                for (unsigned int j=0; j<dim; ++j)
+                  location[j] = properties[property_index_old_location + j] + k2[j];
 
                 // no need to adjust loc0, because this is the last integrator step
                 if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(location);
-
-              if (higher_order_in_time == true)
-                ++velocity;
-
-              ++old_velocity;
               }
             else
               {
                 Assert(false,
                        ExcMessage("The RK2 integrator should never continue after two integration steps."));
               }
+
+            ++i;
           }
       }
 
