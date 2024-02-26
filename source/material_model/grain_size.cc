@@ -28,6 +28,7 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/signaling_nan.h>
+#include <deal.II/sundials/arkode.h>
 
 #include <iostream>
 
@@ -436,6 +437,159 @@ namespace aspect
     template <int dim>
     double
     GrainSize<dim>::
+    grain_size_change_arkode (const double           temperature,
+                              const double                  pressure,
+                              const std::vector<double>    &compositional_fields,
+                              const SymmetricTensor<2,dim> &strain_rate,
+                              const Tensor<1,dim>          &/*velocity*/,
+                              const Point<dim>             &position,
+                              const unsigned int            grain_size_index,
+                              const int                     crossed_transition) const
+    {
+      // we want to iterate over the grain size evolution here, as we solve in fact an ordinary differential equation
+      // and it is not correct to use the starting grain size (and introduces instabilities)
+      const double original_grain_size = compositional_fields[grain_size_index];
+      if ((original_grain_size != original_grain_size) || this->get_timestep() == 0.0
+          || original_grain_size < std::numeric_limits<double>::min())
+        return 0.0;
+
+      // set up the parameters for the sub-timestepping of grain size evolution
+      double grain_size = original_grain_size;
+      const double timestep = this->get_timestep();
+
+      // use a sub timestep of 500 yrs, currently fixed timestep
+      double grain_growth_timestep = 500 * 3600 * 24 * 365.25;
+      double time = 0;
+
+      // find out in which phase we are
+      const unsigned int phase_index = get_phase_index(position, temperature, pressure);
+
+      // precompute the partitioning_fraction since its constant during the evolution.
+      // this is only used for the pinned_grain_damage formulation
+      const double partitioning_fraction = (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
+                                           ?
+                                           compute_partitioning_fraction(temperature)
+                                           :
+                                           0.0;
+
+      // we keep the dislocation viscosity of the last iteration as guess
+      // for the next one
+      double current_dislocation_viscosity = 0.0;
+
+      const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
+                                           ?
+                                           this->get_adiabatic_conditions().temperature(position)
+                                           :
+                                           temperature;
+      const double adiabatic_pressure = this->get_adiabatic_conditions().is_initialized()
+                                        ?
+                                        this->get_adiabatic_conditions().pressure(position)
+                                        :
+                                        pressure;
+
+
+      using VectorType = Vector<double>;
+      SUNDIALS::ARKode<VectorType>::AdditionalData data (time,             /* initial_time */
+                                                         time + timestep, /* final_time */
+                                                         grain_growth_timestep,   /* initial_step_size */
+                                                         timestep,        /* output_period */
+                                                         1.e-6*timestep   /* minimum_step_size */);
+      SUNDIALS::ARKode<VectorType> ode(data);
+      VectorType fields (1);
+      fields(0) = original_grain_size;
+
+      ode.explicit_function = [&] (const double /*time*/,
+                                   const VectorType &y,
+                                   VectorType &ydot)
+      {
+        // grain size growth due to Ostwald ripening
+        const double m = grain_growth_exponent[phase_index];
+
+        const double grain_size = y(0);
+        double grain_size_growth_rate = grain_growth_rate_constant[phase_index] / (m * std::pow(grain_size,m-1))
+                                        * std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
+                                                   / (constants::gas_constant * temperature));
+
+        // in the two-phase damage model grain growth depends on the proportion of the two phases
+        if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
+          grain_size_growth_rate *= geometric_constant[phase_index] * phase_distribution /
+                                    std::pow(roughness_to_grain_size, m);
+
+        // grain size reduction in dislocation creep regime
+        const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
+        const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
+
+        const double current_diffusion_viscosity   = diffusion_viscosity(temperature, adiabatic_temperature, adiabatic_pressure, grain_size, second_strain_rate_invariant, position);
+        current_dislocation_viscosity              = dislocation_viscosity(temperature, adiabatic_temperature, adiabatic_pressure, strain_rate, position, current_diffusion_viscosity, current_dislocation_viscosity);
+
+        double current_viscosity;
+        if (std::abs(second_strain_rate_invariant) > 1e-30)
+          current_viscosity = current_dislocation_viscosity * current_diffusion_viscosity / (current_dislocation_viscosity + current_diffusion_viscosity);
+        else
+          current_viscosity = current_diffusion_viscosity;
+
+        const double dislocation_strain_rate = second_strain_rate_invariant
+                                               * current_viscosity / current_dislocation_viscosity;
+
+        double grain_size_reduction_rate = 0.0;
+
+        if (grain_size_evolution_formulation == Formulation::paleowattmeter)
+          {
+            // paleowattmeter: Austin and Evans (2007): Paleowattmeters: A scaling relation for dynamically recrystallized grain size. Geology 35, 343-346
+            const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
+            grain_size_reduction_rate = 2.0 * stress * boundary_area_change_work_fraction[phase_index] * dislocation_strain_rate * std::pow(grain_size,2)
+                                        / (geometric_constant[phase_index] * grain_boundary_energy[phase_index]);
+          }
+        else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
+          {
+            // pinned_grain_damage: Mulyukova and Bercovici (2018) Collapse of passive margins by lithospheric damage and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
+            const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
+            grain_size_reduction_rate = 2.0 * stress * partitioning_fraction * second_strain_rate_invariant * grain_size * grain_size
+                                        * roughness_to_grain_size
+                                        / (geometric_constant[phase_index] * grain_boundary_energy[phase_index] * phase_distribution);
+          }
+        else if (grain_size_evolution_formulation == Formulation::paleopiezometer)
+          {
+            // paleopiezometer: Hall and Parmentier (2003): Influence of grain size evolution on convective instability. Geochem. Geophys. Geosyst., 4(3).
+            grain_size_reduction_rate = reciprocal_required_strain[phase_index] * dislocation_strain_rate * grain_size;
+          }
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        ydot(0) = grain_size_growth_rate - grain_size_reduction_rate;
+      };
+
+      ode.solve_ode(fields);
+
+      grain_size = fields(0);
+
+      // reduce grain size to recrystallized_grain_size when crossing phase transitions
+      // if the distance in radial direction a grain moved compared to the last time step
+      // is crossing a phase transition, reduce grain size
+
+      // TODO: recrystallize first, and then do grain size growth/reduction for grains that crossed the transition
+      // in dependence of the distance they have moved
+      double phase_grain_size_reduction = 0.0;
+      if (this->introspection().name_for_compositional_index(grain_size_index) == "grain_size"
+          &&
+          this->get_timestep_number() > 0)
+        {
+          // check if material has crossed any phase transition, if yes, reset grain size
+          if (crossed_transition != -1)
+            if (recrystallized_grain_size[crossed_transition] > 0.0)
+              phase_grain_size_reduction = grain_size - recrystallized_grain_size[crossed_transition];
+        }
+
+      grain_size = std::max(grain_size, minimum_grain_size);
+
+      return grain_size - original_grain_size - phase_grain_size_reduction;
+    }
+
+
+
+    template <int dim>
+    double
+    GrainSize<dim>::
     diffusion_viscosity (const double temperature,
                          const double adiabatic_temperature,
                          const double adiabatic_pressure,
@@ -443,6 +597,7 @@ namespace aspect
                          const double second_strain_rate_invariant,
                          const Point<dim> &position) const
     {
+      Assert(grain_size > 0, ExcMessage("Grain size is not positive."));
       // find out in which phase we are
       const unsigned int phase_index = get_phase_index(position, temperature, adiabatic_pressure);
 
@@ -949,7 +1104,7 @@ namespace aspect
               {
                 if (this->introspection().name_for_compositional_index(c) == "grain_size")
                   {
-                    out.reaction_terms[i][c] = grain_size_change(in.temperature[i], pressure, composition,
+                    out.reaction_terms[i][c] = grain_size_change_arkode(in.temperature[i], pressure, composition,
                                                                  in.strain_rate[i], in.velocity[i], in.position[i], c, crossed_transition);
                     if (advect_log_grainsize)
                       out.reaction_terms[i][c] = - out.reaction_terms[i][c] / composition[c];

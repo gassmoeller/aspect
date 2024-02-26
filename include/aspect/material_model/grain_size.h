@@ -417,6 +417,16 @@ namespace aspect
                            const unsigned int            grain_size_index,
                            const int                     crossed_transition) const;
 
+        double
+        grain_size_change_arkode (const double                  temperature,
+                                  const double                  pressure,
+                                  const std::vector<double>    &compositional_fields,
+                                  const SymmetricTensor<2,dim> &strain_rate,
+                                  const Tensor<1,dim>          &velocity,
+                                  const Point<dim>             &position,
+                                  const unsigned int            grain_size_index,
+                                  const int                     crossed_transition) const;
+
         /**
          * Function that defines the phase transition interface
          * (0 above, 1 below the phase transition).This is done
