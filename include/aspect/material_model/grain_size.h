@@ -24,6 +24,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/reaction_model/grain_size_evolution.h>
+#include <aspect/material_model/rheology/composite_visco_plastic.h>
 
 #include <aspect/material_model/utilities.h>
 #include <aspect/simulator_access.h>
@@ -355,6 +356,11 @@ namespace aspect
          * The reaction model that calculates the grain size change over time.
          */
         std::unique_ptr<ReactionModel::GrainSizeEvolution<dim>> grain_size_evolution;
+
+        /**
+         * The rheology used in this material model.
+         */
+        std::unique_ptr<Rheology::CompositeViscoPlastic<dim>> rheology;
     };
 
   }
