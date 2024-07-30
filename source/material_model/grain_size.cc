@@ -511,6 +511,29 @@ namespace aspect
       std::vector<double> adiabatic_pressures (in.n_evaluation_points());
       std::vector<unsigned int> phase_indices (in.n_evaluation_points());
 
+      const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition,
+                                                   this->introspection().chemical_composition_field_indices());
+
+      std::vector<unsigned int> n_phases_for_each_composition = phase_function.n_phases_for_each_composition();
+
+      // Currently, phase_function.n_phases_for_each_composition() returns a list of length
+      // equal to the total number of compositions, whether or not they are chemical compositions.
+      // The rheology requires a list only for chemical compositions.
+      std::vector<unsigned int> n_phases_for_each_chemical_composition = {n_phases_for_each_composition[0]};
+      n_phase_transitions_for_each_chemical_composition = {n_phases_for_each_composition[0] - 1};
+      n_phases = n_phases_for_each_composition[0];
+      for (auto i : this->introspection().chemical_composition_field_indices())
+        {
+          n_phases_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1]);
+          n_phase_transitions_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1] - 1);
+          n_phases += n_phases_for_each_composition[i+1];
+        }
+
+
+      // Store value of phase function for each phase and composition
+      // While the number of phases is fixed, the value of the phase function is updated for every point
+      std::vector<double> phase_function_values(phase_function.n_phase_transitions(), 0.0);
+
       const unsigned int grain_size_index = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::grain_size)[0];
 
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
@@ -536,6 +559,25 @@ namespace aspect
 
           if (in.requests_property(MaterialProperties::viscosity))
             {
+              const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
+                                      ?
+                                      this->get_adiabatic_conditions().temperature(in.position[i])
+                                      :
+                                      in.temperature[i];
+
+              const double limited_grain_size = std::max(minimum_grain_size,in.composition[i][grain_size_index]);
+
+              std::vector<double> partial_strain_rates;
+              const double viscosity = rheology->compute_viscosity (adiabatic_pressures[i],
+                             adiabatic_temperature,
+                             limited_grain_size,
+                             volume_fractions,
+                             in.strain_rate[i],
+                             partial_strain_rates,
+                             phase_function_values,
+                             phase_function->n_phases_for_each_composition())
+
+
               double effective_viscosity;
               double disl_viscosity = std::numeric_limits<double>::max();
               Assert(std::isfinite(in.strain_rate[i].norm()),
@@ -544,14 +586,9 @@ namespace aspect
               const SymmetricTensor<2,dim> shear_strain_rate = deviator(in.strain_rate[i]);
               const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
-              const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
-                                                   ?
-                                                   this->get_adiabatic_conditions().temperature(in.position[i])
-                                                   :
-                                                   in.temperature[i];
+
 
               // Make sure grain size is not negative/too small.
-              const double limited_grain_size = std::max(minimum_grain_size,in.composition[i][grain_size_index]);
               const double diff_viscosity = diffusion_viscosity(in.temperature[i],
                                                                 adiabatic_temperature,
                                                                 adiabatic_pressures[i],
@@ -646,36 +683,13 @@ namespace aspect
 
       if (in.requests_property(MaterialProperties::reaction_terms))
         {
-          // Create the two lambda functions that are needed to calculate the reaction terms.
-          // The functions give access to the dislocation and diffusion viscosity functions of this class.
-          const std::function<double(double, double, double, const dealii::SymmetricTensor<2, dim>&, unsigned int, double, double)> dislocation_viscosity_ = [this] (const double temperature,
-              const double adiabatic_temperature,
-              const double adiabatic_pressure,
-              const SymmetricTensor<2,dim> &strain_rate,
-              const unsigned int phase_index,
-              const double diffusion_viscosity,
-              const double viscosity_guess)->double
-          {
-            return this->dislocation_viscosity(temperature, adiabatic_temperature, adiabatic_pressure, strain_rate, phase_index, diffusion_viscosity, viscosity_guess);
-          };
-
-          const std::function<double(double, double, double, double, double, unsigned int)> diffusion_viscosity_ = [this] (const double temperature,
-              const double adiabatic_temperature,
-              const double adiabatic_pressure,
-              const double grain_size,
-              const double second_strain_rate_invariant,
-              const unsigned int phase_index)->double
-          {
-            return this->diffusion_viscosity(temperature, adiabatic_temperature, adiabatic_pressure, grain_size, second_strain_rate_invariant, phase_index);
-          };
-
           // Initialize reaction terms.
           for (auto &reaction_term: out.reaction_terms)
             for (auto &reaction_composition: reaction_term)
               reaction_composition = 0.0;
 
           // Let the grain size evolution model calculate the reaction terms.
-          grain_size_evolution->calculate_reaction_terms(in, adiabatic_pressures, phase_indices, dislocation_viscosity_, diffusion_viscosity_, min_eta, max_eta, out);
+          grain_size_evolution->calculate_reaction_terms(in, adiabatic_pressures, phase_indices, *rheology, min_eta, max_eta, out);
         }
 
       /* We separate the calculation of specific heat and thermal expansivity,
@@ -813,6 +827,7 @@ namespace aspect
                              "The prefactor for the dislocation creep law $A_{dis}$. "
                              "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\pascal}$^{-n_{dis}}$\\si{\\per\\second}.");
+
           prm.declare_entry ("Diffusion creep exponent", "1.",
                              Patterns::List (Patterns::Double (0.)),
                              "The power-law exponent $n_{diff}$ for diffusion creep. "
@@ -1084,6 +1099,11 @@ namespace aspect
           grain_size_evolution->initialize_simulator(this->get_simulator());
           grain_size_evolution->initialize_phase_function(phase_function);
           grain_size_evolution->parse_parameters(prm);
+
+          // Parse grain size evolution parameters
+          rheology = std::make_unique<Rheology::CompositeViscoPlastic<dim>>();
+          rheology->initialize_simulator(this->get_simulator());
+          rheology->parse_parameters(prm);
         }
         prm.leave_subsection();
       }
