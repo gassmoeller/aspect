@@ -22,6 +22,7 @@
 #define _aspect_material_model_reaction_model_grain_size_evolution_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/rheology/composite_visco_plastic.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -82,10 +83,7 @@ namespace aspect
           calculate_reaction_terms (const typename Interface<dim>::MaterialModelInputs  &in,
                                     const std::vector<double>                           &adiabatic_pressure,
                                     const std::vector<unsigned int>                     &phase_indices,
-                                    const std::function<double(const double,const double,
-                                                               const double,const SymmetricTensor<2,dim> &,const unsigned int,const double, const double)>          &dislocation_viscosity,
-                                    const std::function<double(
-                                      const double, const double, const double,const double,const double,const unsigned int)> &diffusion_viscosity,
+                                    const std::function<std::pair<double,double>(const double, const unsigned int i)> &compute_viscosity_and_dislocation_strain_rate,
                                     const double                                         min_eta,
                                     const double                                         max_eta,
                                     typename Interface<dim>::MaterialModelOutputs       &out) const;

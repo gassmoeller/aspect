@@ -124,10 +124,7 @@ namespace aspect
       calculate_reaction_terms (const typename Interface<dim>::MaterialModelInputs  &in,
                                 const std::vector<double>                           &pressures,
                                 const std::vector<unsigned int>                     &phase_indices,
-                                const std::function<double(const double, const double,
-                                                           const double,const SymmetricTensor<2,dim> &,const unsigned int,const double,const double)>          &dislocation_viscosity,
-                                const std::function<double(
-                                  const double,const double,const double,const double,const double,const unsigned int)> &diffusion_viscosity,
+                                const std::function<std::pair<double,double>(const double, const unsigned int i)> &compute_viscosity_and_dislocation_strain_rate,
                                 const double                                         min_eta,
                                 const double                                         max_eta,
                                 typename Interface<dim>::MaterialModelOutputs       &out) const
@@ -202,18 +199,6 @@ namespace aspect
                                                    :
                                                    0.0;
 
-              // We keep the dislocation viscosity of the last iteration as guess
-              // for the next one.
-              double current_dislocation_viscosity = 0.0;
-
-              const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
-                                                   ?
-                                                   this->get_adiabatic_conditions().temperature(in.position[i])
-                                                   :
-                                                   in.temperature[i];
-
-
-
               // grain size growth due to Ostwald ripening
               const double m = grain_growth_exponent[phase_indices[i]];
 
@@ -226,21 +211,14 @@ namespace aspect
                 grain_size_growth_rate *= geometric_constant[phase_indices[i]] * phase_distribution /
                                           std::pow(roughness_to_grain_size, m);
 
-              // grain size reduction in dislocation creep regime
+              // grain size reduction
               const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i] - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
               const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
-              const double current_diffusion_viscosity   = diffusion_viscosity(in.temperature[i], adiabatic_temperature, pressures[i], grain_size, second_strain_rate_invariant, phase_indices[i]);
-              current_dislocation_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, pressures[i], in.strain_rate[i], phase_indices[i], current_diffusion_viscosity, current_dislocation_viscosity);
-
-              double current_viscosity;
-              if (std::abs(second_strain_rate_invariant) > 1e-30)
-                current_viscosity = current_dislocation_viscosity * current_diffusion_viscosity / (current_dislocation_viscosity + current_diffusion_viscosity);
-              else
-                current_viscosity = current_diffusion_viscosity;
-
-              const double dislocation_strain_rate = second_strain_rate_invariant
-                                                     * current_viscosity / current_dislocation_viscosity;
+              const std::pair<double,double> viscosity_and_dislocation_strain_rate =
+                compute_viscosity_and_dislocation_strain_rate(grain_size, i);
+              const double current_viscosity = viscosity_and_dislocation_strain_rate.first;
+              const double dislocation_strain_rate = viscosity_and_dislocation_strain_rate.second;
 
               double grain_size_reduction_rate = 0.0;
 
@@ -617,9 +595,9 @@ namespace aspect
       template <int dim>
       void
       GrainSizeEvolution<dim>::fill_additional_outputs (const typename MaterialModel::MaterialModelInputs<dim> &in,
-                                                        const typename MaterialModel::MaterialModelOutputs<dim> &out,
+                                                        const typename MaterialModel::MaterialModelOutputs<dim> &/*out*/,
                                                         const std::vector<unsigned int> &phase_indices,
-                                                        const std::vector<double> &dislocation_viscosities,
+                                                        const std::vector<double> &dislocation_strain_rate_fraction,
                                                         std::vector<std::unique_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const
       {
         for (auto &additional_output: additional_outputs)
@@ -630,7 +608,7 @@ namespace aspect
                   if (grain_size_evolution_formulation == Formulation::paleowattmeter)
                     {
                       const double f = boundary_area_change_work_fraction[phase_indices[i]];
-                      shear_heating_out->shear_heating_work_fractions[i] = 1. - f * out.viscosities[i] / dislocation_viscosities[i];
+                      shear_heating_out->shear_heating_work_fractions[i] = 1. - f * dislocation_strain_rate_fraction[i];
                     }
                   else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
                     {

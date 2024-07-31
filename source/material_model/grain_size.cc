@@ -134,114 +134,6 @@ namespace aspect
     template <int dim>
     double
     GrainSize<dim>::
-    diffusion_viscosity (const double temperature,
-                         const double adiabatic_temperature,
-                         const double adiabatic_pressure,
-                         const double grain_size,
-                         const double second_strain_rate_invariant,
-                         const unsigned int phase_index) const
-    {
-      double energy_term = std::exp((diffusion_activation_energy[phase_index] + diffusion_activation_volume[phase_index] * adiabatic_pressure)
-                                    / (diffusion_creep_exponent[phase_index] * constants::gas_constant * temperature));
-
-      // If the adiabatic profile is already calculated we can use it to limit
-      // variations in viscosity due to temperature.
-      if (this->get_adiabatic_conditions().is_initialized())
-        {
-          const double adiabatic_energy_term
-            = std::exp((diffusion_activation_energy[phase_index] + diffusion_activation_volume[phase_index] * adiabatic_pressure)
-                       / (diffusion_creep_exponent[phase_index] * constants::gas_constant * adiabatic_temperature));
-
-          const double temperature_dependence = energy_term / adiabatic_energy_term;
-          if (temperature_dependence > max_temperature_dependence_of_eta)
-            energy_term = adiabatic_energy_term * max_temperature_dependence_of_eta;
-          if (temperature_dependence < 1.0 / max_temperature_dependence_of_eta)
-            energy_term = adiabatic_energy_term / max_temperature_dependence_of_eta;
-        }
-
-      const double strain_rate_dependence = (1.0 - diffusion_creep_exponent[phase_index]) / diffusion_creep_exponent[phase_index];
-
-      return diffusion_creep_prefactor[phase_index]
-             * std::pow(second_strain_rate_invariant,strain_rate_dependence)
-             * std::pow(grain_size, diffusion_creep_grain_size_exponent[phase_index]/diffusion_creep_exponent[phase_index])
-             * energy_term;
-    }
-
-
-
-    template <int dim>
-    double
-    GrainSize<dim>::
-    dislocation_viscosity (const double temperature,
-                           const double adiabatic_temperature,
-                           const double adiabatic_pressure,
-                           const SymmetricTensor<2,dim> &strain_rate,
-                           const unsigned int phase_index,
-                           const double diffusion_viscosity,
-                           const double viscosity_guess) const
-    {
-      // find out in which phase we are
-      double energy_term = std::exp((dislocation_activation_energy[phase_index] + dislocation_activation_volume[phase_index] * adiabatic_pressure)
-                                    / (dislocation_creep_exponent[phase_index] * constants::gas_constant * temperature));
-
-      // If we are past the initialization of the adiabatic profile, use it to
-      // limit viscosity variations due to temperature.
-      if (this->get_adiabatic_conditions().is_initialized())
-        {
-          const double adiabatic_energy_term
-            = std::exp((dislocation_activation_energy[phase_index] + dislocation_activation_volume[phase_index] * adiabatic_pressure)
-                       / (dislocation_creep_exponent[phase_index] * constants::gas_constant * adiabatic_temperature));
-
-          const double temperature_dependence = energy_term / adiabatic_energy_term;
-          if (temperature_dependence > max_temperature_dependence_of_eta)
-            energy_term = adiabatic_energy_term * max_temperature_dependence_of_eta;
-          if (temperature_dependence < 1.0 / max_temperature_dependence_of_eta)
-            energy_term = adiabatic_energy_term / max_temperature_dependence_of_eta;
-        }
-
-      const double strain_rate_dependence = (1.0 - dislocation_creep_exponent[phase_index]) / dislocation_creep_exponent[phase_index];
-      const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
-      const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
-
-      // If the strain rate is zero, the dislocation viscosity is infinity.
-      if (second_strain_rate_invariant <= std::numeric_limits<double>::min())
-        return std::numeric_limits<double>::min();
-
-      // Start the iteration with the full strain rate
-      double dis_viscosity;
-      if (viscosity_guess == 0)
-        dis_viscosity = dislocation_creep_prefactor[phase_index]
-                        * std::pow(second_strain_rate_invariant,strain_rate_dependence)
-                        * energy_term;
-      else
-        dis_viscosity = viscosity_guess;
-
-      double dis_viscosity_old = 0;
-      unsigned int i = 0;
-      while ((std::abs((dis_viscosity-dis_viscosity_old) / dis_viscosity) > dislocation_viscosity_iteration_threshold)
-             && (i < dislocation_viscosity_iteration_number))
-        {
-          const SymmetricTensor<2,dim> dislocation_strain_rate = diffusion_viscosity
-                                                                 / (diffusion_viscosity + dis_viscosity) * shear_strain_rate;
-          const double dislocation_strain_rate_invariant = std::sqrt(std::max(-second_invariant(dislocation_strain_rate), 0.));
-
-          dis_viscosity_old = dis_viscosity;
-          dis_viscosity = dislocation_creep_prefactor[phase_index]
-                          * std::pow(dislocation_strain_rate_invariant,strain_rate_dependence)
-                          * energy_term;
-          ++i;
-        }
-
-      Assert(i<dislocation_viscosity_iteration_number,ExcInternalError());
-
-      return dis_viscosity;
-    }
-
-
-
-    template <int dim>
-    double
-    GrainSize<dim>::
     enthalpy (const double      temperature,
               const double      pressure,
               const std::vector<double> &compositional_fields,
@@ -509,32 +401,16 @@ namespace aspect
              typename Interface<dim>::MaterialModelOutputs &out) const
     {
       std::vector<double> adiabatic_pressures (in.n_evaluation_points());
+      std::vector<double> adiabatic_temperatures (in.n_evaluation_points());
       std::vector<unsigned int> phase_indices (in.n_evaluation_points());
+      std::vector<std::vector<double>> partial_strain_rates(in.n_evaluation_points());
+      std::vector<std::vector<double>> volume_fractions(in.n_evaluation_points());
 
-      const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition,
-                                                   this->introspection().chemical_composition_field_indices());
-
-      std::vector<unsigned int> n_phases_for_each_composition = phase_function.n_phases_for_each_composition();
-
-      // Currently, phase_function.n_phases_for_each_composition() returns a list of length
-      // equal to the total number of compositions, whether or not they are chemical compositions.
-      // The rheology requires a list only for chemical compositions.
-      std::vector<unsigned int> n_phases_for_each_chemical_composition = {n_phases_for_each_composition[0]};
-      n_phase_transitions_for_each_chemical_composition = {n_phases_for_each_composition[0] - 1};
-      n_phases = n_phases_for_each_composition[0];
-      for (auto i : this->introspection().chemical_composition_field_indices())
-        {
-          n_phases_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1]);
-          n_phase_transitions_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1] - 1);
-          n_phases += n_phases_for_each_composition[i+1];
-        }
-
+      const unsigned int grain_size_index = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::grain_size)[0];
 
       // Store value of phase function for each phase and composition
       // While the number of phases is fixed, the value of the phase function is updated for every point
-      std::vector<double> phase_function_values(phase_function.n_phase_transitions(), 0.0);
-
-      const unsigned int grain_size_index = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::grain_size)[0];
+      std::vector<double> phase_function_values(phase_function->n_phase_transitions(), 0.0);
 
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
@@ -545,128 +421,59 @@ namespace aspect
                                    :
                                    in.pressure[i];
 
-          const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
+          adiabatic_temperatures[i] = this->get_adiabatic_conditions().is_initialized()
+                          ?
+                          this->get_adiabatic_conditions().temperature(in.position[i])
+                          :
+                          in.temperature[i];
 
           out.densities[i] = density(in.temperature[i], adiabatic_pressures[i], in.composition[i], in.position[i]);
           out.thermal_conductivities[i] = k_value;
           out.compressibilities[i] = compressibility(in.temperature[i], adiabatic_pressures[i], in.composition[i], in.position[i]);
 
-          // We do not fill the phase function index, because that will be done internally in the get_phase_index() function
+          const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
+          const double reference_density = this->get_adiabatic_conditions().is_initialized()
+                          ?
+                          this->get_adiabatic_conditions().density(in.position[i])
+                          :
+                          out.densities[i];
           const double depth = this->get_geometry_model().depth(in.position[i]);
-          const double rho_g = out.densities[i] * gravity_norm;
-          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i], adiabatic_pressures[i], depth, rho_g, numbers::invalid_unsigned_int);
+
+          // The phase index is set to invalid_unsigned_int, because it is only used internally
+          // in phase_average_equation_of_state_outputs to loop over all existing phases
+          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i],
+                                                                   in.pressure[i],
+                                                                   depth,
+                                                                   gravity_norm*reference_density,
+                                                                   numbers::invalid_unsigned_int);
+
+          // We do not fill the phase function index, because that will be done internally in the get_phase_index() function
           phase_indices[i] = get_phase_index(phase_inputs);
 
-          if (in.requests_property(MaterialProperties::viscosity))
+          // Compute value of phase functions
+          for (unsigned int j=0; j < phase_function->n_phase_transitions(); ++j)
             {
-              const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
-                                      ?
-                                      this->get_adiabatic_conditions().temperature(in.position[i])
-                                      :
-                                      in.temperature[i];
+              phase_inputs.phase_index = j;
+              phase_function_values[j] = phase_function->compute_value(phase_inputs);
+            }
 
+          if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
+            {
               const double limited_grain_size = std::max(minimum_grain_size,in.composition[i][grain_size_index]);
 
-              std::vector<double> partial_strain_rates;
-              const double viscosity = rheology->compute_viscosity (adiabatic_pressures[i],
-                             adiabatic_temperature,
+              volume_fractions[i] = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
+                                                            this->introspection().chemical_composition_field_indices());
+
+              out.viscosities[i] = rheology->compute_viscosity (adiabatic_pressures[i],
+                             adiabatic_temperatures[i],
                              limited_grain_size,
-                             volume_fractions,
+                             volume_fractions[i],
                              in.strain_rate[i],
-                             partial_strain_rates,
+                             partial_strain_rates[i],
                              phase_function_values,
-                             phase_function->n_phases_for_each_composition())
+                             phase_function->n_phases_for_each_composition());
 
-
-              double effective_viscosity;
-              double disl_viscosity = std::numeric_limits<double>::max();
-              Assert(std::isfinite(in.strain_rate[i].norm()),
-                     ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
-                                "not filled by the caller."));
-              const SymmetricTensor<2,dim> shear_strain_rate = deviator(in.strain_rate[i]);
-              const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
-
-
-
-              // Make sure grain size is not negative/too small.
-              const double diff_viscosity = diffusion_viscosity(in.temperature[i],
-                                                                adiabatic_temperature,
-                                                                adiabatic_pressures[i],
-                                                                limited_grain_size,
-                                                                second_strain_rate_invariant,
-                                                                phase_indices[i]);
-
-              if (std::abs(second_strain_rate_invariant) > 1e-30)
-                {
-                  disl_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, adiabatic_pressures[i], in.strain_rate[i], phase_indices[i], diff_viscosity);
-                  effective_viscosity = disl_viscosity * diff_viscosity / (disl_viscosity + diff_viscosity);
-                }
-              else
-                effective_viscosity = diff_viscosity;
-
-              if (enable_drucker_prager_rheology)
-                {
-                  // Calculate non-yielding (viscous) stress magnitude.
-                  const double non_yielding_stress = 2. * effective_viscosity * second_strain_rate_invariant;
-
-                  // The following handles phases
-                  std::vector<unsigned int> n_phases = {n_phase_transitions+1};
-                  std::vector<double> phase_function_values(n_phase_transitions, 0.0);
-
-                  for (unsigned int k=0; k<n_phase_transitions; ++k)
-                    {
-                      phase_inputs.phase_transition_index = k;
-                      phase_function_values[k] = phase_function->compute_value(phase_inputs);
-                    }
-
-                  // In the grain size material model, viscosity does not depend on composition,
-                  // so we set the compositional index for the Drucker-Prager parameters to 0.
-                  const Rheology::DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(0,
-                                                                                      phase_function_values,
-                                                                                      n_phases);
-                  const double pressure_for_yielding = use_adiabatic_pressure_for_yielding
-                                                       ?
-                                                       adiabatic_pressures[i]
-                                                       :
-                                                       std::max(in.pressure[i],0.0);
-
-                  const double yield_stress = drucker_prager_plasticity.compute_yield_stress(drucker_prager_parameters.cohesion,
-                                                                                             drucker_prager_parameters.angle_internal_friction,
-                                                                                             pressure_for_yielding,
-                                                                                             drucker_prager_parameters.max_yield_stress);
-
-                  // Apply plastic yielding:
-                  // If the non-yielding stress is greater than the yield stress,
-                  // rescale the viscosity back to yield surface
-                  if (non_yielding_stress >= yield_stress)
-                    {
-                      effective_viscosity = drucker_prager_plasticity.compute_viscosity(drucker_prager_parameters.cohesion,
-                                                                                        drucker_prager_parameters.angle_internal_friction,
-                                                                                        pressure_for_yielding,
-                                                                                        second_strain_rate_invariant,
-                                                                                        drucker_prager_parameters.max_yield_stress,
-                                                                                        effective_viscosity);
-                    }
-
-                  PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
-
-                  if (plastic_out != nullptr)
-                    {
-                      plastic_out->cohesions[i] = drucker_prager_parameters.cohesion;
-                      plastic_out->friction_angles[i] = drucker_prager_parameters.angle_internal_friction;
-                      plastic_out->yield_stresses[i] = yield_stress;
-                      plastic_out->yielding[i] = non_yielding_stress >= yield_stress ? 1 : 0;
-                    }
-                }
-
-              out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
-
-              if (DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>())
-                {
-                  disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
-                  disl_viscosities_out->diffusion_viscosities[i] = std::min(std::max(min_eta,diff_viscosity),1e300);
-                }
-
+              out.viscosities[i] = std::min(std::max(min_eta,out.viscosities[i]),max_eta);
             }
 
           // fill seismic velocities outputs if they exist
@@ -678,18 +485,43 @@ namespace aspect
               }
         }
 
-      DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>();
-      grain_size_evolution->fill_additional_outputs(in,out,phase_indices,disl_viscosities_out->dislocation_viscosities,out.additional_outputs);
+          if (in.requests_property(MaterialProperties::additional_outputs))
+            {
+      std::vector<double> dislocation_strain_rates;
+      for (const auto &partial_strain_rates_point: partial_strain_rates)
+        dislocation_strain_rates.push_back(partial_strain_rates_point[1]);
+
+      grain_size_evolution->fill_additional_outputs(in,out,phase_indices,dislocation_strain_rates,out.additional_outputs);
+            }
 
       if (in.requests_property(MaterialProperties::reaction_terms))
         {
           // Initialize reaction terms.
           for (auto &reaction_term: out.reaction_terms)
             for (auto &reaction_composition: reaction_term)
+            {
               reaction_composition = 0.0;
+            }
+
+              std::function<std::pair<double,double>(const double, const unsigned int i)> viscosity_function =
+              [&](const double grain_size, const unsigned int i) -> std::pair<double,double>
+              {
+                const double viscosity = rheology->compute_viscosity (adiabatic_pressures[i],
+                             adiabatic_temperatures[i],
+                             grain_size,
+                             volume_fractions[i],
+                             in.strain_rate[i],
+                             partial_strain_rates[i],
+                             phase_function_values,
+                             phase_function->n_phases_for_each_composition());
+
+                const double dislocation_strain_rate = partial_strain_rates[i][1];
+
+                return std::make_pair(viscosity,dislocation_strain_rate);
+              };
 
           // Let the grain size evolution model calculate the reaction terms.
-          grain_size_evolution->calculate_reaction_terms(in, adiabatic_pressures, phase_indices, *rheology, min_eta, max_eta, out);
+          grain_size_evolution->calculate_reaction_terms(in, adiabatic_pressures, phase_indices, viscosity_function, min_eta, max_eta, out);
         }
 
       /* We separate the calculation of specific heat and thermal expansivity,
@@ -791,6 +623,7 @@ namespace aspect
                              "Units: \\si{\\per\\pascal}.");
 
           MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
+          Rheology::CompositeViscoPlastic<dim>::declare_parameters(prm);
 
           prm.declare_entry ("Dislocation viscosity iteration threshold", "1e-3",
                              Patterns::Double (0.),
@@ -807,53 +640,83 @@ namespace aspect
                              "dislocation strain rate, which depends on the dislocation "
                              "viscosity itself. This number determines the maximum "
                              "number of iterations that are performed. ");
-          prm.declare_entry ("Dislocation creep exponent", "3.5",
-                             Patterns::List (Patterns::Double (0.)),
-                             "The power-law exponent $n_{dis}$ for dislocation creep. "
-                             "List must have one more entry than the Phase transition depths. "
-                             "Units: none.");
-          prm.declare_entry ("Dislocation activation energy", "4.8e5",
-                             Patterns::List (Patterns::Double (0.)),
-                             "The activation energy for dislocation creep $E_{dis}$. "
-                             "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\joule\\per\\mole}.");
-          prm.declare_entry ("Dislocation activation volume", "1.1e-5",
-                             Patterns::List (Patterns::Double (0.)),
-                             "The activation volume for dislocation creep $V_{dis}$. "
-                             "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
-          prm.declare_entry ("Dislocation creep prefactor", "4.5e-15",
-                             Patterns::List (Patterns::Double (0.)),
-                             "The prefactor for the dislocation creep law $A_{dis}$. "
-                             "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\pascal}$^{-n_{dis}}$\\si{\\per\\second}.");
 
-          prm.declare_entry ("Diffusion creep exponent", "1.",
-                             Patterns::List (Patterns::Double (0.)),
-                             "The power-law exponent $n_{diff}$ for diffusion creep. "
-                             "List must have one more entry than the Phase transition depths. "
-                             "Units: none.");
-          prm.declare_entry ("Diffusion activation energy", "3.35e5",
-                             Patterns::List (Patterns::Double (0.)),
-                             "The activation energy for diffusion creep $E_{diff}$. "
-                             "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\joule\\per\\mole}.");
-          prm.declare_entry ("Diffusion activation volume", "4e-6",
-                             Patterns::List (Patterns::Double (0.)),
-                             "The activation volume for diffusion creep $V_{diff}$. "
-                             "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
-          prm.declare_entry ("Diffusion creep prefactor", "7.4e-15",
-                             Patterns::List (Patterns::Double (0.)),
-                             "The prefactor for the diffusion creep law $A_{diff}$. "
-                             "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\meter}$^{p_{diff}}$\\si{\\pascal}$^{-n_{diff}}$\\si{\\per\\second}.");
-          prm.declare_entry ("Diffusion creep grain size exponent", "3.",
-                             Patterns::List (Patterns::Double (0.)),
-                             "The diffusion creep grain size exponent $p_{diff}$ that determines the "
-                             "dependence of viscosity on grain size. "
-                             "List must have one more entry than the Phase transition depths. "
-                             "Units: none.");
+        const bool deprecate = false;
+        prm.declare_alias("Prefactors for dislocation creep", "Dislocation creep prefactor", deprecate);
+        prm.declare_alias("Stress exponents for dislocation creep", "Dislocation creep exponent", deprecate);
+        prm.declare_alias("Activation energies for dislocation creep", "Dislocation activation energy", deprecate);
+        prm.declare_alias("Activation volumes for dislocation creep", "Dislocation activation volume", deprecate);
+
+        prm.declare_entry ("Prefactors for dislocation creep", "4.5e-15",
+                           Patterns::Anything(),
+                           "List of viscosity prefactors, $A$, for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "If only one value is given, then all use the same value. "
+                           "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$ \\si{\\per\\second}.");
+        prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
+                           Patterns::Anything(),
+                           "List of stress exponents, $n_{\\text{dislocation}}$, for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "If only one value is given, then all use the same value.  Units: None.");
+        prm.declare_entry ("Activation energies for dislocation creep", "4.8e5",
+                           Patterns::Anything(),
+                           "List of activation energies, $E_a$, for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "If only one value is given, then all use the same value. "
+                           "Units: \\si{\\joule\\per\\mole}.");
+        prm.declare_entry ("Activation volumes for dislocation creep", "1.1e-5",
+                           Patterns::Anything(),
+                           "List of activation volumes, $V_a$, for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "If only one value is given, then all use the same value. "
+                           "Units: \\si{\\meter\\cubed\\per\\mole}.");
+
+        prm.declare_alias("Prefactors for diffusion creep", "Diffusion creep prefactor", deprecate);
+        prm.declare_alias("Stress exponents for diffusion creep", "Diffusion creep exponent", deprecate);
+        prm.declare_alias("Grain size exponents for diffusion creep", "Diffusion creep grain size exponent", deprecate);
+        prm.declare_alias("Activation energies for diffusion creep", "Diffusion activation energy", deprecate);
+        prm.declare_alias("Activation volumes for diffusion creep", "Diffusion activation volume", deprecate);
+
+        prm.declare_entry ("Prefactors for diffusion creep", "7.4e-15",
+                           Patterns::Anything(),
+                           "List of viscosity prefactors, $A$, for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "If only one value is given, then all use the same value. "
+                           "Units: \\si{\\per\\pascal\\meter}$^{m_{\\text{diffusion}}}$\\si{\\per\\second}.");
+        prm.declare_entry ("Stress exponents for diffusion creep", "1.",
+                           Patterns::Anything(),
+                           "List of stress exponents, $n_{\\text{diffusion}}$, for background mantle and compositional fields, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "The stress exponent for diffusion creep is almost always equal to one. "
+                           "If only one value is given, then all use the same value.  Units: None.");
+        prm.declare_entry ("Grain size exponents for diffusion creep", "3.",
+                           Patterns::Anything(),
+                           "List of grain size exponents, $m_{\\text{diffusion}}$, for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "If only one value is given, then all use the same value. Units: None.");
+        prm.declare_entry ("Activation energies for diffusion creep", "3.35e5",
+                           Patterns::Anything(),
+                           "List of activation energies, $E_a$, for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "If only one value is given, then all use the same value. "
+                           "Units: \\si{\\joule\\per\\mole}.");
+        prm.declare_entry ("Activation volumes for diffusion creep", "4e-6",
+                           Patterns::Anything(),
+                           "List of activation volumes, $V_a$, for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "If only one value is given, then all use the same value. "
+                           "Units: \\si{\\meter\\cubed\\per\\mole}.");
+
+// old parameters
           prm.declare_entry ("Maximum temperature dependence of viscosity", "100.",
                              Patterns::Double (0.),
                              "The factor by which viscosity at adiabatic temperature and ambient temperature "
@@ -959,6 +822,18 @@ namespace aspect
                              "make the problem ill-posed. However, dynamic pressure can affect the "
                              "localization of the strain rate and the resulting deformation, and neglecting "
                              "it therefore changes the solution.");
+
+        // CompositeViscoPlastic by default enables Peierls Creep and plasticity, but this
+        // is contrary to most use cases of the grain size material model. Disable them by default.
+        prm.declare_entry ("Include Peierls creep in composite rheology", "false",
+                           Patterns::Bool (),
+                           "Whether to include Peierls creep in the composite rheology formulation.");
+
+        prm.declare_entry ("Include Drucker Prager plasticity in composite rheology", "false",
+                           Patterns::Bool (),
+                           "Whether to include Drucker-Prager plasticity in the composite rheology formulation.");
+
+
           Rheology::DruckerPrager<dim>::declare_parameters(prm);
           ReactionModel::GrainSizeEvolution<dim>::declare_parameters(prm);
         }
@@ -1006,24 +881,6 @@ namespace aspect
           // rheology parameters
           dislocation_viscosity_iteration_threshold = prm.get_double("Dislocation viscosity iteration threshold");
           dislocation_viscosity_iteration_number = prm.get_integer("Dislocation viscosity iteration number");
-          dislocation_creep_exponent            = Utilities::string_to_double
-                                                  (Utilities::split_string_list(prm.get ("Dislocation creep exponent")));
-          dislocation_activation_energy         = Utilities::string_to_double
-                                                  (Utilities::split_string_list(prm.get ("Dislocation activation energy")));
-          dislocation_activation_volume         = Utilities::string_to_double
-                                                  (Utilities::split_string_list(prm.get ("Dislocation activation volume")));
-          dislocation_creep_prefactor           = Utilities::string_to_double
-                                                  (Utilities::split_string_list(prm.get ("Dislocation creep prefactor")));
-          diffusion_creep_exponent              = Utilities::string_to_double
-                                                  (Utilities::split_string_list(prm.get ("Diffusion creep exponent")));
-          diffusion_activation_energy           = Utilities::string_to_double
-                                                  (Utilities::split_string_list(prm.get ("Diffusion activation energy")));
-          diffusion_activation_volume           = Utilities::string_to_double
-                                                  (Utilities::split_string_list(prm.get ("Diffusion activation volume")));
-          diffusion_creep_prefactor             = Utilities::string_to_double
-                                                  (Utilities::split_string_list(prm.get ("Diffusion creep prefactor")));
-          diffusion_creep_grain_size_exponent   = Utilities::string_to_double
-                                                  (Utilities::split_string_list(prm.get ("Diffusion creep grain size exponent")));
           max_temperature_dependence_of_eta     = prm.get_double ("Maximum temperature dependence of viscosity");
           min_eta                               = prm.get_double ("Minimum viscosity");
           max_eta                               = prm.get_double ("Maximum viscosity");
@@ -1033,27 +890,6 @@ namespace aspect
           max_thermal_expansivity               = prm.get_double ("Maximum thermal expansivity");
           max_latent_heat_substeps              = prm.get_integer ("Maximum latent heat substeps");
           minimum_grain_size                    = prm.get_double ("Minimum grain size");
-
-          // scale recrystallized grain size, diffusion creep and grain growth prefactor accordingly
-          diffusion_creep_prefactor[diffusion_creep_prefactor.size()-1] *= std::pow(1.0,diffusion_creep_grain_size_exponent[diffusion_creep_grain_size_exponent.size()-1]);
-
-          // prefactors never appear without their exponents. perform some calculations here to save time later
-          for (unsigned int i=0; i<diffusion_creep_prefactor.size(); ++i)
-            diffusion_creep_prefactor[i] = std::pow(diffusion_creep_prefactor[i],-1.0/diffusion_creep_exponent[i]);
-          for (unsigned int i=0; i<dislocation_creep_prefactor.size(); ++i)
-            dislocation_creep_prefactor[i] = std::pow(dislocation_creep_prefactor[i],-1.0/dislocation_creep_exponent[i]);
-
-          if (dislocation_creep_exponent.size() != dislocation_activation_energy.size() ||
-              dislocation_creep_exponent.size() != dislocation_activation_volume.size() ||
-              dislocation_creep_exponent.size() != dislocation_creep_prefactor.size() ||
-              dislocation_creep_exponent.size() != diffusion_creep_exponent.size() ||
-              dislocation_creep_exponent.size() != diffusion_activation_energy.size() ||
-              dislocation_creep_exponent.size() != diffusion_activation_volume.size() ||
-              dislocation_creep_exponent.size() != diffusion_creep_prefactor.size() ||
-              dislocation_creep_exponent.size() != diffusion_creep_grain_size_exponent.size() )
-            AssertThrow(false,
-                        ExcMessage("Error: The lists of grain size evolution and flow law parameters "
-                                   "need to have the same length!"));
 
           // parameters for reading in tables with material properties
           datadirectory        = prm.get ("Data directory");
@@ -1100,10 +936,12 @@ namespace aspect
           grain_size_evolution->initialize_phase_function(phase_function);
           grain_size_evolution->parse_parameters(prm);
 
+          const std::vector<unsigned int> n_phases_for_each_chemical_composition = phase_function->n_phases_for_each_chemical_composition();
+
           // Parse grain size evolution parameters
           rheology = std::make_unique<Rheology::CompositeViscoPlastic<dim>>();
           rheology->initialize_simulator(this->get_simulator());
-          rheology->parse_parameters(prm);
+          rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
         }
         prm.leave_subsection();
       }
