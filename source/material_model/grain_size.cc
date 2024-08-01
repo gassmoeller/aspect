@@ -422,10 +422,10 @@ namespace aspect
                                    in.pressure[i];
 
           adiabatic_temperatures[i] = this->get_adiabatic_conditions().is_initialized()
-                          ?
-                          this->get_adiabatic_conditions().temperature(in.position[i])
-                          :
-                          in.temperature[i];
+                                      ?
+                                      this->get_adiabatic_conditions().temperature(in.position[i])
+                                      :
+                                      in.temperature[i];
 
           out.densities[i] = density(in.temperature[i], adiabatic_pressures[i], in.composition[i], in.position[i]);
           out.thermal_conductivities[i] = k_value;
@@ -433,10 +433,10 @@ namespace aspect
 
           const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
           const double reference_density = this->get_adiabatic_conditions().is_initialized()
-                          ?
-                          this->get_adiabatic_conditions().density(in.position[i])
-                          :
-                          out.densities[i];
+                                           ?
+                                           this->get_adiabatic_conditions().density(in.position[i])
+                                           :
+                                           out.densities[i];
           const double depth = this->get_geometry_model().depth(in.position[i]);
 
           // The phase index is set to invalid_unsigned_int, because it is only used internally
@@ -457,21 +457,26 @@ namespace aspect
               phase_function_values[j] = phase_function->compute_value(phase_inputs);
             }
 
+          if (in.requests_property(MaterialProperties::viscosity) || 
+          in.requests_property(MaterialProperties::reaction_terms) ||
+          in.requests_property(MaterialProperties::additional_outputs))
+{
+              volume_fractions[i] = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
+                                                                                          this->introspection().chemical_composition_field_indices());
+}
+
           if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
             {
               const double limited_grain_size = std::max(minimum_grain_size,in.composition[i][grain_size_index]);
 
-              volume_fractions[i] = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
-                                                            this->introspection().chemical_composition_field_indices());
-
               out.viscosities[i] = rheology->compute_viscosity (adiabatic_pressures[i],
-                             adiabatic_temperatures[i],
-                             limited_grain_size,
-                             volume_fractions[i],
-                             in.strain_rate[i],
-                             partial_strain_rates[i],
-                             phase_function_values,
-                             phase_function->n_phases_for_each_composition());
+                                                                adiabatic_temperatures[i],
+                                                                limited_grain_size,
+                                                                volume_fractions[i],
+                                                                in.strain_rate[i],
+                                                                partial_strain_rates[i],
+                                                                phase_function_values,
+                                                                phase_function->n_phase_transitions_for_each_composition());
 
               out.viscosities[i] = std::min(std::max(min_eta,out.viscosities[i]),max_eta);
             }
@@ -485,40 +490,42 @@ namespace aspect
               }
         }
 
-          if (in.requests_property(MaterialProperties::additional_outputs))
-            {
-      std::vector<double> dislocation_strain_rates;
-      for (const auto &partial_strain_rates_point: partial_strain_rates)
-        dislocation_strain_rates.push_back(partial_strain_rates_point[1]);
+      if (in.requests_property(MaterialProperties::additional_outputs))
+        {
+          std::vector<double> dislocation_strain_rates;
+          for (const auto &partial_strain_rates_point: partial_strain_rates)
+            dislocation_strain_rates.push_back(partial_strain_rates_point[1]);
 
-      grain_size_evolution->fill_additional_outputs(in,out,phase_indices,dislocation_strain_rates,out.additional_outputs);
-            }
+          grain_size_evolution->fill_additional_outputs(in,out,phase_indices,dislocation_strain_rates,out.additional_outputs);
+        }
 
       if (in.requests_property(MaterialProperties::reaction_terms))
         {
           // Initialize reaction terms.
           for (auto &reaction_term: out.reaction_terms)
             for (auto &reaction_composition: reaction_term)
-            {
-              reaction_composition = 0.0;
-            }
-
-              std::function<std::pair<double,double>(const double, const unsigned int i)> viscosity_function =
-              [&](const double grain_size, const unsigned int i) -> std::pair<double,double>
               {
-                const double viscosity = rheology->compute_viscosity (adiabatic_pressures[i],
-                             adiabatic_temperatures[i],
-                             grain_size,
-                             volume_fractions[i],
-                             in.strain_rate[i],
-                             partial_strain_rates[i],
-                             phase_function_values,
-                             phase_function->n_phases_for_each_composition());
+                reaction_composition = 0.0;
+              }
 
-                const double dislocation_strain_rate = partial_strain_rates[i][1];
+          std::function<std::pair<double,double>(const double, const unsigned int i)> viscosity_function =
+            [&](const double grain_size, const unsigned int i) -> std::pair<double,double>
+          {
+            double viscosity = rheology->compute_viscosity (adiabatic_pressures[i],
+            adiabatic_temperatures[i],
+            grain_size,
+            volume_fractions[i],
+            in.strain_rate[i],
+            partial_strain_rates[i],
+            phase_function_values,
+            phase_function->n_phase_transitions_for_each_composition());
 
-                return std::make_pair(viscosity,dislocation_strain_rate);
-              };
+            viscosity = std::min(std::max(min_eta,viscosity),max_eta);
+
+            const double dislocation_strain_rate = partial_strain_rates[i][1];
+
+            return std::make_pair(viscosity,dislocation_strain_rate);
+          };
 
           // Let the grain size evolution model calculate the reaction terms.
           grain_size_evolution->calculate_reaction_terms(in, adiabatic_pressures, phase_indices, viscosity_function, min_eta, max_eta, out);
@@ -641,80 +648,80 @@ namespace aspect
                              "viscosity itself. This number determines the maximum "
                              "number of iterations that are performed. ");
 
-        const bool deprecate = false;
-        prm.declare_alias("Prefactors for dislocation creep", "Dislocation creep prefactor", deprecate);
-        prm.declare_alias("Stress exponents for dislocation creep", "Dislocation creep exponent", deprecate);
-        prm.declare_alias("Activation energies for dislocation creep", "Dislocation activation energy", deprecate);
-        prm.declare_alias("Activation volumes for dislocation creep", "Dislocation activation volume", deprecate);
+          const bool deprecate = false;
+          prm.declare_alias("Prefactors for dislocation creep", "Dislocation creep prefactor", deprecate);
+          prm.declare_alias("Stress exponents for dislocation creep", "Dislocation creep exponent", deprecate);
+          prm.declare_alias("Activation energies for dislocation creep", "Dislocation activation energy", deprecate);
+          prm.declare_alias("Activation volumes for dislocation creep", "Dislocation activation volume", deprecate);
 
-        prm.declare_entry ("Prefactors for dislocation creep", "4.5e-15",
-                           Patterns::Anything(),
-                           "List of viscosity prefactors, $A$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of all compositional fields or only "
-                           "those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$ \\si{\\per\\second}.");
-        prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
-                           Patterns::Anything(),
-                           "List of stress exponents, $n_{\\text{dislocation}}$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of all compositional fields or only "
-                           "those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value.  Units: None.");
-        prm.declare_entry ("Activation energies for dislocation creep", "4.8e5",
-                           Patterns::Anything(),
-                           "List of activation energies, $E_a$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of all compositional fields or only "
-                           "those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\joule\\per\\mole}.");
-        prm.declare_entry ("Activation volumes for dislocation creep", "1.1e-5",
-                           Patterns::Anything(),
-                           "List of activation volumes, $V_a$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of all compositional fields or only "
-                           "those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\meter\\cubed\\per\\mole}.");
+          prm.declare_entry ("Prefactors for dislocation creep", "4.5e-15",
+                             Patterns::Anything(),
+                             "List of viscosity prefactors, $A$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
+                             "If only one value is given, then all use the same value. "
+                             "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$ \\si{\\per\\second}.");
+          prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
+                             Patterns::Anything(),
+                             "List of stress exponents, $n_{\\text{dislocation}}$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
+                             "If only one value is given, then all use the same value.  Units: None.");
+          prm.declare_entry ("Activation energies for dislocation creep", "4.8e5",
+                             Patterns::Anything(),
+                             "List of activation energies, $E_a$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
+                             "If only one value is given, then all use the same value. "
+                             "Units: \\si{\\joule\\per\\mole}.");
+          prm.declare_entry ("Activation volumes for dislocation creep", "1.1e-5",
+                             Patterns::Anything(),
+                             "List of activation volumes, $V_a$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
+                             "If only one value is given, then all use the same value. "
+                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
 
-        prm.declare_alias("Prefactors for diffusion creep", "Diffusion creep prefactor", deprecate);
-        prm.declare_alias("Stress exponents for diffusion creep", "Diffusion creep exponent", deprecate);
-        prm.declare_alias("Grain size exponents for diffusion creep", "Diffusion creep grain size exponent", deprecate);
-        prm.declare_alias("Activation energies for diffusion creep", "Diffusion activation energy", deprecate);
-        prm.declare_alias("Activation volumes for diffusion creep", "Diffusion activation volume", deprecate);
+          prm.declare_alias("Prefactors for diffusion creep", "Diffusion creep prefactor", deprecate);
+          prm.declare_alias("Stress exponents for diffusion creep", "Diffusion creep exponent", deprecate);
+          prm.declare_alias("Grain size exponents for diffusion creep", "Diffusion creep grain size exponent", deprecate);
+          prm.declare_alias("Activation energies for diffusion creep", "Diffusion activation energy", deprecate);
+          prm.declare_alias("Activation volumes for diffusion creep", "Diffusion activation volume", deprecate);
 
-        prm.declare_entry ("Prefactors for diffusion creep", "7.4e-15",
-                           Patterns::Anything(),
-                           "List of viscosity prefactors, $A$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of all compositional fields or only "
-                           "those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\per\\pascal\\meter}$^{m_{\\text{diffusion}}}$\\si{\\per\\second}.");
-        prm.declare_entry ("Stress exponents for diffusion creep", "1.",
-                           Patterns::Anything(),
-                           "List of stress exponents, $n_{\\text{diffusion}}$, for background mantle and compositional fields, "
-                           "for a total of N+1 values, where N is the number of all compositional fields or only "
-                           "those corresponding to chemical compositions. "
-                           "The stress exponent for diffusion creep is almost always equal to one. "
-                           "If only one value is given, then all use the same value.  Units: None.");
-        prm.declare_entry ("Grain size exponents for diffusion creep", "3.",
-                           Patterns::Anything(),
-                           "List of grain size exponents, $m_{\\text{diffusion}}$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of all compositional fields or only "
-                           "those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. Units: None.");
-        prm.declare_entry ("Activation energies for diffusion creep", "3.35e5",
-                           Patterns::Anything(),
-                           "List of activation energies, $E_a$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of all compositional fields or only "
-                           "those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\joule\\per\\mole}.");
-        prm.declare_entry ("Activation volumes for diffusion creep", "4e-6",
-                           Patterns::Anything(),
-                           "List of activation volumes, $V_a$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of all compositional fields or only "
-                           "those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\meter\\cubed\\per\\mole}.");
+          prm.declare_entry ("Prefactors for diffusion creep", "7.4e-15",
+                             Patterns::Anything(),
+                             "List of viscosity prefactors, $A$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
+                             "If only one value is given, then all use the same value. "
+                             "Units: \\si{\\per\\pascal\\meter}$^{m_{\\text{diffusion}}}$\\si{\\per\\second}.");
+          prm.declare_entry ("Stress exponents for diffusion creep", "1.",
+                             Patterns::Anything(),
+                             "List of stress exponents, $n_{\\text{diffusion}}$, for background mantle and compositional fields, "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
+                             "The stress exponent for diffusion creep is almost always equal to one. "
+                             "If only one value is given, then all use the same value.  Units: None.");
+          prm.declare_entry ("Grain size exponents for diffusion creep", "3.",
+                             Patterns::Anything(),
+                             "List of grain size exponents, $m_{\\text{diffusion}}$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
+                             "If only one value is given, then all use the same value. Units: None.");
+          prm.declare_entry ("Activation energies for diffusion creep", "3.35e5",
+                             Patterns::Anything(),
+                             "List of activation energies, $E_a$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
+                             "If only one value is given, then all use the same value. "
+                             "Units: \\si{\\joule\\per\\mole}.");
+          prm.declare_entry ("Activation volumes for diffusion creep", "4e-6",
+                             Patterns::Anything(),
+                             "List of activation volumes, $V_a$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
+                             "If only one value is given, then all use the same value. "
+                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
 
 // old parameters
           prm.declare_entry ("Maximum temperature dependence of viscosity", "100.",
@@ -823,15 +830,15 @@ namespace aspect
                              "localization of the strain rate and the resulting deformation, and neglecting "
                              "it therefore changes the solution.");
 
-        // CompositeViscoPlastic by default enables Peierls Creep and plasticity, but this
-        // is contrary to most use cases of the grain size material model. Disable them by default.
-        prm.declare_entry ("Include Peierls creep in composite rheology", "false",
-                           Patterns::Bool (),
-                           "Whether to include Peierls creep in the composite rheology formulation.");
+          // CompositeViscoPlastic by default enables Peierls Creep and plasticity, but this
+          // is contrary to most use cases of the grain size material model. Disable them by default.
+          prm.declare_entry ("Include Peierls creep in composite rheology", "false",
+                             Patterns::Bool (),
+                             "Whether to include Peierls creep in the composite rheology formulation.");
 
-        prm.declare_entry ("Include Drucker Prager plasticity in composite rheology", "false",
-                           Patterns::Bool (),
-                           "Whether to include Drucker-Prager plasticity in the composite rheology formulation.");
+          prm.declare_entry ("Include Drucker Prager plasticity in composite rheology", "false",
+                             Patterns::Bool (),
+                             "Whether to include Drucker-Prager plasticity in the composite rheology formulation.");
 
 
           Rheology::DruckerPrager<dim>::declare_parameters(prm);
@@ -988,12 +995,12 @@ namespace aspect
     GrainSize<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       // These properties are useful as output.
-      if (out.template get_additional_output<DislocationViscosityOutputs<dim>>() == nullptr)
-        {
-          const unsigned int n_points = out.n_evaluation_points();
-          out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
-        }
+      // if (out.template get_additional_output<DislocationViscosityOutputs<dim>>() == nullptr)
+      //   {
+      //     const unsigned int n_points = out.n_evaluation_points();
+      //     out.additional_outputs.push_back(
+      //       std::make_unique<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
+      //   }
 
       // Let the reaction model create additional outputs
       grain_size_evolution->create_additional_named_outputs(out);
@@ -1004,13 +1011,6 @@ namespace aspect
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
-        }
-
-      if (enable_drucker_prager_rheology && out.template get_additional_output<PlasticAdditionalOutputs<dim>>() == nullptr)
-        {
-          const unsigned int n_points = out.n_evaluation_points();
-          out.additional_outputs.push_back(
-            std::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
         }
     }
   }

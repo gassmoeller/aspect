@@ -171,7 +171,7 @@ namespace aspect
         data.final_time = this->get_timestep();
 
         // TODO: make this an input parameter.
-        data.initial_step_size = 0.001 * this->get_timestep();
+        data.initial_step_size = 1e-6 * this->get_timestep();
         data.output_period = this->get_timestep();
         data.minimum_step_size = 1.e-6*this->get_timestep();
         data.maximum_order = 3;
@@ -190,6 +190,7 @@ namespace aspect
           for (unsigned int i=0; i<n_evaluation_points; ++i)
             {
               const double grain_size = std::max(minimum_grain_size, y[i]);
+              Assert (grain_size > 0.0, ExcMessage("Grain size should not become negative."));
 
               // Precompute the partitioning_fraction since it is constant during the evolution.
               // This is only used for the pinned_grain_damage formulation.
@@ -220,19 +221,23 @@ namespace aspect
               const double current_viscosity = viscosity_and_dislocation_strain_rate.first;
               const double dislocation_strain_rate = viscosity_and_dislocation_strain_rate.second;
 
+              Assert(current_viscosity > min_eta, ExcInternalError());
+              Assert(current_viscosity < max_eta, ExcInternalError());
+              Assert(dislocation_strain_rate > 0.0, ExcInternalError());
+
               double grain_size_reduction_rate = 0.0;
 
               if (grain_size_evolution_formulation == Formulation::paleowattmeter)
                 {
                   // paleowattmeter: Austin and Evans (2007): Paleowattmeters: A scaling relation for dynamically recrystallized grain size. Geology 35, 343-346
-                  const double stress = 2.0 * second_strain_rate_invariant * std::min(std::max(min_eta,current_viscosity),max_eta);
+                  const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
                   grain_size_reduction_rate = 2.0 * stress * boundary_area_change_work_fraction[phase_indices[i]] * dislocation_strain_rate * grain_size * grain_size
                                               / (geometric_constant[phase_indices[i]] * grain_boundary_energy[phase_indices[i]]);
                 }
               else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
                 {
                   // pinned_grain_damage: Mulyukova and Bercovici (2018) Collapse of passive margins by lithospheric damage and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
-                  const double stress = 2.0 * second_strain_rate_invariant * std::min(std::max(min_eta,current_viscosity),max_eta);
+                  const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
                   grain_size_reduction_rate = 2.0 * stress * partitioning_fraction * second_strain_rate_invariant * grain_size * grain_size
                                               * roughness_to_grain_size
                                               / (geometric_constant[phase_indices[i]] * grain_boundary_energy[phase_indices[i]] * phase_distribution);
