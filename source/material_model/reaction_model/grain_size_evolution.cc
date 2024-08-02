@@ -190,7 +190,6 @@ namespace aspect
           for (unsigned int i=0; i<n_evaluation_points; ++i)
             {
               const double grain_size = std::max(minimum_grain_size, y[i]);
-              Assert (grain_size > 0.0, ExcMessage("Grain size should not become negative."));
 
               // Precompute the partitioning_fraction since it is constant during the evolution.
               // This is only used for the pinned_grain_damage formulation.
@@ -221,9 +220,9 @@ namespace aspect
               const double current_viscosity = viscosity_and_dislocation_strain_rate.first;
               const double dislocation_strain_rate = viscosity_and_dislocation_strain_rate.second;
 
-              Assert(current_viscosity > min_eta, ExcInternalError());
-              Assert(current_viscosity < max_eta, ExcInternalError());
-              Assert(dislocation_strain_rate > 0.0, ExcInternalError());
+              Assert(current_viscosity >= min_eta, ExcMessage("Viscosity is smaller than min viscosity. Viscosity: " + std::to_string(current_viscosity) + ". Max viscosity: " + std::to_string(min_eta)));
+              Assert(current_viscosity <= max_eta, ExcMessage("Viscosity is larger than max viscosity. Viscosity: " + std::to_string(current_viscosity) + ". Max viscosity: " + std::to_string(max_eta)));
+              Assert(dislocation_strain_rate >= 0.0, ExcMessage("Dislocation strain rate is negative: " + std::to_string(dislocation_strain_rate)));
 
               double grain_size_reduction_rate = 0.0;
 

@@ -470,7 +470,7 @@ namespace aspect
               const double limited_grain_size = std::max(minimum_grain_size,in.composition[i][grain_size_index]);
 
               out.viscosities[i] = rheology->compute_viscosity (adiabatic_pressures[i],
-                                                                adiabatic_temperatures[i],
+                                                                in.temperature[i],
                                                                 limited_grain_size,
                                                                 volume_fractions[i],
                                                                 in.strain_rate[i],
@@ -512,7 +512,7 @@ namespace aspect
             [&](const double grain_size, const unsigned int i) -> std::pair<double,double>
           {
             double viscosity = rheology->compute_viscosity (adiabatic_pressures[i],
-            adiabatic_temperatures[i],
+            in.temperature[i],
             grain_size,
             volume_fractions[i],
             in.strain_rate[i],
@@ -654,7 +654,7 @@ namespace aspect
           prm.declare_alias("Activation energies for dislocation creep", "Dislocation activation energy", deprecate);
           prm.declare_alias("Activation volumes for dislocation creep", "Dislocation activation volume", deprecate);
 
-          prm.declare_entry ("Prefactors for dislocation creep", "4.5e-15",
+          prm.declare_entry ("Prefactors for dislocation creep", "4e-16",
                              Patterns::Anything(),
                              "List of viscosity prefactors, $A$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of all compositional fields or only "
@@ -688,12 +688,15 @@ namespace aspect
           prm.declare_alias("Activation energies for diffusion creep", "Diffusion activation energy", deprecate);
           prm.declare_alias("Activation volumes for diffusion creep", "Diffusion activation volume", deprecate);
 
-          prm.declare_entry ("Prefactors for diffusion creep", "7.4e-15",
+          prm.declare_entry ("Prefactors for diffusion creep", "3.7e-15",
                              Patterns::Anything(),
                              "List of viscosity prefactors, $A$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of all compositional fields or only "
                              "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
+                             "Note that this parameter default is different from Dannberg et al. 2017 "
+                             "by a factor of 2 because the formula for diffusion viscosity now "
+                             "incorporates that factor directly, as for all other material models."
                              "Units: \\si{\\per\\pascal\\meter}$^{m_{\\text{diffusion}}}$\\si{\\per\\second}.");
           prm.declare_entry ("Stress exponents for diffusion creep", "1.",
                              Patterns::Anything(),
