@@ -103,7 +103,7 @@ subsection Material model
     # Faul and Jackson 2007
     # Diffusion creep
     # new scaled prefactors to match vertical viscosity profile
-    set Diffusion creep prefactor            = 3.e-015 # s^-1 Pa^-1 m^p
+    set Diffusion creep prefactor            = 1.5e-015 # s^-1 Pa^-1 m^p
     set Diffusion creep exponent             = 1.0 # 1 for diffusion creep
     set Diffusion creep grain size exponent  = 3
     set Diffusion activation energy          = 3.75e5 #J/mol
@@ -112,7 +112,7 @@ subsection Material model
 
     # Kawazoe et al. (2009)
     # Dislocation creep
-    set Dislocation creep prefactor          = 1.244507e-15 # s^-1 Pa^-n
+    set Dislocation creep prefactor          = 1.1e-16 # s^-1 Pa^-n
     set Dislocation creep exponent           = 3.5
     set Dislocation activation energy        = 530000 # J/mol
     set Dislocation activation volume        = 1.40E-005 # m^3/mol
@@ -126,10 +126,5 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = composition statistics, temperature statistics, velocity statistics, ODE statistics,  visualization
-
-  subsection Visualization
-    set List of output variables =  material properties, strain rate,  strain rate tensor,  stress second invariant
-    set Time between graphical output = 1e4
-  end
+  set List of postprocessors = composition statistics, temperature statistics, velocity statistics, ODE statistics
 end
