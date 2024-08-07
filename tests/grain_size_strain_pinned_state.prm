@@ -40,7 +40,7 @@ subsection Material model
 
     # Kawazoe et al. (2009)
     # Dislocation creep
-    set Dislocation creep prefactor          = 1e-13 # s^-1 Pa^-n
+    set Dislocation creep prefactor          = 8.8388348e-15 # s^-1 Pa^-n
     set Dislocation creep exponent           = 3
     set Dislocation activation energy        = 390720 # J/mol
     set Dislocation activation volume        = 0 # m^3/mol
