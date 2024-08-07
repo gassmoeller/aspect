@@ -177,7 +177,7 @@ subsection Material model
     # Kohlstedt, 2003, and pick the prefactor and activation volume so that we
     # get a reasonable upper mantle viscosity profile and a balance between
     # diffusion and dislocation creep.
-    set Diffusion creep prefactor                   = 2.5e-15
+    set Diffusion creep prefactor                   = 5e-15
     set Diffusion activation energy                 = 3.75e5
     set Diffusion activation volume                 = 4e-6
     set Diffusion creep grain size exponent         = 3
@@ -188,7 +188,7 @@ subsection Material model
     # energy and volume from Hirth & Kohlstedt, 2003, and pick the prefactor so
     # that we get a reasonable upper mantle viscosity and a balance between
     # diffusion and dislocation creep.
-    set Dislocation creep prefactor                 = 8.8e-17
+    set Dislocation creep prefactor                 = 1e-15
     set Dislocation activation energy               = 5.3e5
     set Dislocation activation volume               = 1.4e-5
     set Dislocation creep exponent                  = 3.5

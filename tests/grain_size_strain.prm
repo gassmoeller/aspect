@@ -87,7 +87,7 @@ subsection Material model
     set Thermal expansion coefficient    = 0
     set Reference compressibility        = 0
     set Viscosity                        = 1e18
-    set Minimum viscosity                = 1e16
+    set Minimum viscosity                = 1e14
     set Reference temperature            = 1600
     set Recrystallized grain size        =
     set Grain growth activation energy       = 4e5
@@ -103,7 +103,7 @@ subsection Material model
     # Faul and Jackson 2007
     # Diffusion creep
     # new scaled prefactors to match vertical viscosity profile
-    set Diffusion creep prefactor            = 1.5e-015 # s^-1 Pa^-1 m^p
+    set Diffusion creep prefactor            = 3.e-015 # s^-1 Pa^-1 m^p
     set Diffusion creep exponent             = 1.0 # 1 for diffusion creep
     set Diffusion creep grain size exponent  = 3
     set Diffusion activation energy          = 3.75e5 #J/mol
@@ -112,7 +112,7 @@ subsection Material model
 
     # Kawazoe et al. (2009)
     # Dislocation creep
-    set Dislocation creep prefactor          = 5.5e-17 # s^-1 Pa^-n
+    set Dislocation creep prefactor          = 1.244507e-15 # s^-1 Pa^-n
     set Dislocation creep exponent           = 3.5
     set Dislocation activation energy        = 530000 # J/mol
     set Dislocation activation volume        = 1.40E-005 # m^3/mol
