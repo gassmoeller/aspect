@@ -18,7 +18,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 8.898e-05/8.898e-05/8.898e+05
+     Compositions min/max/mass: 8.897e-05/8.897e-05/8.897e+05
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0 m/year, 0 m/year
 

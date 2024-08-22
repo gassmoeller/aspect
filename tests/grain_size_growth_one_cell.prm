@@ -12,11 +12,16 @@
 # with
 # d_0 = 8e-5 m              (initial grain size)
 # p   = 10                  (grain size exponent)
-# A   = 2.0294e-45 m^(p-1)  (grain growth rate constant * exp(-E/(RT)))
+# A   = 2.0294e-47 m^(p-1)  (grain growth rate constant * exp(-E/(RT)))
 #
-# leading to a grain size of d=8.8957E-5 m at the
-# right boundary of the model at the end time of
-# 1 Myr.
+# leading to an analytically expected grain size
+# of d=8.8957E-5 m at the end time of 1 Myr.
+# In practice for the time stepping of this
+# test the grain size reaches a value
+# of d=8.8966e-05 at 1 Myr. At smaller time steps
+# (max_dt=1e3) the value at 1 Myr reaches
+# d=8.8959e-05, i.e. the value is converging towards
+# the analytic solution with increasing time resolution.
 
 # This test is similar to grain size growth, but
 # computes the grain growth in just one mesh cell
@@ -26,6 +31,7 @@
 ############### Global parameters
 
 set Dimension                              = 2
+set Maximum time step                      = 1e3
 set End time                               = 1e6
 set Use years in output instead of seconds = true
 set Adiabatic surface temperature          = 1600

@@ -457,13 +457,13 @@ namespace aspect
               phase_function_values[j] = phase_function->compute_value(phase_inputs);
             }
 
-          if (in.requests_property(MaterialProperties::viscosity) || 
-          in.requests_property(MaterialProperties::reaction_terms) ||
-          in.requests_property(MaterialProperties::additional_outputs))
-{
+          if (in.requests_property(MaterialProperties::viscosity) ||
+              in.requests_property(MaterialProperties::reaction_terms) ||
+              in.requests_property(MaterialProperties::additional_outputs))
+            {
               volume_fractions[i] = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
                                                                                           this->introspection().chemical_composition_field_indices());
-}
+            }
 
           if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
             {
@@ -527,8 +527,44 @@ namespace aspect
             return std::make_pair(viscosity,dislocation_strain_rate);
           };
 
+          // We need to obtain the strain values from the grain size field at the previous time step,
+          // as the values from the current linearization point are an extrapolation of the solution
+          // from the old timesteps.
+          // Prepare the field function and extract the old solution values at the current cell.
+
+
+          // Use a small_vector to avoid memory allocation if possible.
+          small_vector<double> old_solution_values(this->get_fe().dofs_per_cell);
+          in.current_cell->get_dof_values(this->get_old_solution(),
+                                          old_solution_values.begin(),
+                                          old_solution_values.end());
+
+          MaterialModelInputs<dim> in_copy = in;
+
+          const auto &component_indices = this->introspection().component_indices.compositional_fields;
+
+          // Only create the evaluator the first time we get here
+          if (!grain_size_evaluator)
+            grain_size_evaluator
+              = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                             this->get_fe(),
+                                                             update_values,
+                                                             component_indices[grain_size_index]);
+
+          std::vector<Point<dim>> quadrature_positions(in.n_evaluation_points());
+          this->get_mapping().transform_points_real_to_unit_cell(in.current_cell,
+                                                                  in.position,
+                                                                  quadrature_positions);
+
+          grain_size_evaluator->reinit(in.current_cell, quadrature_positions);
+          grain_size_evaluator->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                         EvaluationFlags::values);
+
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+            in_copy.composition[i][grain_size_index] = grain_size_evaluator->get_value(i);
+
           // Let the grain size evolution model calculate the reaction terms.
-          grain_size_evolution->calculate_reaction_terms(in, adiabatic_pressures, phase_indices, viscosity_function, min_eta, max_eta, out);
+          grain_size_evolution->calculate_reaction_terms(in_copy, adiabatic_pressures, phase_indices, viscosity_function, min_eta, max_eta, out);
         }
 
       /* We separate the calculation of specific heat and thermal expansivity,

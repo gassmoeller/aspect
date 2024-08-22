@@ -361,6 +361,11 @@ namespace aspect
          * The rheology used in this material model.
          */
         std::unique_ptr<Rheology::CompositeViscoPlastic<dim>> rheology;
+
+        /**
+         * Evalua
+         */
+        mutable std::unique_ptr<FEPointEvaluation<1, dim>> grain_size_evaluator;
     };
 
   }
