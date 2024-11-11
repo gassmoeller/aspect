@@ -124,7 +124,7 @@ end
 # on. We here use a globally refined mesh without
 # adaptive mesh refinement.
 subsection Mesh refinement
-  set Initial global refinement                = 4
+  set Initial global refinement                = 6
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
