@@ -1,15 +1,15 @@
-!/bin/bash
+#!/bin/bash
 version="a9"
 build_dir="../../../build/"
-declare -a grid=(5) 
-declare -a UFS=("false" "true") # use failsafe
+declare -a grid=(6)
+declare -a UFS=("false") # "true" # use failsafe
 declare -a NSP=("SPD") # "Symmetric" "PD" "none") # Use Newton stabilization preconditioner
-declare -a NSA=("SPD") # "symmetric"  "PD" "none" # Use Newton stabilization A block
+declare -a NSA=("none" "SPD") # "symmetric"  "PD" "none" # Use Newton stabilization A block
 declare -a agrid=(0)
 I=150
-declare -a P=(5 150) #0 5 10 15 20 25 150) # 1 2 3 4 5 10 15 25 50 100)
+declare -a P=(150) #0 5 10 15 20 25 150) # 1 2 3 4 5 10 15 25 50 100)
 declare -a LS=(0) # 50 # No line search iterations as reported in the paper.
-declare -a ST=(1e-20)
+declare -a ST=(1e-20 1e-2)
 declare -a LT=("1e-5") # "1e-8") # "1e-8") #"1e-5") # "1e-8")
 declare -a NLT=("1e-5") # "1e-9" "1e-10" "1e-14" "1e-20")
 declare -a ABT=("1e-2")
@@ -18,25 +18,11 @@ declare -a SF=("9e-1")
 declare -a UDS=("false")
 declare -a AEW=("false") # always use Eisenstat Walker, even for picard
 AV=-1
-COMP="0" #"4e-12"
+COMP="0" # compressibility
 declare -a MLT=("9e-1" "1e-2") # "1e-3" "1e-4" "1e-5" "1e-6" "1e-6" "1e-7" "1e-8")
 materialmodelnameShort="TS" #"VP2"
 materialmodelname="tosi"
-processes=6
-
-if [ $materialmodelnameShort == "TS" ]; then
- materialmodelname="tosi"
-elif [ $materialmodelnameShort == "DP" ]; then
- materialmodelname="drucker prager compositions"
-elif [ $materialmodelnameShort == "vM" ]; then
- materialmodelname="drucker prager compositions"
-elif [ $materialmodelnameShort == "SNL" ]; then
- materialmodelname="simple nonlinear compositions"
- CohesionLine="s/ set List of cohesion of fields.*/ /g"
- PhiLine="s/set List of angles of internal friction of fields.*/ /g"
-elif [ $materialmodelnameShort == "VP2" ]; then
- materialmodelname="viscoplastic2"
-fi
+processes=4
 
 SOLVER_SHORT="NS" #"itAdandSt" #"NS" #NS"
 SOLVER="NS"
@@ -113,9 +99,9 @@ do
                 -e "s/set Use Newton residual scaling method.*/    set Use Newton residual scaling method = $i_RSM/g" \
                 input.prm > "$infilename"
                
-               nohup mpirun -np $processes $build_dir./aspect $infilename > $outfilename 2>$errorfilename
+               nohup mpirun -np $processes $build_dir./aspect-release $infilename > $outfilename 2>$errorfilename
                
-               grep "Relative nonlinear residual" $outfilename > $outplotfilename
+               grep "Relative nonlinear residual " $outfilename > $outplotfilename
                
                done
               done

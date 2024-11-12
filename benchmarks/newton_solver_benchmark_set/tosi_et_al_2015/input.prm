@@ -166,3 +166,8 @@ subsection Postprocess
     set Time between graphical output = 0.05
   end
 end
+
+subsection Termination criteria
+  set End step = 30
+  set Termination criteria = end step
+end
