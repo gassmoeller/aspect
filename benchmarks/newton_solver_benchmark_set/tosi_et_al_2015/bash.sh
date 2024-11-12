@@ -13,7 +13,7 @@ declare -a ST=(1e-20 1e-2)
 declare -a LT=("1e-5") # "1e-8") # "1e-8") #"1e-5") # "1e-8")
 declare -a NLT=("1e-5") # "1e-9" "1e-10" "1e-14" "1e-20")
 declare -a ABT=("1e-2")
-declare -a RSM=("true") #"true" #"false"
+declare -a RSM=("false") #"true" #"false"
 declare -a SF=("9e-1")
 declare -a UDS=("false")
 declare -a AEW=("false") # always use Eisenstat Walker, even for picard
@@ -119,3 +119,35 @@ do
   done
  done
 done
+
+# Now run one model without the defect correction or Newton solver
+SOLVER="iterated Advection and Newton Stokes"
+SOLVER_SHORT="itAdandSt"
+
+dirname_clean="$version""$materialmodelnameShort""_""$SOLVER_SHORT""_C""$COMP""_g""${grid[0]}""_ag""${agrid[0]}""_UDS""${UDS[0]}""_NLT""${NLT[0]}""_ABT""${ABT[0]}""_LT""${LT[0]}""_I""$I""_AV""$AV"
+dirname="results/""$dirname_clean"
+infilename="$dirname""/input.prm"
+outfilename="$dirname""/output.log"
+errorfilename="$dirname""/error.log"
+outplotfilename="$dirname""/plot.dat"
+
+mkdir -p $dirname
+
+echo "$dirname"
+sed  \
+-e "s/set Output directory.*/set Output directory = results\/$dirname_clean/g" \
+-e "s/set Nonlinear solver scheme.*/set Nonlinear solver scheme = $SOLVER/g" \
+-e "s/set Initial global refinement.*/  set Initial global refinement          = ${grid[0]}/g" \
+-e "s/set Initial adaptive refinement.*/  set Initial adaptive refinement        = ${agrid[0]}/g" \
+-e "s/set Viscosity averaging p.*/    set Viscosity averaging p = $AV/g" \
+-e "s/set Max nonlinear iterations.*/set Max nonlinear iterations = $I /g" \
+-e "s/set Linear solver tolerance.*/set Linear solver tolerance = ${LT[0]}/g" \
+-e "s/set Nonlinear solver tolerance.*/set Nonlinear solver tolerance = ${NLT[0]}/g" \
+-e "s/set Linear solver A block tolerance.*/set Linear solver A block tolerance = ${ABT[0]}/g" \
+-e "s/set Reference compressibility .*/    set Reference compressibility = $COMP/g" \
+-e "s/set Use deviator of strain-rate.*/set Use deviator of strain-rate = ${UDS[0]}/g" \
+input.prm > "$infilename"
+
+nohup mpirun -np $processes $build_dir./aspect-release $infilename > $outfilename 2>$errorfilename
+
+grep "Relative nonlinear residual " $outfilename > $outplotfilename
