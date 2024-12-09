@@ -220,6 +220,8 @@ namespace aspect
               const double current_viscosity = viscosity_and_dislocation_strain_rate.first;
               const double dislocation_strain_rate = viscosity_and_dislocation_strain_rate.second;
 
+              (void) min_eta;
+              (void) max_eta;
               Assert(current_viscosity > min_eta, ExcInternalError());
               Assert(current_viscosity < max_eta, ExcInternalError());
               Assert(dislocation_strain_rate > 0.0, ExcInternalError());
