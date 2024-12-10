@@ -17,16 +17,16 @@
 # p   = 10             (grain size exponent)
 # A   = 2.0294e-46 1/m
 #
-# leading to a grain size of d=8.8957E-5 m at the
-# right boundary of the model.
+# leading to an analytically expected grain size of
+# d=8.8957E-5 m at the right boundary of the model
+# when the material reaches the right model boundary
+# (at 1 Myr). In practice for the resolution of this
+# test the grain size reaches a steady-state value
+# of d=8.89135e-05 at 4 Myr.
 
 ############### Global parameters
 
-set Dimension                              = 2
-set End time                               = 50000
-
 include $ASPECT_SOURCE_DIR/tests/grain_size_growth.prm
-
 
 subsection Postprocess
   set List of postprocessors = composition statistics,temperature statistics, velocity statistics, particles

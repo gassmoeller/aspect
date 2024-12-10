@@ -31,7 +31,6 @@
 ############### Global parameters
 
 set Dimension                              = 2
-set Maximum time step                      = 1e3
 set End time                               = 1e6
 set Use years in output instead of seconds = true
 set Adiabatic surface temperature          = 1600

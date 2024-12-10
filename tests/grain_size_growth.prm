@@ -17,7 +17,7 @@
 # p   = 10                  (grain size exponent)
 # A   = 2.0294e-46 m^(p-1)  (grain growth rate constant * exp(-E/(RT)) / velocity)
 #
-# leading to an analytically expected  grain size of
+# leading to an analytically expected grain size of
 # d=8.8957E-5 m at the right boundary of the model
 # when the material reaches the right model boundary
 # (at 1 Myr). In practice for the resolution of this
