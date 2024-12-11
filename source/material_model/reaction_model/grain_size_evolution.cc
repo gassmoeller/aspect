@@ -315,6 +315,26 @@ namespace aspect
 
 
 
+      double
+      calculate_equilibrium_grain_size (const double temperature,
+                                        const double pressure,
+                                        const double stress_invariant,
+                                        const double dislocation_strain_rate_invariant,
+                                        const unsigned int phase_index) const
+      {
+        const double stress_prefactor = geometric_constant[phase_index] * grain_boundary_energy[phase_index] * grain_growth_rate_constant[phase_index]
+                                        / (boundary_area_change_work_fraction[phase_index] * stress_invariant * dislocation_strain_rate_invariant * grain_growth_exponent[phase_index]);
+
+        const double grain_growth_exponential_term = std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
+                                                              / (constants::gas_constant * temperature));
+
+        const double equilibrium_grain_size = std::pow(stress_prefactor * grain_growth_exponential_term,
+                                                       1./(1.+grain_growth_exponent[phase_index]));
+
+        return equilibrium_grain_size;
+      }
+
+
 
       template <int dim>
       void
@@ -594,6 +614,14 @@ namespace aspect
             out.additional_outputs.push_back(
               std::make_unique<HeatingModel::ShearHeatingOutputs<dim>> (n_points));
           }
+
+        // Compute the equilibrium grain size for each point if we support it.
+        if (out.template get_additional_output<EquilibriumGrainSizeOutputs<dim>>() == nullptr)
+          {
+            const unsigned int n_points = out.n_evaluation_points();
+            out.additional_outputs.push_back(
+              std::make_unique<EquilibriumGrainSizeOutputs<dim>> (n_points));
+          }
       }
 
 
@@ -607,6 +635,7 @@ namespace aspect
                                                         std::vector<std::unique_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const
       {
         for (auto &additional_output: additional_outputs)
+        {
           if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out = dynamic_cast<HeatingModel::ShearHeatingOutputs<dim> *>(additional_output.get()))
             {
               for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
@@ -625,6 +654,24 @@ namespace aspect
                     AssertThrow(false, ExcNotImplemented());
                 }
             }
+
+          if (EquilibriumGrainSizeOutputs<dim> *equilibrium_grain_size_out = dynamic_cast<EquilibriumGrainSizeOutputs<dim> *>(additional_output.get()))
+            {
+              for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+                {
+                  if (grain_size_evolution_formulation == Formulation::paleowattmeter)
+                    {
+                      equilibrium_grain_size_out->output_values[0][i] = calculate_equilibrium_grain_size(in.temperature[i],
+                                                                                                         in.pressure[i],
+                                                                                                         stress_invariant,
+                                                                                                         dislocation_strain_rate_fraction[i],
+                                                                                                         phase_indices[i]);
+                    }
+                  else
+                    AssertThrow(false, ExcMessage("The equilibrium grain size output is not supported for the current grain size evolution formulation."));
+                }
+            }
+        }
       }
     }
   }

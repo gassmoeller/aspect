@@ -553,8 +553,8 @@ namespace aspect
 
           std::vector<Point<dim>> quadrature_positions(in.n_evaluation_points());
           this->get_mapping().transform_points_real_to_unit_cell(in.current_cell,
-                                                                  in.position,
-                                                                  quadrature_positions);
+                                                                 in.position,
+                                                                 quadrature_positions);
 
           grain_size_evaluator->reinit(in.current_cell, quadrature_positions);
           grain_size_evaluator->evaluate({old_solution_values.data(),old_solution_values.size()},

@@ -34,6 +34,19 @@ namespace aspect
     namespace ReactionModel
     {
       /**
+       * Additional output fields that contain the analytical equilibrium grain size
+       * as computed by the function calculate_equilibrium_grain_size().
+       */
+      template <int dim>
+      class EquilibriumGrainSizeOutputs : public NamedAdditionalMaterialOutputs<dim>
+      {
+        public:
+          EquilibriumGrainSizeOutputs(const unsigned int n_points);
+
+          std::vector<double> get_nth_output(const unsigned int idx) const override;
+      };
+
+      /**
        * A model to calculate the change of the average grain size according to
        * different published grain size evolution models. We use the grain
        * size evolution laws described in Behn et al., 2009. Implications of grain
@@ -209,6 +222,23 @@ namespace aspect
            * and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
            */
           double compute_partitioning_fraction (const double temperature) const;
+
+          /**
+          * Calculate the equilibrium grain size for a given temperature @p temperature,
+          * pressure @p pressure, stress invariant @p stress_invariant, and dislocation
+          * strain rate invariant @p dislocation_strain_rate_invariant.
+          *
+          * The equation for the equilibrium grain size is given by eq(7) in
+          * Dannberg et al., 2017, https://doi.org/10.1002/2017GC006944.
+          * 
+          * This function is only implemented for the paleowattmeter formulation.
+          */
+          double
+          calculate_equilibrium_grain_size (const double temperature,
+                                            const double pressure,
+                                            const double stress_invariant,
+                                            const double dislocation_strain_rate_invariant,
+                                            const unsigned int phase_index) const;
 
           /**
            * Parameters controlling the partitioning of energy
