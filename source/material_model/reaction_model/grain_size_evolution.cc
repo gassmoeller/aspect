@@ -81,6 +81,25 @@ namespace aspect
 
 
 
+    template <int dim>
+    EquilibriumGrainSizeOutputs<dim>::EquilibriumGrainSizeOutputs (const unsigned int n_points)
+      :
+      MaterialModel::NamedAdditionalMaterialOutputs<dim>({"equilibrium_grain_size"}, n_points)
+    {}
+
+
+
+    template <int dim>
+    std::vector<double>
+    EquilibriumGrainSizeOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      (void) idx;
+      AssertIndexRange (idx, 1);
+      return this->output_values[0];
+    }
+
+
+
       template <int dim>
       void
       GrainSizeEvolution<dim>::initialize_phase_function(std::shared_ptr<MaterialUtilities::PhaseFunction<dim>> &phase_function_)
@@ -315,8 +334,9 @@ namespace aspect
 
 
 
+      template <int dim>
       double
-      calculate_equilibrium_grain_size (const double temperature,
+      GrainSizeEvolution<dim>::calculate_equilibrium_grain_size (const double temperature,
                                         const double pressure,
                                         const double stress_invariant,
                                         const double dislocation_strain_rate_invariant,
@@ -629,7 +649,7 @@ namespace aspect
       template <int dim>
       void
       GrainSizeEvolution<dim>::fill_additional_outputs (const typename MaterialModel::MaterialModelInputs<dim> &in,
-                                                        const typename MaterialModel::MaterialModelOutputs<dim> &/*out*/,
+                                                        const typename MaterialModel::MaterialModelOutputs<dim> &out,
                                                         const std::vector<unsigned int> &phase_indices,
                                                         const std::vector<double> &dislocation_strain_rate_fraction,
                                                         std::vector<std::unique_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const
@@ -663,7 +683,7 @@ namespace aspect
                     {
                       equilibrium_grain_size_out->output_values[0][i] = calculate_equilibrium_grain_size(in.temperature[i],
                                                                                                          in.pressure[i],
-                                                                                                         stress_invariant,
+                                                                                                         out.viscosities[i],
                                                                                                          dislocation_strain_rate_fraction[i],
                                                                                                          phase_indices[i]);
                     }
