@@ -81,22 +81,22 @@ namespace aspect
 
 
 
-    template <int dim>
-    EquilibriumGrainSizeOutputs<dim>::EquilibriumGrainSizeOutputs (const unsigned int n_points)
-      :
-      MaterialModel::NamedAdditionalMaterialOutputs<dim>({"equilibrium_grain_size"}, n_points)
-    {}
+      template <int dim>
+      EquilibriumGrainSizeOutputs<dim>::EquilibriumGrainSizeOutputs (const unsigned int n_points)
+        :
+        MaterialModel::NamedAdditionalMaterialOutputs<dim>({"equilibrium_grain_size"}, n_points)
+      {}
 
 
 
-    template <int dim>
-    std::vector<double>
-    EquilibriumGrainSizeOutputs<dim>::get_nth_output(const unsigned int idx) const
-    {
-      (void) idx;
-      AssertIndexRange (idx, 1);
-      return this->output_values[0];
-    }
+      template <int dim>
+      std::vector<double>
+      EquilibriumGrainSizeOutputs<dim>::get_nth_output(const unsigned int idx) const
+      {
+        (void) idx;
+        AssertIndexRange (idx, 1);
+        return this->output_values[0];
+      }
 
 
 
@@ -337,13 +337,16 @@ namespace aspect
       template <int dim>
       double
       GrainSizeEvolution<dim>::calculate_equilibrium_grain_size (const double temperature,
-                                        const double pressure,
-                                        const double stress_invariant,
-                                        const double dislocation_strain_rate_invariant,
-                                        const unsigned int phase_index) const
+                                                                 const double pressure,
+                                                                 const double stress_invariant,
+                                                                 const double dislocation_strain_rate_invariant,
+                                                                 const unsigned int phase_index) const
       {
+        // The factor 2 in front of the stress invariant may seem surprising, but compare eq. (S25-28) in
+        // Dannberg et al., 2017, https://doi.org/10.1002/2017GC006944, the additional factor is introduced
+        // when replacing the full tensor product with the product of the second invariants.
         const double stress_prefactor = geometric_constant[phase_index] * grain_boundary_energy[phase_index] * grain_growth_rate_constant[phase_index]
-                                        / (boundary_area_change_work_fraction[phase_index] * stress_invariant * dislocation_strain_rate_invariant * grain_growth_exponent[phase_index]);
+                                        / (boundary_area_change_work_fraction[phase_index] * 2.0 * stress_invariant * dislocation_strain_rate_invariant * grain_growth_exponent[phase_index]);
 
         const double grain_growth_exponential_term = std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
                                                               / (constants::gas_constant * temperature));
@@ -636,7 +639,8 @@ namespace aspect
           }
 
         // Compute the equilibrium grain size for each point if we support it.
-        if (out.template get_additional_output<EquilibriumGrainSizeOutputs<dim>>() == nullptr)
+        if (grain_size_evolution_formulation == Formulation::paleowattmeter &&
+            out.template get_additional_output<EquilibriumGrainSizeOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
@@ -651,47 +655,59 @@ namespace aspect
       GrainSizeEvolution<dim>::fill_additional_outputs (const typename MaterialModel::MaterialModelInputs<dim> &in,
                                                         const typename MaterialModel::MaterialModelOutputs<dim> &out,
                                                         const std::vector<unsigned int> &phase_indices,
-                                                        const std::vector<double> &dislocation_strain_rate_fraction,
+                                                        const std::vector<double> &dislocation_strain_rate_invariant,
                                                         std::vector<std::unique_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const
       {
         for (auto &additional_output: additional_outputs)
-        {
-          if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out = dynamic_cast<HeatingModel::ShearHeatingOutputs<dim> *>(additional_output.get()))
-            {
-              for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
-                {
-                  if (grain_size_evolution_formulation == Formulation::paleowattmeter)
-                    {
-                      const double f = boundary_area_change_work_fraction[phase_indices[i]];
-                      shear_heating_out->shear_heating_work_fractions[i] = 1. - f * dislocation_strain_rate_fraction[i];
-                    }
-                  else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
-                    {
-                      const double f = compute_partitioning_fraction(in.temperature[i]);
-                      shear_heating_out->shear_heating_work_fractions[i] = 1. - f;
-                    }
-                  else
-                    AssertThrow(false, ExcNotImplemented());
-                }
-            }
+          {
+            if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out = dynamic_cast<HeatingModel::ShearHeatingOutputs<dim> *>(additional_output.get()))
+              {
+                for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+                  {
+                    if (grain_size_evolution_formulation == Formulation::paleowattmeter)
+                      {
+                        const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i] - 1./3 * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
+                        const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
+                        const double f = boundary_area_change_work_fraction[phase_indices[i]];
+                        if (second_strain_rate_invariant > std::numeric_limits<double>::min() * 1e3)
+                          shear_heating_out->shear_heating_work_fractions[i] = 1. - f * dislocation_strain_rate_invariant[i] / second_strain_rate_invariant;
+                        else
+                          shear_heating_out->shear_heating_work_fractions[i] = 1.;
+                      }
+                    else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
+                      {
+                        const double f = compute_partitioning_fraction(in.temperature[i]);
+                        shear_heating_out->shear_heating_work_fractions[i] = 1. - f;
+                      }
+                    else
+                      AssertThrow(false, ExcNotImplemented());
+                  }
+              }
 
-          if (EquilibriumGrainSizeOutputs<dim> *equilibrium_grain_size_out = dynamic_cast<EquilibriumGrainSizeOutputs<dim> *>(additional_output.get()))
-            {
-              for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
-                {
-                  if (grain_size_evolution_formulation == Formulation::paleowattmeter)
-                    {
-                      equilibrium_grain_size_out->output_values[0][i] = calculate_equilibrium_grain_size(in.temperature[i],
-                                                                                                         in.pressure[i],
-                                                                                                         out.viscosities[i],
-                                                                                                         dislocation_strain_rate_fraction[i],
-                                                                                                         phase_indices[i]);
-                    }
-                  else
-                    AssertThrow(false, ExcMessage("The equilibrium grain size output is not supported for the current grain size evolution formulation."));
-                }
-            }
-        }
+            if (EquilibriumGrainSizeOutputs<dim> *equilibrium_grain_size_out = dynamic_cast<EquilibriumGrainSizeOutputs<dim> *>(additional_output.get()))
+              {
+                for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+                  {
+                    if (grain_size_evolution_formulation == Formulation::paleowattmeter)
+                      {
+                        const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i] - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
+                        const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
+                        if (second_strain_rate_invariant > std::numeric_limits<double>::min() * 1e3)
+                          {
+                            equilibrium_grain_size_out->output_values[0][i] = calculate_equilibrium_grain_size(in.temperature[i],
+                                                                              in.pressure[i],
+                                                                              2.0 * out.viscosities[i] * second_strain_rate_invariant,
+                                                                              dislocation_strain_rate_invariant[i],
+                                                                              phase_indices[i]);
+                          }
+                        else
+                          equilibrium_grain_size_out->output_values[0][i] = std::numeric_limits<double>::max();
+                      }
+                    else
+                      AssertThrow(false, ExcMessage("The equilibrium grain size output is not supported for the current grain size evolution formulation."));
+                  }
+              }
+          }
       }
     }
   }

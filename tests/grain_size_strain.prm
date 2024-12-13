@@ -4,13 +4,15 @@
 # Over time the model maintains nearly constant temperatures, pressures and
 # strain rates. The grain size in the test approaches the equilibrium
 # grain size for t -> infinity. At 4 Myr the grain size is
-# 9.35850647e-04 m, which is close to the equilibrium value.
+# 9.359069e-04 m, which is essentially identical to the analytical equilibrium value of
+# 9.35907e-04 m.
 
 set Dimension                              = 2
 set End time                               = 4e6
 set Use years in output instead of seconds = true
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1600
+set CFL number                             = 5
 
 subsection Geometry model
   set Model name = box
@@ -121,10 +123,16 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 4
+  set Initial global refinement          = 1
   set Time steps between mesh refinement = 0
 end
 
 subsection Postprocess
-  set List of postprocessors = composition statistics, temperature statistics, velocity statistics, ODE statistics
+  set List of postprocessors = composition statistics, temperature statistics, velocity statistics, ODE statistics, visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = named additional outputs
+    set Time between graphical output = 4e6
+  end
 end

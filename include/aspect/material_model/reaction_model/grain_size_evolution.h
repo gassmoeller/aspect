@@ -230,7 +230,7 @@ namespace aspect
           *
           * The equation for the equilibrium grain size is given by eq(7) in
           * Dannberg et al., 2017, https://doi.org/10.1002/2017GC006944.
-          * 
+          *
           * This function is only implemented for the paleowattmeter formulation.
           */
           double
