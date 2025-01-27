@@ -43,7 +43,7 @@ namespace aspect
         const double OlivineDry_LatTC_b1 =    2.146900000;
         const double OlivineDry_LatTC_ymin =  1.280933845;
         const double OlivineDry_LatTC_ymax =  2.607263820;
-        const double OlivineDry_TDep_n_Exp = -0.5;      
+        const double OlivineDry_TDep_n_Exp =  0.5;      
         // Coefficients for orthopyroxene (enstatite)
         // const double OpxEnstati_LatTC_a0 =   -3.004700000;
         // const double OpxEnstati_LatTC_b1 =    2.600000000;
@@ -80,8 +80,11 @@ namespace aspect
         const unsigned int n_points = in.n_evaluation_points();
         for (unsigned int i = 0; i < n_points; ++i) 
         {
+            // Convert pressure unit from [Pa] to [GPa]
+            double P_GPa = in.pressure[i]/1e9;
+
             // Compute natural logarithm of pressure and temperature 
-            double P_log = std::log(in.pressure[i]);
+            double P_log = std::log(P_GPa);
             double T_log = std::log(in.temperature[i]);
 
             // Take the temperature field of the model [K]
@@ -168,7 +171,9 @@ namespace aspect
             // double AggRock_PTDep_RadTCo = std::pow(OlivineDry_TDep_RadTCon,OlivineDry_fraction)*std::pow(OpxEnstati_TDep_RadTCon,OpxEnstati_fraction)*std::pow(GrtPyropes_TDep_RadTCon,GrtPyropes_fraction);
             // double AggRock_PTDep_TotTCo = AggRock_PTDep_LatTCo+AggRock_PTDep_RadTCo;
 
-            out.thermal_conductivities[i] = OlivineDry_PTDep_TotTCo;
+            // out.lat_thermal_conductivi[i] = OlivineDry_PTDep_LatTCo;
+            // out.rad_thermal_conductivi[i] = OlivineDry_TDep_RadTCon;
+            out.thermal_conductivities[i] = OlivineDry_PTDep_LatTCo;
     
         }
       } 
