@@ -235,9 +235,6 @@ void validate_shared_lib_list (const bool before_loading_shared_libs)
 // dlopen them so that we can load plugins declared in them
 void possibly_load_shared_libs (const std::string &parameters)
 {
-  using namespace dealii;
-
-
   const std::string shared_libs
     = get_last_value_of_parameter(parameters,
                                   "Additional shared libraries");
@@ -364,8 +361,6 @@ std::string
 read_parameter_file(const std::string &parameter_file_name,
                     MPI_Comm comm)
 {
-  using namespace dealii;
-
   std::string input_as_string;
   const bool i_am_proc_0 = (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0);
 
@@ -594,8 +589,6 @@ run_simulator(const std::string &raw_input_as_string,
               const bool output_plugin_graph,
               const bool validate_only)
 {
-  using namespace dealii;
-
   ParameterHandler prm;
   const bool i_am_proc_0 = (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0);
   aspect::Simulator<dim>::declare_parameters(prm);
@@ -683,8 +676,6 @@ run_simulator(const std::string &raw_input_as_string,
 
 int main (int argc, char *argv[])
 {
-  using namespace dealii;
-
 #ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
   // Some implementations seem to not initialize the floating point exception

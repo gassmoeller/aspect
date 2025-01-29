@@ -33,7 +33,6 @@
 
 namespace
 {
-  using namespace dealii;
   using namespace aspect;
 
   template <int dim>

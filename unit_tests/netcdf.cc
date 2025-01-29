@@ -25,8 +25,6 @@
 
 TEST_CASE("Utilities::load_netcdf-1d")
 {
-  using namespace dealii;
-
   aspect::Utilities::StructuredDataLookup<1> lookup(1.0 /*scaling*/);
   lookup.load_netcdf(ASPECT_SOURCE_DIR "/data/test/netcdf/PREM_1s_depth.nc");
 
@@ -40,8 +38,6 @@ TEST_CASE("Utilities::load_netcdf-1d")
 
 TEST_CASE("Utilities::load_netcdf-1d-column-names")
 {
-  using namespace dealii;
-
   aspect::Utilities::StructuredDataLookup<1> lookup(1.0 /*scaling*/);
   lookup.load_netcdf(ASPECT_SOURCE_DIR "/data/test/netcdf/PREM_1s_depth.nc",
                      std::vector<std::string> {"vpv","radius"});
@@ -56,8 +52,6 @@ TEST_CASE("Utilities::load_netcdf-1d-column-names")
 
 TEST_CASE("Utilities::load_netcdf-3d")
 {
-  using namespace dealii;
-
   aspect::Utilities::StructuredDataLookup<3> lookup(1.0 /*scaling*/);
   lookup.load_netcdf(ASPECT_SOURCE_DIR "/data/test/netcdf/test-3d-cartesian.nc");
 
@@ -71,8 +65,6 @@ TEST_CASE("Utilities::load_netcdf-3d")
 
 TEST_CASE("Utilities::load_netcdf-3d-spherical")
 {
-  using namespace dealii;
-
   aspect::Utilities::StructuredDataLookup<3> lookup(1.0 /*scaling*/);
   lookup.load_netcdf(ASPECT_SOURCE_DIR "/data/test/netcdf/test-3d-spherical.nc");
 
@@ -85,8 +77,6 @@ TEST_CASE("Utilities::load_netcdf-3d-spherical")
 
 TEST_CASE("Utilities::load_netcdf-3d-column-names")
 {
-  using namespace dealii;
-
   aspect::Utilities::StructuredDataLookup<3> lookup(1.0 /*scaling*/);
   lookup.load_netcdf(ASPECT_SOURCE_DIR "/data/test/netcdf/test-3d-cartesian.nc",
                      std::vector<std::string> {"index"});

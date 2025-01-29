@@ -38,8 +38,6 @@ TEST_CASE("Utilities::weighted_p_norm_average")
 
 TEST_CASE("Utilities::AsciiDataLookup")
 {
-  using namespace dealii;
-
   //TODO: add support for setting data directly instead of relying on a file to load:
   aspect::Utilities::StructuredDataLookup<1> lookup(2 /*n_components*/, 1.0 /*scaling*/);
   const std::string data_filename = aspect::Utilities::expand_ASPECT_SOURCE_DIR("$ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_left.0.txt");
@@ -59,8 +57,6 @@ TEST_CASE("Utilities::AsciiDataLookup")
 
 TEST_CASE("Utilities::AsciiDataLookup manual dim=1")
 {
-  using namespace dealii;
-
   aspect::Utilities::StructuredDataLookup<1> lookup(2 /*n_components*/, 1.0 /*scaling*/);
 
   std::vector<std::string> column_names = {"a", "b"};
@@ -90,8 +86,6 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=1")
 
 TEST_CASE("Utilities::AsciiDataLookup manual dim=2")
 {
-  using namespace dealii;
-
   aspect::Utilities::StructuredDataLookup<2> lookup(1 /*n_components*/, 1.0 /*scaling*/);
 
   std::vector<std::string> column_names = {"topography"};
@@ -122,8 +116,6 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=2")
 
 TEST_CASE("Utilities::AsciiDataLookup manual dim=2 equid")
 {
-  using namespace dealii;
-
   aspect::Utilities::StructuredDataLookup<2> lookup(1 /*n_components*/, 1.0 /*scaling*/);
 
   std::vector<std::string> column_names = {"topography"};

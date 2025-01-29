@@ -167,7 +167,6 @@ TEST_CASE("CPO core: Store and Load")
   cpo.set_volume_fraction_mineral(cpo_data_position,data,0,0.7);
   cpo.set_volume_fraction_mineral(cpo_data_position,data,1,0.3);
 
-  using namespace dealii;
   Tensor<2,3> rotation_matrix;
   rotation_matrix[TableIndices<2>(0,0)] = 0;
   rotation_matrix[TableIndices<2>(0,1)] = 1./1000.;
@@ -302,7 +301,6 @@ TEST_CASE("CPO core: Store and Load")
 
 TEST_CASE("CPO core: Spin tensor")
 {
-  using namespace dealii;
   using namespace aspect;
 
   {
@@ -608,7 +606,6 @@ TEST_CASE("Fabric determination function")
 
 TEST_CASE("CPO")
 {
-  using namespace dealii;
   using namespace aspect;
 
   {
@@ -1128,7 +1125,6 @@ TEST_CASE("CPO elastic tensor")
   // All these numbers are directly from the Fortran D-Rex
   // Had to fix the random seed to get consistent results.
   // Fixed the random set to an array filled with zeros.
-  using namespace dealii;
   Tensor<2,3> rotation_matrix;
   rotation_matrix[TableIndices<2>(0,0)] = -0.87492387659370430;
   rotation_matrix[TableIndices<2>(0,1)] = -0.47600252255715020;
@@ -1460,7 +1456,6 @@ TEST_CASE("CPO elastic tensor")
 
 TEST_CASE("LPO elastic tensor decomposition")
 {
-  using namespace dealii;
   using namespace aspect::Particle::Property;
   using namespace aspect::Particle::Property::Utilities;
   {
