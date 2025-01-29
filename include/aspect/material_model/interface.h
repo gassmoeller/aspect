@@ -42,7 +42,6 @@ namespace aspect
   template <int dim>
   struct Introspection;
 
-
   /**
    * A namespace in which we define everything that has to do with modeling
    * convecting material, including descriptions of material parameters such
@@ -52,8 +51,6 @@ namespace aspect
    */
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A namespace whose enum members are used in querying the nonlinear
      * dependence of physical parameters on other solution variables.

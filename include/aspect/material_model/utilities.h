@@ -33,16 +33,14 @@ namespace aspect
   template <int dim> class SimulatorAccess;
   namespace Utilities
   {
-    using namespace dealii;
     using namespace dealii::Utilities;
 
     template <int dim>
     class StructuredDataLookup;
   }
+
   namespace MaterialModel
   {
-    using namespace dealii;
-
     template <int dim> class MaterialModelOutputs;
     template <int dim> struct EquationOfStateOutputs;
 

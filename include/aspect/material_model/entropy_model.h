@@ -35,7 +35,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
     /**
      * A material model that is designed to use pressure and entropy (rather
      * than pressure and temperature) as independent variables. It will look up

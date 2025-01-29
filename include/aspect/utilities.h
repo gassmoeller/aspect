@@ -53,9 +53,7 @@ namespace aspect
    */
   namespace Utilities
   {
-    using namespace dealii;
     using namespace dealii::Utilities;
-
 
     /**
      * Given an array @p values, consider three cases:
@@ -1208,7 +1206,6 @@ namespace aspect
 {
   namespace Utilities
   {
-
     template <typename T>
     inline
     std::vector<T>

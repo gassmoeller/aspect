@@ -46,8 +46,6 @@ namespace aspect
 
   namespace Plugins
   {
-    using namespace dealii;
-
     /**
      * This function returns if a given plugin (e.g. a material model returned
      * from SimulatorAccess::get_material_model() ) matches a certain plugin
@@ -114,7 +112,7 @@ namespace aspect
 
   namespace Plugins
   {
-    using namespace dealii;
+    
 
 
     /**
@@ -426,7 +424,7 @@ namespace aspect
      */
     namespace Plugins
     {
-      using namespace dealii;
+      
 
 
 

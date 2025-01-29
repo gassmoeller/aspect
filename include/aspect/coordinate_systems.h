@@ -25,6 +25,8 @@ namespace aspect
 {
   namespace Utilities
   {
+    using namespace dealii::Utilities;
+
     namespace Coordinates
     {
       /**

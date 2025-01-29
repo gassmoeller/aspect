@@ -32,11 +32,8 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     namespace Rheology
     {
-
       template <int dim>
       class DruckerPragerPower : public ::aspect::SimulatorAccess<dim>
       {

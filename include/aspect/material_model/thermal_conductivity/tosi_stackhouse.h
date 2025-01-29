@@ -30,8 +30,6 @@ namespace aspect
   {
     namespace ThermalConductivity
     {
-      using namespace dealii;
-
       /**
        * A class that implements a pressure and temperature-dependent thermal conductivity
        * following the formulation of

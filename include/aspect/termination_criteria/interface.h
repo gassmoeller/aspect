@@ -32,10 +32,7 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   template <int dim> class Simulator;
-
 
   /**
    * A namespace for everything to do with determining criteria for

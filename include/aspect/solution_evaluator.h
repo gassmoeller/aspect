@@ -22,8 +22,6 @@
 #define _aspect_solution_evaluator_h
 
 #include <aspect/global.h>
-
-
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/array_view.h>
@@ -33,8 +31,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   namespace internal
   {
     /**

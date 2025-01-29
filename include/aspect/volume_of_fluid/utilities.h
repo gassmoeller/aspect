@@ -31,7 +31,7 @@ namespace aspect
   {
     namespace Utilities
     {
-      using namespace dealii;
+      using namespace dealii::Utilities;
 
       /**
        * Function to calculate volume fraction contained by indicator function

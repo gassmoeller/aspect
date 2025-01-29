@@ -43,6 +43,12 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 namespace aspect
 {
   /**
+   * Make sure we can use deal.II classes and names in all of ASPECT
+   * without prefixing them with `dealii::`.
+   */
+  using namespace dealii;
+
+  /**
    * The following are a set of global constants which may be used by ASPECT:
    * (for sources of data and values used by ASPECT, see source/global.cc)
    */

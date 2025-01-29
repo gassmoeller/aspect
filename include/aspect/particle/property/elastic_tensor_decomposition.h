@@ -28,6 +28,9 @@ namespace aspect
     {
       namespace Utilities
       {
+        
+        using namespace dealii::Utilities;
+
         /**
          * Return an even permutation based on an index. This is an internal
          * utilities function, also used by the unit tester.
