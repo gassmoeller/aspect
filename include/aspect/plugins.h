@@ -112,7 +112,7 @@ namespace aspect
 
   namespace Plugins
   {
-    
+
 
 
     /**
@@ -424,7 +424,7 @@ namespace aspect
      */
     namespace Plugins
     {
-      
+
 
 
 
