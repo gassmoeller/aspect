@@ -43,7 +43,13 @@ namespace aspect
         const double OlivineDry_LatTC_b1 =    2.146900000;
         const double OlivineDry_LatTC_ymin =  1.280933845;
         const double OlivineDry_LatTC_ymax =  2.607263820;
-        const double OlivineDry_TDep_n_Exp =  0.5;      
+        const double OlivineDry_TDep_n_Exp =  0.5;  
+        // Coefficients for dry wadsleyite
+        // const double WadsleyDry_LatTC_a0 =   -0.665600000;
+        // const double WadsleyDry_LatTC_b1 =    0.308200000;
+        // const double WadsleyDry_LatTC_ymin =  1.757358042;
+        // const double WadsleyDry_LatTC_ymax =  2.370904515;
+        // const double WadsleyDry_TDep_n_Exp =  0.5;  
         // Coefficients for orthopyroxene (enstatite)
         // const double OpxEnstati_LatTC_a0 =   -3.004700000;
         // const double OpxEnstati_LatTC_b1 =    2.600000000;
@@ -63,6 +69,11 @@ namespace aspect
         const double OlivineDry_RadTC_d1 =    1.883900000;
         const double OlivineDry_RadTC_jmin = -23.02585093;
         const double OlivineDry_RadTC_jmax =  1.289885976;
+        // Coefficients for dry wadsleyite
+        // const double WadsleyDry_RadTC_a0 =   -21.717000000;
+        // const double WadsleyDry_RadTC_b1 =    3.4271000000;
+        // const double WadsleyDry_RadTC_ymin = -23.025850930;
+        // const double WadsleyDry_RadTC_ymax =  1.0773006810; 
         // Coefficients for orthopyroxene (enstatite)
         // const double OpxEnstati_RadTC_c0 =   -13.532000000;
         // const double OpxEnstati_RadTC_d1 =    2.4004000000;
