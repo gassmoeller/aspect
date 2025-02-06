@@ -32,11 +32,6 @@ namespace aspect
                                MaterialModel::MaterialModelOutputs<dim> &out) const
       {
 
-        // Define volume fractions of minerals 
-        const double OlivineDry_fraction   =  1.0;
-        // const double OpxEnstati_fraction   =  0.2;
-        // const double GrtPyropes_fraction   =  0.2;
-
         // Define coefficients for lattice thermal conductivity for different minerals 
         // Coefficients for dry olivine
         const double OlivineDry_LatTC_a0 =   -4.124100000;
@@ -167,13 +162,15 @@ namespace aspect
             // double GrtPyropes_PTDep_TotTCo = GrtPyropes_PTDep_LatTCo+GrtPyropes_TDep_RadTCon;
 
             // Compute P,T-dependent thermal conductivities of aggregate rocks 
-            // double AggRock_PTDep_LatTCo = std::pow(OlivineDry_PTDep_LatTCo,OlivineDry_fraction)*std::pow(OpxEnstati_PTDep_LatTCo,OpxEnstati_fraction)*std::pow(GrtPyropes_PTDep_LatTCo,GrtPyropes_fraction);
-            // double AggRock_PTDep_RadTCo = std::pow(OlivineDry_TDep_RadTCon,OlivineDry_fraction)*std::pow(OpxEnstati_TDep_RadTCon,OpxEnstati_fraction)*std::pow(GrtPyropes_TDep_RadTCon,GrtPyropes_fraction);
-            // double AggRock_PTDep_TotTCo = AggRock_PTDep_LatTCo+AggRock_PTDep_RadTCo;
+            // double AggRock_PTDep_LatTCo = std::pow(OlivineDry_PTDep_LatTCo,in.composition[0])*std::pow(OpxEnstati_PTDep_LatTCo,in.composition[0])*std::pow(GrtPyropes_PTDep_LatTCo,in.composition[0]);
+            // double AggRock_PTDep_RadTCo = std::pow(OlivineDry_TDep_RadTCon,in.composition[0])*std::pow(OpxEnstati_TDep_RadTCon,in.composition[0])*std::pow(GrtPyropes_TDep_RadTCon,in.composition[0]);
+            double AggRock_PTDep_LatTCo = std::pow(OlivineDry_PTDep_LatTCo,in.composition[0]);
+            double AggRock_PTDep_RadTCo = std::pow(OlivineDry_TDep_RadTCon,in.composition[0]);
+            double AggRock_PTDep_TotTCo = AggRock_PTDep_LatTCo+AggRock_PTDep_RadTCo;
 
             // out.lat_thermal_conductivi[i] = OlivineDry_PTDep_LatTCo;
             // out.rad_thermal_conductivi[i] = OlivineDry_TDep_RadTCon;
-            out.thermal_conductivities[i] = OlivineDry_PTDep_LatTCo;
+            out.thermal_conductivities[i] = AggRock_PTDep_TotTCo;
     
         }
       } 

@@ -40,9 +40,10 @@ TEST_CASE("Utilities::weighted_p_norm_average")
 TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
 {
   aspect::MaterialModel::ThermalConductivity::PTdepRbounded<3> model;
-  aspect::MaterialModel::MaterialModelInputs<3> in(1,0);
-  aspect::MaterialModel::MaterialModelOutputs<3> out(1,0);
+  aspect::MaterialModel::MaterialModelInputs<3> in(1,1);
+  aspect::MaterialModel::MaterialModelOutputs<3> out(1,1);
 
+  in.composition[0] = 1.0;
   in.temperature[0] = 1600;
   in.pressure[0] = 1e9;
 
@@ -52,7 +53,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
 
   INFO("Computed k is " << out.thermal_conductivities[0]);
 
-  REQUIRE(out.thermal_conductivities[0] == Approx(1.5872));
+  REQUIRE(out.thermal_conductivities[0] == Approx(3.818));
 
 }
 
