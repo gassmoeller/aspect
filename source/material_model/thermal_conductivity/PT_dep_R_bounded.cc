@@ -58,6 +58,11 @@ namespace aspect
         const double OlivineDry_RadTC_d1 =    1.883900000;
         const double OlivineDry_RadTC_jmin = -23.02585093;
         const double OlivineDry_RadTC_jmax =  1.289885976;
+        // Coefficients for dry wadsleyite
+        // const double WadsleyDry_RadTC_a0 =   -21.717000000;
+        // const double WadsleyDry_RadTC_b1 =    3.4271000000;
+        // const double WadsleyDry_RadTC_ymin = -23.025850930;
+        // const double WadsleyDry_RadTC_ymax =  1.0773006810; 
         // Coefficients for orthopyroxene (enstatite)
         // const double OpxEnstati_RadTC_c0 =   -13.532000000;
         // const double OpxEnstati_RadTC_d1 =    2.4004000000;
