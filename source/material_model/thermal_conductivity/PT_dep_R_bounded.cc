@@ -179,7 +179,7 @@ namespace aspect
 
           // out.lat_thermal_conductivi[i] = OlivineDry_PTDep_LatTCo;
           // out.rad_thermal_conductivi[i] = OlivineDry_TDep_RadTCon;
-          out.thermal_conductivities[i] = AggRock_PTDep_LatTCo;
+          out.thermal_conductivities[i] = AggRock_PTDep_TotTCo;
         }
       } 
     }

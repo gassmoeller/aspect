@@ -59,13 +59,35 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       {0.25, 0.25, 0.25, 0.25, 0.25}
   };
   
-  // Expected thermal conductivities (k) in [W/m/K]
-  std::vector<std::vector<double>> expected_conductivities = {
+  // Expected lattice thermal conductivities (k) in [W/m/K]
+  std::vector<std::vector<double>> expected_lattice_Tcond = {
       {3.58888, 1.58719, 2.36282, 3.67868, 4.25767},
       {2.60747, 1.41407, 1.90578, 2.65625, 2.96400},
       {1.89443, 1.25983, 1.53714, 1.91799, 2.06341},
       {1.37638, 1.12242, 1.23981, 1.38491, 1.43645}
   };
+
+  // Expected radiative thermal conductivities (k) in [W/m/K]
+  std::vector<std::vector<double>> expected_radiative_Tcond = {
+      {0.00138288, 2.23152, 2.34978, 2.45486, 3.12273},
+      {0.00717114, 1.82579, 1.89789, 1.96119, 2.34909},
+      {0.03718709, 1.49382, 1.53290, 1.56680, 1.76712},
+      {0.19283955, 1.22222, 1.23810, 1.25171, 1.32933}
+  };
+
+  // Initialize the result matrix with the same dimensions
+  std::vector<std::vector<double>> expected_total_Tcond(expected_lattice_Tcond.size(), std::vector<double>(expected_lattice_Tcond[0].size()));
+
+  // Perform element-wise sum
+  for (size_t i = 0; i < expected_lattice_Tcond.size(); ++i)
+  {
+    for (size_t j = 0; j < expected_lattice_Tcond[i].size(); ++j)
+    {
+        expected_total_Tcond[i][j] = expected_lattice_Tcond[i][j] + expected_radiative_Tcond[i][j];
+    }
+  }
+
+  std::vector<std::vector<double>> expected_conductivities = expected_total_Tcond;
 
   INFO("Checking thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X) values");
 
