@@ -40,22 +40,52 @@ TEST_CASE("Utilities::weighted_p_norm_average")
 TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
 {
   aspect::MaterialModel::ThermalConductivity::PTdepRbounded<3> model;
-  aspect::MaterialModel::MaterialModelInputs<3> in(1,1);
-  aspect::MaterialModel::MaterialModelOutputs<3> out(1,1);
+  aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
+  aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
 
-  in.composition[0] = 1.0;
-  in.temperature[0] = 1600;
-  in.pressure[0] = 1e9;
+  // Assigning an array of values to in.temperature (T) in [K]
+  std::vector<double> temperatures = {300, 1600, 1700, 1800, 3000};
+  in.temperature = temperatures;
 
-  INFO("Checking k for T=" << in.temperature[0] << ": ");
+  // Assigning an array of values to in.pressure (P) in [Pa]
+  std::vector<double> pressures = {1e5, 1e9, 5e9, 10e9, 100e9};
+  in.pressure = pressures;
 
-  model.evaluate(in, out);
+  // Assigning an array of values to in.composition (X) in [fraction]
+   std::vector<std::vector<double>> compositions = {
+      {1.00, 1.00, 1.00, 1.00, 1.00},
+      {0.75, 0.75, 0.75, 0.75, 0.75},
+      {0.50, 0.50, 0.50, 0.50, 0.50},
+      {0.25, 0.25, 0.25, 0.25, 0.25}
+  };
+  
+  // Expected thermal conductivities (k) in [W/m/K]
+  std::vector<std::vector<double>> expected_conductivities = {
+      {3.58888, 1.58719, 2.36282, 3.67868, 4.25767},
+      {2.60747, 1.41407, 1.90578, 2.65625, 2.96400},
+      {1.89443, 1.25983, 1.53714, 1.91799, 2.06341},
+      {1.37638, 1.12242, 1.23981, 1.38491, 1.43645}
+  };
 
-  INFO("Computed k is " << out.thermal_conductivities[0]);
+  INFO("Checking thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X) values");
 
-  REQUIRE(out.thermal_conductivities[0] == Approx(3.818));
+  // Loop over the different compositions
+  for (size_t row = 0; row < expected_conductivities.size(); ++row)
+  {
+    in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
+    model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+
+    // Loop over the different combinations of pressures (P) and temperatures (T)
+    for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+    {
+      INFO("Computed k for T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
+      // Compare the computed thermal conductivity with the expected value
+      REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+    }
+  }
 
 }
+
 
 TEST_CASE("Utilities::AsciiDataLookup")
 {
