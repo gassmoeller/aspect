@@ -33,19 +33,31 @@ namespace aspect
       {
 
         // Define coefficients for lattice thermal conductivity for different minerals 
-        // Coefficients for dry olivine
+
+        // Coefficients for dry olivine 
+        // retreived from fitting TDTR dataset of
+        // [Chang et al., 2018, PNAS, vol 114, p. 4078-4081]
+        // mineral composition [Mg1.8 Fe0.2 SiO4]
         const double OlivineDry_LatTC_a0 =   -4.124100000;
         const double OlivineDry_LatTC_b1 =    2.146900000;
         const double OlivineDry_LatTC_ymin =  1.28093384543429;
         const double OlivineDry_LatTC_ymax =  2.60726381956037;
         const double OlivineDry_TDep_n_Exp =  0.5;      
+
         // Coefficients for orthopyroxene (enstatite)
+        // retreived from fitting dataset of 
+        // [Schloessin & Dvorak, 1972, GJI, 27(5), 499-516]
+        // mineral composition [Mg2Si2O6]
         // const double OpxEnstati_LatTC_a0 =   -3.004700000;
         // const double OpxEnstati_LatTC_b1 =    2.600000000;
         // const double OpxEnstati_LatTC_ymin =  1.760865151; 
         // const double OpxEnstati_LatTC_ymax =  2.096937429;
         // const double OpxEnstati_TDep_n_Exp = -0.5;
+
         // Coefficients for garnet (pyrope)
+        // retreived from fitting dataset of
+        // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
+        // mineral composition [Mg3Al2Si3O12]
         // const double GrtPyropes_LatTC_a0 =   -4.363700000;
         // const double GrtPyropes_LatTC_b1 =    2.036800000;
         // const double GrtPyropes_LatTC_ymin =  1.481604541; 
@@ -53,22 +65,35 @@ namespace aspect
         // const double GrtPyropes_TDep_n_Exp = -0.4314;
 
         // Define coefficients for radiative thermal conductivity of different minerals
+
         // Coefficients for dry olivine
+        // retreived from fitting dataset of
+        // [Marzotto et al. 2025, Nature Communication, under review]
+        // mineral composition [Mg1.8 Fe0.2 SiO4]
         const double OlivineDry_RadTC_c0 =   -10.00900000;
         const double OlivineDry_RadTC_d1 =    1.883900000;
         const double OlivineDry_RadTC_jmin = -23.02585093;
         const double OlivineDry_RadTC_jmax =  1.289885976;
+
         // Coefficients for dry wadsleyite
         // const double WadsleyDry_RadTC_a0 =   -21.717000000;
         // const double WadsleyDry_RadTC_b1 =    3.4271000000;
         // const double WadsleyDry_RadTC_ymin = -23.025850930;
         // const double WadsleyDry_RadTC_ymax =  1.0773006810; 
+
         // Coefficients for orthopyroxene (enstatite)
+        // retreived from fitting dataset of
+        // [Grose & Afonso, 2019, Journal of Petrology, vol. 60(4), p. 755-790]
+        // mineral composition [Mg2Si2O6]
         // const double OpxEnstati_RadTC_c0 =   -13.532000000;
         // const double OpxEnstati_RadTC_d1 =    2.4004000000;
         // const double OpxEnstati_RadTC_jmin = -23.025850930; 
         // const double OpxEnstati_RadTC_jmax =  1.4456685920;
+
         // Coefficients for garnet (pyrope)
+        // retreived from fitting dataset of
+        // [Grose & Afonso, 2019, Journal of Petrology, vol. 60(4), p. 755-790]
+        // mineral composition [Mg3Al2(SiO4)3]
         // const double GrtPyropes_RadTC_c0 =   -11.782000000;
         // const double GrtPyropes_RadTC_d1 =    2.0718000000;
         // const double GrtPyropes_RadTC_jmin = -23.025850930; 
