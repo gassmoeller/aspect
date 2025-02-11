@@ -42,7 +42,17 @@ namespace aspect
         const double OlivineDry_LatTC_b1 =    2.146900000;
         const double OlivineDry_LatTC_ymin =  1.28093384543429;
         const double OlivineDry_LatTC_ymax =  2.60726381956037;
-        const double OlivineDry_TDep_n_Exp =  0.5;      
+        const double OlivineDry_TDep_n_Exp =  0.5;     
+        
+        // Coefficients for dry wadsleyite
+        // retreived from fitting dataset of
+        // [Xu et al., 2004, PEPI, vol 143, pp. 321-336]
+        // mineral composition [(Mg1.8Fe0.2)SiO4]
+        // const double WadsleyDry_LatTC_a0 =  -0.665600000;
+        // const double WadsleyDry_LatTC_b1 =   0.308200000;
+        // const double WadsleyDry_LatTC_ymin = 1.75735804249439;
+        // const double WadsleyDry_LatTC_ymax = 2.37090451537473; 
+        // const double WadsleyDry_TDep_n_Exp =  0.5; 
 
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of 
@@ -76,6 +86,9 @@ namespace aspect
         const double OlivineDry_RadTC_jmax =  1.289885976;
 
         // Coefficients for dry wadsleyite
+        // retreived from fitting dataset of
+        // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
+        // mineral composition [Mg1.8 Fe0.2 SiO4]
         // const double WadsleyDry_RadTC_a0 =   -21.717000000;
         // const double WadsleyDry_RadTC_b1 =    3.4271000000;
         // const double WadsleyDry_RadTC_ymin = -23.025850930;
