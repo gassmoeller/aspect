@@ -48,32 +48,118 @@ namespace aspect
         // Coefficients for dry wadsleyite
         // retreived from fitting dataset of
         // [Xu et al., 2004, PEPI, vol 143, pp. 321-336]
+        // https://doi.org/10.1016/j.pepi.2004.03.005
         // mineral composition [(Mg1.8Fe0.2)SiO4]
         // const double WadsleyDry_LatTC_a0 =  -0.665600000;
         // const double WadsleyDry_LatTC_b1 =   0.308200000;
         // const double WadsleyDry_LatTC_ymin = 1.75735804249439;
         // const double WadsleyDry_LatTC_ymax = 2.37090451537473; 
-        // const double WadsleyDry_TDep_n_Exp =  0.5; 
+        // const double WadsleyDry_TDep_n_Exp = 0.5; 
 
+        // Coefficients for dry ringwoodite
+        // retreived from fitting dataset of
+        // [Marzotto et al., 2020, GRL, vol 47, issue 13]
+        // https://doi.org/10.1029/2020GL087607
+        // mineral composition [(Mg1.79Fe0.17)Si1.02O4]
+        // const double RingwooDry_LatTC_a0 =  -5.462400000;
+        // const double RingwooDry_LatTC_b1 =   2.079100000;
+        // const double RingwooDry_LatTC_ymin = 1.60943791241410;
+        // const double RingwooDry_LatTC_ymax = 2.94939766245070; 
+        // const double RingwooDry_TDep_n_Exp = 0.5; 
+
+        // Coefficients for Mg-bridgmanite
+        // retreived from fitting dataset of
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [MgSiO3]
+        // const double En100Brigm_LatTC_a0 =  -4.368700000;
+        // const double En100Brigm_LatTC_b1 =   1.076600000; 
+        // const double En100Brigm_LatTC_ymin = 2.376025820; 
+        // const double En100Brigm_LatTC_ymax = 5.010635294;  
+        // const double En100Brigm_TDep_n_Exp = 1.01000;
+
+        // Coefficients for Fe-bridgmanite (3%)
+        // retreived from fitting dataset of
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [Fe0.03Mg0.97SiO3]
+        // const double En97Brigma_LatTC_a0 =  -4.520600000;
+        // const double En97Brigma_LatTC_b1 =   1.019900000; 
+        // const double En97Brigma_LatTC_ymin = 1.750524121; 
+        // const double En97Brigma_LatTC_ymax = 4.499809670;  
+        // const double En97Brigma_TDep_n_Exp = 0.56605;
+
+        // Coefficients for Fe-bridgmanite (10%)
+        // retreived from fitting dataset of
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [Fe0.1Mg0.9SiO3]
+        // const double En90Brigma_LatTC_a0 =  -4.883100000;
+        // const double En90Brigma_LatTC_b1 =   0.980900000; 
+        // const double En90Brigma_LatTC_ymin = 1.333739493; 
+        // const double En90Brigma_LatTC_ymax = 4.382026635;  
+        // const double En90Brigma_TDep_n_Exp = 0.17054;
+
+        // Coefficients for Al-bridgmanite
+        // retreived from fitting dataset of
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [(Al,Mg)SiO3]
+        // const double En90Brigma_LatTC_a0 =  -4.331500000;
+        // const double En90Brigma_LatTC_b1 =   1.027000000; 
+        // const double En90Brigma_LatTC_ymin = 1.845020046; 
+        // const double En90Brigma_LatTC_ymax = 4.605170186;  
+        // const double En90Brigma_TDep_n_Exp = 0.61983;
+
+        // Coefficients for Fe,Al-bridgmanite
+        // retreived from fitting dataset of
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [(Fe,Al,Mg)SiO3]
+        // const double En90Brigma_LatTC_a0 =  -4.510600000;
+        // const double En90Brigma_LatTC_b1 =   1.066800000; 
+        // const double En90Brigma_LatTC_ymin = 1.389093953; 
+        // const double En90Brigma_LatTC_ymax = 3.912023005;  
+        // const double En90Brigma_TDep_n_Exp = 0.46815;
+         
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of 
         // [Schloessin & Dvorak, 1972, GJI, 27(5), 499-516]
+        // https://doi.org/10.1111/j.1365-246X.1972.tb06105.x
         // mineral composition [Mg2Si2O6]
         // const double OpxEnstati_LatTC_a0 =   -3.004700000;
         // const double OpxEnstati_LatTC_b1 =    2.600000000;
         // const double OpxEnstati_LatTC_ymin =  1.760865151; 
         // const double OpxEnstati_LatTC_ymax =  2.096937429;
-        // const double OpxEnstati_TDep_n_Exp = -0.5;
+        // const double OpxEnstati_TDep_n_Exp =  0.5;
+
+        // Coefficients for clinopyroxene (diopside)
+        // retreived from fitting dataset of 
+        // [Wang et al., 2014, JGR: Solid Earth, 119(8), 6277-6287]
+        // https://doi.org/10.1002/2014JB011208
+        // mineral composition [CaMgSi2O6]
+        // const double CpxDiopsid_LatTC_a0 =   -3.251100000;
+        // const double CpxDiopsid_LatTC_b1 =    1.689100000;
+        // const double CpxDiopsid_LatTC_ymin =  1.793640135; 
+        // const double CpxDiopsid_LatTC_ymax =  2.389462023;
+        // const double CpxDiopsid_TDep_n_Exp =  0.5;
 
         // Coefficients for garnet (pyrope)
         // retreived from fitting dataset of
         // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
+        // https://doi.org/10.2138/am-2023-8953
         // mineral composition [Mg3Al2Si3O12]
         // const double GrtPyropes_LatTC_a0 =   -4.363700000;
         // const double GrtPyropes_LatTC_b1 =    2.036800000;
         // const double GrtPyropes_LatTC_ymin =  1.481604541; 
         // const double GrtPyropes_LatTC_ymax =  2.443131606;
-        // const double GrtPyropes_TDep_n_Exp = -0.4314;
+        // const double GrtPyropes_TDep_n_Exp =  0.4314;
+
+        // Coefficients for garnet (grossular)
+        // retreived from fitting dataset of
+        // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
+        // https://doi.org/10.2138/am-2023-8953
+        // mineral composition [(Ca0.986Fe0.014)3Al2(SiO4)3]
+        // const double GrtGrossul_LatTC_a0 =  -4.7584;
+        // const double GrtGrossul_LatTC_b1 =   2.0816;
+        // const double GrtGrossul_LatTC_ymin = 1.410986974; 
+        // const double GrtGrossul_LatTC_ymax = 2.457625992;
+        // const double GrtGrossul_TDep_n_Exp = 0.4589;
 
         // Define coefficients for radiative thermal conductivity of different minerals
 
@@ -89,29 +175,62 @@ namespace aspect
         // Coefficients for dry wadsleyite
         // retreived from fitting dataset of
         // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
+        // https://doi.org/10.1016/j.epsl.2012.09.035
         // mineral composition [Mg1.8 Fe0.2 SiO4]
-        // const double WadsleyDry_RadTC_a0 =   -21.717000000;
-        // const double WadsleyDry_RadTC_b1 =    3.4271000000;
-        // const double WadsleyDry_RadTC_ymin = -23.025850930;
-        // const double WadsleyDry_RadTC_ymax =  1.0773006810; 
+        // const double WadsleyDry_RadTC_c0 =   -21.717000000;
+        // const double WadsleyDry_RadTC_d1 =    3.4271000000;
+        // const double WadsleyDry_RadTC_jmin = -23.025850930;
+        // const double WadsleyDry_RadTC_jmax =  1.0773006810; 
+
+        // Coefficients for dry ringwoodite
+        // retreived from fitting dataset of
+        // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
+        // https://doi.org/10.1016/j.epsl.2012.09.035
+        // mineral composition [Mg1.8 Fe0.2 SiO4]
+        // const double RingwooDry_RadTC_c0 =   -23.067000000;
+        // const double RingwooDry_RadTC_d1 =    3.5985000000;
+        // const double RingwooDry_RadTC_jmin = -23.025850930;
+        // const double RingwooDry_RadTC_jmax =  0.4027750000; 
 
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of
-        // [Grose & Afonso, 2019, Journal of Petrology, vol. 60(4), p. 755-790]
+        // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
+        // https://doi.org/10.1029/2019GC008187
         // mineral composition [Mg2Si2O6]
         // const double OpxEnstati_RadTC_c0 =   -13.532000000;
         // const double OpxEnstati_RadTC_d1 =    2.4004000000;
         // const double OpxEnstati_RadTC_jmin = -23.025850930; 
         // const double OpxEnstati_RadTC_jmax =  1.4456685920;
 
+        // Coefficients for clinopyroxene (diopside)
+        // retreived from fitting dataset of
+        // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
+        // https://doi.org/10.1029/2019GC008187
+        // mineral composition [CaMgSi2O6]
+        // const double CpxDiopsid_RadTC_c0 =   -13.972000000;
+        // const double CpxDiopsid_RadTC_d1 =    2.4892000000;
+        // const double CpxDiopsid_RadTC_jmin = -23.025850930; 
+        // const double CpxDiopsid_RadTC_jmax =  1.4446390700;
+
         // Coefficients for garnet (pyrope)
         // retreived from fitting dataset of
-        // [Grose & Afonso, 2019, Journal of Petrology, vol. 60(4), p. 755-790]
+        // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
+        // https://doi.org/10.1029/2019GC008187
         // mineral composition [Mg3Al2(SiO4)3]
         // const double GrtPyropes_RadTC_c0 =   -11.782000000;
         // const double GrtPyropes_RadTC_d1 =    2.0718000000;
         // const double GrtPyropes_RadTC_jmin = -23.025850930; 
         // const double GrtPyropes_RadTC_jmax =  1.4479836950;
+
+        // Coefficients for garnet (grossular)
+        // retreived from fitting dataset of
+        // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
+        // https://doi.org/10.1029/2019GC008187
+        // mineral composition [Ca3Al2(SiO4)3]
+        // const double GrtGrossul_RadTC_c0 =   -11.261000000;
+        // const double GrtGrossul_RadTC_d1 =    2.0132000000;
+        // const double GrtGrossul_RadTC_jmin = -23.025850930; 
+        // const double GrtGrossul_RadTC_jmax =  1.4486839760;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
