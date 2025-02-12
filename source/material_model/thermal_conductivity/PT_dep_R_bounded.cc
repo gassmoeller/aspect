@@ -47,6 +47,7 @@ namespace aspect
         // Coefficients for dry wadsleyite
         // retreived from fitting dataset of
         // [Xu et al., 2004, PEPI, vol 143, pp. 321-336]
+        // https://doi.org/10.1016/j.pepi.2004.03.005
         // mineral composition [(Mg1.8Fe0.2)SiO4]
         // const double WadsleyDry_LatTC_a0 =  -0.665600000;
         // const double WadsleyDry_LatTC_b1 =   0.308200000;
@@ -57,6 +58,7 @@ namespace aspect
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of 
         // [Schloessin & Dvorak, 1972, GJI, 27(5), 499-516]
+        // https://doi.org/10.1111/j.1365-246X.1972.tb06105.x
         // mineral composition [Mg2Si2O6]
         // const double OpxEnstati_LatTC_a0 =   -3.004700000;
         // const double OpxEnstati_LatTC_b1 =    2.600000000;
@@ -67,6 +69,7 @@ namespace aspect
         // Coefficients for garnet (pyrope)
         // retreived from fitting dataset of
         // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
+        // https://doi.org/10.2138/am-2023-8953
         // mineral composition [Mg3Al2Si3O12]
         // const double GrtPyropes_LatTC_a0 =   -4.363700000;
         // const double GrtPyropes_LatTC_b1 =    2.036800000;
@@ -88,6 +91,7 @@ namespace aspect
         // Coefficients for dry wadsleyite
         // retreived from fitting dataset of
         // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
+        // https://doi.org/10.1016/j.epsl.2012.09.035
         // mineral composition [Mg1.8 Fe0.2 SiO4]
         // const double WadsleyDry_RadTC_a0 =   -21.717000000;
         // const double WadsleyDry_RadTC_b1 =    3.4271000000;
@@ -96,7 +100,8 @@ namespace aspect
 
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of
-        // [Grose & Afonso, 2019, Journal of Petrology, vol. 60(4), p. 755-790]
+        // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
+        // https://doi.org/10.1029/2019GC008187
         // mineral composition [Mg2Si2O6]
         // const double OpxEnstati_RadTC_c0 =   -13.532000000;
         // const double OpxEnstati_RadTC_d1 =    2.4004000000;
@@ -105,7 +110,8 @@ namespace aspect
 
         // Coefficients for garnet (pyrope)
         // retreived from fitting dataset of
-        // [Grose & Afonso, 2019, Journal of Petrology, vol. 60(4), p. 755-790]
+        // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
+        // https://doi.org/10.1029/2019GC008187
         // mineral composition [Mg3Al2(SiO4)3]
         // const double GrtPyropes_RadTC_c0 =   -11.782000000;
         // const double GrtPyropes_RadTC_d1 =    2.0718000000;
