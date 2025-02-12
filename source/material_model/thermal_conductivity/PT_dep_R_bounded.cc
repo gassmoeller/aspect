@@ -125,7 +125,18 @@ namespace aspect
         // const double OpxEnstati_LatTC_b1 =    2.600000000;
         // const double OpxEnstati_LatTC_ymin =  1.760865151; 
         // const double OpxEnstati_LatTC_ymax =  2.096937429;
-        // const double OpxEnstati_TDep_n_Exp = -0.5;
+        // const double OpxEnstati_TDep_n_Exp =  0.5;
+
+        // Coefficients for clinopyroxene (diopside)
+        // retreived from fitting dataset of 
+        // [Wang et al., 2014, JGR: Solid Earth, 119(8), 6277-6287]
+        // https://doi.org/10.1002/2014JB011208
+        // mineral composition [CaMgSi2O6]
+        // const double CpxDiopsid_LatTC_a0 =   -3.251100000;
+        // const double CpxDiopsid_LatTC_b1 =    1.689100000;
+        // const double CpxDiopsid_LatTC_ymin =  1.793640135; 
+        // const double CpxDiopsid_LatTC_ymax =  2.389462023;
+        // const double CpxDiopsid_TDep_n_Exp =  0.5;
 
         // Coefficients for garnet (pyrope)
         // retreived from fitting dataset of
@@ -136,7 +147,7 @@ namespace aspect
         // const double GrtPyropes_LatTC_b1 =    2.036800000;
         // const double GrtPyropes_LatTC_ymin =  1.481604541; 
         // const double GrtPyropes_LatTC_ymax =  2.443131606;
-        // const double GrtPyropes_TDep_n_Exp = -0.4314;
+        // const double GrtPyropes_TDep_n_Exp =  0.4314;
 
         // Define coefficients for radiative thermal conductivity of different minerals
 
@@ -174,10 +185,20 @@ namespace aspect
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [Mg2Si2O6]
-        // const double OpxEnstati_RadTC_c0 =   -13.532000000;
-        // const double OpxEnstati_RadTC_d1 =    2.4004000000;
+        // const double OpxEnstati_RadTC_a0 =   -13.532000000;
+        // const double OpxEnstati_RadTC_b1 =    2.4004000000;
         // const double OpxEnstati_RadTC_jmin = -23.025850930; 
         // const double OpxEnstati_RadTC_jmax =  1.4456685920;
+
+        // Coefficients for clinopyroxene (diopside)
+        // retreived from fitting dataset of
+        // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
+        // https://doi.org/10.1029/2019GC008187
+        // mineral composition [CaMgSi2O6]
+        // const double CpxDiopsid_RadTC_a0 =   -13.972000000;
+        // const double CpxDiopsid_RadTC_b1 =    2.4892000000;
+        // const double CpxDiopsid_RadTC_jmin = -23.025850930; 
+        // const double CpxDiopsid_RadTC_jmax =  1.4446390700;
 
         // Coefficients for garnet (pyrope)
         // retreived from fitting dataset of
