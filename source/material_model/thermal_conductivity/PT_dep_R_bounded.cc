@@ -36,7 +36,8 @@ namespace aspect
 
         // Coefficients for dry olivine 
         // retreived from fitting TDTR dataset of
-        // [Chang et al., 2018, PNAS, vol 114, p. 4078-4081]
+        // [Chang et al., 2017, PNAS, vol 114, p. 4078-4081]
+        // https://doi.org/10.1073/pnas.1616216114
         // mineral composition [Mg1.8 Fe0.2 SiO4]
         const double OlivineDry_LatTC_a0 =   -4.124100000;
         const double OlivineDry_LatTC_b1 =    2.146900000;
