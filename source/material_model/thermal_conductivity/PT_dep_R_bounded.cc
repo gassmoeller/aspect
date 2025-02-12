@@ -66,6 +66,56 @@ namespace aspect
         // const double RingwooDry_LatTC_ymax = 2.94939766245070; 
         // const double RingwooDry_TDep_n_Exp = 0.5; 
 
+        // Coefficients for Mg-bridgmanite
+        // retreived from fitting dataset of
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [MgSiO3]
+        // const double En100Brigm_LatTC_a0 =  -4.368700000;
+        // const double En100Brigm_LatTC_b1 =   1.076600000; 
+        // const double En100Brigm_LatTC_ymin = 2.376025820; 
+        // const double En100Brigm_LatTC_ymax = 5.010635294;  
+        // const double En100Brigm_TDep_n_Exp = 1.01000;
+
+        // Coefficients for Fe-bridgmanite (3%)
+        // retreived from fitting dataset of
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [Fe0.03Mg0.97SiO3]
+        // const double En97Brigma_LatTC_a0 =  -4.520600000;
+        // const double En97Brigma_LatTC_b1 =   1.019900000; 
+        // const double En97Brigma_LatTC_ymin = 1.750524121; 
+        // const double En97Brigma_LatTC_ymax = 4.499809670;  
+        // const double En97Brigma_TDep_n_Exp = 0.56605;
+
+        // Coefficients for Fe-bridgmanite (10%)
+        // retreived from fitting dataset of
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [Fe0.1Mg0.9SiO3]
+        // const double En90Brigma_LatTC_a0 =  -4.883100000;
+        // const double En90Brigma_LatTC_b1 =   0.980900000; 
+        // const double En90Brigma_LatTC_ymin = 1.333739493; 
+        // const double En90Brigma_LatTC_ymax = 4.382026635;  
+        // const double En90Brigma_TDep_n_Exp = 0.17054;
+
+        // Coefficients for Al-bridgmanite
+        // retreived from fitting dataset of
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [(Al,Mg)SiO3]
+        // const double En90Brigma_LatTC_a0 =  -4.331500000;
+        // const double En90Brigma_LatTC_b1 =   1.027000000; 
+        // const double En90Brigma_LatTC_ymin = 1.845020046; 
+        // const double En90Brigma_LatTC_ymax = 4.605170186;  
+        // const double En90Brigma_TDep_n_Exp = 0.61983;
+
+        // Coefficients for Fe,Al-bridgmanite
+        // retreived from fitting dataset of
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [(Fe,Al,Mg)SiO3]
+        // const double En90Brigma_LatTC_a0 =  -4.510600000;
+        // const double En90Brigma_LatTC_b1 =   1.066800000; 
+        // const double En90Brigma_LatTC_ymin = 1.389093953; 
+        // const double En90Brigma_LatTC_ymax = 3.912023005;  
+        // const double En90Brigma_TDep_n_Exp = 0.46815;
+         
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of 
         // [Schloessin & Dvorak, 1972, GJI, 27(5), 499-516]
