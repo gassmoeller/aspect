@@ -53,7 +53,18 @@ namespace aspect
         // const double WadsleyDry_LatTC_b1 =   0.308200000;
         // const double WadsleyDry_LatTC_ymin = 1.75735804249439;
         // const double WadsleyDry_LatTC_ymax = 2.37090451537473; 
-        // const double WadsleyDry_TDep_n_Exp =  0.5; 
+        // const double WadsleyDry_TDep_n_Exp = 0.5; 
+
+        // Coefficients for dry ringwoodite
+        // retreived from fitting dataset of
+        // [Marzotto et al., 2020, GRL, vol 47, issue 13]
+        // https://doi.org/10.1029/2020GL087607
+        // mineral composition [(Mg1.79Fe0.17)Si1.02O4]
+        // const double RingwooDry_LatTC_a0 =  -5.462400000;
+        // const double RingwooDry_LatTC_b1 =   2.079100000;
+        // const double RingwooDry_LatTC_ymin = 1.60943791241410;
+        // const double RingwooDry_LatTC_ymax = 2.94939766245070; 
+        // const double RingwooDry_TDep_n_Exp = 0.5; 
 
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of 
@@ -97,6 +108,16 @@ namespace aspect
         // const double WadsleyDry_RadTC_b1 =    3.4271000000;
         // const double WadsleyDry_RadTC_ymin = -23.025850930;
         // const double WadsleyDry_RadTC_ymax =  1.0773006810; 
+
+        // Coefficients for dry ringwoodite
+        // retreived from fitting dataset of
+        // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
+        // https://doi.org/10.1016/j.epsl.2012.09.035
+        // mineral composition [Mg1.8 Fe0.2 SiO4]
+        // const double RingwooDry_RadTC_a0 =   -23.067000000;
+        // const double RingwooDry_RadTC_b1 =    3.5985000000;
+        // const double RingwooDry_RadTC_ymin = -23.025850930;
+        // const double RingwooDry_RadTC_ymax =  0.4027750000; 
 
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of
