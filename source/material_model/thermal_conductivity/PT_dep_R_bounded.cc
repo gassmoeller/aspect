@@ -149,6 +149,17 @@ namespace aspect
         // const double GrtPyropes_LatTC_ymax =  2.443131606;
         // const double GrtPyropes_TDep_n_Exp =  0.4314;
 
+        // Coefficients for garnet (grossular)
+        // retreived from fitting dataset of
+        // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
+        // https://doi.org/10.2138/am-2023-8953
+        // mineral composition [(Ca0.986Fe0.014)3Al2(SiO4)3]
+        // const double GrtGrossul_LatTC_a0 =  -4.7584;
+        // const double GrtGrossul_LatTC_b1 =   2.0816;
+        // const double GrtGrossul_LatTC_ymin = 1.410986974; 
+        // const double GrtGrossul_LatTC_ymax = 2.457625992;
+        // const double GrtGrossul_TDep_n_Exp = 0.4589;
+
         // Define coefficients for radiative thermal conductivity of different minerals
 
         // Coefficients for dry olivine
@@ -165,28 +176,28 @@ namespace aspect
         // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
         // https://doi.org/10.1016/j.epsl.2012.09.035
         // mineral composition [Mg1.8 Fe0.2 SiO4]
-        // const double WadsleyDry_RadTC_a0 =   -21.717000000;
-        // const double WadsleyDry_RadTC_b1 =    3.4271000000;
-        // const double WadsleyDry_RadTC_ymin = -23.025850930;
-        // const double WadsleyDry_RadTC_ymax =  1.0773006810; 
+        // const double WadsleyDry_RadTC_c0 =   -21.717000000;
+        // const double WadsleyDry_RadTC_d1 =    3.4271000000;
+        // const double WadsleyDry_RadTC_jmin = -23.025850930;
+        // const double WadsleyDry_RadTC_jmax =  1.0773006810; 
 
         // Coefficients for dry ringwoodite
         // retreived from fitting dataset of
         // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
         // https://doi.org/10.1016/j.epsl.2012.09.035
         // mineral composition [Mg1.8 Fe0.2 SiO4]
-        // const double RingwooDry_RadTC_a0 =   -23.067000000;
-        // const double RingwooDry_RadTC_b1 =    3.5985000000;
-        // const double RingwooDry_RadTC_ymin = -23.025850930;
-        // const double RingwooDry_RadTC_ymax =  0.4027750000; 
+        // const double RingwooDry_RadTC_c0 =   -23.067000000;
+        // const double RingwooDry_RadTC_d1 =    3.5985000000;
+        // const double RingwooDry_RadTC_jmin = -23.025850930;
+        // const double RingwooDry_RadTC_jmax =  0.4027750000; 
 
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [Mg2Si2O6]
-        // const double OpxEnstati_RadTC_a0 =   -13.532000000;
-        // const double OpxEnstati_RadTC_b1 =    2.4004000000;
+        // const double OpxEnstati_RadTC_c0 =   -13.532000000;
+        // const double OpxEnstati_RadTC_d1 =    2.4004000000;
         // const double OpxEnstati_RadTC_jmin = -23.025850930; 
         // const double OpxEnstati_RadTC_jmax =  1.4456685920;
 
@@ -195,8 +206,8 @@ namespace aspect
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [CaMgSi2O6]
-        // const double CpxDiopsid_RadTC_a0 =   -13.972000000;
-        // const double CpxDiopsid_RadTC_b1 =    2.4892000000;
+        // const double CpxDiopsid_RadTC_c0 =   -13.972000000;
+        // const double CpxDiopsid_RadTC_d1 =    2.4892000000;
         // const double CpxDiopsid_RadTC_jmin = -23.025850930; 
         // const double CpxDiopsid_RadTC_jmax =  1.4446390700;
 
@@ -209,6 +220,16 @@ namespace aspect
         // const double GrtPyropes_RadTC_d1 =    2.0718000000;
         // const double GrtPyropes_RadTC_jmin = -23.025850930; 
         // const double GrtPyropes_RadTC_jmax =  1.4479836950;
+
+        // Coefficients for garnet (grossular)
+        // retreived from fitting dataset of
+        // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
+        // https://doi.org/10.1029/2019GC008187
+        // mineral composition [Ca3Al2(SiO4)3]
+        // const double GrtGrossul_RadTC_c0 =   -11.261000000;
+        // const double GrtGrossul_RadTC_d1 =    2.0132000000;
+        // const double GrtGrossul_RadTC_jmin = -23.025850930; 
+        // const double GrtGrossul_RadTC_jmax =  1.4486839760;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
