@@ -161,6 +161,17 @@ namespace aspect
         // const double GrtGrossul_LatTC_ymax = 2.457625992;
         // const double GrtGrossul_TDep_n_Exp = 0.4589;
 
+        // Coefficients for garnet (almandine)
+        // retreived from fitting dataset of
+        // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
+        // https://doi.org/10.2138/am-2023-8953
+        // mineral composition [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3 ]
+        // const double GrtAlmandi_LatTC_a0 =  -4.5047;
+        // const double GrtAlmandi_LatTC_b1 =   2.0988;
+        // const double GrtAlmandi_LatTC_ymin = 1.223775432; 
+        // const double GrtAlmandi_LatTC_ymax = 2.374762159;
+        // const double GrtAlmandi_TDep_n_Exp = 0.4172;
+
         // Define coefficients for radiative thermal conductivity of different minerals
 
         // Coefficients for dry olivine
@@ -231,6 +242,16 @@ namespace aspect
         // const double GrtGrossul_RadTC_d1 =    2.0132000000;
         // const double GrtGrossul_RadTC_jmin = -23.025850930; 
         // const double GrtGrossul_RadTC_jmax =  1.4486839760;
+
+        // Coefficients for garnet (almandine)
+        // retreived from fitting dataset of
+        // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
+        // https://doi.org/10.1029/2019GC008187
+        // mineral composition [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3 ]
+        // const double GrtAlmandi_RadTC_c0  =  -11.261000000;
+        // const double GrtAlmandi_RadTC_dj1 =   2.0132000000;
+        // const double GrtAlmandi_RadTC_jmin = -23.025850930; 
+        // const double GrtAlmandi_RadTC_jmax =  1.4486839760;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
