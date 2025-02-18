@@ -165,12 +165,23 @@ namespace aspect
         // retreived from fitting dataset of
         // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
         // https://doi.org/10.2138/am-2023-8953
-        // mineral composition [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3 ]
+        // mineral composition [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3]
         // const double GrtAlmandi_LatTC_a0 =  -4.5047;
         // const double GrtAlmandi_LatTC_b1 =   2.0988;
         // const double GrtAlmandi_LatTC_ymin = 1.223775432; 
         // const double GrtAlmandi_LatTC_ymax = 2.374762159;
         // const double GrtAlmandi_TDep_n_Exp = 0.4172;
+
+        // Coefficients for garnet (majorite)
+        // retreived from fitting dataset of
+        // [Giesting et al.2004  EPSL, 218(1-2), 45-56]
+        // https://doi.org/10.1016/S0012-821X(03)00630-7
+        // mineral composition [Mg3(MgSi)(SiO4)3]
+        // const double GrtMajorit_LatTC_a0 =  -4.3637;
+        // const double GrtMajorit_LatTC_b1 =   2.0368;
+        // const double GrtMajorit_LatTC_ymin = 2.279316466; 
+        // const double GrtMajorit_LatTC_ymax = 2.718047842;
+        // const double GrtMajorit_TDep_n_Exp = 0.5;
 
         // Define coefficients for radiative thermal conductivity of different minerals
 
@@ -252,6 +263,16 @@ namespace aspect
         // const double GrtAlmandi_RadTC_dj1 =   2.0132000000;
         // const double GrtAlmandi_RadTC_jmin = -23.025850930; 
         // const double GrtAlmandi_RadTC_jmax =  1.4486839760;
+
+        // Coefficients for garnet (majorite)
+        // retreived from fitting dataset of
+        // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
+        // https://doi.org/10.1029/2019GC008187
+        // mineral composition [Mg3(MgSi)(SiO4)3]
+        // const double GrtMajorit_RadTC_c0  =  -11.261000000;
+        // const double GrtMajorit_RadTC_dj1 =   2.0132000000;
+        // const double GrtMajorit_RadTC_jmin = -23.025850930; 
+        // const double GrtMajorit_RadTC_jmax =  1.4486839760;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
