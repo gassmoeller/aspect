@@ -183,6 +183,17 @@ namespace aspect
         // const double GrtMajorit_LatTC_ymax = 2.718047842;
         // const double GrtMajorit_TDep_n_Exp = 0.5;
 
+        // Coefficients for quartz 
+        // retreived from fitting dataset of
+        // [Xiong et al., 2019 - Journal of Applied Physics, 126(21)]
+        // https://doi.org/10.1063/1.5114992
+        // mineral composition [SiO2]
+        // const double QuartzPure_LatTC_a0 =   -2.0203;
+        // const double QuartzPure_LatTC_b1 =    2.4456;
+        // const double QuartzPure_LatTC_ymin =  2.260981081; 
+        // const double QuartzPure_LatTC_ymax =  2.745391462;
+        // const double QuartzPure_TDep_n_Exp = -1.015433333;
+
         // Define coefficients for radiative thermal conductivity of different minerals
 
         // Coefficients for dry olivine
@@ -273,6 +284,14 @@ namespace aspect
         // const double GrtMajorit_RadTC_dj1 =   2.0132000000;
         // const double GrtMajorit_RadTC_jmin = -23.025850930; 
         // const double GrtMajorit_RadTC_jmax =  1.4486839760;
+
+        // Coefficients for quartz
+        // assumed 0 for now - no data available
+        // mineral composition [SiO2]
+        // const double QuartzPure_RadTC_c0  =   0;
+        // const double QuartzPure_RadTC_dj1 =   0;
+        // const double QuartzPure_RadTC_jmin = -23.025850930; 
+        // const double QuartzPure_RadTC_jmax = -23.050000000;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
