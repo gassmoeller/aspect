@@ -194,6 +194,17 @@ namespace aspect
         // const double QuartzPure_LatTC_ymax =  2.745391462;
         // const double QuartzPure_TDep_n_Exp = -1.015433333;
 
+        // Coefficients for coesite
+        // retreived from fitting dataset of
+        // [Yukutake & Shimada, 1978, PEPI, 17(3), 193-200]
+        // https://doi.org/10.1016/0031-9201(78)90036-5
+        // mineral composition [SiO2]
+        // const double CoesitSiO2_LatTC_a0 =   -12.728;
+        // const double CoesitSiO2_LatTC_b1 =    2.9998;
+        // const double CoesitSiO2_LatTC_ymin =  1.982022416; 
+        // const double CoesitSiO2_LatTC_ymax =  2.249036030;
+        // const double CoesitSiO2_TDep_n_Exp = -1.015433333;
+
         // Define coefficients for radiative thermal conductivity of different minerals
 
         // Coefficients for dry olivine
@@ -292,6 +303,14 @@ namespace aspect
         // const double QuartzPure_RadTC_dj1 =   0;
         // const double QuartzPure_RadTC_jmin = -23.025850930; 
         // const double QuartzPure_RadTC_jmax = -23.050000000;
+
+        // Coefficients for coesite
+        // assumed 0 for now - no data available
+        // mineral composition [SiO2]
+        // const double CoesitSiO2_RadTC_c0  =   0;
+        // const double CoesitSiO2_RadTC_dj1 =   0;
+        // const double CoesitSiO2_RadTC_jmin = -23.025850930; 
+        // const double CoesitSiO2_RadTC_jmax = -23.050000000;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
