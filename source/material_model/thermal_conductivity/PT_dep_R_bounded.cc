@@ -192,7 +192,7 @@ namespace aspect
         // const double QuartzPure_LatTC_b1 =    2.4456;
         // const double QuartzPure_LatTC_ymin =  2.260981081; 
         // const double QuartzPure_LatTC_ymax =  2.745391462;
-        // const double QuartzPure_TDep_n_Exp = -1.015433333;
+        // const double QuartzPure_TDep_n_Exp =  1.015433333;
 
         // Coefficients for coesite
         // retreived from fitting dataset of
@@ -203,7 +203,29 @@ namespace aspect
         // const double CoesitSiO2_LatTC_b1 =    2.9998;
         // const double CoesitSiO2_LatTC_ymin =  1.982022416; 
         // const double CoesitSiO2_LatTC_ymax =  2.249036030;
-        // const double CoesitSiO2_TDep_n_Exp = -1.015433333;
+        // const double CoesitSiO2_TDep_n_Exp =  1.015433333;
+
+        // Coefficients for stishovite
+        // retreived from fitting dataset of
+        // [Hsieh et al., 2022, EPSL, vol. 584, 117477]
+        // https://doi.org/10.1016/j.epsl.2022.117477
+        // mineral composition [SiO2]
+        // < 52 [GPa]
+        // const double Stishovite_LatTC_a0 =  16.917;
+        // const double Stishovite_LatTC_b1 = -4.6187;
+        // const double Stishovite_LatTC_ymin = 4.096113064; 
+        // const double Stishovite_LatTC_ymax = 4.217974805;
+        // const double Stishovite_TDep_n_Exp = 0.5;
+        // 52-56 [GPa]
+        // const double Stishovite_LatTC_ymin = 4.077505176;
+        // const double Stishovite_LatTC_ymax = 4.264199335;
+        // const double Stishovite_LatTC_c0 = -156.12;
+        // const double Stishovite_LatTC_d1 =  39.182;
+        // > 56 [GPa]
+        // const double Stishovite_LatTC_ymin = 3.960844211;
+        // const double Stishovite_LatTC_ymax = 4.738489125;
+        // const double Stishovite_LatTC_e0 = -12.728;
+        // const double Stishovite_LatTC_f1 =  2.9998;
 
         // Define coefficients for radiative thermal conductivity of different minerals
 
@@ -282,7 +304,7 @@ namespace aspect
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3 ]
         // const double GrtAlmandi_RadTC_c0  =  -11.261000000;
-        // const double GrtAlmandi_RadTC_dj1 =   2.0132000000;
+        // const double GrtAlmandi_RadTC_d1 =    2.0132000000;
         // const double GrtAlmandi_RadTC_jmin = -23.025850930; 
         // const double GrtAlmandi_RadTC_jmax =  1.4486839760;
 
@@ -292,7 +314,7 @@ namespace aspect
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [Mg3(MgSi)(SiO4)3]
         // const double GrtMajorit_RadTC_c0  =  -11.261000000;
-        // const double GrtMajorit_RadTC_dj1 =   2.0132000000;
+        // const double GrtMajorit_RadTC_d1 =    2.0132000000;
         // const double GrtMajorit_RadTC_jmin = -23.025850930; 
         // const double GrtMajorit_RadTC_jmax =  1.4486839760;
 
@@ -300,7 +322,7 @@ namespace aspect
         // assumed 0 for now - no data available
         // mineral composition [SiO2]
         // const double QuartzPure_RadTC_c0  =   0;
-        // const double QuartzPure_RadTC_dj1 =   0;
+        // const double QuartzPure_RadTC_d1  =   0;
         // const double QuartzPure_RadTC_jmin = -23.025850930; 
         // const double QuartzPure_RadTC_jmax = -23.050000000;
 
@@ -308,9 +330,17 @@ namespace aspect
         // assumed 0 for now - no data available
         // mineral composition [SiO2]
         // const double CoesitSiO2_RadTC_c0  =   0;
-        // const double CoesitSiO2_RadTC_dj1 =   0;
+        // const double CoesitSiO2_RadTC_d1  =   0;
         // const double CoesitSiO2_RadTC_jmin = -23.025850930; 
         // const double CoesitSiO2_RadTC_jmax = -23.050000000;
+
+        // Coefficients for stishovite
+        // assumed 0 for now - no data available
+        // mineral composition [SiO2]
+        // const double Stishovite_RadTC_c0  =   0;
+        // const double Stishovite_RadTC_d1  =   0;
+        // const double Stishovite_RadTC_jmin = -23.025850930; 
+        // const double Stishovite_RadTC_jmax = -23.050000000;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
