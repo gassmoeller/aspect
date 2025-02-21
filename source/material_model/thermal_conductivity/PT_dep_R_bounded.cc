@@ -227,6 +227,16 @@ namespace aspect
         // const double Stishovite_LatTC_e0 = -12.728;
         // const double Stishovite_LatTC_f1 =  2.9998;
 
+        // Coefficients for Al-Stishovite (5 vol%)
+        // retreived from fitting dataset of
+        // [Hsieh et al., 2022, EPSL, vol. 584, 117477]
+        // https://doi.org/10.1016/j.epsl.2022.117477
+        // mineral composition [(Al,Si)O2]
+        // const double Al05Stisho_LatTC_ymin = 3.188855035;
+        // const double Al05Stisho_LatTC_ymax = 4.154336189;
+        // const double Al05Stisho_LatTC_a0 = -6.4411;
+        // const double Al05Stisho_LatTC_b1 =  1.5885;
+
         // Define coefficients for radiative thermal conductivity of different minerals
 
         // Coefficients for dry olivine
@@ -341,6 +351,14 @@ namespace aspect
         // const double Stishovite_RadTC_d1  =   0;
         // const double Stishovite_RadTC_jmin = -23.025850930; 
         // const double Stishovite_RadTC_jmax = -23.050000000;
+
+        // Coefficients for Al-Stishovite (5 vol%)
+        // assumed 0 for now - no data available
+        // mineral composition [(Al,Si)O2]
+        // const double Al05Stisho_RadTC_c0  =   0;
+        // const double Al05Stisho_RadTC_d1  =   0;
+        // const double Al05Stisho_RadTC_jmin = -23.025850930; 
+        // const double Al05Stisho_RadTC_jmax = -23.050000000;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
