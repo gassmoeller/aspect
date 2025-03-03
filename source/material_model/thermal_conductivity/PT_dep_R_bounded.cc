@@ -227,7 +227,7 @@ namespace aspect
         // const double Stishovite_LatTC_e0 = -12.728;
         // const double Stishovite_LatTC_f1 =  2.9998;
 
-        // Coefficients for Al-Stishovite (5 vol%)
+        // Coefficients for Al-stishovite (5 vol%)
         // retreived from fitting dataset of
         // [Hsieh et al., 2022, EPSL, vol. 584, 117477]
         // https://doi.org/10.1016/j.epsl.2022.117477
@@ -236,6 +236,25 @@ namespace aspect
         // const double Al05Stisho_LatTC_ymax = 4.154336189;
         // const double Al05Stisho_LatTC_a0 = -6.4411;
         // const double Al05Stisho_LatTC_b1 =  1.5885;
+        // const double Al05Stisho_TDep_n_Exp = 0.5;
+
+        // Coefficients for antigorite (serpentine)
+        // retreived from fitting dataset of
+        // [Chien et al., 2024, Nature Communications, 15(1), 5198.]
+        // https://doi.org/10.1038/s41467-024-49418-3
+        // mineral composition [(Mg2.80Fe0.05)Si2.08O5(OH)3.77]
+        // 010 direction
+        // const double Antigor010_LatTC_ymin = 1.519513205;
+        // const double Antigor010_LatTC_ymax = 2.434491480;
+        // const double Antigor010_LatTC_a0 = -4.3374;
+        // const double Antigor010_LatTC_b1 =  2.0217;
+        // const double Antigor010_TDep_n_Exp = 0.5;
+        // 001 direction
+        // const double Antigor001_LatTC_ymin = 0.067658648;
+        // const double Antigor001_LatTC_ymax = 1.552797578;
+        // const double Antigor001_LatTC_a0 = -3.1109;
+        // const double Antigor001_LatTC_b1 =  2.0644;
+        // const double Antigor001_TDep_n_Exp = 0.5;
 
         // Define coefficients for radiative thermal conductivity of different minerals
 
@@ -352,13 +371,27 @@ namespace aspect
         // const double Stishovite_RadTC_jmin = -23.025850930; 
         // const double Stishovite_RadTC_jmax = -23.050000000;
 
-        // Coefficients for Al-Stishovite (5 vol%)
+        // Coefficients for Al-stishovite (5 vol%)
         // assumed 0 for now - no data available
         // mineral composition [(Al,Si)O2]
         // const double Al05Stisho_RadTC_c0  =   0;
         // const double Al05Stisho_RadTC_d1  =   0;
         // const double Al05Stisho_RadTC_jmin = -23.025850930; 
         // const double Al05Stisho_RadTC_jmax = -23.050000000;
+
+        // Coefficients for antigorite (serpentine)
+        // assumed 0 for now - no data available
+        // mineral composition [///]
+        // 010 direction
+        // const double Antigor010_RadTC_c0  =   0;
+        // const double Antigor010_RadTC_d1  =   0;
+        // const double Antigor010_RadTC_jmin = -23.025850930; 
+        // const double Antigor010_RadTC_jmax = -23.050000000;
+        // 001 direction
+        // const double Antigor001_RadTC_c0  =   0;
+        // const double Antigor001_RadTC_d1  =   0;
+        // const double Antigor001_RadTC_jmin = -23.025850930; 
+        // const double Antigor001_RadTC_jmax = -23.050000000;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
