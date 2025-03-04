@@ -215,7 +215,6 @@ namespace aspect
         // const double Stishovite_LatTC_b1 = -4.6187;
         // const double Stishovite_LatTC_ymin = 4.096113064; 
         // const double Stishovite_LatTC_ymax = 4.217974805;
-        // const double Stishovite_TDep_n_Exp = 0.5;
         // 52-56 [GPa]
         // const double Stishovite_LatTC_ymin = 4.077505176;
         // const double Stishovite_LatTC_ymax = 4.264199335;
@@ -226,6 +225,8 @@ namespace aspect
         // const double Stishovite_LatTC_ymax = 4.738489125;
         // const double Stishovite_LatTC_e0 = -12.728;
         // const double Stishovite_LatTC_f1 =  2.9998;
+        // Temperature
+        // const double Stishovite_TDep_n_Exp = 0.5;
 
         // Coefficients for Al-stishovite (5 vol%)
         // retreived from fitting dataset of
@@ -255,6 +256,44 @@ namespace aspect
         // const double Antigor001_LatTC_a0 = -3.1109;
         // const double Antigor001_LatTC_b1 =  2.0644;
         // const double Antigor001_TDep_n_Exp = 0.5;
+
+        // Coefficients for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
+        // retreived from fitting dataset of
+        // [Hsieh et al., 2022, JGR: Solid Earth, vol. 127(6), e2022JB024556]
+        // https://doi.org/10.1029/2022JB024556
+        // mineral composition [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
+        // (Fe,Al)-Phase D - 0-24 [GPa]
+        // const double FeAlPhaseD_LatTC_ymin = 0.956005323; 
+        // const double FeAlPhaseD_LatTC_ymax = 1.747361025;
+        // const double FeAlPhaseD_LatTC_a0 = -3.9909;
+        // const double FeAlPhaseD_LatTC_b1 =  1.7710;
+        // (Fe,Al)-Phase D - 24-38 [GPa]
+        // const double FeAlPhaseD_LatTC_ymin = 1.442700096; 
+        // const double FeAlPhaseD_LatTC_ymax = 3.512683919;
+        // const double FeAlPhaseD_LatTC_c0 = -32.890;
+        // const double FeAlPhaseD_LatTC_d1 =  9.6282;
+        // (Fe,Al)-Phase D - 38-48 [GPa]
+        // const double FeAlPhaseD_LatTC_ymin = 1.789742436; 
+        // const double FeAlPhaseD_LatTC_ymax = 3.270312073;
+        // const double FeAlPhaseD_LatTC_e0 =  141.88;
+        // const double FeAlPhaseD_LatTC_f1 = -37.409;
+        // (Fe,Al)-Phase D - > 48 [GPa]
+        // const double FeAlPhaseD_LatTC_ymin = 1.313988596; 
+        // const double FeAlPhaseD_LatTC_ymax = 2.992561000;
+        // const double FeAlPhaseD_LatTC_g0 = -23.986;
+        // const double FeAlPhaseD_LatTC_h1 =  6.1139;
+        // Temperature-dependency
+        // const double FeAlPhaseD_Temperat_Exp = -0.5;
+
+        // Coefficients for Al-phase D (Dense Hydrous Magnesium Silicate)
+        // retreived from fitting dataset of
+        // [Hsieh et al., 2022, JGR: Solid Earth, vol. 127(6), e2022JB024556]
+        // mineral composition [Mg1.29Al0.17Si1.73H1.98O6]
+        // const double Al02PhaseD_LatTC_ymin = 1.285874399; 
+        // const double Al02PhaseD_LatTC_ymax = 3.502412041;
+        // const double Al02PhaseD_LatTC_a0 = -6.182900000;
+        // const double Al02PhaseD_LatTC_b1 =  1.851400000;
+        // const double Al02PhaseD_Temperat_Exp = -0.5;
 
         // Define coefficients for radiative thermal conductivity of different minerals
 
@@ -392,6 +431,24 @@ namespace aspect
         // const double Antigor001_RadTC_d1  =   0;
         // const double Antigor001_RadTC_jmin = -23.025850930; 
         // const double Antigor001_RadTC_jmax = -23.050000000;
+
+        // Coefficients for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
+        // retreived from fitting dataset of
+        // assumed 0 for now - no data available
+        // mineral composition [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
+        // const double FeAlPhaseD_RadTC_c0  =   0;
+        // const double FeAlPhaseD_RadTC_d1  =   0;
+        // const double FeAlPhaseD_RadTC_jmin = -23.025850930; 
+        // const double FeAlPhaseD_RadTC_jmax = -23.050000000;
+
+        // Coefficients for Al-phase D (Dense Hydrous Magnesium Silicate)
+        // retreived from fitting dataset of
+        // assumed 0 for now - no data available
+        // mineral composition [Mg1.29Al0.17Si1.73H1.98O6]
+        // const double Al02PhaseD_RadTC_c0  =   0;
+        // const double Al02PhaseD_RadTC_d1  =   0;
+        // const double Al02PhaseD_RadTC_jmin = -23.025850930; 
+        // const double Al02PhaseD_RadTC_jmax = -23.050000000;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
