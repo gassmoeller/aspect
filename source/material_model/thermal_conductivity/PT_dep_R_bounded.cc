@@ -216,15 +216,15 @@ namespace aspect
         // const double Stishovite_LatTC_ymin = 4.096113064; 
         // const double Stishovite_LatTC_ymax = 4.217974805;
         // 52-56 [GPa]
-        // const double Stishovite_LatTC_ymin = 4.077505176;
-        // const double Stishovite_LatTC_ymax = 4.264199335;
         // const double Stishovite_LatTC_c0 = -156.12;
         // const double Stishovite_LatTC_d1 =  39.182;
+        // const double Stishovite_LatTC_ymin = 4.077505176;
+        // const double Stishovite_LatTC_ymax = 4.264199335;
         // > 56 [GPa]
-        // const double Stishovite_LatTC_ymin = 3.960844211;
-        // const double Stishovite_LatTC_ymax = 4.738489125;
         // const double Stishovite_LatTC_e0 = -12.728;
         // const double Stishovite_LatTC_f1 =  2.9998;
+        // const double Stishovite_LatTC_ymin = 3.960844211;
+        // const double Stishovite_LatTC_ymax = 4.738489125;
         // Temperature
         // const double Stishovite_TDep_n_Exp = 0.5;
 
@@ -233,10 +233,10 @@ namespace aspect
         // [Hsieh et al., 2022, EPSL, vol. 584, 117477]
         // https://doi.org/10.1016/j.epsl.2022.117477
         // mineral composition [(Al,Si)O2]
-        // const double Al05Stisho_LatTC_ymin = 3.188855035;
-        // const double Al05Stisho_LatTC_ymax = 4.154336189;
         // const double Al05Stisho_LatTC_a0 = -6.4411;
         // const double Al05Stisho_LatTC_b1 =  1.5885;
+        // const double Al05Stisho_LatTC_ymin = 3.188855035;
+        // const double Al05Stisho_LatTC_ymax = 4.154336189;
         // const double Al05Stisho_TDep_n_Exp = 0.5;
 
         // Coefficients for antigorite (serpentine)
@@ -245,16 +245,16 @@ namespace aspect
         // https://doi.org/10.1038/s41467-024-49418-3
         // mineral composition [(Mg2.80Fe0.05)Si2.08O5(OH)3.77]
         // 010 direction
-        // const double Antigor010_LatTC_ymin = 1.519513205;
-        // const double Antigor010_LatTC_ymax = 2.434491480;
         // const double Antigor010_LatTC_a0 = -4.3374;
         // const double Antigor010_LatTC_b1 =  2.0217;
+        // const double Antigor010_LatTC_ymin = 1.519513205;
+        // const double Antigor010_LatTC_ymax = 2.434491480;
         // const double Antigor010_TDep_n_Exp = 0.5;
         // 001 direction
-        // const double Antigor001_LatTC_ymin = 0.067658648;
-        // const double Antigor001_LatTC_ymax = 1.552797578;
         // const double Antigor001_LatTC_a0 = -3.1109;
         // const double Antigor001_LatTC_b1 =  2.0644;
+        // const double Antigor001_LatTC_ymin = 0.067658648;
+        // const double Antigor001_LatTC_ymax = 1.552797578;
         // const double Antigor001_TDep_n_Exp = 0.5;
 
         // Coefficients for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
@@ -263,37 +263,60 @@ namespace aspect
         // https://doi.org/10.1029/2022JB024556
         // mineral composition [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
         // (Fe,Al)-Phase D - 0-24 [GPa]
-        // const double FeAlPhaseD_LatTC_ymin = 0.956005323; 
-        // const double FeAlPhaseD_LatTC_ymax = 1.747361025;
         // const double FeAlPhaseD_LatTC_a0 = -3.9909;
         // const double FeAlPhaseD_LatTC_b1 =  1.7710;
+        // const double FeAlPhaseD_LatTC_ymin = 0.956005323; 
+        // const double FeAlPhaseD_LatTC_ymax = 1.747361025;
         // (Fe,Al)-Phase D - 24-38 [GPa]
-        // const double FeAlPhaseD_LatTC_ymin = 1.442700096; 
-        // const double FeAlPhaseD_LatTC_ymax = 3.512683919;
         // const double FeAlPhaseD_LatTC_c0 = -32.890;
         // const double FeAlPhaseD_LatTC_d1 =  9.6282;
+        // const double FeAlPhaseD_LatTC_ymin = 1.442700096; 
+        // const double FeAlPhaseD_LatTC_ymax = 3.512683919;
         // (Fe,Al)-Phase D - 38-48 [GPa]
-        // const double FeAlPhaseD_LatTC_ymin = 1.789742436; 
-        // const double FeAlPhaseD_LatTC_ymax = 3.270312073;
         // const double FeAlPhaseD_LatTC_e0 =  141.88;
         // const double FeAlPhaseD_LatTC_f1 = -37.409;
+        // const double FeAlPhaseD_LatTC_ymin = 1.789742436; 
+        // const double FeAlPhaseD_LatTC_ymax = 3.270312073;
         // (Fe,Al)-Phase D - > 48 [GPa]
-        // const double FeAlPhaseD_LatTC_ymin = 1.313988596; 
-        // const double FeAlPhaseD_LatTC_ymax = 2.992561000;
         // const double FeAlPhaseD_LatTC_g0 = -23.986;
         // const double FeAlPhaseD_LatTC_h1 =  6.1139;
+        // const double FeAlPhaseD_LatTC_ymin = 1.313988596; 
+        // const double FeAlPhaseD_LatTC_ymax = 2.992561000;
         // Temperature-dependency
-        // const double FeAlPhaseD_Temperat_Exp = -0.5;
+        // const double FeAlPhaseD_Temperat_Exp = 0.5;
 
         // Coefficients for Al-phase D (Dense Hydrous Magnesium Silicate)
         // retreived from fitting dataset of
         // [Hsieh et al., 2022, JGR: Solid Earth, vol. 127(6), e2022JB024556]
+        // https://doi.org/10.1029/2022JB024556
         // mineral composition [Mg1.29Al0.17Si1.73H1.98O6]
+        // const double Al02PhaseD_LatTC_a0 = -6.1829;
+        // const double Al02PhaseD_LatTC_b1 =  1.8514;
         // const double Al02PhaseD_LatTC_ymin = 1.285874399; 
         // const double Al02PhaseD_LatTC_ymax = 3.502412041;
-        // const double Al02PhaseD_LatTC_a0 = -6.182900000;
-        // const double Al02PhaseD_LatTC_b1 =  1.851400000;
-        // const double Al02PhaseD_Temperat_Exp = -0.5;
+        // const double Al02PhaseD_Temperat_Exp = 0.5;
+
+        // Coefficients for ferropericlase (Mg1-xFexO)
+        // retreived from fitting dataset of
+        // [Hsieh et al., 2018, PNAS, vol. 115, no. 16, p. 4099-4104]
+        // mineral composition [Mg0.92Fe0.08O] - (8% Iron)
+        // const double Ferroper08_LatTC_a0 = -6.9942;
+        // const double Ferroper08_LatTC_b1 =  1.953;
+        // const double Ferroper08_LatTC_ymin = 1.629240539; 
+        // const double Ferroper08_LatTC_ymax = 4.118362306;
+        // const double Ferroper08_Temperat_Exp = 0.5;
+        // mineral composition [Mg0.90Fe0.10O] - (10% Iron)
+        // const double Ferroper10_LatTC_a0 = -5.2408;
+        // const double Ferroper10_LatTC_b1 =  0.9649;
+        // const double Ferroper10_LatTC_ymin = 1.2490430868; 
+        // const double Ferroper10_LatTC_ymax = 3.9318256327;
+        // const double Ferroper10_Temperat_Exp = 0.025;
+        // mineral composition [Mg0.44Fe0.56O] (56% Iron)
+        // const double Ferroper56_LatTC_a0 = -3.8298;
+        // const double Ferroper56_LatTC_b1 =  1.1507;
+        // const double Ferroper56_LatTC_ymin = 0.993251773; 
+        // const double Ferroper56_LatTC_ymax = 3.592193222;
+        // const double Ferroper08_Temperat_Exp = 0.5;
 
         // Define coefficients for radiative thermal conductivity of different minerals
 
@@ -433,7 +456,6 @@ namespace aspect
         // const double Antigor001_RadTC_jmax = -23.050000000;
 
         // Coefficients for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
-        // retreived from fitting dataset of
         // assumed 0 for now - no data available
         // mineral composition [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
         // const double FeAlPhaseD_RadTC_c0  =   0;
@@ -442,13 +464,30 @@ namespace aspect
         // const double FeAlPhaseD_RadTC_jmax = -23.050000000;
 
         // Coefficients for Al-phase D (Dense Hydrous Magnesium Silicate)
-        // retreived from fitting dataset of
         // assumed 0 for now - no data available
         // mineral composition [Mg1.29Al0.17Si1.73H1.98O6]
         // const double Al02PhaseD_RadTC_c0  =   0;
         // const double Al02PhaseD_RadTC_d1  =   0;
         // const double Al02PhaseD_RadTC_jmin = -23.025850930; 
         // const double Al02PhaseD_RadTC_jmax = -23.050000000;
+
+        // Coefficients for ferropericlase (Mg1-xFexO)
+        // assumed 0 for now - no data available
+        // mineral composition [Mg0.92Fe0.08O] - (8% Iron)
+        // const double Ferroper08_RadTC_c0 = 0;
+        // const double Ferroper08_RadTC_d1 = 0;
+        // const double Ferroper08_RadTC_jmin = -23.025850930; 
+        // const double Ferroper08_RadTC_jmax = -23.050000000;
+        // mineral composition [Mg0.90Fe0.10O] - (10% Iron)
+        // const double Ferroper10_RadTC_c0 = 0;
+        // const double Ferroper10_RadTC_d1 = 0;
+        // const double Ferroper10_RadTC_jmin = -23.025850930; 
+        // const double Ferroper10_RadTC_jmax = -23.050000000;
+        // mineral composition [Mg0.44Fe0.56O] (56% Iron)
+        // const double Ferroper56_RadTC_c0 = 0;
+        // const double Ferroper56_RadTC_d1 = 0;
+        // const double Ferroper56_RadTC_jmin = -23.025850930; 
+        // const double Ferroper56_RadTC_jmax = -23.050000000;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
