@@ -318,6 +318,17 @@ namespace aspect
         // const double Ferroper56_LatTC_ymax = 3.592193222;
         // const double Ferroper08_Temperat_Exp = 0.5;
 
+        // Coefficients for davemaoite 
+        // retreived from fitting dataset of
+        // [Zhang et al., 2021, Physical Review B, vol. 104, 184101]
+        // https://doi.org/10.1103/PhysRevB.104.184101
+        // mineral composition [CaSiO3]
+        // const double Davemaoite_LatTC_a0 = -4.7377;
+        // const double Davemaoite_LatTC_b1 =  1.3661;
+        // const double Davemaoite_LatTC_ymin = 2.388762789; 
+        // const double Davemaoite_LatTC_ymax = 4.045106030;
+        // const double Davemaoite_Temperat_Exp = 0.5;
+
         // Define coefficients for radiative thermal conductivity of different minerals
 
         // Coefficients for dry olivine
@@ -488,6 +499,17 @@ namespace aspect
         // const double Ferroper56_RadTC_d1 = 0;
         // const double Ferroper56_RadTC_jmin = -23.025850930; 
         // const double Ferroper56_RadTC_jmax = -23.050000000;
+
+        // Coefficients for davemaoite
+        // NOTE: here is depth dependent
+        // retreived from fitting dataset of
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]       
+        // https://doi.org/10.1016/j.epsl.2020.116176
+        // mineral composition [CaSiO3] 
+        // const double Davemaoite_RadTC_c0 = -4.7377;
+        // const double Davemaoite_RadTC_d1 =  1.3661;
+        // const double Davemaoite_RadTC_jmin = 2.388762789; 
+        // const double Davemaoite_RadTC_jmax = 4.045106030;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
