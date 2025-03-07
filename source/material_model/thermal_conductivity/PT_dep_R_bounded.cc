@@ -329,6 +329,17 @@ namespace aspect
         // const double Davemaoite_LatTC_ymax = 4.045106030;
         // const double Davemaoite_Temperat_Exp = 0.5;
 
+        // Coefficients for new-hexagonal-alluminium-phase (FeNAL) 
+        // retreived from fitting dataset of
+        // [Hsieh et al., 2022, EPSL, vol. 584]
+        // https://doi.org/10.1016/j.epsl.2022.117477
+        // mineral composition [Na0.71Mg2.05Al4.62Si1.16Fe(2+)0.09Fe(3+)0.17O12]
+        // const double NewHexAlPh_LatTC_a0 = -29.421;
+        // const double NewHexAlPh_LatTC_b1 =  7.7792;
+        // const double NewHexAlPh_LatTC_ymin = 2.363551955; 
+        // const double NewHexAlPh_LatTC_ymax = 3.653998874;
+        // const double NewHexAlPh_Temperat_Exp = 0.5;
+
         // Define coefficients for radiative thermal conductivity of different minerals
 
         // Coefficients for dry olivine
@@ -506,10 +517,21 @@ namespace aspect
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]       
         // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [CaSiO3] 
-        // const double Davemaoite_RadTC_c0 = -4.7377;
-        // const double Davemaoite_RadTC_d1 =  1.3661;
-        // const double Davemaoite_RadTC_jmin = 2.388762789; 
-        // const double Davemaoite_RadTC_jmax = 4.045106030;
+        // const double Davemaoite_RadTC_c0 = 21.0980;
+        // const double Davemaoite_RadTC_d1 = -1.2506;
+        // const double Davemaoite_RadTC_jmin = -23.025850930; 
+        // const double Davemaoite_RadTC_jmax = 0.300104592;
+
+        // Coefficients for new-hexagonal-alluminium-phase (FeNAL) 
+        // NOTE: here is depth dependent
+        // retreived from fitting dataset of
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]       
+        // https://doi.org/10.1016/j.epsl.2020.116176
+        // mineral composition [Na0.71Mg2.05Al4.62Si1.16Fe(2+)0.09Fe(3+)0.17O12] 
+        // const double NewHexAlPh_RadTC_c0 = 21.0980;
+        // const double NewHexAlPh_RadTC_d1 =  -1.2506;
+        // const double NewHexAlPh_RadTC_jmin = -23.025850930; 
+        // const double NewHexAlPh_RadTC_jmax = 0.300104592;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
