@@ -340,6 +340,16 @@ namespace aspect
         // const double NewHexAlPh_LatTC_ymax = 3.653998874;
         // const double NewHexAlPh_Temperat_Exp = 0.5;
 
+        // Coefficients for Akimotoite
+        // assumed to be equal to En100-Bridgmanite
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [MgSiO3]
+        // const double Akimotoite_LatTC_a0 =  -4.368700000;
+        // const double Akimotoite_LatTC_b1 =   1.076600000; 
+        // const double Akimotoite_LatTC_ymin = 2.376025820; 
+        // const double Akimotoite_LatTC_ymax = 5.010635294;  
+        // const double Akimotoite_TDep_n_Exp = 0.5;
+
         // Define coefficients for radiative thermal conductivity of different minerals
 
         // Coefficients for dry olivine
@@ -532,6 +542,17 @@ namespace aspect
         // const double NewHexAlPh_RadTC_d1 =  -1.2506;
         // const double NewHexAlPh_RadTC_jmin = -23.025850930; 
         // const double NewHexAlPh_RadTC_jmax = 0.300104592;
+
+        // Coefficients for akimotoite
+        // NOTE: here is depth dependent
+        // retreived from fitting dataset of
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]       
+        // https://doi.org/10.1016/j.epsl.2020.116176
+        // mineral composition [MgSiO3] 
+        // const double Akimotoite_RadTC_c0 = 21.0980;
+        // const double Akimotoite_RadTC_d1 =  -1.2506;
+        // const double Akimotoite_RadTC_jmin = -23.025850930; 
+        // const double Akimotoite_RadTC_jmax = 0.300104592;
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
