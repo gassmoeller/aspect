@@ -121,6 +121,7 @@ namespace aspect
 
           in.position[0] = representative_point;
           in.pressure[0] = pressures[i];
+          in.temperature[0] = 1.0;  // this is a dummy value, the actual temperature is computed by the material model
           this->get_material_model().evaluate(in, out);
 
           densities[i] = out.densities[0];
