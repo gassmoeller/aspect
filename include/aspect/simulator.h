@@ -65,6 +65,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/postprocess/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/particle/manager.h>
+#include <aspect/simulator/solver/interface.h>
 
 #include <boost/iostreams/tee.hpp>
 #include <boost/iostreams/stream.hpp>
@@ -2175,14 +2176,11 @@ namespace aspect
       std::unique_ptr<MeshDeformation::MeshDeformationHandler<dim>> mesh_deformation;
 
       /**
-       * Unique pointer for the matrix-free Stokes solver
+       * Unique pointer to the Stokes solver. The Stokes solver can be a
+       * direct solver or several different iterative solvers. The choice
+       * is made in the input file.
        */
-      std::unique_ptr<StokesMatrixFreeHandler<dim>> stokes_matrix_free;
-
-      /**
-       * Unique pointer for the direct Stokes solver
-       */
-      std::unique_ptr<StokesSolver::Direct<dim>> stokes_direct;
+      std::unique_ptr<StokesSolver::Interface<dim>> stokes_solver;
 
 
       friend class boost::serialization::access;

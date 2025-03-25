@@ -433,27 +433,29 @@ namespace aspect
         switch (parameters.stokes_velocity_degree)
           {
             case 2:
-              stokes_matrix_free = std::make_unique<StokesMatrixFreeHandlerImplementation<dim,2>>(*this, parameters);
+              stokes_solver = std::make_unique<StokesMatrixFreeHandlerImplementation<dim,2>>(*this, parameters);
               break;
             case 3:
-              stokes_matrix_free = std::make_unique<StokesMatrixFreeHandlerImplementation<dim,3>>(*this, parameters);
+              stokes_solver = std::make_unique<StokesMatrixFreeHandlerImplementation<dim,3>>(*this, parameters);
               break;
             default:
               AssertThrow(false, ExcMessage("The finite element degree for the Stokes system you selected is not supported yet."));
           }
-
-        stokes_matrix_free->initialize_simulator(*this);
-        stokes_matrix_free->parse_parameters(prm);
-        stokes_matrix_free->initialize();
       }
-
-    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::direct_solver)
+    else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::direct_solver)
       {
-        stokes_direct = std::make_unique<StokesSolver::Direct<dim>>();
-        stokes_direct->initialize_simulator(*this);
-        stokes_direct->parse_parameters(prm);
-        stokes_direct->initialize();
+        stokes_solver = std::make_unique<StokesSolver::Direct<dim>>();
       }
+    else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_amg)
+      {
+        stokes_solver = std::make_unique<StokesSolver::MatrixBasedAMG<dim>>();
+      }
+    else
+      AssertThrow(false, ExcMessage("The Stokes solver type you selected is not supported yet."));
+
+    stokes_solver->initialize_simulator(*this);
+    stokes_solver->parse_parameters(prm);
+    stokes_solver->initialize();
 
     postprocess_manager.initialize_simulator (*this);
     postprocess_manager.parse_parameters (prm);
@@ -964,20 +966,20 @@ namespace aspect
     if (solver_scheme_solves_stokes_equations(parameters))
       {
         // The matrix-free solver does not work with melt transport
-        Assert(!(parameters.include_melt_transport && stokes_matrix_free),
-               ExcNotImplemented());
+        Assert(!(parameters.include_melt_transport && StokesSolverUtilities::ist_stokes_matrix_free(stokes_solver)),
+                 ExcNotImplemented());
 
-        if (stokes_matrix_free)
-          {
-            // nothing couples in the matrix free solver
-          }
-        else if (parameters.include_melt_transport)
-          {
-            // For the melt transport solver all velocities and pressures couple with themselves.
-            // Additionally solid velocities couple with all pressures, and all pressures
-            // couple with solid velocities.
+               if (StokesSolverUtilities::ist_stokes_matrix_free(stokes_solver))
+        {
+          // nothing couples in the matrix free solver
+        }
+      else if (parameters.include_melt_transport)
+        {
+          // For the melt transport solver all velocities and pressures couple with themselves.
+          // Additionally solid velocities couple with all pressures, and all pressures
+          // couple with solid velocities.
 
-            const unsigned int first_fluid_c_i = introspection.variable("fluid velocity").first_component_index;
+          const unsigned int first_fluid_c_i = introspection.variable("fluid velocity").first_component_index;
 
             for (unsigned int d=0; d<dim; ++d)
               {
@@ -1524,16 +1526,16 @@ namespace aspect
     rebuild_stokes_preconditioner = true;
 
     // Setup matrix-free dofs
-    if (stokes_matrix_free)
-      stokes_matrix_free->setup_dofs();
+    if (StokesSolverUtilities::ist_stokes_matrix_free(stokes_solver))
+        stokes_matrix_free->setup_dofs();
   }
 
 
 
 
 
-  template <int dim>
-  void Simulator<dim>::setup_introspection ()
+template <int dim>
+void Simulator<dim>::setup_introspection ()
   {
     // compute the various partitionings between processors and blocks
     // of vectors and matrices

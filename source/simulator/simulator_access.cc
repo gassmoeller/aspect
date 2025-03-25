@@ -23,6 +23,7 @@
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/particle/manager.h>
+#include <aspect/simulator/solver/stokes_utilities.h>
 
 namespace aspect
 {
@@ -849,7 +850,7 @@ namespace aspect
   template <int dim>
   bool SimulatorAccess<dim>::is_stokes_matrix_free()
   {
-    return (simulator->stokes_matrix_free ? true : false);
+    return StokesSolverUtilities::is_stokes_matrix_free(simulator->stokes_solver.get());
   }
 
 
@@ -858,9 +859,9 @@ namespace aspect
   const StokesMatrixFreeHandler<dim> &
   SimulatorAccess<dim>::get_stokes_matrix_free () const
   {
-    Assert (simulator->stokes_matrix_free.get() != nullptr,
+    Assert (is_stokes_matrix_free(),
             ExcMessage("You can not call this function if the matrix-free Stokes solver is not used."));
-    return *(simulator->stokes_matrix_free);
+    return Plugins::get_plugin_as_type<StokesMatrixFreeHandler, StokesSolver::Interface<dim>>(simulator->stokes_solver);
   }
 
 

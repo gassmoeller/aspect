@@ -30,6 +30,7 @@
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator/assemblers/advection.h>
+#include <aspect/simulator/solver/stokes_utilities.h>
 
 #include <aspect/stokes_matrix_free.h>
 
@@ -352,36 +353,36 @@ namespace aspect
   void
   Simulator<dim>::assemble_stokes_preconditioner ()
   {
-    if (stokes_matrix_free)
-      return;
+    if (StokesSolverUtilities::ist_stokes_matrix_free(stokes_solver)))
+        return;
 
-    system_preconditioner_matrix = 0;
+        system_preconditioner_matrix = 0;
 
-    const Quadrature<dim> &quadrature_formula = introspection.quadratures.velocities;
+        const Quadrature<dim> &quadrature_formula = introspection.quadratures.velocities;
 
-    using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
+        using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
 
-    // determine which update flags to use for the cell integrals
-    const UpdateFlags cell_update_flags
-      = ((update_JxW_values |
-          update_values |
-          update_gradients |
-          update_quadrature_points)
-         |
-         assemblers->stokes_preconditioner_assembler_properties.needed_update_flags);
+        // determine which update flags to use for the cell integrals
+        const UpdateFlags cell_update_flags
+        = ((update_JxW_values |
+            update_values |
+            update_gradients |
+            update_quadrature_points)
+           |
+           assemblers->stokes_preconditioner_assembler_properties.needed_update_flags);
 
-    unsigned int stokes_dofs_per_cell = dim * finite_element.base_element(introspection.base_elements.velocities).dofs_per_cell
-                                        + finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
+        unsigned int stokes_dofs_per_cell = dim * finite_element.base_element(introspection.base_elements.velocities).dofs_per_cell
+                                            + finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
 
-    if (parameters.include_melt_transport)
-      stokes_dofs_per_cell += finite_element.base_element(introspection.variable("compaction pressure").base_index).dofs_per_cell;
+        if (parameters.include_melt_transport)
+          stokes_dofs_per_cell += finite_element.base_element(introspection.variable("compaction pressure").base_index).dofs_per_cell;
 
-    auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
-                      internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
-                      internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
-    {
-      this->local_assemble_stokes_preconditioner(cell, scratch, data);
-    };
+          auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
+                            internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
+                            internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
+      {
+        this->local_assemble_stokes_preconditioner(cell, scratch, data);
+        };
 
     auto copier = [&](const internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
     {
@@ -409,8 +410,8 @@ namespace aspect
 
     system_preconditioner_matrix.compress(VectorOperation::add);
     if (parameters.use_bfbt)
-      {
-        inverse_lumped_mass_matrix.compress(VectorOperation::add);
+    {
+      inverse_lumped_mass_matrix.compress(VectorOperation::add);
         IndexSet local_indices = inverse_lumped_mass_matrix.block(0).locally_owned_elements();
         for (auto i: local_indices)
           {
@@ -709,95 +710,95 @@ namespace aspect
 
     if (assemble_newton_stokes_system)
       {
-        if (!assemble_newton_stokes_matrix && !stokes_matrix_free)
-          timer_section_name += " rhs";
-        else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor == 0)
-          timer_section_name += " Picard";
-        else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor != 0)
-          timer_section_name += " Newton";
-      }
+        if (!assemble_newton_stokes_matrix && !StokesSolverUtilities::ist_stokes_matrix_free(stokes_solver))
+            timer_section_name += " rhs";
+            else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor == 0)
+              timer_section_name += " Picard";
+              else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor != 0)
+                timer_section_name += " Newton";
+          }
 
-    if (stokes_matrix_free)
-      {
-        rebuild_stokes_matrix = false;
-        assemble_newton_stokes_matrix = false;
-        timer_section_name += " rhs";
-      }
-
-    TimerOutput::Scope timer (computing_timer,
-                              timer_section_name);
-
-    if (rebuild_stokes_matrix == true)
-      system_matrix = 0;
-
-    // We are using constraints.distribute_local_to_global() without a matrix
-    // if we do not rebuild the Stokes matrix. This produces incorrect results
-    // when having inhomogeneous constraints. Make sure that we can not have
-    // this situation (no active boundary conditions means that only
-    // no-slip/free slip are used). This should not happen as we set this up
-    // correctly before calling this function.
-    // Note that for Dirichlet boundary conditions in matrix-free computations,
-    // we will update the right-hand side with boundary information in
-    // StokesMatrixFreeHandler::correct_stokes_rhs().
-    if (!stokes_matrix_free)
-      Assert(rebuild_stokes_matrix || boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().empty(),
-             ExcInternalError("If we have inhomogeneous constraints, we must re-assemble the system matrix."));
-
-    system_rhs = 0;
-    if (do_pressure_rhs_compatibility_modification)
-      pressure_shape_function_integrals = 0;
-
-    const Quadrature<dim>   &quadrature_formula = introspection.quadratures.velocities;
-    const Quadrature<dim-1> &face_quadrature_formula = introspection.face_quadratures.velocities;
-
-    using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
-
-    // determine which updates flags we need on cells and faces
-    const UpdateFlags cell_update_flags
-      = (update_values    |
-         update_gradients |
-         update_quadrature_points  |
-         update_JxW_values)
-        |
-        assemblers->stokes_system_assembler_properties.needed_update_flags;
-    const UpdateFlags face_update_flags
-      = (
-          // see if we need to assemble traction boundary conditions.
-          // only if so do we actually need to have an FEFaceValues object
-          !boundary_traction_manager.get_prescribed_boundary_traction_indicators().empty()
-          ?
-          update_values |
-          update_quadrature_points |
-          update_normal_vectors |
-          update_JxW_values
-          :
-          update_default)
-        |
-        (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data
-         ?
-         // if we need a material model input on the faces, we need to
-         // also be able to compute the strain rate
-         update_gradients
-         :
-         update_default)
-        |
-        assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags;
-
-    unsigned int stokes_dofs_per_cell = dim * finite_element.base_element(introspection.base_elements.velocities).dofs_per_cell
-                                        + finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
-
-    if (parameters.include_melt_transport)
-      stokes_dofs_per_cell += finite_element.base_element(introspection.variable("compaction pressure").base_index).dofs_per_cell;
-
-    const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
-                                               || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);
-
-    auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
-                      internal::Assembly::Scratch::StokesSystem<dim> &scratch,
-                      internal::Assembly::CopyData::StokesSystem<dim> &data)
+  if (StokesSolverUtilities::ist_stokes_matrix_free(stokes_solver))
     {
-      this->local_assemble_stokes_system(cell, scratch, data);
-    };
+      rebuild_stokes_matrix = false;
+      assemble_newton_stokes_matrix = false;
+      timer_section_name += " rhs";
+    }
+
+  TimerOutput::Scope timer (computing_timer,
+                            timer_section_name);
+
+  if (rebuild_stokes_matrix == true)
+    system_matrix = 0;
+
+                    // We are using constraints.distribute_local_to_global() without a matrix
+                    // if we do not rebuild the Stokes matrix. This produces incorrect results
+                    // when having inhomogeneous constraints. Make sure that we can not have
+                    // this situation (no active boundary conditions means that only
+                    // no-slip/free slip are used). This should not happen as we set this up
+                    // correctly before calling this function.
+                    // Note that for Dirichlet boundary conditions in matrix-free computations,
+                    // we will update the right-hand side with boundary information in
+                    // StokesMatrixFreeHandler::correct_stokes_rhs().
+                    if (!StokesSolverUtilities::ist_stokes_matrix_free(stokes_solver))
+                          Assert(rebuild_stokes_matrix || boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().empty(),
+                                 ExcInternalError("If we have inhomogeneous constraints, we must re-assemble the system matrix."));
+
+                          system_rhs = 0;
+                          if (do_pressure_rhs_compatibility_modification)
+                            pressure_shape_function_integrals = 0;
+
+                            const Quadrature<dim>   &quadrature_formula = introspection.quadratures.velocities;
+                            const Quadrature<dim-1> &face_quadrature_formula = introspection.face_quadratures.velocities;
+
+                            using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
+
+                            // determine which updates flags we need on cells and faces
+                            const UpdateFlags cell_update_flags
+                            = (update_values    |
+                               update_gradients |
+                               update_quadrature_points  |
+                               update_JxW_values)
+                              |
+                              assemblers->stokes_system_assembler_properties.needed_update_flags;
+                            const UpdateFlags face_update_flags
+                            = (
+                                // see if we need to assemble traction boundary conditions.
+                                // only if so do we actually need to have an FEFaceValues object
+                                !boundary_traction_manager.get_prescribed_boundary_traction_indicators().empty()
+                                ?
+                                update_values |
+                                update_quadrature_points |
+                                update_normal_vectors |
+                                update_JxW_values
+                                :
+                                update_default)
+                              |
+                              (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data
+                               ?
+                               // if we need a material model input on the faces, we need to
+                               // also be able to compute the strain rate
+                               update_gradients
+                               :
+                               update_default)
+                              |
+                              assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags;
+
+                            unsigned int stokes_dofs_per_cell = dim * finite_element.base_element(introspection.base_elements.velocities).dofs_per_cell
+                                                                + finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
+
+                            if (parameters.include_melt_transport)
+                              stokes_dofs_per_cell += finite_element.base_element(introspection.variable("compaction pressure").base_index).dofs_per_cell;
+
+                              const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
+                                                                         || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);
+
+                              auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                internal::Assembly::Scratch::StokesSystem<dim> &scratch,
+                                                internal::Assembly::CopyData::StokesSystem<dim> &data)
+          {
+            this->local_assemble_stokes_system(cell, scratch, data);
+            };
 
     auto copier = [&](const internal::Assembly::CopyData::StokesSystem<dim> &data)
     {
@@ -831,17 +832,17 @@ namespace aspect
     system_rhs.compress(VectorOperation::add);
 
     // If we change the system_rhs, matrix-free Stokes must update
-    if (stokes_matrix_free)
-      stokes_matrix_free->assemble();
+    if (StokesSolverUtilities::is_stokes_matrix_free(stokes_solver))
+        stokes_matrix_free->assemble();
 
-    // if the model is compressible then we need to adjust the right hand
-    // side of the equation to make it compatible with the matrix on the
-    // left
-    if (do_pressure_rhs_compatibility_modification)
+        // if the model is compressible then we need to adjust the right hand
+        // side of the equation to make it compatible with the matrix on the
+        // left
+        if (do_pressure_rhs_compatibility_modification)
       {
         pressure_shape_function_integrals.compress(VectorOperation::add);
-        make_pressure_rhs_compatible(system_rhs);
-      }
+          make_pressure_rhs_compatible(system_rhs);
+        }
 
     // record that we have just rebuilt the matrix
     rebuild_stokes_matrix = false;
