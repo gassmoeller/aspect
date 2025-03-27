@@ -588,7 +588,7 @@ namespace aspect
                           unsigned int composition_index = numbers::invalid_unsigned_int;
                           const std::string name = property_information.get_field_name_by_index(property_index);
 
-                          for (const std::pair<unsigned int,std::pair<std::string,unsigned int>> &item : this->get_parameters().mapped_particle_properties)
+                          for (const std::pair<unsigned int,std::pair<std::string,unsigned int>> item : this->get_parameters().mapped_particle_properties)
                             {
                               if (item.second.first == name && item.second.second == property_component)
                                 composition_index = item.first;
