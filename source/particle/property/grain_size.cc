@@ -121,7 +121,7 @@ namespace aspect
       InitializationModeForLateParticles
       GrainSize<dim>::late_initialization_mode () const
       {
-        return interpolate_respect_boundary;
+        return interpolate;
       }
 
 
