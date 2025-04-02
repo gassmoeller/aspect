@@ -26,6 +26,42 @@ namespace aspect
   {
     namespace ThermalConductivity
     {
+      // Helper function: Compute lattice thermal conductivity
+      double compute_lattice_thermal_conductivity(double a0, double b1, double ymin, double ymax, double P_log, double T_mod, double T_room, double n_exp)
+      {
+        // Compute the lattice thermal conductivity in real (+,-) and simplex (0->1) space considering the boundaries (ymin) and (ymax)
+        double zSimpl = a0 + b1 * P_log;
+        double ySimpl = std::exp(zSimpl);
+        double yPrime = ySimpl / (1 + ySimpl);
+        double yRealS = ymin + (ymax - ymin) * yPrime;
+        double PDep_LatTCon = std::exp(yRealS);
+        return PDep_LatTCon * std::pow((T_room / T_mod), n_exp);
+      }
+     
+      // Helper function: Compute radiative thermal conductivity
+      double compute_radiative_thermal_conductivity(double c0, double d1, double jmin, double jmax, double T_log)
+      {
+        // Compute the radiative thermal conductivity in real (+,-) and simplex (0->1) space considering the boundaries (ymin) and (ymax)
+        double zSimpl = c0 + d1 * T_log;
+        double ySimpl = std::exp(zSimpl);
+        double yPrime = ySimpl / (1 + ySimpl);
+        double yRealS = jmin + (jmax - jmin) * yPrime;
+        return std::exp(yRealS);
+      }
+     
+      // Helper function: Compute total thermal conductivity
+      double compute_total_thermal_conductivity(double lattice_conductivity, double radiative_conductivity)
+      {
+        return lattice_conductivity + radiative_conductivity;
+       }
+     
+      // Helper function: Compute aggregate thermal conductivity
+      double compute_aggregate_thermal_conductivity(const std::vector<std::vector<double>> &thermal_conductivities, double min_frac, int col)
+      {
+        return std::pow(thermal_conductivities[3][col], min_frac);
+      }
+     
+      // Main function: 
       template <int dim>
       void
       PTdepRbounded<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -574,13 +610,26 @@ namespace aspect
           // Take the mineral fraction of the model
           double min_frac = in.composition[0][i];
 
+          // Compute lattice thermal conductivities for DryOlivine
+          double OlivineDry_LatTCon = compute_lattice_thermal_conductivity(
+            OlivineDry_LatTC_a0, OlivineDry_LatTC_b1, OlivineDry_LatTC_ymin, OlivineDry_LatTC_ymax,
+            P_log, T_mod, T_room, OlivineDry_TDep_n_Exp);
+
+          // Compute radiative thermal conductivities for DryOlivine
+          double OlivineDry_RadTCon = compute_radiative_thermal_conductivity(
+            OlivineDry_RadTC_c0, OlivineDry_RadTC_d1, OlivineDry_RadTC_jmin, OlivineDry_RadTC_jmax, T_log);
+
+          // Compute radiative thermal conductivities for DryOlivine
+          double OlivineDry_TotTCon = compute_total_thermal_conductivity(
+            OlivineDry_RadTCon, OlivineDry_RadTCon);
+
           // Compute the lattice thermal conductivity in real (+,-) and simplex (0->1) 
           // space considering the boundaries ymin and ymax
           // Dry Olivine
-          double OlivineDry_LatTC_zSimpl = OlivineDry_LatTC_a0 + OlivineDry_LatTC_b1*P_log;
-          double OlivineDry_LatTC_ySimpl = std::exp(OlivineDry_LatTC_zSimpl);
-          double OlivineDry_LatTC_yPrime = OlivineDry_LatTC_ySimpl/(1+OlivineDry_LatTC_ySimpl);
-          double OlivineDry_LatTC_yRealS = OlivineDry_LatTC_ymin+(OlivineDry_LatTC_ymax-OlivineDry_LatTC_ymin)*OlivineDry_LatTC_yPrime;
+          // double OlivineDry_LatTC_zSimpl = OlivineDry_LatTC_a0 + OlivineDry_LatTC_b1*P_log;
+          // double OlivineDry_LatTC_ySimpl = std::exp(OlivineDry_LatTC_zSimpl);
+          // double OlivineDry_LatTC_yPrime = OlivineDry_LatTC_ySimpl/(1+OlivineDry_LatTC_ySimpl);
+          // double OlivineDry_LatTC_yRealS = OlivineDry_LatTC_ymin+(OlivineDry_LatTC_ymax-OlivineDry_LatTC_ymin)*OlivineDry_LatTC_yPrime;
           // Dry Wadsleyite
           // Dry Ringwoodite
           // Mg-Bridgmanite
@@ -616,7 +665,7 @@ namespace aspect
 
           // Compute the P-dependent lattice thermal conductivity of minerals 
           // Dry Olivine
-          double OlivineDry_PDep_LatTCon = std::exp(OlivineDry_LatTC_yRealS);
+          // double OlivineDry_PDep_LatTCon = std::exp(OlivineDry_LatTC_yRealS);
           // Dry Wadsleyite
           // Dry Ringwoodite
           // Mg-Bridgmanite
@@ -646,7 +695,7 @@ namespace aspect
 
           // Compute T-dependent lattice thermal conductivity of minerals 
           // Dry Olivine
-          double OlivineDry_TDep_LatTCon = OlivineDry_PDep_LatTCon*std::pow((T_room/T_mod),OlivineDry_TDep_n_Exp);
+          // double OlivineDry_TDep_LatTCon = OlivineDry_PDep_LatTCon*std::pow((T_room/T_mod),OlivineDry_TDep_n_Exp);
           // Dry Wadsleyite
           // Dry Ringwoodite
           // Mg-Bridgmanite
@@ -676,7 +725,7 @@ namespace aspect
 
           // Compute P,T-dependent lattice thermal conductivity of minerals 
           // Dry Olivine
-          double OlivineDry_PTDep_LatTCo = OlivineDry_TDep_LatTCon;
+          // double OlivineDry_PTDep_LatTCo = OlivineDry_TDep_LatTCon;
           // Dry Wadsleyite
           // Dry Ringwoodite
           // Mg-Bridgmanite
@@ -707,10 +756,10 @@ namespace aspect
           // Compute the radiative thermal conductivity in real (+,-) and simplex (0->1) 
           // space considering the boundaries ymin and ymax
           // Dry Olivine
-          double OlivineDry_RadTC_zSimpl = OlivineDry_RadTC_c0 + OlivineDry_RadTC_d1*T_log;
-          double OlivineDry_RadTC_ySimpl = std::exp(OlivineDry_RadTC_zSimpl);
-          double OlivineDry_RadTC_yPrime = OlivineDry_RadTC_ySimpl/(1+OlivineDry_RadTC_ySimpl);
-          double OlivineDry_RadTC_yRealS = OlivineDry_RadTC_jmin+(OlivineDry_RadTC_jmax-OlivineDry_RadTC_jmin)*OlivineDry_RadTC_yPrime;
+          // double OlivineDry_RadTC_zSimpl = OlivineDry_RadTC_c0 + OlivineDry_RadTC_d1*T_log;
+          // double OlivineDry_RadTC_ySimpl = std::exp(OlivineDry_RadTC_zSimpl);
+          // double OlivineDry_RadTC_yPrime = OlivineDry_RadTC_ySimpl/(1+OlivineDry_RadTC_ySimpl);
+          // double OlivineDry_RadTC_yRealS = OlivineDry_RadTC_jmin+(OlivineDry_RadTC_jmax-OlivineDry_RadTC_jmin)*OlivineDry_RadTC_yPrime;
           // Dry Wadsleyite
           // Dry Ringwoodite
           // Mg-Bridgmanite
@@ -744,9 +793,9 @@ namespace aspect
           // New-hexagonal-alluminium-phase (FeNAL)
           // Akimotoite
 
-          // Compute T-dependent lattice thermal conductivity of minerals
+          // Compute T-dependent radiative thermal conductivity of minerals
           // Dry Olivine
-          double OlivineDry_TDep_RadTCon = std::exp(OlivineDry_RadTC_yRealS);
+          // double OlivineDry_TDep_RadTCon = std::exp(OlivineDry_RadTC_yRealS);
           // Dry Wadsleyite
           // Dry Ringwoodite
           // Mg-Bridgmanite
@@ -776,7 +825,7 @@ namespace aspect
     
           // Compute P,T-dependent total thermal conductivity of minerals 
           // Dry Olivine
-          double OlivineDry_PTDep_TotTCo = OlivineDry_PTDep_LatTCo+OlivineDry_TDep_RadTCon;
+          // double OlivineDry_PTDep_TotTCo = OlivineDry_LatTCon+OlivineDry_RadTCon;
           // Dry Wadsleyite
           // Dry Ringwoodite
           // Mg-Bridgmanite
@@ -804,23 +853,29 @@ namespace aspect
           // New-hexagonal-alluminium-phase (FeNAL)
           // Akimotoite
 
+          // Create a matrix of thermal conductivities
+          std::vector<std::vector<double>> All_Minerals_TConds = {
+          {OlivineDry_LatTCon, OpxEnstati_PTDep_LatTCo, GrtPyropes_PTDep_LatTCo},
+          {OlivineDry_RadTCon, OpxEnstati_TDep_RadTCon, OpxEnstati_TDep_RadTCon},
+          {OlivineDry_TotTCon, OpxEnstati_PTDep_TotTCo, GrtPyropes_PTDep_TotTCo}};
+
           // Create a 3xn matrix containg the total thermal conductivity of minerals
-          std::vector<std::vector<double>> All_Minerals_TConds(3, std::vector<double>(3));
+          // std::vector<std::vector<double>> All_Minerals_TConds(3, std::vector<double>(3));
 
           // Fill the matrix with the lattice thermal conductivity of minerals
-          All_Minerals_TConds[0][0] = OlivineDry_PTDep_LatTCo;
-          All_Minerals_TConds[0][1] = OpxEnstati_PTDep_LatTCo;
-          All_Minerals_TConds[0][2] = GrtPyropes_PTDep_LatTCo;
+          // All_Minerals_TConds[0][0] = OlivineDry_LatTCon;
+          // All_Minerals_TConds[0][1] = OpxEnstati_PTDep_LatTCo;
+          // All_Minerals_TConds[0][2] = GrtPyropes_PTDep_LatTCo;
 
           // Fill the matrix with the lattice thermal conductivity of minerals
-          All_Minerals_TConds[1][0] = OlivineDry_TDep_RadTCon;
-          All_Minerals_TConds[1][1] = OpxEnstati_TDep_RadTCon;
-          All_Minerals_TConds[1][2] = GrtPyropes_TDep_RadTCon;
+          // All_Minerals_TConds[1][0] = OlivineDry_RadTCon;
+          // All_Minerals_TConds[1][1] = OpxEnstati_TDep_RadTCon;
+          // All_Minerals_TConds[1][2] = GrtPyropes_TDep_RadTCon;
 
           // Fill the matrix with the lattice thermal conductivity of minerals
-          All_Minerals_TConds[2][0] = OlivineDry_PTDep_TotTCo;
-          All_Minerals_TConds[2][1] = OpxEnstati_PTDep_TotTCo;
-          All_Minerals_TConds[2][2] = GrtPyropes_PTDep_TotTCo;
+          // All_Minerals_TConds[2][0] = OlivineDry_TotTCon;
+          // All_Minerals_TConds[2][1] = OpxEnstati_PTDep_TotTCo;
+          // All_Minerals_TConds[2][2] = GrtPyropes_PTDep_TotTCo;
 
           // Compute P,T-dependent thermal conductivities of aggregate rocks 
           // double AggRock_PTDep_LatTCo = std::pow(OlivineDry_PTDep_LatTCo,in.composition[i])*std::pow(OpxEnstati_PTDep_LatTCo,in.composition[i])*std::pow(GrtPyropes_PTDep_LatTCo,in.composition[i]);
