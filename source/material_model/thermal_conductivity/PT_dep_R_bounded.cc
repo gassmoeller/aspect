@@ -322,10 +322,10 @@ namespace aspect
         // mineral composition [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
         const int FeAlPhaseD_Index = MineralPar_Index++;
         // (Fe,Al)-Phase D - 0-24 [GPa]
-        // const double FeAlPhaseD_LatTC_a0 = -3.9909;
-        // const double FeAlPhaseD_LatTC_b1 =  1.7710;
-        // const double FeAlPhaseD_LatTC_ymin = 0.956005323; 
-        // const double FeAlPhaseD_LatTC_ymax = 1.747361025;
+        const double FeAlPhaseD_LatTC_a0 = -3.9909;
+        const double FeAlPhaseD_LatTC_b1 =  1.7710;
+        const double FeAlPhaseD_LatTC_ymin = 0.956005323; 
+        const double FeAlPhaseD_LatTC_ymax = 1.747361025;
         // (Fe,Al)-Phase D - 24-38 [GPa]
         // const double FeAlPhaseD_LatTC_c0 = -32.890;
         // const double FeAlPhaseD_LatTC_d1 =  9.6282;
@@ -596,10 +596,10 @@ namespace aspect
         // Coefficients for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
         // assumed 0 for now - no data available
         // mineral composition [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
-        // const double FeAlPhaseD_RadTC_c0  =   0;
-        // const double FeAlPhaseD_RadTC_d1  =   0;
-        // const double FeAlPhaseD_RadTC_jmin = -23.025850930; 
-        // const double FeAlPhaseD_RadTC_jmax = -23.050000000;
+        const double FeAlPhaseD_RadTC_c0  =   0;
+        const double FeAlPhaseD_RadTC_d1  =   0;
+        const double FeAlPhaseD_RadTC_jmin = -23.025850930; 
+        const double FeAlPhaseD_RadTC_jmax = -23.050000000;
 
         // Coefficients for Al-phase D (Dense Hydrous Magnesium Silicate)
         // assumed 0 for now - no data available
@@ -783,6 +783,10 @@ namespace aspect
             P_log, T_mod, T_room, Antigor001_TDep_n_Exp);
           All_Minerals_LatTcond[Antigor001_Index] = Antigor001_LatTCon;
           // Compute lattice thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
+          double FeAlPhaseD_LatTCon = compute_lattice_thermal_conductivity(
+            FeAlPhaseD_LatTC_a0, FeAlPhaseD_LatTC_b1, FeAlPhaseD_LatTC_ymin, FeAlPhaseD_LatTC_ymax,
+            P_log, T_mod, T_room, FeAlPhaseD_TDep_n_Exp);
+          All_Minerals_LatTcond[FeAlPhaseD_Index] = FeAlPhaseD_LatTCon;
           // Compute lattice thermal conductivities for Al-phase D (Dense Hydrous Magnesium Silicate)
           // Compute lattice thermal conductivities for Ferropericlase (Mg1-xFexO)
           // Compute lattice thermal conductivities for Davemaoite
@@ -866,6 +870,9 @@ namespace aspect
             Antigor001_RadTC_c0, Antigor001_RadTC_d1, Antigor001_RadTC_jmin, Antigor001_RadTC_jmax, T_log);
             All_Minerals_RadTcond[Antigor001_Index] = Antigor001_RadTCon;
           // Compute radiative thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
+          double FeAlPhaseD_RadTCon = compute_radiative_thermal_conductivity(
+            FeAlPhaseD_RadTC_c0, FeAlPhaseD_RadTC_d1, FeAlPhaseD_RadTC_jmin, FeAlPhaseD_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[FeAlPhaseD_Index] = FeAlPhaseD_RadTCon;
           // Compute radiative thermal conductivities for Al-phase D (Dense Hydrous Magnesium Silicate)
           // Compute radiative thermal conductivities for Ferropericlase (Mg1-xFexO)
           // Compute radiative thermal conductivities for Davemaoite
@@ -949,6 +956,9 @@ namespace aspect
             Antigor001_LatTCon, Antigor001_RadTCon);
             All_Minerals_TotTcond[Antigor001_Index] = Antigor001_TotTCon;
           // Compute total thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
+          double FeAlPhaseD_TotTCon = compute_total_thermal_conductivity(
+            FeAlPhaseD_LatTCon, FeAlPhaseD_RadTCon);
+            All_Minerals_TotTcond[FeAlPhaseD_Index] = FeAlPhaseD_TotTCon;
           // Compute total thermal conductivities for Al-phase D (Dense Hydrous Magnesium Silicate)
           // Compute total thermal conductivities for Ferropericlase (Mg1-xFexO)
           // Compute total thermal conductivities for Davemaoite
