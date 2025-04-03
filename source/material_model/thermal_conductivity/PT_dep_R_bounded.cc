@@ -229,11 +229,11 @@ namespace aspect
         // https://doi.org/10.1016/S0012-821X(03)00630-7
         // mineral composition [Mg3(MgSi)(SiO4)3]
         const int GrtMajorit_Index = MineralPar_Index++;
-        // const double GrtMajorit_LatTC_a0 =  -4.3637;
-        // const double GrtMajorit_LatTC_b1 =   2.0368;
-        // const double GrtMajorit_LatTC_ymin = 2.279316466; 
-        // const double GrtMajorit_LatTC_ymax = 2.718047842;
-        // const double GrtMajorit_TDep_n_Exp = 0.5;
+        const double GrtMajorit_LatTC_a0 =  -4.3637;
+        const double GrtMajorit_LatTC_b1 =   2.0368;
+        const double GrtMajorit_LatTC_ymin = 2.279316466; 
+        const double GrtMajorit_LatTC_ymax = 2.718047842;
+        const double GrtMajorit_TDep_n_Exp = 0.5;
 
         // Coefficients for quartz 
         // retreived from fitting dataset of
@@ -542,10 +542,10 @@ namespace aspect
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [Mg3(MgSi)(SiO4)3]
-        // const double GrtMajorit_RadTC_c0  =  -11.261000000;
-        // const double GrtMajorit_RadTC_d1 =    2.0132000000;
-        // const double GrtMajorit_RadTC_jmin = -23.025850930; 
-        // const double GrtMajorit_RadTC_jmax =  1.4486839760;
+        const double GrtMajorit_RadTC_c0  =  -11.261000000;
+        const double GrtMajorit_RadTC_d1 =    2.0132000000;
+        const double GrtMajorit_RadTC_jmin = -23.025850930; 
+        const double GrtMajorit_RadTC_jmax =  1.4486839760;
 
         // Coefficients for quartz
         // assumed 0 for now - no data available
@@ -748,6 +748,10 @@ namespace aspect
             P_log, T_mod, T_room, GrtAlmandi_TDep_n_Exp);
           All_Minerals_LatTcond[GrtAlmandi_Index] = GrtAlmandi_LatTCon;
           // Compute lattice thermal conductivities for Garnet (Majorite)
+          double GrtMajorit_LatTCon = compute_lattice_thermal_conductivity(
+            GrtMajorit_LatTC_a0, GrtMajorit_LatTC_b1, GrtMajorit_LatTC_ymin, GrtMajorit_LatTC_ymax,
+            P_log, T_mod, T_room, GrtMajorit_TDep_n_Exp);
+          All_Minerals_LatTcond[GrtMajorit_Index] = GrtMajorit_LatTCon;
           // Compute lattice thermal conductivities for Quartz
           // Compute lattice thermal conductivities for Coesite
           // Compute lattice thermal conductivities for Stishovite
@@ -810,6 +814,9 @@ namespace aspect
             GrtAlmandi_RadTC_c0, GrtAlmandi_RadTC_d1, GrtAlmandi_RadTC_jmin, GrtAlmandi_RadTC_jmax, T_log);
             All_Minerals_RadTcond[GrtAlmandi_Index] = GrtAlmandi_RadTCon;
           // Compute radiative thermal conductivities for Garnet (Majorite)
+          double GrtMajorit_RadTCon = compute_radiative_thermal_conductivity(
+            GrtMajorit_RadTC_c0, GrtMajorit_RadTC_d1, GrtMajorit_RadTC_jmin, GrtMajorit_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[GrtMajorit_Index] = GrtMajorit_RadTCon;
           // Compute radiative thermal conductivities for Quartz
           // Compute radiative thermal conductivities for Coesite
           // Compute radiative thermal conductivities for Stishovite
@@ -872,6 +879,9 @@ namespace aspect
             GrtAlmandi_LatTCon, GrtAlmandi_RadTCon);
             All_Minerals_TotTcond[GrtAlmandi_Index] = GrtAlmandi_TotTCon;
           // Compute total thermal conductivities for Garnet (Majorite)
+          double GrtMajorit_TotTCon = compute_total_thermal_conductivity(
+            GrtMajorit_LatTCon, GrtMajorit_RadTCon);
+            All_Minerals_TotTcond[GrtMajorit_Index] = GrtMajorit_TotTCon;
           // Compute total thermal conductivities for Quartz
           // Compute total thermal conductivities for Coesite
           // Compute total thermal conductivities for Stishovite
