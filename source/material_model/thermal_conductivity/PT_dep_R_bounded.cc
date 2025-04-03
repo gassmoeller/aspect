@@ -399,11 +399,11 @@ namespace aspect
         // https://doi.org/10.1016/j.epsl.2022.117477
         // mineral composition [Na0.71Mg2.05Al4.62Si1.16Fe(2+)0.09Fe(3+)0.17O12]
         const int NewHexAlPh_Index = MineralPar_Index++;
-        // const double NewHexAlPh_LatTC_a0 = -29.421;
-        // const double NewHexAlPh_LatTC_b1 =  7.7792;
-        // const double NewHexAlPh_LatTC_ymin = 2.363551955; 
-        // const double NewHexAlPh_LatTC_ymax = 3.653998874;
-        // const double NewHexAlPh_TDep_n_Exp = 0.5;
+        const double NewHexAlPh_LatTC_a0 = -29.421;
+        const double NewHexAlPh_LatTC_b1 =  7.7792;
+        const double NewHexAlPh_LatTC_ymin = 2.363551955; 
+        const double NewHexAlPh_LatTC_ymax = 3.653998874;
+        const double NewHexAlPh_TDep_n_Exp = 0.5;
 
         // Coefficients for Akimotoite
         // assumed to be equal to En100-Bridgmanite
@@ -644,10 +644,10 @@ namespace aspect
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]       
         // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [Na0.71Mg2.05Al4.62Si1.16Fe(2+)0.09Fe(3+)0.17O12] 
-        // const double NewHexAlPh_RadTC_c0 = 21.0980;
-        // const double NewHexAlPh_RadTC_d1 =  -1.2506;
-        // const double NewHexAlPh_RadTC_jmin = -23.025850930; 
-        // const double NewHexAlPh_RadTC_jmax = 0.300104592;
+        const double NewHexAlPh_RadTC_c0 = 21.0980;
+        const double NewHexAlPh_RadTC_d1 =  -1.2506;
+        const double NewHexAlPh_RadTC_jmin = -23.025850930; 
+        const double NewHexAlPh_RadTC_jmax = 0.300104592;
 
         // Coefficients for akimotoite
         // NOTE: here is depth dependent
@@ -818,6 +818,10 @@ namespace aspect
             P_log, T_mod, T_room, Davemaoite_TDep_n_Exp);
           All_Minerals_LatTcond[Davemaoite_Index] = Davemaoite_LatTCon;
           // Compute lattice thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
+          double NewHexAlPh_LatTCon = compute_lattice_thermal_conductivity(
+            NewHexAlPh_LatTC_a0, NewHexAlPh_LatTC_b1, NewHexAlPh_LatTC_ymin, NewHexAlPh_LatTC_ymax,
+            P_log, T_mod, T_room, NewHexAlPh_TDep_n_Exp);
+          All_Minerals_LatTcond[NewHexAlPh_Index] = NewHexAlPh_LatTCon;
           // Compute lattice thermal conductivities for Akimotoite
 
           // Compute radiative thermal conductivities for DryOlivine
@@ -925,6 +929,9 @@ namespace aspect
             Davemaoite_RadTC_c0, Davemaoite_RadTC_d1, Davemaoite_RadTC_jmin, Davemaoite_RadTC_jmax, T_log);
             All_Minerals_RadTcond[Davemaoite_Index] = Davemaoite_RadTCon;
           // Compute radiative thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
+          double NewHexAlPh_RadTCon = compute_radiative_thermal_conductivity(
+            NewHexAlPh_RadTC_c0, NewHexAlPh_RadTC_d1, NewHexAlPh_RadTC_jmin, NewHexAlPh_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[NewHexAlPh_Index] = NewHexAlPh_RadTCon;
           // Compute radiative thermal conductivities for Akimotoite
 
           // Compute total thermal conductivities for DryOlivine
@@ -1032,6 +1039,9 @@ namespace aspect
             Davemaoite_LatTCon, Davemaoite_RadTCon);
             All_Minerals_TotTcond[Davemaoite_Index] = Davemaoite_TotTCon;
           // Compute total thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
+          double NewHexAlPh_TotTCon = compute_total_thermal_conductivity(
+            NewHexAlPh_LatTCon, NewHexAlPh_RadTCon);
+            All_Minerals_TotTcond[NewHexAlPh_Index] = NewHexAlPh_TotTCon;
           // Compute total thermal conductivities for Akimotoite
     
           // Fill the matrix column by column
