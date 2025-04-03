@@ -181,11 +181,11 @@ namespace aspect
         // https://doi.org/10.1002/2014JB011208
         // mineral composition [CaMgSi2O6]
         const int CpxDiopsid_Index = MineralPar_Index++;
-        // const double CpxDiopsid_LatTC_a0 =   -3.251100000;
-        // const double CpxDiopsid_LatTC_b1 =    1.689100000;
-        // const double CpxDiopsid_LatTC_ymin =  1.793640135; 
-        // const double CpxDiopsid_LatTC_ymax =  2.389462023;
-        // const double CpxDiopsid_TDep_n_Exp =  0.5;
+        const double CpxDiopsid_LatTC_a0 =   -3.251100000;
+        const double CpxDiopsid_LatTC_b1 =    1.689100000;
+        const double CpxDiopsid_LatTC_ymin =  1.793640135; 
+        const double CpxDiopsid_LatTC_ymax =  2.389462023;
+        const double CpxDiopsid_TDep_n_Exp =  0.5;
 
         // Coefficients for garnet (pyrope)
         // retreived from fitting dataset of
@@ -502,10 +502,10 @@ namespace aspect
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [CaMgSi2O6]
-        // const double CpxDiopsid_RadTC_c0 =   -13.972000000;
-        // const double CpxDiopsid_RadTC_d1 =    2.4892000000;
-        // const double CpxDiopsid_RadTC_jmin = -23.025850930; 
-        // const double CpxDiopsid_RadTC_jmax =  1.4446390700;
+        const double CpxDiopsid_RadTC_c0 =   -13.972000000;
+        const double CpxDiopsid_RadTC_d1 =    2.4892000000;
+        const double CpxDiopsid_RadTC_jmin = -23.025850930; 
+        const double CpxDiopsid_RadTC_jmax =  1.4446390700;
 
         // Coefficients for garnet (pyrope)
         // retreived from fitting dataset of
@@ -728,11 +728,15 @@ namespace aspect
             P_log, T_mod, T_room, OpxEnstati_TDep_n_Exp);
             All_Minerals_LatTcond[OpxEnstati_Index] = OpxEnstati_LatTCon;
           // Compute lattice thermal conductivities for Clinopyroxene (Diopside)
+          double CpxDiopsid_LatTCon = compute_lattice_thermal_conductivity(
+             CpxDiopsid_LatTC_a0, CpxDiopsid_LatTC_b1, CpxDiopsid_LatTC_ymin, CpxDiopsid_LatTC_ymax,
+             P_log, T_mod, T_room, CpxDiopsid_TDep_n_Exp);
+          All_Minerals_LatTcond[CpxDiopsid_Index] = CpxDiopsid_LatTCon;
           // Compute lattice thermal conductivities for Garnet (Pyrope)
           double GrtPyropes_LatTCon = compute_lattice_thermal_conductivity(
             GrtPyropes_LatTC_a0, GrtPyropes_LatTC_b1, GrtPyropes_LatTC_ymin, GrtPyropes_LatTC_ymax,
             P_log, T_mod, T_room, GrtPyropes_TDep_n_Exp);
-            All_Minerals_LatTcond[GrtPyropes_Index] = GrtPyropes_LatTCon;
+          All_Minerals_LatTcond[GrtPyropes_Index] = GrtPyropes_LatTCon;
           // Compute lattice thermal conductivities for Garnet (Grossular)
           // Compute lattice thermal conductivities for Garnet (Almandine)
           // Compute lattice thermal conductivities for Garnet (Majorite)
@@ -782,6 +786,9 @@ namespace aspect
             OpxEnstati_RadTC_c0, OpxEnstati_RadTC_d1, OpxEnstati_RadTC_jmin, OpxEnstati_RadTC_jmax, T_log);
             All_Minerals_RadTcond[OpxEnstati_Index] = OpxEnstati_RadTCon;
           // Compute radiative thermal conductivities for Clinopyroxene (Diopside)
+          double CpxDiopsid_RadTCon = compute_radiative_thermal_conductivity(
+            CpxDiopsid_RadTC_c0, CpxDiopsid_RadTC_d1, CpxDiopsid_RadTC_jmin, CpxDiopsid_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[CpxDiopsid_Index] = CpxDiopsid_RadTCon;
           // Compute radiative thermal conductivities for Garnet (Pyrope)
           double GrtPyropes_RadTCon = compute_radiative_thermal_conductivity(
             GrtPyropes_RadTC_c0, GrtPyropes_RadTC_d1, GrtPyropes_RadTC_jmin, GrtPyropes_RadTC_jmax, T_log);
@@ -835,6 +842,9 @@ namespace aspect
             OpxEnstati_LatTCon, OpxEnstati_RadTCon);
             All_Minerals_TotTcond[OpxEnstati_Index] = OpxEnstati_TotTCon;
           // Compute total thermal conductivities for Clinopyroxene (Diopside)
+          double CpxDiopsid_TotTCon = compute_total_thermal_conductivity(
+            CpxDiopsid_LatTCon, CpxDiopsid_RadTCon);
+            All_Minerals_TotTcond[CpxDiopsid_Index] = CpxDiopsid_TotTCon;
           // Compute total thermal conductivities for Garnet (Pyrope)
           double GrtPyropes_TotTCon = compute_total_thermal_conductivity(
             GrtPyropes_LatTCon, GrtPyropes_RadTCon);
