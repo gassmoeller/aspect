@@ -137,21 +137,21 @@ namespace aspect
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [(Al,Mg)SiO3]
-        // const double En90Brigma_LatTC_a0 =  -4.331500000;
-        // const double En90Brigma_LatTC_b1 =   1.027000000; 
-        // const double En90Brigma_LatTC_ymin = 1.845020046; 
-        // const double En90Brigma_LatTC_ymax = 4.605170186;  
-        // const double En90Brigma_TDep_n_Exp = 0.61983;
+        // const double AlMgBrigma_LatTC_a0 =  -4.331500000;
+        // const double AlMgBrigma_LatTC_b1 =   1.027000000; 
+        // const double AlMgBrigma_LatTC_ymin = 1.845020046; 
+        // const double AlMgBrigma_LatTC_ymax = 4.605170186;  
+        // const double AlMgBrigma_TDep_n_Exp = 0.61983;
 
         // Coefficients for Fe,Al-bridgmanite
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [(Fe,Al,Mg)SiO3]
-        // const double En90Brigma_LatTC_a0 =  -4.510600000;
-        // const double En90Brigma_LatTC_b1 =   1.066800000; 
-        // const double En90Brigma_LatTC_ymin = 1.389093953; 
-        // const double En90Brigma_LatTC_ymax = 3.912023005;  
-        // const double En90Brigma_TDep_n_Exp = 0.46815;
+        // const double FeAlBrigma_LatTC_a0 =  -4.510600000;
+        // const double FeAlBrigma_LatTC_b1 =   1.066800000; 
+        // const double FeAlBrigma_LatTC_ymin = 1.389093953; 
+        // const double FeAlBrigma_LatTC_ymax = 3.912023005;  
+        // const double FeAlBrigma_TDep_n_Exp = 0.46815;
          
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of 
@@ -416,6 +416,46 @@ namespace aspect
         const double RingwooDry_RadTC_d1 =    3.5985000000;
         const double RingwooDry_RadTC_jmin = -23.025850930;
         const double RingwooDry_RadTC_jmax =  0.4027750000; 
+
+        // Coefficients for Mg-bridgmanite
+        // assumed 0 for now - no data available
+        // mineral composition [MgSiO3]
+        // const double En100Brigm_RadTC_c0 = 0;
+        // const double En100Brigm_RadTC_d1 = 0; 
+        // const double En100Brigm_RadTC_jmin = -23.025850930; 
+        // const double En100Brigm_RadTC_jmax = -23.050000000;  
+
+        // Coefficients for Fe-bridgmanite (3%)
+        // assumed 0 for now - no data available
+        // mineral composition [Fe0.03Mg0.97SiO3]
+        // const double En97Brigma_RadTC_c0 =  0;
+        // const double En97Brigma_RadTC_d1 =  0; 
+        // const double En97Brigma_RadTC_jmin = -23.025850930; 
+        // const double En97Brigma_RadTC_jmax = -23.050000000;  
+
+        // Coefficients for Fe-bridgmanite (10%)
+        // assumed 0 for now - no data available
+        // mineral composition [Fe0.1Mg0.9SiO3]
+        // const double En90Brigma_RadTC_c0 =  0;
+        // const double En90Brigma_RadTC_d1 =  0; 
+        // const double En90Brigma_RadTC_jmin = -23.025850930; 
+        // const double En90Brigma_RadTC_jmax = -23.050000000;  
+
+        // Coefficients for Al-bridgmanite
+        // assumed 0 for now - no data available
+        // mineral composition [(Al,Mg)SiO3]
+        // const double AlMgBrigma_RadTC_c0 =  0;
+        // const double AlMgBrigma_RadTC_d1 =  0; 
+        // const double AlMgBrigma_RadTC_jmin = -23.025850930; 
+        // const double AlMgBrigma_RadTC_jmax = -23.050000000;  
+
+        // Coefficients for Fe,Al-bridgmanite
+        // assumed 0 for now - no data available
+        // mineral composition [(Fe,Al,Mg)SiO3]
+        // const double FeAlBrigma_LatTC_c0 =  0;
+        // const double FeAlBrigma_LatTC_d1 =  0; 
+        // const double FeAlBrigma_LatTC_jmin = -23.025850930; 
+        // const double FeAlBrigma_LatTC_jmax = -23.050000000;  
 
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of
