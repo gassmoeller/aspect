@@ -289,11 +289,11 @@ namespace aspect
         // https://doi.org/10.1016/j.epsl.2022.117477
         // mineral composition [(Al,Si)O2]
         const int Al05Stisho_Index = MineralPar_Index++;
-        // const double Al05Stisho_LatTC_a0 = -6.4411;
-        // const double Al05Stisho_LatTC_b1 =  1.5885;
-        // const double Al05Stisho_LatTC_ymin = 3.188855035;
-        // const double Al05Stisho_LatTC_ymax = 4.154336189;
-        // const double Al05Stisho_TDep_n_Exp = 0.5;
+        const double Al05Stisho_LatTC_a0 = -6.4411;
+        const double Al05Stisho_LatTC_b1 =  1.5885;
+        const double Al05Stisho_LatTC_ymin = 3.188855035;
+        const double Al05Stisho_LatTC_ymax = 4.154336189;
+        const double Al05Stisho_TDep_n_Exp = 0.5;
 
         // Coefficients for antigorite (serpentine)
         // retreived from fitting dataset of
@@ -574,10 +574,10 @@ namespace aspect
         // Coefficients for Al-stishovite (5 vol%)
         // assumed 0 for now - no data available
         // mineral composition [(Al,Si)O2]
-        // const double Al05Stisho_RadTC_c0  =   0;
-        // const double Al05Stisho_RadTC_d1  =   0;
-        // const double Al05Stisho_RadTC_jmin = -23.025850930; 
-        // const double Al05Stisho_RadTC_jmax = -23.050000000;
+        const double Al05Stisho_RadTC_c0  =   0;
+        const double Al05Stisho_RadTC_d1  =   0;
+        const double Al05Stisho_RadTC_jmin = -23.025850930; 
+        const double Al05Stisho_RadTC_jmax = -23.050000000;
 
         // Coefficients for antigorite (serpentine)
         // assumed 0 for now - no data available
@@ -768,6 +768,10 @@ namespace aspect
             P_log, T_mod, T_room, Stishovite_TDep_n_Exp);
           All_Minerals_LatTcond[Stishovite_Index] = Stishovite_LatTCon;
           // Compute lattice thermal conductivities for Al-stishovite (5 vol%)
+          double Al05Stisho_LatTCon = compute_lattice_thermal_conductivity(
+            Al05Stisho_LatTC_a0, Al05Stisho_LatTC_b1, Al05Stisho_LatTC_ymin, Al05Stisho_LatTC_ymax,
+            P_log, T_mod, T_room, Al05Stisho_TDep_n_Exp);
+          All_Minerals_LatTcond[Al05Stisho_Index] = Al05Stisho_LatTCon;
           // Compute lattice thermal conductivities for Antigorite (010)
           // Compute lattice thermal conductivities for Antigorite (001)
           // Compute lattice thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
@@ -842,6 +846,9 @@ namespace aspect
             Stishovite_RadTC_c0, Stishovite_RadTC_d1, Stishovite_RadTC_jmin, Stishovite_RadTC_jmax, T_log);
             All_Minerals_RadTcond[Stishovite_Index] = Stishovite_RadTCon;
           // Compute radiative thermal conductivities for Al-stishovite (5 vol%)
+          double Al05Stisho_RadTCon = compute_radiative_thermal_conductivity(
+            Al05Stisho_RadTC_c0, Al05Stisho_RadTC_d1, Al05Stisho_RadTC_jmin, Al05Stisho_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[Al05Stisho_Index] = Al05Stisho_RadTCon;
           // Compute radiative thermal conductivities for Antigorite (010)
           // Compute radiative thermal conductivities for Antigorite (001)
           // Compute radiative thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
@@ -916,6 +923,9 @@ namespace aspect
             Stishovite_LatTCon, Stishovite_RadTCon);
             All_Minerals_TotTcond[Stishovite_Index] = Stishovite_TotTCon;
           // Compute total thermal conductivities for Al-stishovite (5 vol%)
+          double Al05Stisho_TotTCon = compute_total_thermal_conductivity(
+            Al05Stisho_LatTCon, Al05Stisho_RadTCon);
+            All_Minerals_TotTcond[Al05Stisho_Index] = Al05Stisho_TotTCon;
           // Compute total thermal conductivities for Antigorite (010)
           // Compute total thermal conductivities for Antigorite (001)
           // Compute total thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
