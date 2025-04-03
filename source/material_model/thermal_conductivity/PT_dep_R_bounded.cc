@@ -266,10 +266,10 @@ namespace aspect
         // mineral composition [SiO2]
         const int Stishovite_Index = MineralPar_Index++;
         // < 52 [GPa]
-        // const double Stishovite_LatTC_a0 =  16.917;
-        // const double Stishovite_LatTC_b1 = -4.6187;
-        // const double Stishovite_LatTC_ymin = 4.096113064; 
-        // const double Stishovite_LatTC_ymax = 4.217974805;
+        const double Stishovite_LatTC_a0 =  16.917;
+        const double Stishovite_LatTC_b1 = -4.6187;
+        const double Stishovite_LatTC_ymin = 4.096113064; 
+        const double Stishovite_LatTC_ymax = 4.217974805;
         // 52-56 [GPa]
         // const double Stishovite_LatTC_c0 = -156.12;
         // const double Stishovite_LatTC_d1 =  39.182;
@@ -281,7 +281,7 @@ namespace aspect
         // const double Stishovite_LatTC_ymin = 3.960844211;
         // const double Stishovite_LatTC_ymax = 4.738489125;
         // Temperature
-        // const double Stishovite_TDep_n_Exp = 0.5;
+        const double Stishovite_TDep_n_Exp = 0.5;
 
         // Coefficients for Al-stishovite (5 vol%)
         // retreived from fitting dataset of
@@ -566,10 +566,10 @@ namespace aspect
         // Coefficients for stishovite
         // assumed 0 for now - no data available
         // mineral composition [SiO2]
-        // const double Stishovite_RadTC_c0  =   0;
-        // const double Stishovite_RadTC_d1  =   0;
-        // const double Stishovite_RadTC_jmin = -23.025850930; 
-        // const double Stishovite_RadTC_jmax = -23.050000000;
+        const double Stishovite_RadTC_c0  =   0;
+        const double Stishovite_RadTC_d1  =   0;
+        const double Stishovite_RadTC_jmin = -23.025850930; 
+        const double Stishovite_RadTC_jmax = -23.050000000;
 
         // Coefficients for Al-stishovite (5 vol%)
         // assumed 0 for now - no data available
@@ -763,6 +763,10 @@ namespace aspect
             P_log, T_mod, T_room, CoesitSiO2_TDep_n_Exp);
           All_Minerals_LatTcond[CoesitSiO2_Index] = CoesitSiO2_LatTCon;
           // Compute lattice thermal conductivities for Stishovite
+          double Stishovite_LatTCon = compute_lattice_thermal_conductivity(
+            Stishovite_LatTC_a0, Stishovite_LatTC_b1, Stishovite_LatTC_ymin, Stishovite_LatTC_ymax,
+            P_log, T_mod, T_room, Stishovite_TDep_n_Exp);
+          All_Minerals_LatTcond[Stishovite_Index] = Stishovite_LatTCon;
           // Compute lattice thermal conductivities for Al-stishovite (5 vol%)
           // Compute lattice thermal conductivities for Antigorite (010)
           // Compute lattice thermal conductivities for Antigorite (001)
@@ -834,6 +838,9 @@ namespace aspect
             CoesitSiO2_RadTC_c0, CoesitSiO2_RadTC_d1, CoesitSiO2_RadTC_jmin, CoesitSiO2_RadTC_jmax, T_log);
             All_Minerals_RadTcond[CoesitSiO2_Index] = CoesitSiO2_RadTCon;
           // Compute radiative thermal conductivities for Stishovite
+          double Stishovite_RadTCon = compute_radiative_thermal_conductivity(
+            Stishovite_RadTC_c0, Stishovite_RadTC_d1, Stishovite_RadTC_jmin, Stishovite_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[Stishovite_Index] = Stishovite_RadTCon;
           // Compute radiative thermal conductivities for Al-stishovite (5 vol%)
           // Compute radiative thermal conductivities for Antigorite (010)
           // Compute radiative thermal conductivities for Antigorite (001)
@@ -905,6 +912,9 @@ namespace aspect
             CoesitSiO2_LatTCon, CoesitSiO2_RadTCon);
             All_Minerals_TotTcond[CoesitSiO2_Index] = CoesitSiO2_TotTCon;
           // Compute total thermal conductivities for Stishovite
+          double Stishovite_TotTCon = compute_total_thermal_conductivity(
+            Stishovite_LatTCon, Stishovite_RadTCon);
+            All_Minerals_TotTcond[Stishovite_Index] = Stishovite_TotTCon;
           // Compute total thermal conductivities for Al-stishovite (5 vol%)
           // Compute total thermal conductivities for Antigorite (010)
           // Compute total thermal conductivities for Antigorite (001)
