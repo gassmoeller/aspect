@@ -253,11 +253,11 @@ namespace aspect
         // https://doi.org/10.1016/0031-9201(78)90036-5
         // mineral composition [SiO2]
         const int CoesitSiO2_Index = MineralPar_Index++;
-        // const double CoesitSiO2_LatTC_a0 =   -12.728;
-        // const double CoesitSiO2_LatTC_b1 =    2.9998;
-        // const double CoesitSiO2_LatTC_ymin =  1.982022416; 
-        // const double CoesitSiO2_LatTC_ymax =  2.249036030;
-        // const double CoesitSiO2_TDep_n_Exp =  1.015433333;
+        const double CoesitSiO2_LatTC_a0 =   -12.728;
+        const double CoesitSiO2_LatTC_b1 =    2.9998;
+        const double CoesitSiO2_LatTC_ymin =  1.982022416; 
+        const double CoesitSiO2_LatTC_ymax =  2.249036030;
+        const double CoesitSiO2_TDep_n_Exp =  1.015433333;
 
         // Coefficients for stishovite
         // retreived from fitting dataset of
@@ -558,10 +558,10 @@ namespace aspect
         // Coefficients for coesite
         // assumed 0 for now - no data available
         // mineral composition [SiO2]
-        // const double CoesitSiO2_RadTC_c0  =   0;
-        // const double CoesitSiO2_RadTC_d1  =   0;
-        // const double CoesitSiO2_RadTC_jmin = -23.025850930; 
-        // const double CoesitSiO2_RadTC_jmax = -23.050000000;
+        const double CoesitSiO2_RadTC_c0  =   0;
+        const double CoesitSiO2_RadTC_d1  =   0;
+        const double CoesitSiO2_RadTC_jmin = -23.025850930; 
+        const double CoesitSiO2_RadTC_jmax = -23.050000000;
 
         // Coefficients for stishovite
         // assumed 0 for now - no data available
@@ -758,6 +758,10 @@ namespace aspect
             P_log, T_mod, T_room, QuartzPure_TDep_n_Exp);
           All_Minerals_LatTcond[QuartzPure_Index] = QuartzPure_LatTCon;
           // Compute lattice thermal conductivities for Coesite
+          double CoesitSiO2_LatTCon = compute_lattice_thermal_conductivity(
+            CoesitSiO2_LatTC_a0, CoesitSiO2_LatTC_b1, CoesitSiO2_LatTC_ymin, CoesitSiO2_LatTC_ymax,
+            P_log, T_mod, T_room, CoesitSiO2_TDep_n_Exp);
+          All_Minerals_LatTcond[CoesitSiO2_Index] = CoesitSiO2_LatTCon;
           // Compute lattice thermal conductivities for Stishovite
           // Compute lattice thermal conductivities for Al-stishovite (5 vol%)
           // Compute lattice thermal conductivities for Antigorite (010)
@@ -826,6 +830,9 @@ namespace aspect
             QuartzPure_RadTC_c0, QuartzPure_RadTC_d1, QuartzPure_RadTC_jmin, QuartzPure_RadTC_jmax, T_log);
             All_Minerals_RadTcond[QuartzPure_Index] = QuartzPure_RadTCon;
           // Compute radiative thermal conductivities for Coesite
+          double CoesitSiO2_RadTCon = compute_radiative_thermal_conductivity(
+            CoesitSiO2_RadTC_c0, CoesitSiO2_RadTC_d1, CoesitSiO2_RadTC_jmin, CoesitSiO2_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[CoesitSiO2_Index] = CoesitSiO2_RadTCon;
           // Compute radiative thermal conductivities for Stishovite
           // Compute radiative thermal conductivities for Al-stishovite (5 vol%)
           // Compute radiative thermal conductivities for Antigorite (010)
@@ -894,6 +901,9 @@ namespace aspect
             QuartzPure_LatTCon, QuartzPure_RadTCon);
             All_Minerals_TotTcond[QuartzPure_Index] = QuartzPure_TotTCon;
           // Compute total thermal conductivities for Coesite
+          double CoesitSiO2_TotTCon = compute_total_thermal_conductivity(
+            CoesitSiO2_LatTCon, CoesitSiO2_RadTCon);
+            All_Minerals_TotTcond[CoesitSiO2_Index] = CoesitSiO2_TotTCon;
           // Compute total thermal conductivities for Stishovite
           // Compute total thermal conductivities for Al-stishovite (5 vol%)
           // Compute total thermal conductivities for Antigorite (010)
