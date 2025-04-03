@@ -410,11 +410,11 @@ namespace aspect
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [MgSiO3]
         const int Akimotoite_Index = MineralPar_Index++;
-        // const double Akimotoite_LatTC_a0 =  -4.368700000;
-        // const double Akimotoite_LatTC_b1 =   1.076600000; 
-        // const double Akimotoite_LatTC_ymin = 2.376025820; 
-        // const double Akimotoite_LatTC_ymax = 5.010635294;  
-        // const double Akimotoite_TDep_n_Exp = 0.5;
+        const double Akimotoite_LatTC_a0 =  -4.368700000;
+        const double Akimotoite_LatTC_b1 =   1.076600000; 
+        const double Akimotoite_LatTC_ymin = 2.376025820; 
+        const double Akimotoite_LatTC_ymax = 5.010635294;  
+        const double Akimotoite_TDep_n_Exp = 0.5;
 
         // Define coefficients for radiative thermal conductivity of different minerals
 
@@ -655,10 +655,10 @@ namespace aspect
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]       
         // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [MgSiO3] 
-        // const double Akimotoite_RadTC_c0 = 21.0980;
-        // const double Akimotoite_RadTC_d1 =  -1.2506;
-        // const double Akimotoite_RadTC_jmin = -23.025850930; 
-        // const double Akimotoite_RadTC_jmax = 0.300104592;
+        const double Akimotoite_RadTC_c0 = 21.0980;
+        const double Akimotoite_RadTC_d1 =  -1.2506;
+        const double Akimotoite_RadTC_jmin = -23.025850930; 
+        const double Akimotoite_RadTC_jmax = 0.300104592;
 
         // Preallocate a vector for storing thermal conductivities of minerals
         std::vector<double> All_Minerals_LatTcond(MineralPar_Index, 0.0);
@@ -823,6 +823,10 @@ namespace aspect
             P_log, T_mod, T_room, NewHexAlPh_TDep_n_Exp);
           All_Minerals_LatTcond[NewHexAlPh_Index] = NewHexAlPh_LatTCon;
           // Compute lattice thermal conductivities for Akimotoite
+          double Akimotoite_LatTCon = compute_lattice_thermal_conductivity(
+            Akimotoite_LatTC_a0, Akimotoite_LatTC_b1, Akimotoite_LatTC_ymin, Akimotoite_LatTC_ymax,
+            P_log, T_mod, T_room, Akimotoite_TDep_n_Exp);
+          All_Minerals_LatTcond[Akimotoite_Index] = Akimotoite_LatTCon;
 
           // Compute radiative thermal conductivities for DryOlivine
           double OlivineDry_RadTCon = compute_radiative_thermal_conductivity(
@@ -933,6 +937,9 @@ namespace aspect
             NewHexAlPh_RadTC_c0, NewHexAlPh_RadTC_d1, NewHexAlPh_RadTC_jmin, NewHexAlPh_RadTC_jmax, T_log);
             All_Minerals_RadTcond[NewHexAlPh_Index] = NewHexAlPh_RadTCon;
           // Compute radiative thermal conductivities for Akimotoite
+          double Akimotoite_RadTCon = compute_radiative_thermal_conductivity(
+            Akimotoite_RadTC_c0, Akimotoite_RadTC_d1, Akimotoite_RadTC_jmin, Akimotoite_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[Akimotoite_Index] = Akimotoite_RadTCon;
 
           // Compute total thermal conductivities for DryOlivine
           double OlivineDry_TotTCon = compute_total_thermal_conductivity(
@@ -1043,6 +1050,9 @@ namespace aspect
             NewHexAlPh_LatTCon, NewHexAlPh_RadTCon);
             All_Minerals_TotTcond[NewHexAlPh_Index] = NewHexAlPh_TotTCon;
           // Compute total thermal conductivities for Akimotoite
+          double Akimotoite_TotTCon = compute_total_thermal_conductivity(
+            Akimotoite_LatTCon, Akimotoite_RadTCon);
+            All_Minerals_TotTcond[Akimotoite_Index] = Akimotoite_TotTCon;
     
           // Fill the matrix column by column
           for (unsigned int i = 0; i < MineralPar_Index; ++i)
