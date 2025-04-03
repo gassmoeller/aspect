@@ -342,7 +342,7 @@ namespace aspect
         // const double FeAlPhaseD_LatTC_ymin = 1.313988596; 
         // const double FeAlPhaseD_LatTC_ymax = 2.992561000;
         // Temperature-dependency
-        // const double FeAlPhaseD_Temperat_Exp = 0.5;
+        const double FeAlPhaseD_TDep_n_Exp = 0.5;
 
         // Coefficients for Al-phase D (Dense Hydrous Magnesium Silicate)
         // retreived from fitting dataset of
@@ -354,32 +354,32 @@ namespace aspect
         const double Al02PhaseD_LatTC_b1 =  1.8514;
         const double Al02PhaseD_LatTC_ymin = 1.285874399; 
         const double Al02PhaseD_LatTC_ymax = 3.502412041;
-        const double Al02PhaseD_Temperat_Exp = 0.5;
+        const double Al02PhaseD_TDep_n_Exp = 0.5;
 
         // Coefficients for ferropericlase (Mg1-xFexO)
         // retreived from fitting dataset of
         // [Hsieh et al., 2018, PNAS, vol. 115, no. 16, p. 4099-4104]
         // mineral composition [Mg0.92Fe0.08O] - (8% Iron)
         const int Ferroper08_Index = MineralPar_Index++;
-        // const double Ferroper08_LatTC_a0 = -6.9942;
-        // const double Ferroper08_LatTC_b1 =  1.953;
-        // const double Ferroper08_LatTC_ymin = 1.629240539; 
-        // const double Ferroper08_LatTC_ymax = 4.118362306;
-        // const double Ferroper08_Temperat_Exp = 0.5;
+        const double Ferroper08_LatTC_a0 = -6.9942;
+        const double Ferroper08_LatTC_b1 =  1.953;
+        const double Ferroper08_LatTC_ymin = 1.629240539; 
+        const double Ferroper08_LatTC_ymax = 4.118362306;
+        const double Ferroper08_TDep_n_Exp = 0.5;
         // mineral composition [Mg0.90Fe0.10O] - (10% Iron)
         const int Ferroper10_Index = MineralPar_Index++;
-        // const double Ferroper10_LatTC_a0 = -5.2408;
-        // const double Ferroper10_LatTC_b1 =  0.9649;
-        // const double Ferroper10_LatTC_ymin = 1.2490430868; 
-        // const double Ferroper10_LatTC_ymax = 3.9318256327;
-        // const double Ferroper10_Temperat_Exp = 0.025;
+        const double Ferroper10_LatTC_a0 = -5.2408;
+        const double Ferroper10_LatTC_b1 =  0.9649;
+        const double Ferroper10_LatTC_ymin = 1.2490430868; 
+        const double Ferroper10_LatTC_ymax = 3.9318256327;
+        const double Ferroper10_TDep_n_Exp = 0.025;
         // mineral composition [Mg0.44Fe0.56O] (56% Iron)
         const int Ferroper56_Index = MineralPar_Index++;
-        // const double Ferroper56_LatTC_a0 = -3.8298;
-        // const double Ferroper56_LatTC_b1 =  1.1507;
-        // const double Ferroper56_LatTC_ymin = 0.993251773; 
-        // const double Ferroper56_LatTC_ymax = 3.592193222;
-        // const double Ferroper08_Temperat_Exp = 0.5;
+        const double Ferroper56_LatTC_a0 = -3.8298;
+        const double Ferroper56_LatTC_b1 =  1.1507;
+        const double Ferroper56_LatTC_ymin = 0.993251773; 
+        const double Ferroper56_LatTC_ymax = 3.592193222;
+        const double Ferroper56_TDep_n_Exp = 0.5;
 
         // Coefficients for davemaoite 
         // retreived from fitting dataset of
@@ -391,7 +391,7 @@ namespace aspect
         // const double Davemaoite_LatTC_b1 =  1.3661;
         // const double Davemaoite_LatTC_ymin = 2.388762789; 
         // const double Davemaoite_LatTC_ymax = 4.045106030;
-        // const double Davemaoite_Temperat_Exp = 0.5;
+        // const double Davemaoite_TDep_n_Exp = 0.5;
 
         // Coefficients for new-hexagonal-alluminium-phase (FeNAL) 
         // retreived from fitting dataset of
@@ -403,7 +403,7 @@ namespace aspect
         // const double NewHexAlPh_LatTC_b1 =  7.7792;
         // const double NewHexAlPh_LatTC_ymin = 2.363551955; 
         // const double NewHexAlPh_LatTC_ymax = 3.653998874;
-        // const double NewHexAlPh_Temperat_Exp = 0.5;
+        // const double NewHexAlPh_TDep_n_Exp = 0.5;
 
         // Coefficients for Akimotoite
         // assumed to be equal to En100-Bridgmanite
@@ -612,20 +612,20 @@ namespace aspect
         // Coefficients for ferropericlase (Mg1-xFexO)
         // assumed 0 for now - no data available
         // mineral composition [Mg0.92Fe0.08O] - (8% Iron)
-        // const double Ferroper08_RadTC_c0 = 0;
-        // const double Ferroper08_RadTC_d1 = 0;
-        // const double Ferroper08_RadTC_jmin = -23.025850930; 
-        // const double Ferroper08_RadTC_jmax = -23.050000000;
+        const double Ferroper08_RadTC_c0 = 0;
+        const double Ferroper08_RadTC_d1 = 0;
+        const double Ferroper08_RadTC_jmin = -23.025850930; 
+        const double Ferroper08_RadTC_jmax = -23.050000000;
         // mineral composition [Mg0.90Fe0.10O] - (10% Iron)
-        // const double Ferroper10_RadTC_c0 = 0;
-        // const double Ferroper10_RadTC_d1 = 0;
-        // const double Ferroper10_RadTC_jmin = -23.025850930; 
-        // const double Ferroper10_RadTC_jmax = -23.050000000;
+        const double Ferroper10_RadTC_c0 = 0;
+        const double Ferroper10_RadTC_d1 = 0;
+        const double Ferroper10_RadTC_jmin = -23.025850930; 
+        const double Ferroper10_RadTC_jmax = -23.050000000;
         // mineral composition [Mg0.44Fe0.56O] (56% Iron)
-        // const double Ferroper56_RadTC_c0 = 0;
-        // const double Ferroper56_RadTC_d1 = 0;
-        // const double Ferroper56_RadTC_jmin = -23.025850930; 
-        // const double Ferroper56_RadTC_jmax = -23.050000000;
+        const double Ferroper56_RadTC_c0 = 0;
+        const double Ferroper56_RadTC_d1 = 0;
+        const double Ferroper56_RadTC_jmin = -23.025850930; 
+        const double Ferroper56_RadTC_jmax = -23.050000000;
 
         // Coefficients for davemaoite
         // NOTE: here is depth dependent
