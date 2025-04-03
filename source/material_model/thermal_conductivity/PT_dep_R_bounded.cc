@@ -717,6 +717,11 @@ namespace aspect
             En90Brigma_LatTC_a0, En90Brigma_LatTC_b1, En90Brigma_LatTC_ymin, En90Brigma_LatTC_ymax,
             P_log, T_mod, T_room, En90Brigma_TDep_n_Exp);
             All_Minerals_LatTcond[En90Brigma_Index] = En90Brigma_LatTCon;
+          // Compute lattice thermal conductivities for Al-Bridgmanite
+          double AlMgBrigma_LatTCon = compute_lattice_thermal_conductivity(
+            AlMgBrigma_LatTC_a0, AlMgBrigma_LatTC_b1, AlMgBrigma_LatTC_ymin, AlMgBrigma_LatTC_ymax,
+            P_log, T_mod, T_room, AlMgBrigma_TDep_n_Exp);
+            All_Minerals_LatTcond[AlMgBrigma_Index] = AlMgBrigma_LatTCon;
           // Compute lattice thermal conductivities for Fe,Al-Bridgmanite
           double FeAlBrigma_LatTCon = compute_lattice_thermal_conductivity(
             FeAlBrigma_LatTC_a0, FeAlBrigma_LatTC_b1, FeAlBrigma_LatTC_ymin, FeAlBrigma_LatTC_ymax,
@@ -835,6 +840,10 @@ namespace aspect
           double En90Brigma_RadTCon = compute_radiative_thermal_conductivity(
             En90Brigma_RadTC_c0, En90Brigma_RadTC_d1, En90Brigma_RadTC_jmin, En90Brigma_RadTC_jmax, T_log);
             All_Minerals_RadTcond[En90Brigma_Index] = En90Brigma_RadTCon;
+          // Compute radiative thermal conductivities for Al-Bridgmanite
+          double AlMgBrigma_RadTCon = compute_radiative_thermal_conductivity(
+            AlMgBrigma_RadTC_c0, AlMgBrigma_RadTC_d1, AlMgBrigma_RadTC_jmin, AlMgBrigma_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[AlMgBrigma_Index] = AlMgBrigma_RadTCon;
           // Compute radiative thermal conductivities for Fe,Al-Bridgmanite
           double FeAlBrigma_RadTCon = compute_radiative_thermal_conductivity(
             FeAlBrigma_RadTC_c0, FeAlBrigma_RadTC_d1, FeAlBrigma_RadTC_jmin, FeAlBrigma_RadTC_jmax, T_log);
@@ -935,6 +944,10 @@ namespace aspect
           double En90Brigma_TotTCon = compute_total_thermal_conductivity(
             En90Brigma_LatTCon, En90Brigma_RadTCon);
             All_Minerals_TotTcond[En90Brigma_Index] = En90Brigma_TotTCon;
+          // Compute total thermal conductivities for Al-Bridgmanite
+          double AlMgBrigma_TotTCon = compute_total_thermal_conductivity(
+            AlMgBrigma_LatTCon, AlMgBrigma_RadTCon);
+            All_Minerals_TotTcond[AlMgBrigma_Index] = AlMgBrigma_TotTCon;
           // Compute total thermal conductivities for Fe,Al-Bridgmanite
           double FeAlBrigma_TotTCon = compute_total_thermal_conductivity(
             FeAlBrigma_LatTCon, FeAlBrigma_RadTCon);
