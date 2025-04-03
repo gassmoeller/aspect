@@ -86,11 +86,11 @@ namespace aspect
         // [Xu et al., 2004, PEPI, vol 143, pp. 321-336]
         // https://doi.org/10.1016/j.pepi.2004.03.005
         // mineral composition [(Mg1.8Fe0.2)SiO4]
-        // const double WadsleyDry_LatTC_a0 =  -0.665600000;
-        // const double WadsleyDry_LatTC_b1 =   0.308200000;
-        // const double WadsleyDry_LatTC_ymin = 1.75735804249439;
-        // const double WadsleyDry_LatTC_ymax = 2.37090451537473; 
-        // const double WadsleyDry_TDep_n_Exp = 0.5; 
+        const double WadsleyDry_LatTC_a0 =  -0.665600000;
+        const double WadsleyDry_LatTC_b1 =   0.308200000;
+        const double WadsleyDry_LatTC_ymin = 1.75735804249439;
+        const double WadsleyDry_LatTC_ymax = 2.37090451537473; 
+        const double WadsleyDry_TDep_n_Exp = 0.5; 
 
         // Coefficients for dry ringwoodite
         // retreived from fitting dataset of
@@ -402,10 +402,10 @@ namespace aspect
         // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
         // https://doi.org/10.1016/j.epsl.2012.09.035
         // mineral composition [Mg1.8 Fe0.2 SiO4]
-        // const double WadsleyDry_RadTC_c0 =   -21.717000000;
-        // const double WadsleyDry_RadTC_d1 =    3.4271000000;
-        // const double WadsleyDry_RadTC_jmin = -23.025850930;
-        // const double WadsleyDry_RadTC_jmax =  1.0773006810; 
+        const double WadsleyDry_RadTC_c0 =   -21.717000000;
+        const double WadsleyDry_RadTC_d1 =    3.4271000000;
+        const double WadsleyDry_RadTC_jmin = -23.025850930;
+        const double WadsleyDry_RadTC_jmax =  1.0773006810; 
 
         // Coefficients for dry ringwoodite
         // retreived from fitting dataset of
@@ -614,7 +614,10 @@ namespace aspect
           double OlivineDry_LatTCon = compute_lattice_thermal_conductivity(
             OlivineDry_LatTC_a0, OlivineDry_LatTC_b1, OlivineDry_LatTC_ymin, OlivineDry_LatTC_ymax,
             P_log, T_mod, T_room, OlivineDry_TDep_n_Exp);
-          // Compute lattice thermal conductivities for Dry Wadsleyite
+          // Compute lattice thermal conductivities for Dry Wadsleyite 
+          double WadsleyDry_LatTCon = compute_lattice_thermal_conductivity(
+            WadsleyDry_LatTC_a0, WadsleyDry_LatTC_b1, WadsleyDry_LatTC_ymin, WadsleyDry_LatTC_ymax,
+            P_log, T_mod, T_room, WadsleyDry_TDep_n_Exp);
           // Compute lattice thermal conductivities for Dry Ringwoodite
           // Compute lattice thermal conductivities for Mg-Bridgmanite
           // Compute lattice thermal conductivities for Fe-Bridgmanite (3%)
@@ -648,7 +651,9 @@ namespace aspect
           // Compute radiative thermal conductivities for DryOlivine
           double OlivineDry_RadTCon = compute_radiative_thermal_conductivity(
             OlivineDry_RadTC_c0, OlivineDry_RadTC_d1, OlivineDry_RadTC_jmin, OlivineDry_RadTC_jmax, T_log);
-          // Compute radiative thermal conductivities for Dry Wadsleyite
+          // Compute radiative thermal conductivities for Dry Wadsleyite 
+          double WadsleyDry_RadTCon = compute_radiative_thermal_conductivity(
+            WadsleyDry_RadTC_c0, WadsleyDry_RadTC_d1, WadsleyDry_RadTC_jmin, WadsleyDry_RadTC_jmax, T_log);
           // Compute radiative thermal conductivities for Dry Ringwoodite
           // Compute radiative thermal conductivities for Mg-Bridgmanite
           // Compute radiative thermal conductivities for Fe-Bridgmanite (3%)
@@ -681,6 +686,8 @@ namespace aspect
           double OlivineDry_TotTCon = compute_total_thermal_conductivity(
             OlivineDry_LatTCon, OlivineDry_RadTCon);
           // Compute total thermal conductivities for Dry Wadsleyite
+          double WadsleyDry_TotTCon = compute_total_thermal_conductivity(
+            WadsleyDry_LatTCon, WadsleyDry_RadTCon);
           // Compute total thermal conductivities for Dry Ringwoodite
           // Compute total thermal conductivities for Mg-Bridgmanite
           // Compute total thermal conductivities for Fe-Bridgmanite (3%)
@@ -711,9 +718,9 @@ namespace aspect
     
           // Create a 3xn matrix containg the total thermal conductivity of minerals
           std::vector<std::vector<double>> All_Minerals_TConds = {
-          {OlivineDry_LatTCon, OpxEnstati_LatTCon, GrtPyropes_LatTCon},
-          {OlivineDry_RadTCon, OpxEnstati_RadTCon, GrtPyropes_RadTCon},
-          {OlivineDry_TotTCon, OpxEnstati_TotTCon, GrtPyropes_TotTCon}};
+          {OlivineDry_LatTCon, WadsleyDry_LatTCon, OpxEnstati_LatTCon, GrtPyropes_LatTCon},
+          {OlivineDry_RadTCon, WadsleyDry_RadTCon, OpxEnstati_RadTCon, GrtPyropes_RadTCon},
+          {OlivineDry_TotTCon, WadsleyDry_TotTCon, OpxEnstati_TotTCon, GrtPyropes_TotTCon}};
 
           // Compute P,T-dependent thermal conductivities of aggregate rocks 
           // double AggRock_PTDep_LatTCo = std::pow(OlivineDry_PTDep_LatTCo,in.composition[i])*std::pow(OpxEnstati_PTDep_LatTCo,in.composition[i])*std::pow(GrtPyropes_PTDep_LatTCo,in.composition[i]);
