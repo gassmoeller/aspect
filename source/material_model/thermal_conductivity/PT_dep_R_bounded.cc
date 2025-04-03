@@ -241,11 +241,11 @@ namespace aspect
         // https://doi.org/10.1063/1.5114992
         // mineral composition [SiO2]
         const int QuartzPure_Index = MineralPar_Index++;
-        // const double QuartzPure_LatTC_a0 =   -2.0203;
-        // const double QuartzPure_LatTC_b1 =    2.4456;
-        // const double QuartzPure_LatTC_ymin =  2.260981081; 
-        // const double QuartzPure_LatTC_ymax =  2.745391462;
-        // const double QuartzPure_TDep_n_Exp =  1.015433333;
+        const double QuartzPure_LatTC_a0 =   -2.0203;
+        const double QuartzPure_LatTC_b1 =    2.4456;
+        const double QuartzPure_LatTC_ymin =  2.260981081; 
+        const double QuartzPure_LatTC_ymax =  2.745391462;
+        const double QuartzPure_TDep_n_Exp =  1.015433333;
 
         // Coefficients for coesite
         // retreived from fitting dataset of
@@ -550,10 +550,10 @@ namespace aspect
         // Coefficients for quartz
         // assumed 0 for now - no data available
         // mineral composition [SiO2]
-        // const double QuartzPure_RadTC_c0  =   0;
-        // const double QuartzPure_RadTC_d1  =   0;
-        // const double QuartzPure_RadTC_jmin = -23.025850930; 
-        // const double QuartzPure_RadTC_jmax = -23.050000000;
+        const double QuartzPure_RadTC_c0  =   0;
+        const double QuartzPure_RadTC_d1  =   0;
+        const double QuartzPure_RadTC_jmin = -23.025850930; 
+        const double QuartzPure_RadTC_jmax = -23.050000000;
 
         // Coefficients for coesite
         // assumed 0 for now - no data available
@@ -753,6 +753,10 @@ namespace aspect
             P_log, T_mod, T_room, GrtMajorit_TDep_n_Exp);
           All_Minerals_LatTcond[GrtMajorit_Index] = GrtMajorit_LatTCon;
           // Compute lattice thermal conductivities for Quartz
+          double QuartzPure_LatTCon = compute_lattice_thermal_conductivity(
+            QuartzPure_LatTC_a0, QuartzPure_LatTC_b1, QuartzPure_LatTC_ymin, QuartzPure_LatTC_ymax,
+            P_log, T_mod, T_room, QuartzPure_TDep_n_Exp);
+          All_Minerals_LatTcond[QuartzPure_Index] = QuartzPure_LatTCon;
           // Compute lattice thermal conductivities for Coesite
           // Compute lattice thermal conductivities for Stishovite
           // Compute lattice thermal conductivities for Al-stishovite (5 vol%)
@@ -818,6 +822,9 @@ namespace aspect
             GrtMajorit_RadTC_c0, GrtMajorit_RadTC_d1, GrtMajorit_RadTC_jmin, GrtMajorit_RadTC_jmax, T_log);
             All_Minerals_RadTcond[GrtMajorit_Index] = GrtMajorit_RadTCon;
           // Compute radiative thermal conductivities for Quartz
+          double QuartzPure_RadTCon = compute_radiative_thermal_conductivity(
+            QuartzPure_RadTC_c0, QuartzPure_RadTC_d1, QuartzPure_RadTC_jmin, QuartzPure_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[QuartzPure_Index] = QuartzPure_RadTCon;
           // Compute radiative thermal conductivities for Coesite
           // Compute radiative thermal conductivities for Stishovite
           // Compute radiative thermal conductivities for Al-stishovite (5 vol%)
@@ -883,6 +890,9 @@ namespace aspect
             GrtMajorit_LatTCon, GrtMajorit_RadTCon);
             All_Minerals_TotTcond[GrtMajorit_Index] = GrtMajorit_TotTCon;
           // Compute total thermal conductivities for Quartz
+          double QuartzPure_TotTCon = compute_total_thermal_conductivity(
+            QuartzPure_LatTCon, QuartzPure_RadTCon);
+            All_Minerals_TotTcond[QuartzPure_Index] = QuartzPure_TotTCon;
           // Compute total thermal conductivities for Coesite
           // Compute total thermal conductivities for Stishovite
           // Compute total thermal conductivities for Al-stishovite (5 vol%)
