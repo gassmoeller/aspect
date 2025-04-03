@@ -97,11 +97,11 @@ namespace aspect
         // [Marzotto et al., 2020, GRL, vol 47, issue 13]
         // https://doi.org/10.1029/2020GL087607
         // mineral composition [(Mg1.79Fe0.17)Si1.02O4]
-        // const double RingwooDry_LatTC_a0 =  -5.462400000;
-        // const double RingwooDry_LatTC_b1 =   2.079100000;
-        // const double RingwooDry_LatTC_ymin = 1.60943791241410;
-        // const double RingwooDry_LatTC_ymax = 2.94939766245070; 
-        // const double RingwooDry_TDep_n_Exp = 0.5; 
+        const double RingwooDry_LatTC_a0 =  -5.462400000;
+        const double RingwooDry_LatTC_b1 =   2.079100000;
+        const double RingwooDry_LatTC_ymin = 1.60943791241410;
+        const double RingwooDry_LatTC_ymax = 2.94939766245070; 
+        const double RingwooDry_TDep_n_Exp = 0.5; 
 
         // Coefficients for Mg-bridgmanite
         // retreived from fitting dataset of
@@ -412,10 +412,10 @@ namespace aspect
         // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
         // https://doi.org/10.1016/j.epsl.2012.09.035
         // mineral composition [Mg1.8 Fe0.2 SiO4]
-        // const double RingwooDry_RadTC_c0 =   -23.067000000;
-        // const double RingwooDry_RadTC_d1 =    3.5985000000;
-        // const double RingwooDry_RadTC_jmin = -23.025850930;
-        // const double RingwooDry_RadTC_jmax =  0.4027750000; 
+        const double RingwooDry_RadTC_c0 =   -23.067000000;
+        const double RingwooDry_RadTC_d1 =    3.5985000000;
+        const double RingwooDry_RadTC_jmin = -23.025850930;
+        const double RingwooDry_RadTC_jmax =  0.4027750000; 
 
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of
@@ -618,7 +618,10 @@ namespace aspect
           double WadsleyDry_LatTCon = compute_lattice_thermal_conductivity(
             WadsleyDry_LatTC_a0, WadsleyDry_LatTC_b1, WadsleyDry_LatTC_ymin, WadsleyDry_LatTC_ymax,
             P_log, T_mod, T_room, WadsleyDry_TDep_n_Exp);
-          // Compute lattice thermal conductivities for Dry Ringwoodite
+          // Compute lattice thermal conductivities for Dry Ringwoodite  
+          double RingwooDry_LatTCon = compute_lattice_thermal_conductivity(
+            RingwooDry_LatTC_a0, RingwooDry_LatTC_b1, RingwooDry_LatTC_ymin, RingwooDry_LatTC_ymax,
+            P_log, T_mod, T_room, RingwooDry_TDep_n_Exp);
           // Compute lattice thermal conductivities for Mg-Bridgmanite
           // Compute lattice thermal conductivities for Fe-Bridgmanite (3%)
           // Compute lattice thermal conductivities for Fe-Bridgmanite (10%)
@@ -654,7 +657,9 @@ namespace aspect
           // Compute radiative thermal conductivities for Dry Wadsleyite 
           double WadsleyDry_RadTCon = compute_radiative_thermal_conductivity(
             WadsleyDry_RadTC_c0, WadsleyDry_RadTC_d1, WadsleyDry_RadTC_jmin, WadsleyDry_RadTC_jmax, T_log);
-          // Compute radiative thermal conductivities for Dry Ringwoodite
+          // Compute radiative thermal conductivities for Dry Ringwoodite 
+          double RingwooDry_RadTCon = compute_radiative_thermal_conductivity(
+            RingwooDry_RadTC_c0, RingwooDry_RadTC_d1, RingwooDry_RadTC_jmin, RingwooDry_RadTC_jmax, T_log);
           // Compute radiative thermal conductivities for Mg-Bridgmanite
           // Compute radiative thermal conductivities for Fe-Bridgmanite (3%)
           // Compute radiative thermal conductivities for Fe-Bridgmanite (10%)
@@ -688,7 +693,9 @@ namespace aspect
           // Compute total thermal conductivities for Dry Wadsleyite
           double WadsleyDry_TotTCon = compute_total_thermal_conductivity(
             WadsleyDry_LatTCon, WadsleyDry_RadTCon);
-          // Compute total thermal conductivities for Dry Ringwoodite
+          // Compute total thermal conductivities for Dry Ringwoodite 
+          double RingwooDry_TotTCon = compute_total_thermal_conductivity(
+            RingwooDry_LatTCon, RingwooDry_RadTCon);
           // Compute total thermal conductivities for Mg-Bridgmanite
           // Compute total thermal conductivities for Fe-Bridgmanite (3%)
           // Compute total thermal conductivities for Fe-Bridgmanite (10%)
@@ -718,9 +725,9 @@ namespace aspect
     
           // Create a 3xn matrix containg the total thermal conductivity of minerals
           std::vector<std::vector<double>> All_Minerals_TConds = {
-          {OlivineDry_LatTCon, WadsleyDry_LatTCon, OpxEnstati_LatTCon, GrtPyropes_LatTCon},
-          {OlivineDry_RadTCon, WadsleyDry_RadTCon, OpxEnstati_RadTCon, GrtPyropes_RadTCon},
-          {OlivineDry_TotTCon, WadsleyDry_TotTCon, OpxEnstati_TotTCon, GrtPyropes_TotTCon}};
+          {OlivineDry_LatTCon, WadsleyDry_LatTCon, RingwooDry_LatTCon, OpxEnstati_LatTCon, GrtPyropes_LatTCon},
+          {OlivineDry_RadTCon, WadsleyDry_RadTCon, RingwooDry_RadTCon, OpxEnstati_RadTCon, GrtPyropes_RadTCon},
+          {OlivineDry_TotTCon, WadsleyDry_TotTCon, RingwooDry_TotTCon, OpxEnstati_TotTCon, GrtPyropes_TotTCon}};
 
           // Compute P,T-dependent thermal conductivities of aggregate rocks 
           // double AggRock_PTDep_LatTCo = std::pow(OlivineDry_PTDep_LatTCo,in.composition[i])*std::pow(OpxEnstati_PTDep_LatTCo,in.composition[i])*std::pow(GrtPyropes_PTDep_LatTCo,in.composition[i]);
