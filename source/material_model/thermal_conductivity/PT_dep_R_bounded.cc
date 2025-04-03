@@ -217,11 +217,11 @@ namespace aspect
         // https://doi.org/10.2138/am-2023-8953
         // mineral composition [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3]
         const int GrtAlmandi_Index = MineralPar_Index++;
-        // const double GrtAlmandi_LatTC_a0 =  -4.5047;
-        // const double GrtAlmandi_LatTC_b1 =   2.0988;
-        // const double GrtAlmandi_LatTC_ymin = 1.223775432; 
-        // const double GrtAlmandi_LatTC_ymax = 2.374762159;
-        // const double GrtAlmandi_TDep_n_Exp = 0.4172;
+        const double GrtAlmandi_LatTC_a0 =  -4.5047;
+        const double GrtAlmandi_LatTC_b1 =   2.0988;
+        const double GrtAlmandi_LatTC_ymin = 1.223775432; 
+        const double GrtAlmandi_LatTC_ymax = 2.374762159;
+        const double GrtAlmandi_TDep_n_Exp = 0.4172;
 
         // Coefficients for garnet (majorite)
         // retreived from fitting dataset of
@@ -532,10 +532,10 @@ namespace aspect
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3 ]
-        // const double GrtAlmandi_RadTC_c0  =  -11.261000000;
-        // const double GrtAlmandi_RadTC_d1 =    2.0132000000;
-        // const double GrtAlmandi_RadTC_jmin = -23.025850930; 
-        // const double GrtAlmandi_RadTC_jmax =  1.4486839760;
+        const double GrtAlmandi_RadTC_c0  =  -11.261000000;
+        const double GrtAlmandi_RadTC_d1 =    2.0132000000;
+        const double GrtAlmandi_RadTC_jmin = -23.025850930; 
+        const double GrtAlmandi_RadTC_jmax =  1.4486839760;
 
         // Coefficients for garnet (majorite)
         // retreived from fitting dataset of
@@ -743,6 +743,10 @@ namespace aspect
             P_log, T_mod, T_room, GrtGrossul_TDep_n_Exp);
           All_Minerals_LatTcond[GrtGrossul_Index] = GrtGrossul_LatTCon;
           // Compute lattice thermal conductivities for Garnet (Almandine)
+          double GrtAlmandi_LatTCon = compute_lattice_thermal_conductivity(
+            GrtAlmandi_LatTC_a0, GrtAlmandi_LatTC_b1, GrtAlmandi_LatTC_ymin, GrtAlmandi_LatTC_ymax,
+            P_log, T_mod, T_room, GrtAlmandi_TDep_n_Exp);
+          All_Minerals_LatTcond[GrtAlmandi_Index] = GrtAlmandi_LatTCon;
           // Compute lattice thermal conductivities for Garnet (Majorite)
           // Compute lattice thermal conductivities for Quartz
           // Compute lattice thermal conductivities for Coesite
@@ -802,6 +806,9 @@ namespace aspect
             GrtGrossul_RadTC_c0, GrtGrossul_RadTC_d1, GrtGrossul_RadTC_jmin, GrtGrossul_RadTC_jmax, T_log);
             All_Minerals_RadTcond[GrtGrossul_Index] = GrtGrossul_RadTCon;
           // Compute radiative thermal conductivities for Garnet (Almandine)
+          double GrtAlmandi_RadTCon = compute_radiative_thermal_conductivity(
+            GrtAlmandi_RadTC_c0, GrtAlmandi_RadTC_d1, GrtAlmandi_RadTC_jmin, GrtAlmandi_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[GrtAlmandi_Index] = GrtAlmandi_RadTCon;
           // Compute radiative thermal conductivities for Garnet (Majorite)
           // Compute radiative thermal conductivities for Quartz
           // Compute radiative thermal conductivities for Coesite
@@ -861,6 +868,9 @@ namespace aspect
             GrtGrossul_LatTCon, GrtGrossul_RadTCon);
             All_Minerals_TotTcond[GrtGrossul_Index] = GrtGrossul_TotTCon;
           // Compute total thermal conductivities for Garnet (Almandine)
+          double GrtAlmandi_TotTCon = compute_total_thermal_conductivity(
+            GrtAlmandi_LatTCon, GrtAlmandi_RadTCon);
+            All_Minerals_TotTcond[GrtAlmandi_Index] = GrtAlmandi_TotTCon;
           // Compute total thermal conductivities for Garnet (Majorite)
           // Compute total thermal conductivities for Quartz
           // Compute total thermal conductivities for Coesite
