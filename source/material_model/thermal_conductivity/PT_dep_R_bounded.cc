@@ -302,18 +302,18 @@ namespace aspect
         // mineral composition [(Mg2.80Fe0.05)Si2.08O5(OH)3.77]
         // 010 direction
         const int Antigor010_Index = MineralPar_Index++;
-        // const double Antigor010_LatTC_a0 = -4.3374;
-        // const double Antigor010_LatTC_b1 =  2.0217;
-        // const double Antigor010_LatTC_ymin = 1.519513205;
-        // const double Antigor010_LatTC_ymax = 2.434491480;
-        // const double Antigor010_TDep_n_Exp = 0.5;
+        const double Antigor010_LatTC_a0 = -4.3374;
+        const double Antigor010_LatTC_b1 =  2.0217;
+        const double Antigor010_LatTC_ymin = 1.519513205;
+        const double Antigor010_LatTC_ymax = 2.434491480;
+        const double Antigor010_TDep_n_Exp = 0.5;
         // 001 direction
         const int Antigor001_Index = MineralPar_Index++;
-        // const double Antigor001_LatTC_a0 = -3.1109;
-        // const double Antigor001_LatTC_b1 =  2.0644;
-        // const double Antigor001_LatTC_ymin = 0.067658648;
-        // const double Antigor001_LatTC_ymax = 1.552797578;
-        // const double Antigor001_TDep_n_Exp = 0.5;
+        const double Antigor001_LatTC_a0 = -3.1109;
+        const double Antigor001_LatTC_b1 =  2.0644;
+        const double Antigor001_LatTC_ymin = 0.067658648;
+        const double Antigor001_LatTC_ymax = 1.552797578;
+        const double Antigor001_TDep_n_Exp = 0.5;
 
         // Coefficients for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
         // retreived from fitting dataset of
@@ -583,15 +583,15 @@ namespace aspect
         // assumed 0 for now - no data available
         // mineral composition [///]
         // 010 direction
-        // const double Antigor010_RadTC_c0  =   0;
-        // const double Antigor010_RadTC_d1  =   0;
-        // const double Antigor010_RadTC_jmin = -23.025850930; 
-        // const double Antigor010_RadTC_jmax = -23.050000000;
+        const double Antigor010_RadTC_c0  =   0;
+        const double Antigor010_RadTC_d1  =   0;
+        const double Antigor010_RadTC_jmin = -23.025850930; 
+        const double Antigor010_RadTC_jmax = -23.050000000;
         // 001 direction
-        // const double Antigor001_RadTC_c0  =   0;
-        // const double Antigor001_RadTC_d1  =   0;
-        // const double Antigor001_RadTC_jmin = -23.025850930; 
-        // const double Antigor001_RadTC_jmax = -23.050000000;
+        const double Antigor001_RadTC_c0  =   0;
+        const double Antigor001_RadTC_d1  =   0;
+        const double Antigor001_RadTC_jmin = -23.025850930; 
+        const double Antigor001_RadTC_jmax = -23.050000000;
 
         // Coefficients for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
         // assumed 0 for now - no data available
@@ -773,7 +773,15 @@ namespace aspect
             P_log, T_mod, T_room, Al05Stisho_TDep_n_Exp);
           All_Minerals_LatTcond[Al05Stisho_Index] = Al05Stisho_LatTCon;
           // Compute lattice thermal conductivities for Antigorite (010)
+          double Antigor010_LatTCon = compute_lattice_thermal_conductivity(
+            Antigor010_LatTC_a0, Antigor010_LatTC_b1, Antigor010_LatTC_ymin, Antigor010_LatTC_ymax,
+            P_log, T_mod, T_room, Antigor010_TDep_n_Exp);
+          All_Minerals_LatTcond[Antigor010_Index] = Antigor010_LatTCon;
           // Compute lattice thermal conductivities for Antigorite (001)
+          double Antigor001_LatTCon = compute_lattice_thermal_conductivity(
+            Antigor001_LatTC_a0, Antigor001_LatTC_b1, Antigor001_LatTC_ymin, Antigor001_LatTC_ymax,
+            P_log, T_mod, T_room, Antigor001_TDep_n_Exp);
+          All_Minerals_LatTcond[Antigor001_Index] = Antigor001_LatTCon;
           // Compute lattice thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
           // Compute lattice thermal conductivities for Al-phase D (Dense Hydrous Magnesium Silicate)
           // Compute lattice thermal conductivities for Ferropericlase (Mg1-xFexO)
@@ -850,7 +858,13 @@ namespace aspect
             Al05Stisho_RadTC_c0, Al05Stisho_RadTC_d1, Al05Stisho_RadTC_jmin, Al05Stisho_RadTC_jmax, T_log);
             All_Minerals_RadTcond[Al05Stisho_Index] = Al05Stisho_RadTCon;
           // Compute radiative thermal conductivities for Antigorite (010)
+          double Antigor010_RadTCon = compute_radiative_thermal_conductivity(
+            Antigor010_RadTC_c0, Antigor010_RadTC_d1, Antigor010_RadTC_jmin, Antigor010_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[Antigor010_Index] = Antigor010_RadTCon;
           // Compute radiative thermal conductivities for Antigorite (001)
+          double Antigor001_RadTCon = compute_radiative_thermal_conductivity(
+            Antigor001_RadTC_c0, Antigor001_RadTC_d1, Antigor001_RadTC_jmin, Antigor001_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[Antigor001_Index] = Antigor001_RadTCon;
           // Compute radiative thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
           // Compute radiative thermal conductivities for Al-phase D (Dense Hydrous Magnesium Silicate)
           // Compute radiative thermal conductivities for Ferropericlase (Mg1-xFexO)
@@ -927,7 +941,13 @@ namespace aspect
             Al05Stisho_LatTCon, Al05Stisho_RadTCon);
             All_Minerals_TotTcond[Al05Stisho_Index] = Al05Stisho_TotTCon;
           // Compute total thermal conductivities for Antigorite (010)
+          double Antigor010_TotTCon = compute_total_thermal_conductivity(
+            Antigor010_LatTCon, Antigor010_RadTCon);
+            All_Minerals_TotTcond[Antigor010_Index] = Antigor010_TotTCon;
           // Compute total thermal conductivities for Antigorite (001)
+          double Antigor001_TotTCon = compute_total_thermal_conductivity(
+            Antigor001_LatTCon, Antigor001_RadTCon);
+            All_Minerals_TotTcond[Antigor001_Index] = Antigor001_TotTCon;
           // Compute total thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
           // Compute total thermal conductivities for Al-phase D (Dense Hydrous Magnesium Silicate)
           // Compute total thermal conductivities for Ferropericlase (Mg1-xFexO)
