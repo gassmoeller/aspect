@@ -792,7 +792,21 @@ namespace aspect
             Al02PhaseD_LatTC_a0, Al02PhaseD_LatTC_b1, Al02PhaseD_LatTC_ymin, Al02PhaseD_LatTC_ymax,
             P_log, T_mod, T_room, Al02PhaseD_TDep_n_Exp);
           All_Minerals_LatTcond[Al02PhaseD_Index] = Al02PhaseD_LatTCon;
-          // Compute lattice thermal conductivities for Ferropericlase (Mg1-xFexO)
+          // Compute lattice thermal conductivities for Ferropericlase (Mg92Fe8O)
+          double Ferroper08_LatTCon = compute_lattice_thermal_conductivity(
+            Ferroper08_LatTC_a0, Ferroper08_LatTC_b1, Ferroper08_LatTC_ymin, Ferroper08_LatTC_ymax,
+            P_log, T_mod, T_room, Ferroper08_TDep_n_Exp);
+          All_Minerals_LatTcond[Ferroper08_Index] = Ferroper08_LatTCon;
+          // Compute lattice thermal conductivities for Ferropericlase (Mg90Fe10O)
+          double Ferroper10_LatTCon = compute_lattice_thermal_conductivity(
+            Ferroper10_LatTC_a0, Ferroper10_LatTC_b1, Ferroper10_LatTC_ymin, Ferroper10_LatTC_ymax,
+            P_log, T_mod, T_room, Ferroper10_TDep_n_Exp);
+          All_Minerals_LatTcond[Ferroper10_Index] = Ferroper10_LatTCon;
+          // Compute lattice thermal conductivities for Ferropericlase (Mg56Fe44O)
+          double Ferroper56_LatTCon = compute_lattice_thermal_conductivity(
+            Ferroper56_LatTC_a0, Ferroper56_LatTC_b1, Ferroper56_LatTC_ymin, Ferroper56_LatTC_ymax,
+            P_log, T_mod, T_room, Ferroper56_TDep_n_Exp);
+          All_Minerals_LatTcond[Ferroper56_Index] = Ferroper56_LatTCon;
           // Compute lattice thermal conductivities for Davemaoite
           // Compute lattice thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
           // Compute lattice thermal conductivities for Akimotoite
@@ -881,7 +895,18 @@ namespace aspect
           double Al02PhaseD_RadTCon = compute_radiative_thermal_conductivity(
             Al02PhaseD_RadTC_c0, Al02PhaseD_RadTC_d1, Al02PhaseD_RadTC_jmin, Al02PhaseD_RadTC_jmax, T_log);
             All_Minerals_RadTcond[Al02PhaseD_Index] = Al02PhaseD_RadTCon;
-          // Compute radiative thermal conductivities for Ferropericlase (Mg1-xFexO)
+          // Compute radiative thermal conductivities for Ferropericlase (Mg92Fe8O)
+          double Ferroper08_RadTCon = compute_radiative_thermal_conductivity(
+            Ferroper08_RadTC_c0, Ferroper08_RadTC_d1, Ferroper08_RadTC_jmin, Ferroper08_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[Ferroper08_Index] = Ferroper08_RadTCon;
+          // Compute radiative thermal conductivities for Ferropericlase (Mg90Fe10O)
+          double Ferroper10_RadTCon = compute_radiative_thermal_conductivity(
+            Ferroper10_RadTC_c0, Ferroper10_RadTC_d1, Ferroper10_RadTC_jmin, Ferroper10_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[Ferroper10_Index] = Ferroper10_RadTCon;
+          // Compute radiative thermal conductivities for Ferropericlase (Mg56Fe44O)
+          double Ferroper56_RadTCon = compute_radiative_thermal_conductivity(
+            Ferroper56_RadTC_c0, Ferroper56_RadTC_d1, Ferroper56_RadTC_jmin, Ferroper56_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[Ferroper56_Index] = Ferroper56_RadTCon;
           // Compute radiative thermal conductivities for Davemaoite
           // Compute radiative thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
           // Compute radiative thermal conductivities for Akimotoite
@@ -970,7 +995,18 @@ namespace aspect
           double Al02PhaseD_TotTCon = compute_total_thermal_conductivity(
             Al02PhaseD_LatTCon, Al02PhaseD_RadTCon);
             All_Minerals_TotTcond[Al02PhaseD_Index] = Al02PhaseD_TotTCon;
-          // Compute total thermal conductivities for Ferropericlase (Mg1-xFexO)
+          // Compute total thermal conductivities for Ferropericlase (Mg92Fe8O)
+          double Ferroper08_TotTCon = compute_total_thermal_conductivity(
+            Ferroper08_LatTCon, Ferroper08_RadTCon);
+            All_Minerals_TotTcond[Ferroper08_Index] = Ferroper08_TotTCon;
+          // Compute total thermal conductivities for Ferropericlase (Mg90Fe10O)
+          double Ferroper10_TotTCon = compute_total_thermal_conductivity(
+            Ferroper10_LatTCon, Ferroper10_RadTCon);
+            All_Minerals_TotTcond[Ferroper10_Index] = Ferroper10_TotTCon;
+          // Compute total thermal conductivities for Ferropericlase (Mg56Fe44O)
+          double Ferroper56_TotTCon = compute_total_thermal_conductivity(
+            Ferroper56_LatTCon, Ferroper56_RadTCon);
+            All_Minerals_TotTcond[Ferroper56_Index] = Ferroper56_TotTCon;
           // Compute total thermal conductivities for Davemaoite
           // Compute total thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
           // Compute total thermal conductivities for Akimotoite
