@@ -387,11 +387,11 @@ namespace aspect
         // https://doi.org/10.1103/PhysRevB.104.184101
         // mineral composition [CaSiO3]
         const int Davemaoite_Index = MineralPar_Index++;
-        // const double Davemaoite_LatTC_a0 = -4.7377;
-        // const double Davemaoite_LatTC_b1 =  1.3661;
-        // const double Davemaoite_LatTC_ymin = 2.388762789; 
-        // const double Davemaoite_LatTC_ymax = 4.045106030;
-        // const double Davemaoite_TDep_n_Exp = 0.5;
+        const double Davemaoite_LatTC_a0 = -4.7377;
+        const double Davemaoite_LatTC_b1 =  1.3661;
+        const double Davemaoite_LatTC_ymin = 2.388762789; 
+        const double Davemaoite_LatTC_ymax = 4.045106030;
+        const double Davemaoite_TDep_n_Exp = 0.5;
 
         // Coefficients for new-hexagonal-alluminium-phase (FeNAL) 
         // retreived from fitting dataset of
@@ -633,10 +633,10 @@ namespace aspect
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]       
         // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [CaSiO3] 
-        // const double Davemaoite_RadTC_c0 = 21.0980;
-        // const double Davemaoite_RadTC_d1 = -1.2506;
-        // const double Davemaoite_RadTC_jmin = -23.025850930; 
-        // const double Davemaoite_RadTC_jmax = 0.300104592;
+        const double Davemaoite_RadTC_c0 = 21.0980;
+        const double Davemaoite_RadTC_d1 = -1.2506;
+        const double Davemaoite_RadTC_jmin = -23.025850930; 
+        const double Davemaoite_RadTC_jmax = 0.300104592;
 
         // Coefficients for new-hexagonal-alluminium-phase (FeNAL) 
         // NOTE: here is depth dependent
@@ -813,6 +813,10 @@ namespace aspect
             P_log, T_mod, T_room, Ferroper56_TDep_n_Exp);
           All_Minerals_LatTcond[Ferroper56_Index] = Ferroper56_LatTCon;
           // Compute lattice thermal conductivities for Davemaoite
+          double Davemaoite_LatTCon = compute_lattice_thermal_conductivity(
+            Davemaoite_LatTC_a0, Davemaoite_LatTC_b1, Davemaoite_LatTC_ymin, Davemaoite_LatTC_ymax,
+            P_log, T_mod, T_room, Davemaoite_TDep_n_Exp);
+          All_Minerals_LatTcond[Davemaoite_Index] = Davemaoite_LatTCon;
           // Compute lattice thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
           // Compute lattice thermal conductivities for Akimotoite
 
@@ -917,6 +921,9 @@ namespace aspect
             Ferroper56_RadTC_c0, Ferroper56_RadTC_d1, Ferroper56_RadTC_jmin, Ferroper56_RadTC_jmax, T_log);
             All_Minerals_RadTcond[Ferroper56_Index] = Ferroper56_RadTCon;
           // Compute radiative thermal conductivities for Davemaoite
+          double Davemaoite_RadTCon = compute_radiative_thermal_conductivity(
+            Davemaoite_RadTC_c0, Davemaoite_RadTC_d1, Davemaoite_RadTC_jmin, Davemaoite_RadTC_jmax, T_log);
+            All_Minerals_RadTcond[Davemaoite_Index] = Davemaoite_RadTCon;
           // Compute radiative thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
           // Compute radiative thermal conductivities for Akimotoite
 
@@ -1021,6 +1028,9 @@ namespace aspect
             Ferroper56_LatTCon, Ferroper56_RadTCon);
             All_Minerals_TotTcond[Ferroper56_Index] = Ferroper56_TotTCon;
           // Compute total thermal conductivities for Davemaoite
+          double Davemaoite_TotTCon = compute_total_thermal_conductivity(
+            Davemaoite_LatTCon, Davemaoite_RadTCon);
+            All_Minerals_TotTcond[Davemaoite_Index] = Davemaoite_TotTCon;
           // Compute total thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
           // Compute total thermal conductivities for Akimotoite
     
