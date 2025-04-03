@@ -614,268 +614,106 @@ namespace aspect
           double OlivineDry_LatTCon = compute_lattice_thermal_conductivity(
             OlivineDry_LatTC_a0, OlivineDry_LatTC_b1, OlivineDry_LatTC_ymin, OlivineDry_LatTC_ymax,
             P_log, T_mod, T_room, OlivineDry_TDep_n_Exp);
+          // Compute lattice thermal conductivities for Dry Wadsleyite
+          // Compute lattice thermal conductivities for Dry Ringwoodite
+          // Compute lattice thermal conductivities for Mg-Bridgmanite
+          // Compute lattice thermal conductivities for Fe-Bridgmanite (3%)
+          // Compute lattice thermal conductivities for Fe-Bridgmanite (10%)
+          // Compute lattice thermal conductivities for Fe,Al-Bridgmanite
+          // Compute lattice thermal conductivities for Orthopyroxene (Enstatite)
+          double OpxEnstati_LatTCon = compute_lattice_thermal_conductivity(
+            OpxEnstati_LatTC_a0, OpxEnstati_LatTC_b1, OpxEnstati_LatTC_ymin, OpxEnstati_LatTC_ymax,
+            P_log, T_mod, T_room, OpxEnstati_TDep_n_Exp);
+          // Compute lattice thermal conductivities for Clinopyroxene (Diopside)
+          // Compute lattice thermal conductivities for Garnet (Pyrope)
+          double GrtPyropes_LatTCon = compute_lattice_thermal_conductivity(
+            GrtPyropes_LatTC_a0, GrtPyropes_LatTC_b1, GrtPyropes_LatTC_ymin, GrtPyropes_LatTC_ymax,
+            P_log, T_mod, T_room, GrtPyropes_TDep_n_Exp);
+          // Compute lattice thermal conductivities for Garnet (Grossular)
+          // Compute lattice thermal conductivities for Garnet (Almandine)
+          // Compute lattice thermal conductivities for Garnet (Majorite)
+          // Compute lattice thermal conductivities for Quartz
+          // Compute lattice thermal conductivities for Coesite
+          // Compute lattice thermal conductivities for Stishovite
+          // Compute lattice thermal conductivities for Al-stishovite (5 vol%)
+          // Compute lattice thermal conductivities for Antigorite (010)
+          // Compute lattice thermal conductivities for Antigorite (001)
+          // Compute lattice thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
+          // Compute lattice thermal conductivities for Al-phase D (Dense Hydrous Magnesium Silicate)
+          // Compute lattice thermal conductivities for Ferropericlase (Mg1-xFexO)
+          // Compute lattice thermal conductivities for Davemaoite
+          // Compute lattice thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
+          // Compute lattice thermal conductivities for Akimotoite
 
           // Compute radiative thermal conductivities for DryOlivine
           double OlivineDry_RadTCon = compute_radiative_thermal_conductivity(
             OlivineDry_RadTC_c0, OlivineDry_RadTC_d1, OlivineDry_RadTC_jmin, OlivineDry_RadTC_jmax, T_log);
+          // Compute radiative thermal conductivities for Dry Wadsleyite
+          // Compute radiative thermal conductivities for Dry Ringwoodite
+          // Compute radiative thermal conductivities for Mg-Bridgmanite
+          // Compute radiative thermal conductivities for Fe-Bridgmanite (3%)
+          // Compute radiative thermal conductivities for Fe-Bridgmanite (10%)
+          // Compute radiative thermal conductivities for Fe,Al-Bridgmanite
+          // Compute radiative thermal conductivities for Orthopyroxene (Enstatite)
+          double OpxEnstati_RadTCon = compute_radiative_thermal_conductivity(
+            OpxEnstati_RadTC_c0, OpxEnstati_RadTC_d1, OpxEnstati_RadTC_jmin, OpxEnstati_RadTC_jmax, T_log);
+          // Compute radiative thermal conductivities for Clinopyroxene (Diopside)
+          // Compute radiative thermal conductivities for Garnet (Pyrope)
+          double GrtPyropes_RadTCon = compute_radiative_thermal_conductivity(
+            GrtPyropes_RadTC_c0, GrtPyropes_RadTC_d1, GrtPyropes_RadTC_jmin, GrtPyropes_RadTC_jmax, T_log);
+          // Compute radiative thermal conductivities for Garnet (Grossular)
+          // Compute radiative thermal conductivities for Garnet (Almandine)
+          // Compute radiative thermal conductivities for Garnet (Majorite)
+          // Compute radiative thermal conductivities for Quartz
+          // Compute radiative thermal conductivities for Coesite
+          // Compute radiative thermal conductivities for Stishovite
+          // Compute radiative thermal conductivities for Al-stishovite (5 vol%)
+          // Compute radiative thermal conductivities for Antigorite (010)
+          // Compute radiative thermal conductivities for Antigorite (001)
+          // Compute radiative thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
+          // Compute radiative thermal conductivities for Al-phase D (Dense Hydrous Magnesium Silicate)
+          // Compute radiative thermal conductivities for Ferropericlase (Mg1-xFexO)
+          // Compute radiative thermal conductivities for Davemaoite
+          // Compute radiative thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
+          // Compute radiative thermal conductivities for Akimotoite
 
-          // Compute radiative thermal conductivities for DryOlivine
+          // Compute total thermal conductivities for DryOlivine
           double OlivineDry_TotTCon = compute_total_thermal_conductivity(
-            OlivineDry_RadTCon, OlivineDry_RadTCon);
-
-          // Compute the lattice thermal conductivity in real (+,-) and simplex (0->1) 
-          // space considering the boundaries ymin and ymax
-          // Dry Olivine
-          // double OlivineDry_LatTC_zSimpl = OlivineDry_LatTC_a0 + OlivineDry_LatTC_b1*P_log;
-          // double OlivineDry_LatTC_ySimpl = std::exp(OlivineDry_LatTC_zSimpl);
-          // double OlivineDry_LatTC_yPrime = OlivineDry_LatTC_ySimpl/(1+OlivineDry_LatTC_ySimpl);
-          // double OlivineDry_LatTC_yRealS = OlivineDry_LatTC_ymin+(OlivineDry_LatTC_ymax-OlivineDry_LatTC_ymin)*OlivineDry_LatTC_yPrime;
-          // Dry Wadsleyite
-          // Dry Ringwoodite
-          // Mg-Bridgmanite
-          // Fe-Bridgmanite (3%)
-          // Fe-Bridgmanite (10%)
-          // Fe,Al-Bridgmanite
-          // Orthopyroxene (Enstatite)
-          double OpxEnstati_LatTC_zSimpl = OpxEnstati_LatTC_a0 + OpxEnstati_LatTC_b1*P_log;
-          double OpxEnstati_LatTC_ySimpl = std::exp(OpxEnstati_LatTC_zSimpl);
-          double OpxEnstati_LatTC_yPrime = OpxEnstati_LatTC_ySimpl/(1+OpxEnstati_LatTC_ySimpl);
-          double OpxEnstati_LatTC_yRealS = OpxEnstati_LatTC_ymin+(OpxEnstati_LatTC_ymax-OpxEnstati_LatTC_ymin)*OpxEnstati_LatTC_yPrime;
-          // Clinopyroxene (Diopside)
-          // Garnet (Pyrope)
-          double GrtPyropes_LatTC_zSimpl = GrtPyropes_LatTC_a0 + GrtPyropes_LatTC_b1*P_log;
-          double GrtPyropes_LatTC_ySimpl = std::exp(GrtPyropes_LatTC_zSimpl);
-          double GrtPyropes_LatTC_yPrime = GrtPyropes_LatTC_ySimpl/(1+GrtPyropes_LatTC_ySimpl);
-          double GrtPyropes_LatTC_yRealS = GrtPyropes_LatTC_ymin+(GrtPyropes_LatTC_ymax-GrtPyropes_LatTC_ymin)*GrtPyropes_LatTC_yPrime;
-          // Garnet (Grossular)
-          // Garnet (Almandine)
-          // Garnet (Majorite)
-          // Quartz
-          // Coesite
-          // Stishovite
-          // Al-stishovite (5 vol%)
-          // Antigorite (010)
-          // Antigorite (001)
-          // Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Ferropericlase (Mg1-xFexO)
-          // Davemaoite
-          // New-hexagonal-alluminium-phase (FeNAL)
-          // Akimotoite
-
-          // Compute the P-dependent lattice thermal conductivity of minerals 
-          // Dry Olivine
-          // double OlivineDry_PDep_LatTCon = std::exp(OlivineDry_LatTC_yRealS);
-          // Dry Wadsleyite
-          // Dry Ringwoodite
-          // Mg-Bridgmanite
-          // Fe-Bridgmanite (3%)
-          // Fe-Bridgmanite (10%)
-          // Fe,Al-Bridgmanite
-          // Orthopyroxene (Enstatite)
-          double OpxEnstati_PDep_LatTCon = std::exp(OpxEnstati_LatTC_yRealS);
-          // Clinopyroxene (Diopside)
-          // Garnet (Pyrope)
-          double GrtPyropes_PDep_LatTCon = std::exp(GrtPyropes_LatTC_yRealS);
-          // Garnet (Grossular)
-          // Garnet (Almandine)
-          // Garnet (Majorite)
-          // Quartz
-          // Coesite
-          // Stishovite
-          // Al-stishovite (5 vol%)
-          // Antigorite (010)
-          // Antigorite (001)
-          // Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Ferropericlase (Mg1-xFexO)
-          // Davemaoite
-          // New-hexagonal-alluminium-phase (FeNAL)
-          // Akimotoite
-
-          // Compute T-dependent lattice thermal conductivity of minerals 
-          // Dry Olivine
-          // double OlivineDry_TDep_LatTCon = OlivineDry_PDep_LatTCon*std::pow((T_room/T_mod),OlivineDry_TDep_n_Exp);
-          // Dry Wadsleyite
-          // Dry Ringwoodite
-          // Mg-Bridgmanite
-          // Fe-Bridgmanite (3%)
-          // Fe-Bridgmanite (10%)
-          // Fe,Al-Bridgmanite
-          // Orthopyroxene (Enstatite)
-          double OpxEnstati_TDep_LatTCon = OpxEnstati_PDep_LatTCon*std::pow((T_room/T_mod),OpxEnstati_TDep_n_Exp);
-          // Clinopyroxene (Diopside)
-          // Garnet (Pyrope)
-          double GrtPyropes_TDep_LatTCon = GrtPyropes_PDep_LatTCon*std::pow((T_room/T_mod),GrtPyropes_TDep_n_Exp);
-          // Garnet (Grossular)
-          // Garnet (Almandine)
-          // Garnet (Majorite)
-          // Quartz
-          // Coesite
-          // Stishovite
-          // Al-stishovite (5 vol%)
-          // Antigorite (010)
-          // Antigorite (001)
-          // Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Ferropericlase (Mg1-xFexO)
-          // Davemaoite
-          // New-hexagonal-alluminium-phase (FeNAL)
-          // Akimotoite
-
-          // Compute P,T-dependent lattice thermal conductivity of minerals 
-          // Dry Olivine
-          // double OlivineDry_PTDep_LatTCo = OlivineDry_TDep_LatTCon;
-          // Dry Wadsleyite
-          // Dry Ringwoodite
-          // Mg-Bridgmanite
-          // Fe-Bridgmanite (3%)
-          // Fe-Bridgmanite (10%)
-          // Fe,Al-Bridgmanite
-          // Orthopyroxene (Enstatite)
-          double OpxEnstati_PTDep_LatTCo = OpxEnstati_TDep_LatTCon;
-          // Clinopyroxene (Diopside)
-          // Garnet (Pyrope)
-          const double GrtPyropes_PTDep_LatTCo = GrtPyropes_TDep_LatTCon;
-          // Garnet (Grossular)
-          // Garnet (Almandine)
-          // Garnet (Majorite)
-          // Quartz
-          // Coesite
-          // Stishovite
-          // Al-stishovite (5 vol%)
-          // Antigorite (010)
-          // Antigorite (001)
-          // Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Ferropericlase (Mg1-xFexO)
-          // Davemaoite
-          // New-hexagonal-alluminium-phase (FeNAL)
-          // Akimotoite
-
-          // Compute the radiative thermal conductivity in real (+,-) and simplex (0->1) 
-          // space considering the boundaries ymin and ymax
-          // Dry Olivine
-          // double OlivineDry_RadTC_zSimpl = OlivineDry_RadTC_c0 + OlivineDry_RadTC_d1*T_log;
-          // double OlivineDry_RadTC_ySimpl = std::exp(OlivineDry_RadTC_zSimpl);
-          // double OlivineDry_RadTC_yPrime = OlivineDry_RadTC_ySimpl/(1+OlivineDry_RadTC_ySimpl);
-          // double OlivineDry_RadTC_yRealS = OlivineDry_RadTC_jmin+(OlivineDry_RadTC_jmax-OlivineDry_RadTC_jmin)*OlivineDry_RadTC_yPrime;
-          // Dry Wadsleyite
-          // Dry Ringwoodite
-          // Mg-Bridgmanite
-          // Fe-Bridgmanite (3%)
-          // Fe-Bridgmanite (10%)
-          // Fe,Al-Bridgmanite
-          // Orthopyroxene (Enstatite)
-          double OpxEnstati_RadTC_zSimpl = OpxEnstati_RadTC_c0 + OpxEnstati_RadTC_d1*T_log;
-          double OpxEnstati_RadTC_ySimpl = std::exp(OpxEnstati_RadTC_zSimpl);
-          double OpxEnstati_RadTC_yPrime = OpxEnstati_RadTC_ySimpl/(1+OpxEnstati_RadTC_ySimpl);
-          double OpxEnstati_RadTC_yRealS = OpxEnstati_RadTC_jmin+(OpxEnstati_RadTC_jmax-OpxEnstati_RadTC_jmin)*OpxEnstati_RadTC_yPrime;
-          // Clinopyroxene (Diopside)
-          // Garnet (Pyrope)
-          double GrtPyropes_RadTC_zSimpl = GrtPyropes_RadTC_c0 + GrtPyropes_RadTC_d1*T_log;
-          double GrtPyropes_RadTC_ySimpl = std::exp(GrtPyropes_RadTC_zSimpl);
-          double GrtPyropes_RadTC_yPrime = GrtPyropes_RadTC_ySimpl/(1+GrtPyropes_RadTC_ySimpl);
-          double GrtPyropes_RadTC_yRealS = GrtPyropes_RadTC_jmin+(GrtPyropes_RadTC_jmax-GrtPyropes_RadTC_jmin)*GrtPyropes_RadTC_yPrime;
-          // Garnet (Grossular)
-          // Garnet (Almandine)
-          // Garnet (Majorite)
-          // Quartz
-          // Coesite
-          // Stishovite
-          // Al-stishovite (5 vol%)
-          // Antigorite (010)
-          // Antigorite (001)
-          // Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Ferropericlase (Mg1-xFexO)
-          // Davemaoite
-          // New-hexagonal-alluminium-phase (FeNAL)
-          // Akimotoite
-
-          // Compute T-dependent radiative thermal conductivity of minerals
-          // Dry Olivine
-          // double OlivineDry_TDep_RadTCon = std::exp(OlivineDry_RadTC_yRealS);
-          // Dry Wadsleyite
-          // Dry Ringwoodite
-          // Mg-Bridgmanite
-          // Fe-Bridgmanite (3%)
-          // Fe-Bridgmanite (10%)
-          // Fe,Al-Bridgmanite
-          // Orthopyroxene (Enstatite)
-          double OpxEnstati_TDep_RadTCon = std::exp(OpxEnstati_RadTC_yRealS);
-          // Clinopyroxene (Diopside)
-          // Garnet (Pyrope)
-          double GrtPyropes_TDep_RadTCon = std::exp(GrtPyropes_RadTC_yRealS);
-          // Garnet (Grossular)
-          // Garnet (Almandine)
-          // Garnet (Majorite)
-          // Quartz
-          // Coesite
-          // Stishovite
-          // Al-stishovite (5 vol%)
-          // Antigorite (010)
-          // Antigorite (001)
-          // Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Ferropericlase (Mg1-xFexO)
-          // Davemaoite
-          // New-hexagonal-alluminium-phase (FeNAL)
-          // Akimotoite
+            OlivineDry_LatTCon, OlivineDry_RadTCon);
+          // Compute total thermal conductivities for Dry Wadsleyite
+          // Compute total thermal conductivities for Dry Ringwoodite
+          // Compute total thermal conductivities for Mg-Bridgmanite
+          // Compute total thermal conductivities for Fe-Bridgmanite (3%)
+          // Compute total thermal conductivities for Fe-Bridgmanite (10%)
+          // Compute total thermal conductivities for Fe,Al-Bridgmanite
+          // Compute total thermal conductivities for Orthopyroxene (Enstatite)
+          double OpxEnstati_TotTCon = compute_total_thermal_conductivity(
+            OpxEnstati_LatTCon, OpxEnstati_RadTCon);
+          // Compute total thermal conductivities for Clinopyroxene (Diopside)
+          // Compute total thermal conductivities for Garnet (Pyrope)
+          double GrtPyropes_TotTCon = compute_total_thermal_conductivity(
+            GrtPyropes_LatTCon, GrtPyropes_RadTCon);
+          // Compute total thermal conductivities for Garnet (Grossular)
+          // Compute total thermal conductivities for Garnet (Almandine)
+          // Compute total thermal conductivities for Garnet (Majorite)
+          // Compute total thermal conductivities for Quartz
+          // Compute total thermal conductivities for Coesite
+          // Compute total thermal conductivities for Stishovite
+          // Compute total thermal conductivities for Al-stishovite (5 vol%)
+          // Compute total thermal conductivities for Antigorite (010)
+          // Compute total thermal conductivities for Antigorite (001)
+          // Compute total thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
+          // Compute total thermal conductivities for Al-phase D (Dense Hydrous Magnesium Silicate)
+          // Compute total thermal conductivities for Ferropericlase (Mg1-xFexO)
+          // Compute total thermal conductivities for Davemaoite
+          // Compute total thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
+          // Compute total thermal conductivities for Akimotoite
     
-          // Compute P,T-dependent total thermal conductivity of minerals 
-          // Dry Olivine
-          // double OlivineDry_PTDep_TotTCo = OlivineDry_LatTCon+OlivineDry_RadTCon;
-          // Dry Wadsleyite
-          // Dry Ringwoodite
-          // Mg-Bridgmanite
-          // Fe-Bridgmanite (3%)
-          // Fe-Bridgmanite (10%)
-          // Fe,Al-Bridgmanite
-          // Orthopyroxene (Enstatite)
-          double OpxEnstati_PTDep_TotTCo = OpxEnstati_PTDep_LatTCo+OpxEnstati_TDep_RadTCon;
-          // Clinopyroxene (Diopside)
-          // Garnet (Pyrope)
-          double GrtPyropes_PTDep_TotTCo = GrtPyropes_PTDep_LatTCo+GrtPyropes_TDep_RadTCon;
-          // Garnet (Grossular)
-          // Garnet (Almandine)
-          // Garnet (Majorite)
-          // Quartz
-          // Coesite
-          // Stishovite
-          // Al-stishovite (5 vol%)
-          // Antigorite (010)
-          // Antigorite (001)
-          // Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Al-phase D (Dense Hydrous Magnesium Silicate)
-          // Ferropericlase (Mg1-xFexO)
-          // Davemaoite
-          // New-hexagonal-alluminium-phase (FeNAL)
-          // Akimotoite
-
-          // Create a matrix of thermal conductivities
-          std::vector<std::vector<double>> All_Minerals_TConds = {
-          {OlivineDry_LatTCon, OpxEnstati_PTDep_LatTCo, GrtPyropes_PTDep_LatTCo},
-          {OlivineDry_RadTCon, OpxEnstati_TDep_RadTCon, OpxEnstati_TDep_RadTCon},
-          {OlivineDry_TotTCon, OpxEnstati_PTDep_TotTCo, GrtPyropes_PTDep_TotTCo}};
-
           // Create a 3xn matrix containg the total thermal conductivity of minerals
-          // std::vector<std::vector<double>> All_Minerals_TConds(3, std::vector<double>(3));
-
-          // Fill the matrix with the lattice thermal conductivity of minerals
-          // All_Minerals_TConds[0][0] = OlivineDry_LatTCon;
-          // All_Minerals_TConds[0][1] = OpxEnstati_PTDep_LatTCo;
-          // All_Minerals_TConds[0][2] = GrtPyropes_PTDep_LatTCo;
-
-          // Fill the matrix with the lattice thermal conductivity of minerals
-          // All_Minerals_TConds[1][0] = OlivineDry_RadTCon;
-          // All_Minerals_TConds[1][1] = OpxEnstati_TDep_RadTCon;
-          // All_Minerals_TConds[1][2] = GrtPyropes_TDep_RadTCon;
-
-          // Fill the matrix with the lattice thermal conductivity of minerals
-          // All_Minerals_TConds[2][0] = OlivineDry_TotTCon;
-          // All_Minerals_TConds[2][1] = OpxEnstati_PTDep_TotTCo;
-          // All_Minerals_TConds[2][2] = GrtPyropes_PTDep_TotTCo;
+          std::vector<std::vector<double>> All_Minerals_TConds = {
+          {OlivineDry_LatTCon, OpxEnstati_LatTCon, GrtPyropes_LatTCon},
+          {OlivineDry_RadTCon, OpxEnstati_RadTCon, GrtPyropes_RadTCon},
+          {OlivineDry_TotTCon, OpxEnstati_TotTCon, GrtPyropes_TotTCon}};
 
           // Compute P,T-dependent thermal conductivities of aggregate rocks 
           // double AggRock_PTDep_LatTCo = std::pow(OlivineDry_PTDep_LatTCo,in.composition[i])*std::pow(OpxEnstati_PTDep_LatTCo,in.composition[i])*std::pow(GrtPyropes_PTDep_LatTCo,in.composition[i]);
