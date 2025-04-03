@@ -107,51 +107,51 @@ namespace aspect
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [MgSiO3]
-        // const double En100Brigm_LatTC_a0 =  -4.368700000;
-        // const double En100Brigm_LatTC_b1 =   1.076600000; 
-        // const double En100Brigm_LatTC_ymin = 2.376025820; 
-        // const double En100Brigm_LatTC_ymax = 5.010635294;  
-        // const double En100Brigm_TDep_n_Exp = 1.01000;
+        const double En100Brigm_LatTC_a0 =  -4.368700000;
+        const double En100Brigm_LatTC_b1 =   1.076600000; 
+        const double En100Brigm_LatTC_ymin = 2.376025820; 
+        const double En100Brigm_LatTC_ymax = 5.010635294;  
+        const double En100Brigm_TDep_n_Exp = 1.01000;
 
         // Coefficients for Fe-bridgmanite (3%)
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [Fe0.03Mg0.97SiO3]
-        // const double En97Brigma_LatTC_a0 =  -4.520600000;
-        // const double En97Brigma_LatTC_b1 =   1.019900000; 
-        // const double En97Brigma_LatTC_ymin = 1.750524121; 
-        // const double En97Brigma_LatTC_ymax = 4.499809670;  
-        // const double En97Brigma_TDep_n_Exp = 0.56605;
+        const double En97Brigma_LatTC_a0 =  -4.520600000;
+        const double En97Brigma_LatTC_b1 =   1.019900000; 
+        const double En97Brigma_LatTC_ymin = 1.750524121; 
+        const double En97Brigma_LatTC_ymax = 4.499809670;  
+        const double En97Brigma_TDep_n_Exp = 0.56605;
 
         // Coefficients for Fe-bridgmanite (10%)
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [Fe0.1Mg0.9SiO3]
-        // const double En90Brigma_LatTC_a0 =  -4.883100000;
-        // const double En90Brigma_LatTC_b1 =   0.980900000; 
-        // const double En90Brigma_LatTC_ymin = 1.333739493; 
-        // const double En90Brigma_LatTC_ymax = 4.382026635;  
-        // const double En90Brigma_TDep_n_Exp = 0.17054;
+        const double En90Brigma_LatTC_a0 =  -4.883100000;
+        const double En90Brigma_LatTC_b1 =   0.980900000; 
+        const double En90Brigma_LatTC_ymin = 1.333739493; 
+        const double En90Brigma_LatTC_ymax = 4.382026635;  
+        const double En90Brigma_TDep_n_Exp = 0.17054;
 
         // Coefficients for Al-bridgmanite
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [(Al,Mg)SiO3]
-        // const double AlMgBrigma_LatTC_a0 =  -4.331500000;
-        // const double AlMgBrigma_LatTC_b1 =   1.027000000; 
-        // const double AlMgBrigma_LatTC_ymin = 1.845020046; 
-        // const double AlMgBrigma_LatTC_ymax = 4.605170186;  
-        // const double AlMgBrigma_TDep_n_Exp = 0.61983;
+        const double AlMgBrigma_LatTC_a0 =  -4.331500000;
+        const double AlMgBrigma_LatTC_b1 =   1.027000000; 
+        const double AlMgBrigma_LatTC_ymin = 1.845020046; 
+        const double AlMgBrigma_LatTC_ymax = 4.605170186;  
+        const double AlMgBrigma_TDep_n_Exp = 0.61983;
 
         // Coefficients for Fe,Al-bridgmanite
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [(Fe,Al,Mg)SiO3]
-        // const double FeAlBrigma_LatTC_a0 =  -4.510600000;
-        // const double FeAlBrigma_LatTC_b1 =   1.066800000; 
-        // const double FeAlBrigma_LatTC_ymin = 1.389093953; 
-        // const double FeAlBrigma_LatTC_ymax = 3.912023005;  
-        // const double FeAlBrigma_TDep_n_Exp = 0.46815;
+        const double FeAlBrigma_LatTC_a0 =  -4.510600000;
+        const double FeAlBrigma_LatTC_b1 =   1.066800000; 
+        const double FeAlBrigma_LatTC_ymin = 1.389093953; 
+        const double FeAlBrigma_LatTC_ymax = 3.912023005;  
+        const double FeAlBrigma_TDep_n_Exp = 0.46815;
          
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of 
@@ -420,42 +420,42 @@ namespace aspect
         // Coefficients for Mg-bridgmanite
         // assumed 0 for now - no data available
         // mineral composition [MgSiO3]
-        // const double En100Brigm_RadTC_c0 = 0;
-        // const double En100Brigm_RadTC_d1 = 0; 
-        // const double En100Brigm_RadTC_jmin = -23.025850930; 
-        // const double En100Brigm_RadTC_jmax = -23.050000000;  
+        const double En100Brigm_RadTC_c0 = 0;
+        const double En100Brigm_RadTC_d1 = 0; 
+        const double En100Brigm_RadTC_jmin = -23.025850930; 
+        const double En100Brigm_RadTC_jmax = -23.050000000;  
 
         // Coefficients for Fe-bridgmanite (3%)
         // assumed 0 for now - no data available
         // mineral composition [Fe0.03Mg0.97SiO3]
-        // const double En97Brigma_RadTC_c0 =  0;
-        // const double En97Brigma_RadTC_d1 =  0; 
-        // const double En97Brigma_RadTC_jmin = -23.025850930; 
-        // const double En97Brigma_RadTC_jmax = -23.050000000;  
+        const double En97Brigma_RadTC_c0 =  0;
+        const double En97Brigma_RadTC_d1 =  0; 
+        const double En97Brigma_RadTC_jmin = -23.025850930; 
+        const double En97Brigma_RadTC_jmax = -23.050000000;  
 
         // Coefficients for Fe-bridgmanite (10%)
         // assumed 0 for now - no data available
         // mineral composition [Fe0.1Mg0.9SiO3]
-        // const double En90Brigma_RadTC_c0 =  0;
-        // const double En90Brigma_RadTC_d1 =  0; 
-        // const double En90Brigma_RadTC_jmin = -23.025850930; 
-        // const double En90Brigma_RadTC_jmax = -23.050000000;  
+        const double En90Brigma_RadTC_c0 =  0;
+        const double En90Brigma_RadTC_d1 =  0; 
+        const double En90Brigma_RadTC_jmin = -23.025850930; 
+        const double En90Brigma_RadTC_jmax = -23.050000000;  
 
         // Coefficients for Al-bridgmanite
         // assumed 0 for now - no data available
         // mineral composition [(Al,Mg)SiO3]
-        // const double AlMgBrigma_RadTC_c0 =  0;
-        // const double AlMgBrigma_RadTC_d1 =  0; 
-        // const double AlMgBrigma_RadTC_jmin = -23.025850930; 
-        // const double AlMgBrigma_RadTC_jmax = -23.050000000;  
+        const double AlMgBrigma_RadTC_c0 =  0;
+        const double AlMgBrigma_RadTC_d1 =  0; 
+        const double AlMgBrigma_RadTC_jmin = -23.025850930; 
+        const double AlMgBrigma_RadTC_jmax = -23.050000000;  
 
         // Coefficients for Fe,Al-bridgmanite
         // assumed 0 for now - no data available
         // mineral composition [(Fe,Al,Mg)SiO3]
-        // const double FeAlBrigma_LatTC_c0 =  0;
-        // const double FeAlBrigma_LatTC_d1 =  0; 
-        // const double FeAlBrigma_LatTC_jmin = -23.025850930; 
-        // const double FeAlBrigma_LatTC_jmax = -23.050000000;  
+        const double FeAlBrigma_RadTC_c0 =  0;
+        const double FeAlBrigma_RadTC_d1 =  0; 
+        const double FeAlBrigma_RadTC_jmin = -23.025850930; 
+        const double FeAlBrigma_RadTC_jmax = -23.050000000;  
 
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of
@@ -663,9 +663,21 @@ namespace aspect
             RingwooDry_LatTC_a0, RingwooDry_LatTC_b1, RingwooDry_LatTC_ymin, RingwooDry_LatTC_ymax,
             P_log, T_mod, T_room, RingwooDry_TDep_n_Exp);
           // Compute lattice thermal conductivities for Mg-Bridgmanite
+          double En100Brigm_LatTCon = compute_lattice_thermal_conductivity(
+            En100Brigm_LatTC_a0, En100Brigm_LatTC_b1, En100Brigm_LatTC_ymin, En100Brigm_LatTC_ymax,
+            P_log, T_mod, T_room, En100Brigm_TDep_n_Exp);
           // Compute lattice thermal conductivities for Fe-Bridgmanite (3%)
+          double En97Brigma_LatTCon = compute_lattice_thermal_conductivity(
+            En97Brigma_LatTC_a0, En97Brigma_LatTC_b1, En97Brigma_LatTC_ymin, En97Brigma_LatTC_ymax,
+            P_log, T_mod, T_room, En97Brigma_TDep_n_Exp);
           // Compute lattice thermal conductivities for Fe-Bridgmanite (10%)
+          double En90Brigma_LatTCon = compute_lattice_thermal_conductivity(
+            En90Brigma_LatTC_a0, En90Brigma_LatTC_b1, En90Brigma_LatTC_ymin, En90Brigma_LatTC_ymax,
+            P_log, T_mod, T_room, En90Brigma_TDep_n_Exp);
           // Compute lattice thermal conductivities for Fe,Al-Bridgmanite
+          double FeAlBrigma_LatTCon = compute_lattice_thermal_conductivity(
+            FeAlBrigma_LatTC_a0, FeAlBrigma_LatTC_b1, FeAlBrigma_LatTC_ymin, FeAlBrigma_LatTC_ymax,
+            P_log, T_mod, T_room, FeAlBrigma_TDep_n_Exp);
           // Compute lattice thermal conductivities for Orthopyroxene (Enstatite)
           double OpxEnstati_LatTCon = compute_lattice_thermal_conductivity(
             OpxEnstati_LatTC_a0, OpxEnstati_LatTC_b1, OpxEnstati_LatTC_ymin, OpxEnstati_LatTC_ymax,
@@ -701,9 +713,17 @@ namespace aspect
           double RingwooDry_RadTCon = compute_radiative_thermal_conductivity(
             RingwooDry_RadTC_c0, RingwooDry_RadTC_d1, RingwooDry_RadTC_jmin, RingwooDry_RadTC_jmax, T_log);
           // Compute radiative thermal conductivities for Mg-Bridgmanite
+          double En100Brigm_RadTCon = compute_radiative_thermal_conductivity(
+            En100Brigm_RadTC_c0, En100Brigm_RadTC_d1, En100Brigm_RadTC_jmin, En100Brigm_RadTC_jmax, T_log);
           // Compute radiative thermal conductivities for Fe-Bridgmanite (3%)
+          double En97Brigma_RadTCon = compute_radiative_thermal_conductivity(
+            En97Brigma_RadTC_c0, En97Brigma_RadTC_d1, En97Brigma_RadTC_jmin, En97Brigma_RadTC_jmax, T_log);
           // Compute radiative thermal conductivities for Fe-Bridgmanite (10%)
+          double En90Brigma_RadTCon = compute_radiative_thermal_conductivity(
+            En90Brigma_RadTC_c0, En90Brigma_RadTC_d1, En90Brigma_RadTC_jmin, En90Brigma_RadTC_jmax, T_log);
           // Compute radiative thermal conductivities for Fe,Al-Bridgmanite
+          double FeAlBrigma_RadTCon = compute_radiative_thermal_conductivity(
+            FeAlBrigma_RadTC_c0, FeAlBrigma_RadTC_d1, FeAlBrigma_RadTC_jmin, FeAlBrigma_RadTC_jmax, T_log);
           // Compute radiative thermal conductivities for Orthopyroxene (Enstatite)
           double OpxEnstati_RadTCon = compute_radiative_thermal_conductivity(
             OpxEnstati_RadTC_c0, OpxEnstati_RadTC_d1, OpxEnstati_RadTC_jmin, OpxEnstati_RadTC_jmax, T_log);
@@ -737,9 +757,17 @@ namespace aspect
           double RingwooDry_TotTCon = compute_total_thermal_conductivity(
             RingwooDry_LatTCon, RingwooDry_RadTCon);
           // Compute total thermal conductivities for Mg-Bridgmanite
+          double En100Brigm_TotTCon = compute_total_thermal_conductivity(
+            En100Brigm_LatTCon, En100Brigm_RadTCon);
           // Compute total thermal conductivities for Fe-Bridgmanite (3%)
+          double En97Brigma_TotTCon = compute_total_thermal_conductivity(
+            En97Brigma_LatTCon, En97Brigma_RadTCon);
           // Compute total thermal conductivities for Fe-Bridgmanite (10%)
+          double En90Brigma_TotTCon = compute_total_thermal_conductivity(
+            En90Brigma_LatTCon, En90Brigma_RadTCon);
           // Compute total thermal conductivities for Fe,Al-Bridgmanite
+          double FeAlBrigma_TotTCon = compute_total_thermal_conductivity(
+            FeAlBrigma_LatTCon, FeAlBrigma_RadTCon);
           // Compute total thermal conductivities for Orthopyroxene (Enstatite)
           double OpxEnstati_TotTCon = compute_total_thermal_conductivity(
             OpxEnstati_LatTCon, OpxEnstati_RadTCon);
