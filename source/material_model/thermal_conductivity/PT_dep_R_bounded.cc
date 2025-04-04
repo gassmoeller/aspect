@@ -68,7 +68,7 @@ namespace aspect
                                MaterialModel::MaterialModelOutputs<dim> &out) const
       {
 
-        int MineralPar_Index = 0; // Initialize the counter
+        unsigned int MineralPar_Index = 0; // Initialize the counter
 
         // Define coefficients for lattice thermal conductivity for different minerals 
 
@@ -77,7 +77,7 @@ namespace aspect
         // [Chang et al., 2017, PNAS, vol 114, p. 4078-4081]
         // https://doi.org/10.1073/pnas.1616216114
         // mineral composition [Mg1.8 Fe0.2 SiO4]    
-        const int OlivineDry_Index = MineralPar_Index++;
+        unsigned int OlivineDry_Index = MineralPar_Index++;
         const double OlivineDry_LatTC_a0 =   -4.124100000;
         const double OlivineDry_LatTC_b1 =    2.146900000;
         const double OlivineDry_LatTC_ymin =  1.28093384543429;
@@ -89,7 +89,7 @@ namespace aspect
         // [Xu et al., 2004, PEPI, vol 143, pp. 321-336]
         // https://doi.org/10.1016/j.pepi.2004.03.005
         // mineral composition [(Mg1.8Fe0.2)SiO4]
-        const int WadsleyDry_Index = MineralPar_Index++;
+        unsigned int WadsleyDry_Index = MineralPar_Index++;
         const double WadsleyDry_LatTC_a0 =  -0.665600000;
         const double WadsleyDry_LatTC_b1 =   0.308200000;
         const double WadsleyDry_LatTC_ymin = 1.75735804249439;
@@ -101,7 +101,7 @@ namespace aspect
         // [Marzotto et al., 2020, GRL, vol 47, issue 13]
         // https://doi.org/10.1029/2020GL087607
         // mineral composition [(Mg1.79Fe0.17)Si1.02O4]
-        const int RingwooDry_Index = MineralPar_Index++;
+        unsigned int RingwooDry_Index = MineralPar_Index++;
         const double RingwooDry_LatTC_a0 =  -5.462400000;
         const double RingwooDry_LatTC_b1 =   2.079100000;
         const double RingwooDry_LatTC_ymin = 1.60943791241410;
@@ -112,7 +112,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [MgSiO3]
-        const int En100Brigm_Index = MineralPar_Index++;
+        unsigned int En100Brigm_Index = MineralPar_Index++;
         const double En100Brigm_LatTC_a0 =  -4.368700000;
         const double En100Brigm_LatTC_b1 =   1.076600000; 
         const double En100Brigm_LatTC_ymin = 2.376025820; 
@@ -123,7 +123,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [Fe0.03Mg0.97SiO3]
-        const int En97Brigma_Index = MineralPar_Index++;
+        unsigned int En97Brigma_Index = MineralPar_Index++;
         const double En97Brigma_LatTC_a0 =  -4.520600000;
         const double En97Brigma_LatTC_b1 =   1.019900000; 
         const double En97Brigma_LatTC_ymin = 1.750524121; 
@@ -134,7 +134,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [Fe0.1Mg0.9SiO3]
-        const int En90Brigma_Index = MineralPar_Index++;
+        unsigned int En90Brigma_Index = MineralPar_Index++;
         const double En90Brigma_LatTC_a0 =  -4.883100000;
         const double En90Brigma_LatTC_b1 =   0.980900000; 
         const double En90Brigma_LatTC_ymin = 1.333739493; 
@@ -145,7 +145,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [(Al,Mg)SiO3]
-        const int AlMgBrigma_Index = MineralPar_Index++;
+        unsigned int AlMgBrigma_Index = MineralPar_Index++;
         const double AlMgBrigma_LatTC_a0 =  -4.331500000;
         const double AlMgBrigma_LatTC_b1 =   1.027000000; 
         const double AlMgBrigma_LatTC_ymin = 1.845020046; 
@@ -156,7 +156,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [(Fe,Al,Mg)SiO3]
-        const int FeAlBrigma_Index = MineralPar_Index++;
+        unsigned int FeAlBrigma_Index = MineralPar_Index++;
         const double FeAlBrigma_LatTC_a0 =  -4.510600000;
         const double FeAlBrigma_LatTC_b1 =   1.066800000; 
         const double FeAlBrigma_LatTC_ymin = 1.389093953; 
@@ -168,7 +168,7 @@ namespace aspect
         // [Schloessin & Dvorak, 1972, GJI, 27(5), 499-516]
         // https://doi.org/10.1111/j.1365-246X.1972.tb06105.x
         // mineral composition [Mg2Si2O6]
-        const int OpxEnstati_Index = MineralPar_Index++;
+        unsigned int OpxEnstati_Index = MineralPar_Index++;
         const double OpxEnstati_LatTC_a0 =   -3.0047;
         const double OpxEnstati_LatTC_b1 =    2.6;
         const double OpxEnstati_LatTC_ymin =  1.760865151; 
@@ -180,7 +180,7 @@ namespace aspect
         // [Wang et al., 2014, JGR: Solid Earth, 119(8), 6277-6287]
         // https://doi.org/10.1002/2014JB011208
         // mineral composition [CaMgSi2O6]
-        const int CpxDiopsid_Index = MineralPar_Index++;
+        unsigned int CpxDiopsid_Index = MineralPar_Index++;
         const double CpxDiopsid_LatTC_a0 =   -3.251100000;
         const double CpxDiopsid_LatTC_b1 =    1.689100000;
         const double CpxDiopsid_LatTC_ymin =  1.793640135; 
@@ -192,7 +192,7 @@ namespace aspect
         // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
         // https://doi.org/10.2138/am-2023-8953
         // mineral composition [Mg3Al2Si3O12]
-        const int GrtPyropes_Index = MineralPar_Index++;
+        unsigned int GrtPyropes_Index = MineralPar_Index++;
         const double GrtPyropes_LatTC_a0 =   -4.3637;
         const double GrtPyropes_LatTC_b1 =    2.0368;
         const double GrtPyropes_LatTC_ymin =  1.481604541; 
@@ -204,7 +204,7 @@ namespace aspect
         // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
         // https://doi.org/10.2138/am-2023-8953
         // mineral composition [(Ca0.986Fe0.014)3Al2(SiO4)3]
-        const int GrtGrossul_Index = MineralPar_Index++;
+        unsigned int GrtGrossul_Index = MineralPar_Index++;
         const double GrtGrossul_LatTC_a0 =  -4.7584;
         const double GrtGrossul_LatTC_b1 =   2.0816;
         const double GrtGrossul_LatTC_ymin = 1.410986974; 
@@ -216,7 +216,7 @@ namespace aspect
         // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
         // https://doi.org/10.2138/am-2023-8953
         // mineral composition [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3]
-        const int GrtAlmandi_Index = MineralPar_Index++;
+        unsigned int GrtAlmandi_Index = MineralPar_Index++;
         const double GrtAlmandi_LatTC_a0 =  -4.5047;
         const double GrtAlmandi_LatTC_b1 =   2.0988;
         const double GrtAlmandi_LatTC_ymin = 1.223775432; 
@@ -228,7 +228,7 @@ namespace aspect
         // [Giesting et al.2004  EPSL, 218(1-2), 45-56]
         // https://doi.org/10.1016/S0012-821X(03)00630-7
         // mineral composition [Mg3(MgSi)(SiO4)3]
-        const int GrtMajorit_Index = MineralPar_Index++;
+        unsigned int GrtMajorit_Index = MineralPar_Index++;
         const double GrtMajorit_LatTC_a0 =  -4.3637;
         const double GrtMajorit_LatTC_b1 =   2.0368;
         const double GrtMajorit_LatTC_ymin = 2.279316466; 
@@ -240,7 +240,7 @@ namespace aspect
         // [Xiong et al., 2019 - Journal of Applied Physics, 126(21)]
         // https://doi.org/10.1063/1.5114992
         // mineral composition [SiO2]
-        const int QuartzPure_Index = MineralPar_Index++;
+        unsigned int QuartzPure_Index = MineralPar_Index++;
         const double QuartzPure_LatTC_a0 =   -2.0203;
         const double QuartzPure_LatTC_b1 =    2.4456;
         const double QuartzPure_LatTC_ymin =  2.260981081; 
@@ -252,7 +252,7 @@ namespace aspect
         // [Yukutake & Shimada, 1978, PEPI, 17(3), 193-200]
         // https://doi.org/10.1016/0031-9201(78)90036-5
         // mineral composition [SiO2]
-        const int CoesitSiO2_Index = MineralPar_Index++;
+        unsigned int CoesitSiO2_Index = MineralPar_Index++;
         const double CoesitSiO2_LatTC_a0 =   -12.728;
         const double CoesitSiO2_LatTC_b1 =    2.9998;
         const double CoesitSiO2_LatTC_ymin =  1.982022416; 
@@ -264,7 +264,7 @@ namespace aspect
         // [Hsieh et al., 2022, EPSL, vol. 584, 117477]
         // https://doi.org/10.1016/j.epsl.2022.117477
         // mineral composition [SiO2]
-        const int Stishovite_Index = MineralPar_Index++;
+        unsigned int Stishovite_Index = MineralPar_Index++;
         // < 52 [GPa]
         const double Stishovite_LatTC_a0 =  16.917;
         const double Stishovite_LatTC_b1 = -4.6187;
@@ -288,7 +288,7 @@ namespace aspect
         // [Hsieh et al., 2022, EPSL, vol. 584, 117477]
         // https://doi.org/10.1016/j.epsl.2022.117477
         // mineral composition [(Al,Si)O2]
-        const int Al05Stisho_Index = MineralPar_Index++;
+        unsigned int Al05Stisho_Index = MineralPar_Index++;
         const double Al05Stisho_LatTC_a0 = -6.4411;
         const double Al05Stisho_LatTC_b1 =  1.5885;
         const double Al05Stisho_LatTC_ymin = 3.188855035;
@@ -301,14 +301,14 @@ namespace aspect
         // https://doi.org/10.1038/s41467-024-49418-3
         // mineral composition [(Mg2.80Fe0.05)Si2.08O5(OH)3.77]
         // 010 direction
-        const int Antigor010_Index = MineralPar_Index++;
+        unsigned int Antigor010_Index = MineralPar_Index++;
         const double Antigor010_LatTC_a0 = -4.3374;
         const double Antigor010_LatTC_b1 =  2.0217;
         const double Antigor010_LatTC_ymin = 1.519513205;
         const double Antigor010_LatTC_ymax = 2.434491480;
         const double Antigor010_TDep_n_Exp = 0.5;
         // 001 direction
-        const int Antigor001_Index = MineralPar_Index++;
+        unsigned int Antigor001_Index = MineralPar_Index++;
         const double Antigor001_LatTC_a0 = -3.1109;
         const double Antigor001_LatTC_b1 =  2.0644;
         const double Antigor001_LatTC_ymin = 0.067658648;
@@ -320,7 +320,7 @@ namespace aspect
         // [Hsieh et al., 2022, JGR: Solid Earth, vol. 127(6), e2022JB024556]
         // https://doi.org/10.1029/2022JB024556
         // mineral composition [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
-        const int FeAlPhaseD_Index = MineralPar_Index++;
+        unsigned int FeAlPhaseD_Index = MineralPar_Index++;
         // (Fe,Al)-Phase D - 0-24 [GPa]
         const double FeAlPhaseD_LatTC_a0 = -3.9909;
         const double FeAlPhaseD_LatTC_b1 =  1.7710;
@@ -349,7 +349,7 @@ namespace aspect
         // [Hsieh et al., 2022, JGR: Solid Earth, vol. 127(6), e2022JB024556]
         // https://doi.org/10.1029/2022JB024556
         // mineral composition [Mg1.29Al0.17Si1.73H1.98O6]
-        const int Al02PhaseD_Index = MineralPar_Index++;
+        unsigned int Al02PhaseD_Index = MineralPar_Index++;
         const double Al02PhaseD_LatTC_a0 = -6.1829;
         const double Al02PhaseD_LatTC_b1 =  1.8514;
         const double Al02PhaseD_LatTC_ymin = 1.285874399; 
@@ -360,21 +360,21 @@ namespace aspect
         // retreived from fitting dataset of
         // [Hsieh et al., 2018, PNAS, vol. 115, no. 16, p. 4099-4104]
         // mineral composition [Mg0.92Fe0.08O] - (8% Iron)
-        const int Ferroper08_Index = MineralPar_Index++;
+        unsigned int Ferroper08_Index = MineralPar_Index++;
         const double Ferroper08_LatTC_a0 = -6.9942;
         const double Ferroper08_LatTC_b1 =  1.953;
         const double Ferroper08_LatTC_ymin = 1.629240539; 
         const double Ferroper08_LatTC_ymax = 4.118362306;
         const double Ferroper08_TDep_n_Exp = 0.5;
         // mineral composition [Mg0.90Fe0.10O] - (10% Iron)
-        const int Ferroper10_Index = MineralPar_Index++;
+        unsigned int Ferroper10_Index = MineralPar_Index++;
         const double Ferroper10_LatTC_a0 = -5.2408;
         const double Ferroper10_LatTC_b1 =  0.9649;
         const double Ferroper10_LatTC_ymin = 1.2490430868; 
         const double Ferroper10_LatTC_ymax = 3.9318256327;
         const double Ferroper10_TDep_n_Exp = 0.025;
         // mineral composition [Mg0.44Fe0.56O] (56% Iron)
-        const int Ferroper56_Index = MineralPar_Index++;
+        unsigned int Ferroper56_Index = MineralPar_Index++;
         const double Ferroper56_LatTC_a0 = -3.8298;
         const double Ferroper56_LatTC_b1 =  1.1507;
         const double Ferroper56_LatTC_ymin = 0.993251773; 
@@ -386,7 +386,7 @@ namespace aspect
         // [Zhang et al., 2021, Physical Review B, vol. 104, 184101]
         // https://doi.org/10.1103/PhysRevB.104.184101
         // mineral composition [CaSiO3]
-        const int Davemaoite_Index = MineralPar_Index++;
+        unsigned int Davemaoite_Index = MineralPar_Index++;
         const double Davemaoite_LatTC_a0 = -4.7377;
         const double Davemaoite_LatTC_b1 =  1.3661;
         const double Davemaoite_LatTC_ymin = 2.388762789; 
@@ -398,7 +398,7 @@ namespace aspect
         // [Hsieh et al., 2022, EPSL, vol. 584]
         // https://doi.org/10.1016/j.epsl.2022.117477
         // mineral composition [Na0.71Mg2.05Al4.62Si1.16Fe(2+)0.09Fe(3+)0.17O12]
-        const int NewHexAlPh_Index = MineralPar_Index++;
+        unsigned int NewHexAlPh_Index = MineralPar_Index++;
         const double NewHexAlPh_LatTC_a0 = -29.421;
         const double NewHexAlPh_LatTC_b1 =  7.7792;
         const double NewHexAlPh_LatTC_ymin = 2.363551955; 
@@ -409,7 +409,7 @@ namespace aspect
         // assumed to be equal to En100-Bridgmanite
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [MgSiO3]
-        const int Akimotoite_Index = MineralPar_Index++;
+        unsigned int Akimotoite_Index = MineralPar_Index++;
         const double Akimotoite_LatTC_a0 =  -4.368700000;
         const double Akimotoite_LatTC_b1 =   1.076600000; 
         const double Akimotoite_LatTC_ymin = 2.376025820; 
@@ -661,11 +661,22 @@ namespace aspect
         const double Akimotoite_RadTC_jmax = 0.300104592;
 
         // Preallocate a vector for storing thermal conductivities of minerals
-        std::vector<double> All_Minerals_LatTcond(MineralPar_Index, 0.0);
-        std::vector<double> All_Minerals_RadTcond(MineralPar_Index, 0.0);
-        std::vector<double> All_Minerals_TotTcond(MineralPar_Index, 0.0);
-
+        std::vector<double> All_Minerals_LatTcond(MineralPar_Index, 0.0); // Lattice thermal conductivity
+        std::vector<double> All_Minerals_RadTcond(MineralPar_Index, 0.0); // Radiative thermal conductivity
+        std::vector<double> All_Minerals_TotTcond(MineralPar_Index, 0.0); // Total thermal conductivity
+        // Preallocate a matrix for storing thermal conductivities of minerals
         std::vector<std::vector<double>> All_Minerals_TConds(MineralPar_Index, std::vector<double>(3, 0.0));
+
+        // Preallocate a vector for mineral fractions of different rocks
+        // Pyrolite (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
+        std::vector<double> MinFract_Pyrolite = {0.58,0.13,0.18,0.11}; 
+
+        #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
+
+        // Check if the sum of Rock Mineral Fraction is equal to 1
+        double sum_min_fract_pyrolite = std::accumulate(MinFract_Pyrolite.begin(), MinFract_Pyrolite.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_pyrolite - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_Pyrolite must be equal to 1."));
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
