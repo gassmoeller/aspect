@@ -670,6 +670,10 @@ namespace aspect
         // Preallocate a vector for mineral fractions of different rocks
         // Pyrolite (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
         std::vector<double> MinFract_Pyrolite = {0.58,0.13,0.18,0.11}; 
+        // Harzburgite (80% olivine, 20% ensatite)
+        std::vector<double> MinFract_Harzburg = {0.80,0.20}; 
+        // Meta-basaltic crust MORB (80% diopside, 20% pyrope)
+        std::vector<double> MinFract_MetaMORB = {0.80,0.20}; 
 
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
@@ -677,6 +681,12 @@ namespace aspect
         double sum_min_fract_pyrolite = std::accumulate(MinFract_Pyrolite.begin(), MinFract_Pyrolite.end(), 0.0);
         AssertThrow(std::abs(sum_min_fract_pyrolite - 1.0) < 1e-6,
                     dealii::ExcMessage("Error: The sum of MinFract_Pyrolite must be equal to 1."));
+        double sum_min_fract_harzburg = std::accumulate(MinFract_Harzburg.begin(), MinFract_Harzburg.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_harzburg - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_Harzburg must be equal to 1."));
+        double sum_min_fract_metaMORB = std::accumulate(MinFract_MetaMORB.begin(), MinFract_MetaMORB.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_metaMORB - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_MetaMORB must be equal to 1."));
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
@@ -1074,8 +1084,15 @@ namespace aspect
           }
 
           // Compute P,T-dependent thermal conductivities of aggregate rocks 
-          // double AggRock_PTDep_LatTCo = std::pow(OlivineDry_PTDep_LatTCo,in.composition[i])*std::pow(OpxEnstati_PTDep_LatTCo,in.composition[i])*std::pow(GrtPyropes_PTDep_LatTCo,in.composition[i]);
-          // double AggRock_PTDep_RadTCo = std::pow(OlivineDry_TDep_RadTCon,in.composition[i])*std::pow(OpxEnstati_TDep_RadTCon,in.composition[i])*std::pow(GrtPyropes_TDep_RadTCon,in.composition[i]);
+
+          // Pyrolite (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
+          double AggRock_Pyrolite_TCond = std::pow(OlivineDry_TotTCon,MinFract_Pyrolite[0])*std::pow(GrtPyropes_TotTCon,MinFract_Pyrolite[1])*std::pow(OpxEnstati_TotTCon,MinFract_Pyrolite[2])*std::pow(CpxDiopsid_TotTCon,MinFract_Pyrolite[3]);   
+          // Harzburgite (80% olivine, 20% ensatite)
+          double AggRock_Harzburg_TCond = std::pow(OlivineDry_TotTCon,MinFract_Harzburg[0])*std::pow(OpxEnstati_TotTCon,MinFract_Harzburg[1]);
+          // Meta-basaltic crust MORB (80% diopside, 20% pyrope)
+          double AggRock_MetaMORB_TCond = std::pow(CpxDiopsid_TotTCon,MinFract_MetaMORB[0])*std::pow(GrtPyropes_TotTCon,MinFract_MetaMORB[1]);
+
+
           double AggRock_PTDep_LatTCo = std::pow(All_Minerals_TConds[0][0], min_frac);
           double AggRock_PTDep_RadTCo = std::pow(All_Minerals_TConds[0][1], min_frac);
           double AggRock_PTDep_TotTCo = AggRock_PTDep_LatTCo+AggRock_PTDep_RadTCo;
