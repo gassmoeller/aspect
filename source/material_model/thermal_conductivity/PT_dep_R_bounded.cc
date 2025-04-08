@@ -52,14 +52,15 @@ namespace aspect
       // Helper function: Compute total thermal conductivity
       double compute_total_thermal_conductivity(double lattice_conductivity, double radiative_conductivity)
       {
-        return lattice_conductivity + radiative_conductivity;
+        double thermal_conductivity = lattice_conductivity + radiative_conductivity;
+        return thermal_conductivity;
        }
      
       // Helper function: Compute aggregate thermal conductivity
-      double compute_aggregate_thermal_conductivity(const std::vector<std::vector<double>> &thermal_conductivities, double min_frac, int col)
-      {
-        return std::pow(thermal_conductivities[3][col], min_frac);
-      }
+      // double compute_aggregate_thermal_conductivity(const std::vector<std::vector<double>> &thermal_conductivities, double min_frac, int col)
+      // {
+        // return std::pow(thermal_conductivities[3][col], min_frac);
+      // }
      
       // Main function: 
       template <int dim>
@@ -660,13 +661,6 @@ namespace aspect
         const double Akimotoite_RadTC_jmin = -23.025850930; 
         const double Akimotoite_RadTC_jmax = 0.300104592;
 
-        // Preallocate a vector for storing thermal conductivities of minerals
-        std::vector<double> All_Minerals_LatTcond(MineralPar_Index, 0.0); // Lattice thermal conductivity
-        std::vector<double> All_Minerals_RadTcond(MineralPar_Index, 0.0); // Radiative thermal conductivity
-        std::vector<double> All_Minerals_TotTcond(MineralPar_Index, 0.0); // Total thermal conductivity
-        // Preallocate a matrix for storing thermal conductivities of minerals
-        std::vector<std::vector<double>> All_Minerals_TConds(MineralPar_Index, std::vector<double>(3, 0.0));
-
         // Preallocate a vector for mineral fractions of different rocks
         // Pyrolite (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
         std::vector<double> MinFract_Pyrolite = {0.58,0.13,0.18,0.11}; 
@@ -674,6 +668,8 @@ namespace aspect
         std::vector<double> MinFract_Harzburg = {0.80,0.20}; 
         // Meta-basaltic crust MORB (80% diopside, 20% pyrope)
         std::vector<double> MinFract_MetaMORB = {0.80,0.20}; 
+        // Dunite (100% olivine)
+        std::vector<double> MinFract_DuniteOl = {1.00}; 
 
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
@@ -687,6 +683,9 @@ namespace aspect
         double sum_min_fract_metaMORB = std::accumulate(MinFract_MetaMORB.begin(), MinFract_MetaMORB.end(), 0.0);
         AssertThrow(std::abs(sum_min_fract_metaMORB - 1.0) < 1e-6,
                     dealii::ExcMessage("Error: The sum of MinFract_MetaMORB must be equal to 1."));
+        double sum_min_fract_DuniteOl = std::accumulate(MinFract_DuniteOl.begin(), MinFract_DuniteOl.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_DuniteOl - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_DuniteOl must be equal to 1."));
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
@@ -695,6 +694,14 @@ namespace aspect
 
         for (unsigned int i = 0; i < n_points; ++i) 
         {
+
+          // Preallocate a vector for storing thermal conductivities of minerals
+          std::vector<double> All_Minerals_LatTcond(MineralPar_Index, 0.0); // Lattice thermal conductivity
+          std::vector<double> All_Minerals_RadTcond(MineralPar_Index, 0.0); // Radiative thermal conductivity
+          std::vector<double> All_Minerals_TotTcond(MineralPar_Index, 0.0); // Total thermal conductivity
+          // Preallocate a matrix for storing thermal conductivities of minerals
+          std::vector<std::vector<double>> All_Minerals_TConds(MineralPar_Index, std::vector<double>(3, 0.0));
+
           // Convert pressure unit from [Pa] to [GPa]
           double P_GPa = in.pressure[i]/1e9;
 
@@ -727,32 +734,32 @@ namespace aspect
           double En100Brigm_LatTCon = compute_lattice_thermal_conductivity(
             En100Brigm_LatTC_a0, En100Brigm_LatTC_b1, En100Brigm_LatTC_ymin, En100Brigm_LatTC_ymax,
             P_log, T_mod, T_room, En100Brigm_TDep_n_Exp);
-            All_Minerals_LatTcond[En100Brigm_Index] = En100Brigm_LatTCon;
+          All_Minerals_LatTcond[En100Brigm_Index] = En100Brigm_LatTCon;
           // Compute lattice thermal conductivities for Fe-Bridgmanite (3%)
           double En97Brigma_LatTCon = compute_lattice_thermal_conductivity(
             En97Brigma_LatTC_a0, En97Brigma_LatTC_b1, En97Brigma_LatTC_ymin, En97Brigma_LatTC_ymax,
             P_log, T_mod, T_room, En97Brigma_TDep_n_Exp);
-            All_Minerals_LatTcond[En97Brigma_Index] = En97Brigma_LatTCon;
+          All_Minerals_LatTcond[En97Brigma_Index] = En97Brigma_LatTCon;
           // Compute lattice thermal conductivities for Fe-Bridgmanite (10%)
           double En90Brigma_LatTCon = compute_lattice_thermal_conductivity(
             En90Brigma_LatTC_a0, En90Brigma_LatTC_b1, En90Brigma_LatTC_ymin, En90Brigma_LatTC_ymax,
             P_log, T_mod, T_room, En90Brigma_TDep_n_Exp);
-            All_Minerals_LatTcond[En90Brigma_Index] = En90Brigma_LatTCon;
+          All_Minerals_LatTcond[En90Brigma_Index] = En90Brigma_LatTCon;
           // Compute lattice thermal conductivities for Al-Bridgmanite
           double AlMgBrigma_LatTCon = compute_lattice_thermal_conductivity(
             AlMgBrigma_LatTC_a0, AlMgBrigma_LatTC_b1, AlMgBrigma_LatTC_ymin, AlMgBrigma_LatTC_ymax,
             P_log, T_mod, T_room, AlMgBrigma_TDep_n_Exp);
-            All_Minerals_LatTcond[AlMgBrigma_Index] = AlMgBrigma_LatTCon;
+          All_Minerals_LatTcond[AlMgBrigma_Index] = AlMgBrigma_LatTCon;
           // Compute lattice thermal conductivities for Fe,Al-Bridgmanite
           double FeAlBrigma_LatTCon = compute_lattice_thermal_conductivity(
             FeAlBrigma_LatTC_a0, FeAlBrigma_LatTC_b1, FeAlBrigma_LatTC_ymin, FeAlBrigma_LatTC_ymax,
             P_log, T_mod, T_room, FeAlBrigma_TDep_n_Exp);
-            All_Minerals_LatTcond[FeAlBrigma_Index] = FeAlBrigma_LatTCon;
+          All_Minerals_LatTcond[FeAlBrigma_Index] = FeAlBrigma_LatTCon;
           // Compute lattice thermal conductivities for Orthopyroxene (Enstatite)
           double OpxEnstati_LatTCon = compute_lattice_thermal_conductivity(
             OpxEnstati_LatTC_a0, OpxEnstati_LatTC_b1, OpxEnstati_LatTC_ymin, OpxEnstati_LatTC_ymax,
             P_log, T_mod, T_room, OpxEnstati_TDep_n_Exp);
-            All_Minerals_LatTcond[OpxEnstati_Index] = OpxEnstati_LatTCon;
+          All_Minerals_LatTcond[OpxEnstati_Index] = OpxEnstati_LatTCon;
           // Compute lattice thermal conductivities for Clinopyroxene (Diopside)
           double CpxDiopsid_LatTCon = compute_lattice_thermal_conductivity(
              CpxDiopsid_LatTC_a0, CpxDiopsid_LatTC_b1, CpxDiopsid_LatTC_ymin, CpxDiopsid_LatTC_ymax,
@@ -852,254 +859,251 @@ namespace aspect
           // Compute radiative thermal conductivities for DryOlivine
           double OlivineDry_RadTCon = compute_radiative_thermal_conductivity(
             OlivineDry_RadTC_c0, OlivineDry_RadTC_d1, OlivineDry_RadTC_jmin, OlivineDry_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[OlivineDry_Index] = OlivineDry_RadTCon;
+          All_Minerals_RadTcond[OlivineDry_Index] = OlivineDry_RadTCon;
           // Compute radiative thermal conductivities for Dry Wadsleyite 
           double WadsleyDry_RadTCon = compute_radiative_thermal_conductivity(
             WadsleyDry_RadTC_c0, WadsleyDry_RadTC_d1, WadsleyDry_RadTC_jmin, WadsleyDry_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[WadsleyDry_Index] = WadsleyDry_RadTCon;
+          All_Minerals_RadTcond[WadsleyDry_Index] = WadsleyDry_RadTCon;
           // Compute radiative thermal conductivities for Dry Ringwoodite 
           double RingwooDry_RadTCon = compute_radiative_thermal_conductivity(
             RingwooDry_RadTC_c0, RingwooDry_RadTC_d1, RingwooDry_RadTC_jmin, RingwooDry_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[RingwooDry_Index] = RingwooDry_RadTCon;
+          All_Minerals_RadTcond[RingwooDry_Index] = RingwooDry_RadTCon;
           // Compute radiative thermal conductivities for Mg-Bridgmanite
           double En100Brigm_RadTCon = compute_radiative_thermal_conductivity(
             En100Brigm_RadTC_c0, En100Brigm_RadTC_d1, En100Brigm_RadTC_jmin, En100Brigm_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[En100Brigm_Index] = En100Brigm_RadTCon;
+          All_Minerals_RadTcond[En100Brigm_Index] = En100Brigm_RadTCon;
           // Compute radiative thermal conductivities for Fe-Bridgmanite (3%)
           double En97Brigma_RadTCon = compute_radiative_thermal_conductivity(
             En97Brigma_RadTC_c0, En97Brigma_RadTC_d1, En97Brigma_RadTC_jmin, En97Brigma_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[En97Brigma_Index] = En97Brigma_RadTCon;
+          All_Minerals_RadTcond[En97Brigma_Index] = En97Brigma_RadTCon;
           // Compute radiative thermal conductivities for Fe-Bridgmanite (10%)
           double En90Brigma_RadTCon = compute_radiative_thermal_conductivity(
             En90Brigma_RadTC_c0, En90Brigma_RadTC_d1, En90Brigma_RadTC_jmin, En90Brigma_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[En90Brigma_Index] = En90Brigma_RadTCon;
+          All_Minerals_RadTcond[En90Brigma_Index] = En90Brigma_RadTCon;
           // Compute radiative thermal conductivities for Al-Bridgmanite
           double AlMgBrigma_RadTCon = compute_radiative_thermal_conductivity(
             AlMgBrigma_RadTC_c0, AlMgBrigma_RadTC_d1, AlMgBrigma_RadTC_jmin, AlMgBrigma_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[AlMgBrigma_Index] = AlMgBrigma_RadTCon;
+          All_Minerals_RadTcond[AlMgBrigma_Index] = AlMgBrigma_RadTCon;
           // Compute radiative thermal conductivities for Fe,Al-Bridgmanite
           double FeAlBrigma_RadTCon = compute_radiative_thermal_conductivity(
             FeAlBrigma_RadTC_c0, FeAlBrigma_RadTC_d1, FeAlBrigma_RadTC_jmin, FeAlBrigma_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[FeAlBrigma_Index] = FeAlBrigma_RadTCon;
+          All_Minerals_RadTcond[FeAlBrigma_Index] = FeAlBrigma_RadTCon;
           // Compute radiative thermal conductivities for Orthopyroxene (Enstatite)
           double OpxEnstati_RadTCon = compute_radiative_thermal_conductivity(
             OpxEnstati_RadTC_c0, OpxEnstati_RadTC_d1, OpxEnstati_RadTC_jmin, OpxEnstati_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[OpxEnstati_Index] = OpxEnstati_RadTCon;
+          All_Minerals_RadTcond[OpxEnstati_Index] = OpxEnstati_RadTCon;
           // Compute radiative thermal conductivities for Clinopyroxene (Diopside)
           double CpxDiopsid_RadTCon = compute_radiative_thermal_conductivity(
             CpxDiopsid_RadTC_c0, CpxDiopsid_RadTC_d1, CpxDiopsid_RadTC_jmin, CpxDiopsid_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[CpxDiopsid_Index] = CpxDiopsid_RadTCon;
+          All_Minerals_RadTcond[CpxDiopsid_Index] = CpxDiopsid_RadTCon;
           // Compute radiative thermal conductivities for Garnet (Pyrope)
           double GrtPyropes_RadTCon = compute_radiative_thermal_conductivity(
             GrtPyropes_RadTC_c0, GrtPyropes_RadTC_d1, GrtPyropes_RadTC_jmin, GrtPyropes_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[GrtPyropes_Index] = GrtPyropes_RadTCon;
+          All_Minerals_RadTcond[GrtPyropes_Index] = GrtPyropes_RadTCon;
           // Compute radiative thermal conductivities for Garnet (Grossular)
           double GrtGrossul_RadTCon = compute_radiative_thermal_conductivity(
             GrtGrossul_RadTC_c0, GrtGrossul_RadTC_d1, GrtGrossul_RadTC_jmin, GrtGrossul_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[GrtGrossul_Index] = GrtGrossul_RadTCon;
+          All_Minerals_RadTcond[GrtGrossul_Index] = GrtGrossul_RadTCon;
           // Compute radiative thermal conductivities for Garnet (Almandine)
           double GrtAlmandi_RadTCon = compute_radiative_thermal_conductivity(
             GrtAlmandi_RadTC_c0, GrtAlmandi_RadTC_d1, GrtAlmandi_RadTC_jmin, GrtAlmandi_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[GrtAlmandi_Index] = GrtAlmandi_RadTCon;
+          All_Minerals_RadTcond[GrtAlmandi_Index] = GrtAlmandi_RadTCon;
           // Compute radiative thermal conductivities for Garnet (Majorite)
           double GrtMajorit_RadTCon = compute_radiative_thermal_conductivity(
             GrtMajorit_RadTC_c0, GrtMajorit_RadTC_d1, GrtMajorit_RadTC_jmin, GrtMajorit_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[GrtMajorit_Index] = GrtMajorit_RadTCon;
+          All_Minerals_RadTcond[GrtMajorit_Index] = GrtMajorit_RadTCon;
           // Compute radiative thermal conductivities for Quartz
           double QuartzPure_RadTCon = compute_radiative_thermal_conductivity(
             QuartzPure_RadTC_c0, QuartzPure_RadTC_d1, QuartzPure_RadTC_jmin, QuartzPure_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[QuartzPure_Index] = QuartzPure_RadTCon;
+          All_Minerals_RadTcond[QuartzPure_Index] = QuartzPure_RadTCon;
           // Compute radiative thermal conductivities for Coesite
           double CoesitSiO2_RadTCon = compute_radiative_thermal_conductivity(
             CoesitSiO2_RadTC_c0, CoesitSiO2_RadTC_d1, CoesitSiO2_RadTC_jmin, CoesitSiO2_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[CoesitSiO2_Index] = CoesitSiO2_RadTCon;
+          All_Minerals_RadTcond[CoesitSiO2_Index] = CoesitSiO2_RadTCon;
           // Compute radiative thermal conductivities for Stishovite
           double Stishovite_RadTCon = compute_radiative_thermal_conductivity(
             Stishovite_RadTC_c0, Stishovite_RadTC_d1, Stishovite_RadTC_jmin, Stishovite_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[Stishovite_Index] = Stishovite_RadTCon;
+          All_Minerals_RadTcond[Stishovite_Index] = Stishovite_RadTCon;
           // Compute radiative thermal conductivities for Al-stishovite (5 vol%)
           double Al05Stisho_RadTCon = compute_radiative_thermal_conductivity(
             Al05Stisho_RadTC_c0, Al05Stisho_RadTC_d1, Al05Stisho_RadTC_jmin, Al05Stisho_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[Al05Stisho_Index] = Al05Stisho_RadTCon;
+          All_Minerals_RadTcond[Al05Stisho_Index] = Al05Stisho_RadTCon;
           // Compute radiative thermal conductivities for Antigorite (010)
           double Antigor010_RadTCon = compute_radiative_thermal_conductivity(
             Antigor010_RadTC_c0, Antigor010_RadTC_d1, Antigor010_RadTC_jmin, Antigor010_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[Antigor010_Index] = Antigor010_RadTCon;
+          All_Minerals_RadTcond[Antigor010_Index] = Antigor010_RadTCon;
           // Compute radiative thermal conductivities for Antigorite (001)
           double Antigor001_RadTCon = compute_radiative_thermal_conductivity(
             Antigor001_RadTC_c0, Antigor001_RadTC_d1, Antigor001_RadTC_jmin, Antigor001_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[Antigor001_Index] = Antigor001_RadTCon;
+          All_Minerals_RadTcond[Antigor001_Index] = Antigor001_RadTCon;
           // Compute radiative thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
           double FeAlPhaseD_RadTCon = compute_radiative_thermal_conductivity(
             FeAlPhaseD_RadTC_c0, FeAlPhaseD_RadTC_d1, FeAlPhaseD_RadTC_jmin, FeAlPhaseD_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[FeAlPhaseD_Index] = FeAlPhaseD_RadTCon;
+          All_Minerals_RadTcond[FeAlPhaseD_Index] = FeAlPhaseD_RadTCon;
           // Compute radiative thermal conductivities for Al-phase D (Dense Hydrous Magnesium Silicate)
           double Al02PhaseD_RadTCon = compute_radiative_thermal_conductivity(
             Al02PhaseD_RadTC_c0, Al02PhaseD_RadTC_d1, Al02PhaseD_RadTC_jmin, Al02PhaseD_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[Al02PhaseD_Index] = Al02PhaseD_RadTCon;
+          All_Minerals_RadTcond[Al02PhaseD_Index] = Al02PhaseD_RadTCon;
           // Compute radiative thermal conductivities for Ferropericlase (Mg92Fe8O)
           double Ferroper08_RadTCon = compute_radiative_thermal_conductivity(
             Ferroper08_RadTC_c0, Ferroper08_RadTC_d1, Ferroper08_RadTC_jmin, Ferroper08_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[Ferroper08_Index] = Ferroper08_RadTCon;
+          All_Minerals_RadTcond[Ferroper08_Index] = Ferroper08_RadTCon;
           // Compute radiative thermal conductivities for Ferropericlase (Mg90Fe10O)
           double Ferroper10_RadTCon = compute_radiative_thermal_conductivity(
             Ferroper10_RadTC_c0, Ferroper10_RadTC_d1, Ferroper10_RadTC_jmin, Ferroper10_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[Ferroper10_Index] = Ferroper10_RadTCon;
+          All_Minerals_RadTcond[Ferroper10_Index] = Ferroper10_RadTCon;
           // Compute radiative thermal conductivities for Ferropericlase (Mg56Fe44O)
           double Ferroper56_RadTCon = compute_radiative_thermal_conductivity(
             Ferroper56_RadTC_c0, Ferroper56_RadTC_d1, Ferroper56_RadTC_jmin, Ferroper56_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[Ferroper56_Index] = Ferroper56_RadTCon;
+          All_Minerals_RadTcond[Ferroper56_Index] = Ferroper56_RadTCon;
           // Compute radiative thermal conductivities for Davemaoite
           double Davemaoite_RadTCon = compute_radiative_thermal_conductivity(
             Davemaoite_RadTC_c0, Davemaoite_RadTC_d1, Davemaoite_RadTC_jmin, Davemaoite_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[Davemaoite_Index] = Davemaoite_RadTCon;
+          All_Minerals_RadTcond[Davemaoite_Index] = Davemaoite_RadTCon;
           // Compute radiative thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
           double NewHexAlPh_RadTCon = compute_radiative_thermal_conductivity(
             NewHexAlPh_RadTC_c0, NewHexAlPh_RadTC_d1, NewHexAlPh_RadTC_jmin, NewHexAlPh_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[NewHexAlPh_Index] = NewHexAlPh_RadTCon;
+          All_Minerals_RadTcond[NewHexAlPh_Index] = NewHexAlPh_RadTCon;
           // Compute radiative thermal conductivities for Akimotoite
           double Akimotoite_RadTCon = compute_radiative_thermal_conductivity(
             Akimotoite_RadTC_c0, Akimotoite_RadTC_d1, Akimotoite_RadTC_jmin, Akimotoite_RadTC_jmax, T_log);
-            All_Minerals_RadTcond[Akimotoite_Index] = Akimotoite_RadTCon;
+          All_Minerals_RadTcond[Akimotoite_Index] = Akimotoite_RadTCon;
 
           // Compute total thermal conductivities for DryOlivine
           double OlivineDry_TotTCon = compute_total_thermal_conductivity(
             OlivineDry_LatTCon, OlivineDry_RadTCon);
-            All_Minerals_TotTcond[OlivineDry_Index] = OlivineDry_TotTCon;
+          All_Minerals_TotTcond[OlivineDry_Index] = OlivineDry_TotTCon;
           // Compute total thermal conductivities for Dry Wadsleyite
           double WadsleyDry_TotTCon = compute_total_thermal_conductivity(
             WadsleyDry_LatTCon, WadsleyDry_RadTCon);
-            All_Minerals_TotTcond[WadsleyDry_Index] = WadsleyDry_TotTCon;
+          All_Minerals_TotTcond[WadsleyDry_Index] = WadsleyDry_TotTCon;
           // Compute total thermal conductivities for Dry Ringwoodite 
           double RingwooDry_TotTCon = compute_total_thermal_conductivity(
             RingwooDry_LatTCon, RingwooDry_RadTCon);
-            All_Minerals_TotTcond[RingwooDry_Index] = RingwooDry_TotTCon;
+          All_Minerals_TotTcond[RingwooDry_Index] = RingwooDry_TotTCon;
           // Compute total thermal conductivities for Mg-Bridgmanite
           double En100Brigm_TotTCon = compute_total_thermal_conductivity(
             En100Brigm_LatTCon, En100Brigm_RadTCon);
-            All_Minerals_TotTcond[En100Brigm_Index] = En100Brigm_TotTCon;
+          All_Minerals_TotTcond[En100Brigm_Index] = En100Brigm_TotTCon;
           // Compute total thermal conductivities for Fe-Bridgmanite (3%)
           double En97Brigma_TotTCon = compute_total_thermal_conductivity(
             En97Brigma_LatTCon, En97Brigma_RadTCon);
-            All_Minerals_TotTcond[En97Brigma_Index] = En97Brigma_TotTCon;
+          All_Minerals_TotTcond[En97Brigma_Index] = En97Brigma_TotTCon;
           // Compute total thermal conductivities for Fe-Bridgmanite (10%)
           double En90Brigma_TotTCon = compute_total_thermal_conductivity(
             En90Brigma_LatTCon, En90Brigma_RadTCon);
-            All_Minerals_TotTcond[En90Brigma_Index] = En90Brigma_TotTCon;
+          All_Minerals_TotTcond[En90Brigma_Index] = En90Brigma_TotTCon;
           // Compute total thermal conductivities for Al-Bridgmanite
           double AlMgBrigma_TotTCon = compute_total_thermal_conductivity(
             AlMgBrigma_LatTCon, AlMgBrigma_RadTCon);
-            All_Minerals_TotTcond[AlMgBrigma_Index] = AlMgBrigma_TotTCon;
+          All_Minerals_TotTcond[AlMgBrigma_Index] = AlMgBrigma_TotTCon;
           // Compute total thermal conductivities for Fe,Al-Bridgmanite
           double FeAlBrigma_TotTCon = compute_total_thermal_conductivity(
             FeAlBrigma_LatTCon, FeAlBrigma_RadTCon);
-            All_Minerals_TotTcond[FeAlBrigma_Index] = FeAlBrigma_TotTCon;
+          All_Minerals_TotTcond[FeAlBrigma_Index] = FeAlBrigma_TotTCon;
           // Compute total thermal conductivities for Orthopyroxene (Enstatite)
           double OpxEnstati_TotTCon = compute_total_thermal_conductivity(
             OpxEnstati_LatTCon, OpxEnstati_RadTCon);
-            All_Minerals_TotTcond[OpxEnstati_Index] = OpxEnstati_TotTCon;
+          All_Minerals_TotTcond[OpxEnstati_Index] = OpxEnstati_TotTCon;
           // Compute total thermal conductivities for Clinopyroxene (Diopside)
           double CpxDiopsid_TotTCon = compute_total_thermal_conductivity(
             CpxDiopsid_LatTCon, CpxDiopsid_RadTCon);
-            All_Minerals_TotTcond[CpxDiopsid_Index] = CpxDiopsid_TotTCon;
+          All_Minerals_TotTcond[CpxDiopsid_Index] = CpxDiopsid_TotTCon;
           // Compute total thermal conductivities for Garnet (Pyrope)
           double GrtPyropes_TotTCon = compute_total_thermal_conductivity(
             GrtPyropes_LatTCon, GrtPyropes_RadTCon);
-            All_Minerals_TotTcond[GrtPyropes_Index] = GrtPyropes_TotTCon;
+          All_Minerals_TotTcond[GrtPyropes_Index] = GrtPyropes_TotTCon;
           // Compute total thermal conductivities for Garnet (Grossular)
           double GrtGrossul_TotTCon = compute_total_thermal_conductivity(
             GrtGrossul_LatTCon, GrtGrossul_RadTCon);
-            All_Minerals_TotTcond[GrtGrossul_Index] = GrtGrossul_TotTCon;
+          All_Minerals_TotTcond[GrtGrossul_Index] = GrtGrossul_TotTCon;
           // Compute total thermal conductivities for Garnet (Almandine)
           double GrtAlmandi_TotTCon = compute_total_thermal_conductivity(
             GrtAlmandi_LatTCon, GrtAlmandi_RadTCon);
-            All_Minerals_TotTcond[GrtAlmandi_Index] = GrtAlmandi_TotTCon;
+          All_Minerals_TotTcond[GrtAlmandi_Index] = GrtAlmandi_TotTCon;
           // Compute total thermal conductivities for Garnet (Majorite)
           double GrtMajorit_TotTCon = compute_total_thermal_conductivity(
             GrtMajorit_LatTCon, GrtMajorit_RadTCon);
-            All_Minerals_TotTcond[GrtMajorit_Index] = GrtMajorit_TotTCon;
+          All_Minerals_TotTcond[GrtMajorit_Index] = GrtMajorit_TotTCon;
           // Compute total thermal conductivities for Quartz
           double QuartzPure_TotTCon = compute_total_thermal_conductivity(
             QuartzPure_LatTCon, QuartzPure_RadTCon);
-            All_Minerals_TotTcond[QuartzPure_Index] = QuartzPure_TotTCon;
+          All_Minerals_TotTcond[QuartzPure_Index] = QuartzPure_TotTCon;
           // Compute total thermal conductivities for Coesite
           double CoesitSiO2_TotTCon = compute_total_thermal_conductivity(
             CoesitSiO2_LatTCon, CoesitSiO2_RadTCon);
-            All_Minerals_TotTcond[CoesitSiO2_Index] = CoesitSiO2_TotTCon;
+          All_Minerals_TotTcond[CoesitSiO2_Index] = CoesitSiO2_TotTCon;
           // Compute total thermal conductivities for Stishovite
           double Stishovite_TotTCon = compute_total_thermal_conductivity(
             Stishovite_LatTCon, Stishovite_RadTCon);
-            All_Minerals_TotTcond[Stishovite_Index] = Stishovite_TotTCon;
+          All_Minerals_TotTcond[Stishovite_Index] = Stishovite_TotTCon;
           // Compute total thermal conductivities for Al-stishovite (5 vol%)
           double Al05Stisho_TotTCon = compute_total_thermal_conductivity(
             Al05Stisho_LatTCon, Al05Stisho_RadTCon);
-            All_Minerals_TotTcond[Al05Stisho_Index] = Al05Stisho_TotTCon;
+          All_Minerals_TotTcond[Al05Stisho_Index] = Al05Stisho_TotTCon;
           // Compute total thermal conductivities for Antigorite (010)
           double Antigor010_TotTCon = compute_total_thermal_conductivity(
             Antigor010_LatTCon, Antigor010_RadTCon);
-            All_Minerals_TotTcond[Antigor010_Index] = Antigor010_TotTCon;
+          All_Minerals_TotTcond[Antigor010_Index] = Antigor010_TotTCon;
           // Compute total thermal conductivities for Antigorite (001)
           double Antigor001_TotTCon = compute_total_thermal_conductivity(
             Antigor001_LatTCon, Antigor001_RadTCon);
-            All_Minerals_TotTcond[Antigor001_Index] = Antigor001_TotTCon;
+          All_Minerals_TotTcond[Antigor001_Index] = Antigor001_TotTCon;
           // Compute total thermal conductivities for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
           double FeAlPhaseD_TotTCon = compute_total_thermal_conductivity(
             FeAlPhaseD_LatTCon, FeAlPhaseD_RadTCon);
-            All_Minerals_TotTcond[FeAlPhaseD_Index] = FeAlPhaseD_TotTCon;
+          All_Minerals_TotTcond[FeAlPhaseD_Index] = FeAlPhaseD_TotTCon;
           // Compute total thermal conductivities for Al-phase D (Dense Hydrous Magnesium Silicate)
           double Al02PhaseD_TotTCon = compute_total_thermal_conductivity(
             Al02PhaseD_LatTCon, Al02PhaseD_RadTCon);
-            All_Minerals_TotTcond[Al02PhaseD_Index] = Al02PhaseD_TotTCon;
+          All_Minerals_TotTcond[Al02PhaseD_Index] = Al02PhaseD_TotTCon;
           // Compute total thermal conductivities for Ferropericlase (Mg92Fe8O)
           double Ferroper08_TotTCon = compute_total_thermal_conductivity(
             Ferroper08_LatTCon, Ferroper08_RadTCon);
-            All_Minerals_TotTcond[Ferroper08_Index] = Ferroper08_TotTCon;
+          All_Minerals_TotTcond[Ferroper08_Index] = Ferroper08_TotTCon;
           // Compute total thermal conductivities for Ferropericlase (Mg90Fe10O)
           double Ferroper10_TotTCon = compute_total_thermal_conductivity(
             Ferroper10_LatTCon, Ferroper10_RadTCon);
-            All_Minerals_TotTcond[Ferroper10_Index] = Ferroper10_TotTCon;
+          All_Minerals_TotTcond[Ferroper10_Index] = Ferroper10_TotTCon;
           // Compute total thermal conductivities for Ferropericlase (Mg56Fe44O)
           double Ferroper56_TotTCon = compute_total_thermal_conductivity(
             Ferroper56_LatTCon, Ferroper56_RadTCon);
-            All_Minerals_TotTcond[Ferroper56_Index] = Ferroper56_TotTCon;
+          All_Minerals_TotTcond[Ferroper56_Index] = Ferroper56_TotTCon;
           // Compute total thermal conductivities for Davemaoite
           double Davemaoite_TotTCon = compute_total_thermal_conductivity(
             Davemaoite_LatTCon, Davemaoite_RadTCon);
-            All_Minerals_TotTcond[Davemaoite_Index] = Davemaoite_TotTCon;
+          All_Minerals_TotTcond[Davemaoite_Index] = Davemaoite_TotTCon;
           // Compute total thermal conductivities for New-hexagonal-alluminium-phase (FeNAL)
           double NewHexAlPh_TotTCon = compute_total_thermal_conductivity(
             NewHexAlPh_LatTCon, NewHexAlPh_RadTCon);
-            All_Minerals_TotTcond[NewHexAlPh_Index] = NewHexAlPh_TotTCon;
+          All_Minerals_TotTcond[NewHexAlPh_Index] = NewHexAlPh_TotTCon;
           // Compute total thermal conductivities for Akimotoite
           double Akimotoite_TotTCon = compute_total_thermal_conductivity(
             Akimotoite_LatTCon, Akimotoite_RadTCon);
-            All_Minerals_TotTcond[Akimotoite_Index] = Akimotoite_TotTCon;
+          All_Minerals_TotTcond[Akimotoite_Index] = Akimotoite_TotTCon;
     
           // Fill the matrix column by column
-          for (unsigned int i = 0; i < MineralPar_Index; ++i)
+          for (unsigned int row = 0; row < MineralPar_Index; ++row)
           {
-            All_Minerals_TConds[i][0] = All_Minerals_LatTcond[i]; // Column 0: Lattice conductivities
-            All_Minerals_TConds[i][1] = All_Minerals_RadTcond[i]; // Column 1: Radiative conductivities
-            All_Minerals_TConds[i][2] = All_Minerals_TotTcond[i]; // Column 2: Total conductivities
+            All_Minerals_TConds[row][0] = All_Minerals_LatTcond[row]; // Column 0: Lattice conductivities
+            All_Minerals_TConds[row][1] = All_Minerals_RadTcond[row]; // Column 1: Radiative conductivities
+            All_Minerals_TConds[row][2] = All_Minerals_TotTcond[row]; // Column 2: Total conductivities
           }
 
           // Compute P,T-dependent thermal conductivities of aggregate rocks 
 
           // Pyrolite (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
-          double AggRock_Pyrolite_TCond = std::pow(OlivineDry_TotTCon,MinFract_Pyrolite[0])*std::pow(GrtPyropes_TotTCon,MinFract_Pyrolite[1])*std::pow(OpxEnstati_TotTCon,MinFract_Pyrolite[2])*std::pow(CpxDiopsid_TotTCon,MinFract_Pyrolite[3]);   
+          // double AggRock_Pyrolite_TCond = std::pow(OlivineDry_TotTCon,MinFract_Pyrolite[0])*std::pow(GrtPyropes_TotTCon,MinFract_Pyrolite[1])*std::pow(OpxEnstati_TotTCon,MinFract_Pyrolite[2])*std::pow(CpxDiopsid_TotTCon,MinFract_Pyrolite[3]);   
           // Harzburgite (80% olivine, 20% ensatite)
-          double AggRock_Harzburg_TCond = std::pow(OlivineDry_TotTCon,MinFract_Harzburg[0])*std::pow(OpxEnstati_TotTCon,MinFract_Harzburg[1]);
+          // double AggRock_Harzburg_TCond = std::pow(OlivineDry_TotTCon,MinFract_Harzburg[0])*std::pow(OpxEnstati_TotTCon,MinFract_Harzburg[1]);
           // Meta-basaltic crust MORB (80% diopside, 20% pyrope)
-          double AggRock_MetaMORB_TCond = std::pow(CpxDiopsid_TotTCon,MinFract_MetaMORB[0])*std::pow(GrtPyropes_TotTCon,MinFract_MetaMORB[1]);
+          // double AggRock_MetaMORB_TCond = std::pow(CpxDiopsid_TotTCon,MinFract_MetaMORB[0])*std::pow(GrtPyropes_TotTCon,MinFract_MetaMORB[1]);
+          // Dunite (100% olivine)
+          // double AggRock_DuniteOl_TCond = std::pow(OlivineDry_TotTCon,MinFract_DuniteOl[0]);
+          // Test Case
+          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[0][2], min_frac);
 
-
-          double AggRock_PTDep_LatTCo = std::pow(All_Minerals_TConds[0][0], min_frac);
-          double AggRock_PTDep_RadTCo = std::pow(All_Minerals_TConds[0][1], min_frac);
-          double AggRock_PTDep_TotTCo = AggRock_PTDep_LatTCo+AggRock_PTDep_RadTCo;
-
-          // out.lat_thermal_conductivi[i] = OlivineDry_PTDep_LatTCo;
-          // out.rad_thermal_conductivi[i] = OlivineDry_TDep_RadTCon;
-          out.thermal_conductivities[i] = AggRock_PTDep_TotTCo;
+          out.thermal_conductivities[i] = AggRock_TestCase_TCond;
         }
       } 
     }
