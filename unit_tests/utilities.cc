@@ -51,6 +51,19 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   std::vector<double> pressures = {1e5, 1e9, 5e9, 10e9, 100e9};
   in.pressure = pressures;
 
+  // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K]
+  std::vector<double> OlivineDry_Expt_LatTCon = {3.58888, 1.58719, 2.36282, 3.67868, 4.25767};
+  std::vector<double> OlivineDry_Expt_RadTCon = {0.00138288, 2.23152, 2.34978, 2.45486, 3.12273};
+
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K]
+  std::vector<double> OlivineDry_Expt_TotTCon(temperatures.size());
+
+  // Perform element-wise sum
+  for (size_t row = 0; row < temperatures.size(); ++row)
+  {
+      OlivineDry_Expt_TotTCon[row] = OlivineDry_Expt_LatTCon[row] + OlivineDry_Expt_RadTCon[row];
+  }
+
   // Assigning an array of values to in.composition (X) in [fraction]
    std::vector<std::vector<double>> compositions = {
       {1.00, 1.00, 1.00, 1.00, 1.00},
@@ -59,33 +72,43 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       {0.25, 0.25, 0.25, 0.25, 0.25}
   };
   
-  // Expected lattice thermal conductivities (k) in [W/m/K]
-  std::vector<std::vector<double>> expected_lattice_Tcond = {
-      {3.58888, 1.58719, 2.36282, 3.67868, 4.25767},
-      {2.60747, 1.41407, 1.90578, 2.65625, 2.96400},
-      {1.89443, 1.25983, 1.53714, 1.91799, 2.06341},
-      {1.37638, 1.12242, 1.23981, 1.38491, 1.43645}
-  };
+  // Initialize the expected value matrix with the same dimensions of the composition matrix
+  std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
-  // Expected radiative thermal conductivities (k) in [W/m/K]
-  std::vector<std::vector<double>> expected_radiative_Tcond = {
-      {0.00138288, 2.23152, 2.34978, 2.45486, 3.12273},
-      {0.00717114, 1.82579, 1.89789, 1.96119, 2.34909},
-      {0.03718709, 1.49382, 1.53290, 1.56680, 1.76712},
-      {0.19283955, 1.22222, 1.23810, 1.25171, 1.32933}
-  };
-
-  // Initialize the result matrix with the same dimensions
-  std::vector<std::vector<double>> expected_total_Tcond(expected_lattice_Tcond.size(), std::vector<double>(expected_lattice_Tcond[0].size()));
-
-  // Perform element-wise sum
-  for (size_t i = 0; i < expected_lattice_Tcond.size(); ++i)
+  // Perform element-wise calculation
+  for (size_t row = 0; row < compositions.size(); ++row)
   {
-    for (size_t j = 0; j < expected_lattice_Tcond[i].size(); ++j)
+    for (size_t col = 0; col < compositions[row].size(); ++col)
     {
-        expected_total_Tcond[i][j] = expected_lattice_Tcond[i][j] + expected_radiative_Tcond[i][j];
+      expected_total_Tcond[row][col] = std::pow(OlivineDry_Expt_TotTCon[col], compositions[row][col]);
     }
   }
+
+  // Expected lattice thermal conductivities (k) in [W/m/K]
+  // std::vector<std::vector<double>> expected_lattice_Tcond = {
+      // {3.58888, 1.58719, 2.36282, 3.67868, 4.25767},
+      // {2.60747, 1.41407, 1.90578, 2.65625, 2.96400},
+      // {1.89443, 1.25983, 1.53714, 1.91799, 2.06341},
+      // {1.37638, 1.12242, 1.23981, 1.38491, 1.43645}
+  // };
+
+  // Expected radiative thermal conductivities (k) in [W/m/K]
+  // std::vector<std::vector<double>> expected_radiative_Tcond = {
+      // {0.00138288, 2.23152, 2.34978, 2.45486, 3.12273},
+      // {0.00717114, 1.82579, 1.89789, 1.96119, 2.34909},
+      // {0.03718709, 1.49382, 1.53290, 1.56680, 1.76712},
+      // {0.19283955, 1.22222, 1.23810, 1.25171, 1.32933}
+  // };
+
+  
+  // Perform element-wise sum
+  // for (size_t i = 0; i < expected_lattice_Tcond.size(); ++i)
+  // {
+    // for (size_t j = 0; j < expected_lattice_Tcond[i].size(); ++j)
+    // {
+        // expected_total_Tcond[i][j] = expected_lattice_Tcond[i][j] + expected_radiative_Tcond[i][j];
+    // }
+  // }
 
   std::vector<std::vector<double>> expected_conductivities = expected_total_Tcond;
 
