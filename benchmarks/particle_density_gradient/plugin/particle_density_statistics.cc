@@ -22,11 +22,7 @@ namespace aspect
       double local_min_score = std::numeric_limits<double>::max();
       double local_max_score = 0;
       double global_score = 0;
-
-      types::particle_index global_particles = 0;
-      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
-        global_particles += this->get_particle_manager(particle_manager_index).n_global_particles();
-
+      unsigned int cells_with_particles = 0;
 
       for (const typename Triangulation<dim>::active_cell_iterator &cell : this->get_dof_handler().active_cell_iterators())
       {
@@ -51,6 +47,7 @@ namespace aspect
             }
             if(particles_in_cell > 0)
             {
+              cells_with_particles++;
               unsigned int n_particles_per_quadrant_ideal = particles_in_cell/4;
 
               unsigned int n_particles_topleft = 0;
@@ -74,7 +71,7 @@ namespace aspect
               ((n_particles_bottomright-n_particles_per_quadrant_ideal)*(n_particles_bottomright-n_particles_per_quadrant_ideal));
               
               //ratio between the observed distance and the worst case distance. 1 = worst possible distribution, 0 = perfect
-              double distribution_score_current_cell = actual_error_squared/worst_case_error_squared;
+              double distribution_score_current_cell = std::sqrt(actual_error_squared)/std::sqrt(worst_case_error_squared);
 
               local_min_score = std::min(local_min_score,distribution_score_current_cell);
               local_max_score = std::max(local_max_score,distribution_score_current_cell);
@@ -87,7 +84,8 @@ namespace aspect
       double global_max_score = Utilities::MPI::max (local_max_score, this->get_mpi_communicator());
       double global_min_score = Utilities::MPI::min (local_min_score, this->get_mpi_communicator());
       double summed_score = Utilities::MPI::sum (global_score, this->get_mpi_communicator());
-      double average_score = summed_score / this->get_triangulation().n_global_active_cells();
+      double global_cells_with_particles = Utilities::MPI::sum (cells_with_particles, this->get_mpi_communicator());
+      double average_score = summed_score / global_cells_with_particles;
 
 
       // write to statistics file
