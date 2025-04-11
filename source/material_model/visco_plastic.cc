@@ -274,7 +274,8 @@ namespace aspect
           // has been called.
           // TODO do we even need a separate function? We could compute the PlasticAdditionalOutputs here like
           // the ElasticAdditionalOutputs.
-          rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
+          if (in.requests_property(MaterialProperties::additional_outputs))
+            rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
 
           if (this->get_parameters().enable_elasticity)
             {
@@ -285,9 +286,10 @@ namespace aspect
 
               // Fill the material properties that are part of the elastic additional outputs
               if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
-                {
-                  elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
-                }
+                if (in.requests_property(MaterialProperties::additional_outputs))
+                  {
+                    elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
+                  }
             }
         }
 

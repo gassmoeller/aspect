@@ -927,10 +927,10 @@ namespace aspect
           scratch.mesh_velocity_values);
 
     // compute material properties and heating terms
-    scratch.material_model_inputs.reinit  (scratch.finite_element_values,
-                                           cell,
-                                           this->introspection,
-                                           current_linearization_point);
+    scratch.material_model_inputs.reinit (scratch.finite_element_values,
+                                          cell,
+                                          this->introspection,
+                                          current_linearization_point);
 
     for (unsigned int i=0; i<1+introspection.n_compositional_fields; ++i)
       for (unsigned int j=0; j<assemblers->advection_system[i].size(); ++j)
@@ -942,6 +942,21 @@ namespace aspect
                                                           current_linearization_point,
                                                           scratch.finite_element_values,
                                                           introspection);
+
+    if (advection_field.is_temperature())
+      scratch.material_model_inputs.requested_properties
+        = MaterialModel::MaterialProperties::equation_of_state_properties |
+          MaterialModel::MaterialProperties::thermal_conductivity;
+
+    if (parameters.include_melt_transport)
+      scratch.material_model_inputs.requested_properties
+        = scratch.material_model_inputs.requested_properties |
+          MaterialModel::MaterialProperties::additional_outputs;
+
+    for (const auto &heating_model : heating_model_manager.get_active_plugins())
+      scratch.material_model_inputs.requested_properties
+        = scratch.material_model_inputs.requested_properties |
+          heating_model->get_required_properties();
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
@@ -1059,6 +1074,16 @@ namespace aspect
                                                                       current_linearization_point,
                                                                       *scratch.face_finite_element_values,
                                                                       introspection);
+
+                if (advection_field.is_temperature())
+                  scratch.face_material_model_inputs.requested_properties
+                    = MaterialModel::MaterialProperties::equation_of_state_properties |
+                      MaterialModel::MaterialProperties::thermal_conductivity;
+
+                for (const auto &heating_model : heating_model_manager.get_active_plugins())
+                  scratch.face_material_model_inputs.requested_properties
+                    = scratch.face_material_model_inputs.requested_properties |
+                      heating_model->get_required_properties();
 
                 material_model->evaluate(scratch.face_material_model_inputs,
                                          scratch.face_material_model_outputs);
