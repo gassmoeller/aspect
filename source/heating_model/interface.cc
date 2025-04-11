@@ -51,6 +51,16 @@ namespace aspect
     {}
 
 
+    template <int dim>
+    MaterialModel::MaterialProperties::Property
+    Interface<dim>::
+    get_required_properties() const
+    {
+      return MaterialModel::MaterialProperties::all_properties;
+    }
+
+
+
     // ------------------------------ Manager -----------------------------
 
 
@@ -193,7 +203,8 @@ namespace aspect
 
       for (const auto &heating_model : this->plugin_objects)
         {
-          heating_model->create_additional_material_model_outputs(material_model_outputs);
+          if ((heating_model->get_required_properties() & MaterialModel::MaterialProperties::additional_outputs) != 0)
+            heating_model->create_additional_material_model_outputs(material_model_outputs);
         }
     }
 
