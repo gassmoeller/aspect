@@ -111,10 +111,17 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   // unsigned int Akimotoite_ExptID = MineralPar_Index++;
   // std::vector<double> Akimotoite_Expt_TotTCon(temperatures.size());
 
+  // Preallocate matrixes for storing thermal conductivities of minerals
+  std::vector<std::vector<double>> Expt_Minerals_LatTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> Expt_Minerals_RadTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
+  std::vector<std::vector<double>> Expt_Minerals_TotTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+
 
   // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> OlivineDry_Expt_LatTCon = {3.58888, 1.58719, 2.36282, 3.67868, 4.25767};
+  Expt_Minerals_LatTcond[OlivineDry_ExptID] = OlivineDry_Expt_LatTCon;
   std::vector<double> OlivineDry_Expt_RadTCon = {0.00138288, 2.23152, 2.34978, 2.45486, 3.12273};
+  Expt_Minerals_RadTcond[OlivineDry_ExptID] = OlivineDry_Expt_RadTCon;
   // Dry Wadsleyite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   // std::vector<double> WadsleyDry_Expt_LatTCon = {5.88364, 4.17228, 3.21488, 3.22817, 2.77368};
   // std::vector<double> WadsleyDry_Expt_RadTCon = {1.1834e-9, 1.51515, 1.71067, 1.87995, 2.71457};
@@ -196,15 +203,12 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   // Akimotoite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   // std::vector<double> Akimotoite_Expt_LatTCon = {8.59248, 1.78976, 2.38264, 2.76606, 2.37440};
   // std::vector<double> Akimotoite_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  // Preallocate a vector for storing thermal conductivities of minerals
-  // std::vector<double> Expt_Minerals_LatTcond(MineralPar_Index, 0.0); // Lattice thermal conductivity
-  // std::vector<double> Expt_Minerals_RadTcond(MineralPar_Index, 0.0); // Radiative thermal conductivity
-  // std::vector<double> Expt_Minerals_TotTcond(MineralPar_Index, 0.0); // Total thermal conductivity
 
   // Perform element-wise sum
   for (size_t row = 0; row < temperatures.size(); ++row)
   {
       OlivineDry_Expt_TotTCon[row] = OlivineDry_Expt_LatTCon[row] + OlivineDry_Expt_RadTCon[row];
+      Expt_Minerals_TotTcond[OlivineDry_ExptID] = OlivineDry_Expt_TotTCon;
       // WadsleyDry_Expt_TotTCon[row] = WadsleyDry_Expt_LatTCon[row] + WadsleyDry_Expt_RadTCon[row];
       // RingwooDry_Expt_TotTCon[row] = RingwooDry_Expt_LatTCon[row] + RingwooDry_Expt_RadTCon[row];
       // En100Brigm_Expt_TotTCon[row] = En100Brigm_Expt_LatTCon[row] + En100Brigm_Expt_RadTCon[row];
@@ -250,7 +254,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   {
     for (size_t col = 0; col < compositions[row].size(); ++col)
     {
-      expected_total_Tcond[row][col] = std::pow(OlivineDry_Expt_TotTCon[col], compositions[row][col]);
+      unsigned int mID = OlivineDry_ExptID;
+      expected_total_Tcond[row][col] = std::pow(Expt_Minerals_TotTcond[mID][col], compositions[row][col]);
     }
   }
 
