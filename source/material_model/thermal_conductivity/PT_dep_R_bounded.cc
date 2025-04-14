@@ -449,44 +449,54 @@ namespace aspect
         const double RingwooDry_RadTC_jmax =  0.4027750000; 
 
         // Coefficients for Mg-bridgmanite
-        // assumed 0 for now - no data available
+        // retreived from fitting dataset of
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
+        // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [MgSiO3]
-        const double En100Brigm_RadTC_c0 = 0;
-        const double En100Brigm_RadTC_d1 = 0; 
-        const double En100Brigm_RadTC_jmin = -23.025850930; 
-        const double En100Brigm_RadTC_jmax = -23.050000000;  
+        const double En100Brigm_RadTC_c0 =  66.278;
+        const double En100Brigm_RadTC_d1 = -8.2756; 
+        const double En100Brigm_RadTC_jmin = -7.2568958208;         
+        const double En100Brigm_RadTC_jmax = -0.3403920329;         
 
         // Coefficients for Fe-bridgmanite (3%)
-        // assumed 0 for now - no data available
+        // retreived from fitting dataset of
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
+        // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [Fe0.03Mg0.97SiO3]
-        const double En97Brigma_RadTC_c0 =  0;
-        const double En97Brigma_RadTC_d1 =  0; 
-        const double En97Brigma_RadTC_jmin = -23.025850930; 
-        const double En97Brigma_RadTC_jmax = -23.050000000;  
+        const double En97Brigma_RadTC_c0 =  66.278;
+        const double En97Brigma_RadTC_d1 = -8.2756; 
+        const double En97Brigma_RadTC_jmin = -7.2568958208;         
+        const double En97Brigma_RadTC_jmax = -0.3403920329;  
 
         // Coefficients for Fe-bridgmanite (10%)
-        // assumed 0 for now - no data available
+        // retreived from fitting dataset of
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
+        // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [Fe0.1Mg0.9SiO3]
-        const double En90Brigma_RadTC_c0 =  0;
-        const double En90Brigma_RadTC_d1 =  0; 
-        const double En90Brigma_RadTC_jmin = -23.025850930; 
-        const double En90Brigma_RadTC_jmax = -23.050000000;  
+        const double En90Brigma_RadTC_c0 =  66.278;
+        const double En90Brigma_RadTC_d1 = -8.2756; 
+        const double En90Brigma_RadTC_jmin = -7.2568958208;         
+        const double En90Brigma_RadTC_jmax = -0.3403920329;  
 
         // Coefficients for Al-bridgmanite
-        // assumed 0 for now - no data available
+        // retreived from fitting dataset of
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
+        // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [(Al,Mg)SiO3]
-        const double AlMgBrigma_RadTC_c0 =  0;
-        const double AlMgBrigma_RadTC_d1 =  0; 
-        const double AlMgBrigma_RadTC_jmin = -23.025850930; 
-        const double AlMgBrigma_RadTC_jmax = -23.050000000;  
+        const double AlMgBrigma_RadTC_c0 =  66.278;
+        const double AlMgBrigma_RadTC_d1 = -8.2756; 
+        const double AlMgBrigma_RadTC_jmin = -7.2568958208;         
+        const double AlMgBrigma_RadTC_jmax = -0.3403920329;  
 
         // Coefficients for Fe,Al-bridgmanite
-        // assumed 0 for now - no data available
+        // retreived from fitting dataset of
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
+        // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [(Fe,Al,Mg)SiO3]
-        const double FeAlBrigma_RadTC_c0 =  0;
-        const double FeAlBrigma_RadTC_d1 =  0; 
-        const double FeAlBrigma_RadTC_jmin = -23.025850930; 
-        const double FeAlBrigma_RadTC_jmax = -23.050000000;  
+        const double FeAlBrigma_RadTC_c0 =  66.278;
+        const double FeAlBrigma_RadTC_d1 = -8.2756; 
+        const double FeAlBrigma_RadTC_jmin = -7.2568958208;         
+        const double FeAlBrigma_RadTC_jmax = -0.3403920329;  
 
         // Coefficients for orthopyroxene (enstatite)
         // retreived from fitting dataset of
@@ -503,10 +513,10 @@ namespace aspect
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [CaMgSi2O6]
-        const double CpxDiopsid_RadTC_c0 =   -13.972000000;
-        const double CpxDiopsid_RadTC_d1 =    2.4892000000;
+        const double CpxDiopsid_RadTC_c0 =   -14.286000000;       
+        const double CpxDiopsid_RadTC_d1 =    2.5119000000; 
         const double CpxDiopsid_RadTC_jmin = -23.025850930; 
-        const double CpxDiopsid_RadTC_jmax =  1.4446390700;
+        const double CpxDiopsid_RadTC_jmax =  1.4430000000;
 
         // Coefficients for garnet (pyrope)
         // retreived from fitting dataset of
@@ -523,30 +533,30 @@ namespace aspect
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [Ca3Al2(SiO4)3]
-        const double GrtGrossul_RadTC_c0 =   -11.261000000;
-        const double GrtGrossul_RadTC_d1 =    2.0132000000;
+        const double GrtGrossul_RadTC_c0 =   -11.782000000;
+        const double GrtGrossul_RadTC_d1 =    2.0718000000;
         const double GrtGrossul_RadTC_jmin = -23.025850930; 
-        const double GrtGrossul_RadTC_jmax =  1.4486839760;
+        const double GrtGrossul_RadTC_jmax =  1.4479836950;
 
         // Coefficients for garnet (almandine)
         // retreived from fitting dataset of
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3 ]
-        const double GrtAlmandi_RadTC_c0  =  -11.261000000;
-        const double GrtAlmandi_RadTC_d1 =    2.0132000000;
+        const double GrtAlmandi_RadTC_c0  =  -11.782000000;
+        const double GrtAlmandi_RadTC_d1 =    2.0718000000;
         const double GrtAlmandi_RadTC_jmin = -23.025850930; 
-        const double GrtAlmandi_RadTC_jmax =  1.4486839760;
+        const double GrtAlmandi_RadTC_jmax =  1.4479836950;
 
         // Coefficients for garnet (majorite)
         // retreived from fitting dataset of
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
         // mineral composition [Mg3(MgSi)(SiO4)3]
-        const double GrtMajorit_RadTC_c0  =  -11.261000000;
-        const double GrtMajorit_RadTC_d1 =    2.0132000000;
-        const double GrtMajorit_RadTC_jmin = -23.025850930; 
-        const double GrtMajorit_RadTC_jmax =  1.4486839760;
+        const double GrtMajorit_RadTC_c0  =  -11.782000000;
+        const double GrtMajorit_RadTC_d1 =    2.0718000000;
+        const double GrtMajorit_RadTC_jmin = -23.025850930;
+        const double GrtMajorit_RadTC_jmax =  1.4479836950;
 
         // Coefficients for quartz
         // assumed 0 for now - no data available
@@ -611,55 +621,54 @@ namespace aspect
         const double Al02PhaseD_RadTC_jmax = -23.050000000;
 
         // Coefficients for ferropericlase (Mg1-xFexO)
-        // assumed 0 for now - no data available
+        // retreived from fitting dataset of
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
+        // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [Mg0.92Fe0.08O] - (8% Iron)
-        const double Ferroper08_RadTC_c0 = 0;
-        const double Ferroper08_RadTC_d1 = 0;
-        const double Ferroper08_RadTC_jmin = -23.025850930; 
-        const double Ferroper08_RadTC_jmax = -23.050000000;
+        const double Ferroper08_RadTC_c0 =  66.278;
+        const double Ferroper08_RadTC_d1 = -8.2756; 
+        const double Ferroper08_RadTC_jmin = -7.2568958208;         
+        const double Ferroper08_RadTC_jmax = -0.3403920329;  
         // mineral composition [Mg0.90Fe0.10O] - (10% Iron)
-        const double Ferroper10_RadTC_c0 = 0;
-        const double Ferroper10_RadTC_d1 = 0;
-        const double Ferroper10_RadTC_jmin = -23.025850930; 
-        const double Ferroper10_RadTC_jmax = -23.050000000;
+        const double Ferroper10_RadTC_c0 =  66.278;
+        const double Ferroper10_RadTC_d1 = -8.2756; 
+        const double Ferroper10_RadTC_jmin = -7.2568958208;         
+        const double Ferroper10_RadTC_jmax = -0.3403920329;  
         // mineral composition [Mg0.44Fe0.56O] (56% Iron)
-        const double Ferroper56_RadTC_c0 = 0;
-        const double Ferroper56_RadTC_d1 = 0;
-        const double Ferroper56_RadTC_jmin = -23.025850930; 
-        const double Ferroper56_RadTC_jmax = -23.050000000;
+        const double Ferroper56_RadTC_c0 =  66.278;
+        const double Ferroper56_RadTC_d1 = -8.2756; 
+        const double Ferroper56_RadTC_jmin = -7.2568958208;         
+        const double Ferroper56_RadTC_jmax = -0.3403920329;  
 
         // Coefficients for davemaoite
-        // NOTE: here is depth dependent
         // retreived from fitting dataset of
-        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]       
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [CaSiO3] 
-        const double Davemaoite_RadTC_c0 = 21.0980;
-        const double Davemaoite_RadTC_d1 = -1.2506;
-        const double Davemaoite_RadTC_jmin = -23.025850930; 
-        const double Davemaoite_RadTC_jmax = 0.300104592;
+        const double Davemaoite_RadTC_c0 =  66.278;
+        const double Davemaoite_RadTC_d1 = -8.2756; 
+        const double Davemaoite_RadTC_jmin = -7.2568958208;         
+        const double Davemaoite_RadTC_jmax = -0.3403920329;  
 
         // Coefficients for new-hexagonal-alluminium-phase (FeNAL) 
-        // NOTE: here is depth dependent
         // retreived from fitting dataset of
-        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]       
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [Na0.71Mg2.05Al4.62Si1.16Fe(2+)0.09Fe(3+)0.17O12] 
-        const double NewHexAlPh_RadTC_c0 = 21.0980;
-        const double NewHexAlPh_RadTC_d1 =  -1.2506;
-        const double NewHexAlPh_RadTC_jmin = -23.025850930; 
-        const double NewHexAlPh_RadTC_jmax = 0.300104592;
+        const double NewHexAlPh_RadTC_c0 =  66.278;
+        const double NewHexAlPh_RadTC_d1 = -8.2756; 
+        const double NewHexAlPh_RadTC_jmin = -7.2568958208;         
+        const double NewHexAlPh_RadTC_jmax = -0.3403920329;  
 
         // Coefficients for akimotoite
-        // NOTE: here is depth dependent
         // retreived from fitting dataset of
-        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]       
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
         // mineral composition [MgSiO3] 
-        const double Akimotoite_RadTC_c0 = 21.0980;
-        const double Akimotoite_RadTC_d1 =  -1.2506;
-        const double Akimotoite_RadTC_jmin = -23.025850930; 
-        const double Akimotoite_RadTC_jmax = 0.300104592;
+        const double Akimotoite_RadTC_c0 =  66.278;
+        const double Akimotoite_RadTC_d1 = -8.2756; 
+        const double Akimotoite_RadTC_jmin = -7.2568958208;         
+        const double Akimotoite_RadTC_jmax = -0.3403920329;  
 
         // Preallocate a vector for mineral fractions of different rocks
         // Pyrolite (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
