@@ -96,8 +96,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   std::vector<double> CoesitSiO2_Expt_TotTCon(temperatures.size());
   unsigned int Stishovite_ExptID = MineralPar_Index++;
   std::vector<double> Stishovite_Expt_TotTCon(temperatures.size());
-  // unsigned int Al05Stisho_ExptID = MineralPar_Index++;
-  // std::vector<double> Al05Stisho_Expt_TotTCon(temperatures.size());
+  unsigned int Al05Stisho_ExptID = MineralPar_Index++;
+  std::vector<double> Al05Stisho_Expt_TotTCon(temperatures.size());
   // unsigned int Antigor010_ExptID = MineralPar_Index++;
   // std::vector<double> Antigor010_Expt_TotTCon(temperatures.size());
   // unsigned int Antigor001_ExptID = MineralPar_Index++;
@@ -211,8 +211,10 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   Expt_Minerals_LatTcond[Stishovite_ExptID] = Stishovite_Expt_LatTCon;
   Expt_Minerals_LatTcond[Stishovite_ExptID] = Stishovite_Expt_LatTCon;
   // Al-stishovite (5 vol%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  // std::vector<double> Al05Stisho_Expt_LatTCon = {24.18571, 10.48883, 10.35956, 10.44473, 15.11569};
-  // std::vector<double> Al05Stisho_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  std::vector<double> Al05Stisho_Expt_LatTCon = {24.18571, 10.48883, 10.35956, 10.44473, 15.11569};
+  std::vector<double> Al05Stisho_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  Expt_Minerals_LatTcond[Al05Stisho_ExptID] = Al05Stisho_Expt_LatTCon;
+  Expt_Minerals_LatTcond[Al05Stisho_ExptID] = Al05Stisho_Expt_LatTCon;
   // Antigorite (010): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   // std::vector<double> Antigor010_Expt_LatTCon = {4.55589, 1.99618, 2.41198, 3.15852, 3.57446};
   // std::vector<double> Antigor010_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
@@ -281,7 +283,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       Expt_Minerals_TotTcond[CoesitSiO2_ExptID] = CoesitSiO2_Expt_TotTCon;
       Stishovite_Expt_TotTCon[row] = Stishovite_Expt_LatTCon[row] + Stishovite_Expt_RadTCon[row];
       Expt_Minerals_TotTcond[Stishovite_ExptID] = Stishovite_Expt_TotTCon;
-      // Al05Stisho_Expt_TotTCon[row] = Al05Stisho_Expt_LatTCon[row] + Al05Stisho_Expt_RadTCon[row];
+      Al05Stisho_Expt_TotTCon[row] = Al05Stisho_Expt_LatTCon[row] + Al05Stisho_Expt_RadTCon[row];
+      Expt_Minerals_TotTcond[Al05Stisho_ExptID] = Al05Stisho_Expt_TotTCon;
       // Antigor010_Expt_TotTCon[row] = Antigor010_Expt_LatTCon[row] + Antigor010_Expt_RadTCon[row];
       // Antigor001_Expt_TotTCon[row] = Antigor001_Expt_LatTCon[row] + Antigor001_Expt_RadTCon[row];    
       // FeAlPhaseD_Expt_TotTCon[row] = FeAlPhaseD_Expt_LatTCon[row] + FeAlPhaseD_Expt_RadTCon[row];
@@ -298,7 +301,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   // Initialize the expected value matrix with the same dimensions of the composition matrix
   std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
-  unsigned int mID = Stishovite_ExptID;
+  unsigned int mID = Al05Stisho_ExptID;
 
   // Perform element-wise calculation
   for (size_t row = 0; row < compositions.size(); ++row)
@@ -443,9 +446,15 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
+        case 17:
+        {
+          INFO("Computed Al05Stisho k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
+          // Compare the computed thermal conductivity with the expected value
+          REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+          break;
+        }
       }
     
-      // INFO("Computed Al05Stisho k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed Antigor010 k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed Antigor001 k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]"); 
       // INFO("Computed FeAlPhaseD k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
