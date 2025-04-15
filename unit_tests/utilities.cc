@@ -104,8 +104,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   std::vector<double> Antigor001_Expt_TotTCon(temperatures.size());
   unsigned int FeAlPhaseD_ExptID = MineralPar_Index++;
   std::vector<double> FeAlPhaseD_Expt_TotTCon(temperatures.size());
-  // unsigned int Al02PhaseD_ExptID = MineralPar_Index++;
-  // std::vector<double> Al02PhaseD_Expt_TotTCon(temperatures.size());
+  unsigned int Al02PhaseD_ExptID = MineralPar_Index++;
+  std::vector<double> Al02PhaseD_Expt_TotTCon(temperatures.size());
   // unsigned int Ferroper08_ExptID = MineralPar_Index++;
   // std::vector<double> Ferroper08_Expt_TotTCon(temperatures.size());
   // unsigned int Ferroper10_ExptID = MineralPar_Index++;
@@ -231,8 +231,10 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   Expt_Minerals_LatTcond[FeAlPhaseD_ExptID] = FeAlPhaseD_Expt_LatTCon;
   Expt_Minerals_LatTcond[FeAlPhaseD_ExptID] = FeAlPhaseD_Expt_LatTCon;
   // Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  // std::vector<double> Al02PhaseD_Expt_LatTCon = {3.60666, 1.56888, 1.65207, 1.95489, 8.61776};
-  // std::vector<double> Al02PhaseD_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  std::vector<double> Al02PhaseD_Expt_LatTCon = {3.60666, 1.56888, 1.65207, 1.95489, 8.61776};
+  std::vector<double> Al02PhaseD_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  Expt_Minerals_LatTcond[Al02PhaseD_ExptID] = Al02PhaseD_Expt_LatTCon;
+  Expt_Minerals_LatTcond[Al02PhaseD_ExptID] = Al02PhaseD_Expt_LatTCon;
   // Ferropericlase (Mg92Fe8O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   // std::vector<double> Ferroper08_Expt_LatTCon = {5.08425, 2.20657, 2.24939, 2.50821, 14.39941};
   // std::vector<double> Ferroper08_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
@@ -297,7 +299,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       Expt_Minerals_TotTcond[Antigor001_ExptID] = Antigor001_Expt_TotTCon;   
       FeAlPhaseD_Expt_TotTCon[row] = FeAlPhaseD_Expt_LatTCon[row] + FeAlPhaseD_Expt_RadTCon[row];
       Expt_Minerals_TotTcond[FeAlPhaseD_ExptID] = FeAlPhaseD_Expt_TotTCon; 
-      // Al02PhaseD_Expt_TotTCon[row] = Al02PhaseD_Expt_LatTCon[row] + Al02PhaseD_Expt_RadTCon[row];
+      Al02PhaseD_Expt_TotTCon[row] = Al02PhaseD_Expt_LatTCon[row] + Al02PhaseD_Expt_RadTCon[row];
+      Expt_Minerals_TotTcond[Al02PhaseD_ExptID] = Al02PhaseD_Expt_TotTCon;
       // Ferroper08_Expt_TotTCon[row] = Ferroper08_Expt_LatTCon[row] + Ferroper08_Expt_RadTCon[row];
       // Ferroper10_Expt_TotTCon[row] = Ferroper10_Expt_LatTCon[row] + Ferroper10_Expt_RadTCon[row];
       // Ferroper56_Expt_TotTCon[row] = Ferroper56_Expt_LatTCon[row] + Ferroper56_Expt_RadTCon[row];
@@ -310,7 +313,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   // Initialize the expected value matrix with the same dimensions of the composition matrix
   std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
-  unsigned int mID = FeAlPhaseD_ExptID;
+  unsigned int mID = Al02PhaseD_ExptID;
 
   // Perform element-wise calculation
   for (size_t row = 0; row < compositions.size(); ++row)
@@ -483,8 +486,14 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
+        case 21:
+        {
+          INFO("Computed Al02PhaseD k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
+          // Compare the computed thermal conductivity with the expected value
+          REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+          break;
+        }
       }
-      // INFO("Computed Al02PhaseD k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed Ferroper08 k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed Ferroper10 k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed Ferroper56 k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
