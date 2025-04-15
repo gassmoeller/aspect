@@ -79,8 +79,8 @@ namespace aspect
         // https://doi.org/10.1073/pnas.1616216114
         // mineral composition [Mg1.8 Fe0.2 SiO4]    
         unsigned int OlivineDry_Index = MineralPar_Index++;
-        const double OlivineDry_LatTC_a0 =   -4.124100000;
-        const double OlivineDry_LatTC_b1 =    2.146900000;
+        const double OlivineDry_LatTC_a0 =   -4.1241;
+        const double OlivineDry_LatTC_b1 =    2.1469;
         const double OlivineDry_LatTC_ymin =  1.28093384543429;
         const double OlivineDry_LatTC_ymax =  2.60726381956037;
         const double OlivineDry_TDep_n_Exp =  0.5;     
@@ -103,8 +103,8 @@ namespace aspect
         // https://doi.org/10.1029/2020GL087607
         // mineral composition [(Mg1.79Fe0.17)Si1.02O4]
         unsigned int RingwooDry_Index = MineralPar_Index++;
-        const double RingwooDry_LatTC_a0 =  -5.462400000;
-        const double RingwooDry_LatTC_b1 =   2.079100000;
+        const double RingwooDry_LatTC_a0 =  -5.4624;
+        const double RingwooDry_LatTC_b1 =   2.0791;
         const double RingwooDry_LatTC_ymin = 1.60943791241410;
         const double RingwooDry_LatTC_ymax = 2.94939766245070; 
         const double RingwooDry_TDep_n_Exp = 0.5; 
@@ -114,8 +114,8 @@ namespace aspect
         // [Zhang & Marzotto 2025, in preparation]
         // mineral composition [MgSiO3]
         unsigned int En100Brigm_Index = MineralPar_Index++;
-        const double En100Brigm_LatTC_a0 =  -4.368700000;
-        const double En100Brigm_LatTC_b1 =   1.076600000; 
+        const double En100Brigm_LatTC_a0 =  -4.3687;
+        const double En100Brigm_LatTC_b1 =   1.0766; 
         const double En100Brigm_LatTC_ymin = 2.376025820; 
         const double En100Brigm_LatTC_ymax = 5.010635294;  
         const double En100Brigm_TDep_n_Exp = 1.01000;
@@ -1110,7 +1110,7 @@ namespace aspect
           // Dunite (100% olivine)
           // double AggRock_DuniteOl_TCond = std::pow(OlivineDry_TotTCon,MinFract_DuniteOl[0]);
           // Test Case
-          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[2][2], min_frac);
+          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[4][2], min_frac);
 
           out.thermal_conductivities[i] = AggRock_TestCase_TCond;
         }
