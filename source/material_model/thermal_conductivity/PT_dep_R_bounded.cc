@@ -91,8 +91,8 @@ namespace aspect
         // https://doi.org/10.1016/j.pepi.2004.03.005
         // mineral composition [(Mg1.8Fe0.2)SiO4]
         unsigned int WadsleyDry_Index = MineralPar_Index++;
-        const double WadsleyDry_LatTC_a0 =  -0.665600000;
-        const double WadsleyDry_LatTC_b1 =   0.308200000;
+        const double WadsleyDry_LatTC_a0 =  -0.6656;
+        const double WadsleyDry_LatTC_b1 =   0.3082;
         const double WadsleyDry_LatTC_ymin = 1.75735804249439;
         const double WadsleyDry_LatTC_ymax = 2.37090451537473; 
         const double WadsleyDry_TDep_n_Exp = 0.5; 
@@ -1110,7 +1110,7 @@ namespace aspect
           // Dunite (100% olivine)
           // double AggRock_DuniteOl_TCond = std::pow(OlivineDry_TotTCon,MinFract_DuniteOl[0]);
           // Test Case
-          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[0][2], min_frac);
+          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[1][2], min_frac);
 
           out.thermal_conductivities[i] = AggRock_TestCase_TCond;
         }
