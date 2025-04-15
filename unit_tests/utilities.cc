@@ -66,8 +66,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   std::vector<double> OlivineDry_Expt_TotTCon(temperatures.size());
   unsigned int WadsleyDry_ExptID = MineralPar_Index++;
   std::vector<double> WadsleyDry_Expt_TotTCon(temperatures.size());
-  // unsigned int RingwooDry_ExptID = MineralPar_Index++;
-  // std::vector<double> RingwooDry_Expt_TotTCon(temperatures.size());
+  unsigned int RingwooDry_ExptID = MineralPar_Index++;
+  std::vector<double> RingwooDry_Expt_TotTCon(temperatures.size());
   // unsigned int En100Brigm_ExptID = MineralPar_Index++;
   // std::vector<double> En100Brigm_Expt_TotTCon(temperatures.size());
   // unsigned int En97Brigma_ExptID = MineralPar_Index++;
@@ -136,8 +136,10 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   Expt_Minerals_LatTcond[WadsleyDry_ExptID] = WadsleyDry_Expt_LatTCon;
   Expt_Minerals_RadTcond[WadsleyDry_ExptID] = WadsleyDry_Expt_RadTCon;
   // Dry Ringwoodite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  // std::vector<double> RingwooDry_Expt_LatTCon = {4.98456, 2.17063, 2.41846, 3.19795, 5.89102};
-  // std::vector<double> RingwooDry_Expt_RadTCon = {5.52667e-10, 0.74367, 0.85004, 0.94227, 1.38818};
+  std::vector<double> RingwooDry_Expt_LatTCon = {4.98456, 2.17063, 2.41846, 3.19795, 5.89102};
+  std::vector<double> RingwooDry_Expt_RadTCon = {5.52667e-10, 0.74367, 0.85004, 0.94227, 1.38818};
+  Expt_Minerals_LatTcond[RingwooDry_ExptID] = RingwooDry_Expt_LatTCon;
+  Expt_Minerals_RadTcond[RingwooDry_ExptID] = RingwooDry_Expt_RadTCon;
   // Mg-Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   // std::vector<double> En100Brigm_Expt_LatTCon = {8.59248, 1.78976, 2.38264, 2.76606, 2.37440};
   // std::vector<double> En100Brigm_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
@@ -221,7 +223,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       Expt_Minerals_TotTcond[OlivineDry_ExptID] = OlivineDry_Expt_TotTCon;
       WadsleyDry_Expt_TotTCon[row] = WadsleyDry_Expt_LatTCon[row] + WadsleyDry_Expt_RadTCon[row];
       Expt_Minerals_TotTcond[WadsleyDry_ExptID] = WadsleyDry_Expt_TotTCon;
-      // RingwooDry_Expt_TotTCon[row] = RingwooDry_Expt_LatTCon[row] + RingwooDry_Expt_RadTCon[row];
+      RingwooDry_Expt_TotTCon[row] = RingwooDry_Expt_LatTCon[row] + RingwooDry_Expt_RadTCon[row];
+      Expt_Minerals_TotTcond[RingwooDry_ExptID] = RingwooDry_Expt_TotTCon;
       // En100Brigm_Expt_TotTCon[row] = En100Brigm_Expt_LatTCon[row] + En100Brigm_Expt_RadTCon[row];
       // En97Brigma_Expt_TotTCon[row] = En97Brigma_Expt_LatTCon[row] + En97Brigma_Expt_RadTCon[row];
       // En90Brigma_Expt_TotTCon[row] = En90Brigma_Expt_LatTCon[row] + En90Brigma_Expt_RadTCon[row];
@@ -253,7 +256,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   // Initialize the expected value matrix with the same dimensions of the composition matrix
   std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
-  unsigned int mID = WadsleyDry_ExptID;
+  unsigned int mID = RingwooDry_ExptID;
 
   // Perform element-wise calculation
   for (size_t row = 0; row < compositions.size(); ++row)
@@ -293,9 +296,14 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
+        case 2:
+        {
+          INFO("Computed RingwooDry k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
+          // Compare the computed thermal conductivity with the expected value
+          REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+          break;
+        }
       }
-      // INFO("Computed WadsleyDry k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-      // INFO("Computed RingwooDry k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed En100Brigm k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed En97Brigma k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed En90Brigma k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
