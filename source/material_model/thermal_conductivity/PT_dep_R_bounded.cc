@@ -369,10 +369,10 @@ namespace aspect
         const double Ferroper08_TDep_n_Exp = 0.5;
         // mineral composition [Mg0.90Fe0.10O] - (10% Iron)
         unsigned int Ferroper10_Index = MineralPar_Index++;
-        const double Ferroper10_LatTC_a0 = -5.2408;
-        const double Ferroper10_LatTC_b1 =  0.9649;
-        const double Ferroper10_LatTC_ymin = 1.2490430868; 
-        const double Ferroper10_LatTC_ymax = 3.9318256327;
+        const double Ferroper10_LatTC_a0 = -7.0133;
+        const double Ferroper10_LatTC_b1 =  1.9321;
+        const double Ferroper10_LatTC_ymin = 1.5040773968; 
+        const double Ferroper10_LatTC_ymax = 4.0250359042;
         const double Ferroper10_TDep_n_Exp = 0.025;
         // mineral composition [Mg0.44Fe0.56O] (56% Iron)
         unsigned int Ferroper56_Index = MineralPar_Index++;
@@ -1110,7 +1110,7 @@ namespace aspect
           // Dunite (100% olivine)
           // double AggRock_DuniteOl_TCond = std::pow(OlivineDry_TotTCon,MinFract_DuniteOl[0]);
           // Test Case
-          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[22][2], min_frac);
+          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[23][2], min_frac);
 
           out.thermal_conductivities[i] = AggRock_TestCase_TCond;
         }
