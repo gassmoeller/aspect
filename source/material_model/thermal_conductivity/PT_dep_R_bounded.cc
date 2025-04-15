@@ -516,7 +516,7 @@ namespace aspect
         const double CpxDiopsid_RadTC_c0 =   -14.286000000;       
         const double CpxDiopsid_RadTC_d1 =    2.5119000000; 
         const double CpxDiopsid_RadTC_jmin = -23.025850930; 
-        const double CpxDiopsid_RadTC_jmax =  1.4430000000;
+        const double CpxDiopsid_RadTC_jmax =  1.4434214740;
 
         // Coefficients for garnet (pyrope)
         // retreived from fitting dataset of
@@ -1110,7 +1110,7 @@ namespace aspect
           // Dunite (100% olivine)
           // double AggRock_DuniteOl_TCond = std::pow(OlivineDry_TotTCon,MinFract_DuniteOl[0]);
           // Test Case
-          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[7][2], min_frac);
+          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[9][2], min_frac);
 
           out.thermal_conductivities[i] = AggRock_TestCase_TCond;
         }
