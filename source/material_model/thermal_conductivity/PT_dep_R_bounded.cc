@@ -1110,7 +1110,7 @@ namespace aspect
           // Dunite (100% olivine)
           // double AggRock_DuniteOl_TCond = std::pow(OlivineDry_TotTCon,MinFract_DuniteOl[0]);
           // Test Case
-          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[12][2], min_frac);
+          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[13][2], min_frac);
 
           out.thermal_conductivities[i] = AggRock_TestCase_TCond;
         }
