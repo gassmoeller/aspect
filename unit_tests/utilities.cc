@@ -51,6 +51,14 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   std::vector<double> pressures = {1e5, 1e9, 5e9, 10e9, 100e9};
   in.pressure = pressures;
 
+  // Assigning a matrix of volume fractions to in.composition (X) in [%]
+  std::vector<std::vector<double>> compositions = {
+      {1.00, 1.00, 1.00, 1.00, 1.00},
+      {0.75, 0.75, 0.75, 0.75, 0.75},
+      {0.50, 0.50, 0.50, 0.50, 0.50},
+      {0.25, 0.25, 0.25, 0.25, 0.25}
+  };
+
   unsigned int MineralPar_Index = 0; // Initialize the counter
 
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
@@ -238,23 +246,17 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       // Akimotoite_Expt_TotTCon[row] = Akimotoite_Expt_LatTCon[row] + Akimotoite_Expt_RadTCon[row];
   }
 
-  // Assigning an array of values to in.composition (X) in [fraction]
-   std::vector<std::vector<double>> compositions = {
-      {1.00, 1.00, 1.00, 1.00, 1.00},
-      {0.75, 0.75, 0.75, 0.75, 0.75},
-      {0.50, 0.50, 0.50, 0.50, 0.50},
-      {0.25, 0.25, 0.25, 0.25, 0.25}
-  };
-  
+
   // Initialize the expected value matrix with the same dimensions of the composition matrix
   std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
+  unsigned int mID = OlivineDry_ExptID;
+  
   // Perform element-wise calculation
   for (size_t row = 0; row < compositions.size(); ++row)
   {
     for (size_t col = 0; col < compositions[row].size(); ++col)
     {
-      unsigned int mID = OlivineDry_ExptID;
       expected_total_Tcond[row][col] = std::pow(Expt_Minerals_TotTcond[mID][col], compositions[row][col]);
     }
   }
@@ -272,7 +274,12 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
     // Loop over the different combinations of pressures (P) and temperatures (T)
     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
     {
-      INFO("Computed OlivineDry k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
+      switch (mID)
+      {
+        case 0:
+        INFO("Computed OlivineDry k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
+        break;
+      }
       // INFO("Computed WadsleyDry k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed RingwooDry k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed En100Brigm k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
