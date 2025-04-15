@@ -82,8 +82,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   std::vector<double> OpxEnstati_Expt_TotTCon(temperatures.size());
   unsigned int CpxDiopsid_ExptID = MineralPar_Index++;
   std::vector<double> CpxDiopsid_Expt_TotTCon(temperatures.size());
-  // unsigned int GrtPyropes_ExptID = MineralPar_Index++;
-  // std::vector<double> GrtPyropes_Expt_TotTCon(temperatures.size());
+  unsigned int GrtPyropes_ExptID = MineralPar_Index++;
+  std::vector<double> GrtPyropes_Expt_TotTCon(temperatures.size());
   // unsigned int GrtGrossul_ExptID = MineralPar_Index++;
   // std::vector<double> GrtGrossul_Expt_TotTCon(temperatures.size());
   // unsigned int GrtAlmandi_ExptID = MineralPar_Index++;
@@ -176,8 +176,10 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   Expt_Minerals_LatTcond[CpxDiopsid_ExptID] = CpxDiopsid_Expt_LatTCon;
   Expt_Minerals_LatTcond[CpxDiopsid_ExptID] = CpxDiopsid_Expt_LatTCon;
   // Garnet (Pyrope): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  // std::vector<double> GrtPyropes_Expt_LatTCon = {4.38827, 2.15733, 2.64684, 3.54118, 4.22405};
-  // std::vector<double> GrtPyropes_Expt_RadTCon = {7.97451e-5, 2.20910, 2.37779, 2.52981, 3.52532};
+  std::vector<double> GrtPyropes_Expt_LatTCon = {4.38827, 2.15733, 2.64684, 3.54118, 4.22405};
+  std::vector<double> GrtPyropes_Expt_RadTCon = {7.97451e-5, 2.08101, 2.25936, 2.42089, 3.48797};
+  Expt_Minerals_LatTcond[GrtPyropes_ExptID] = GrtPyropes_Expt_LatTCon;
+  Expt_Minerals_LatTcond[GrtPyropes_ExptID] = GrtPyropes_Expt_LatTCon;
   // Garnet (Grossular): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   // std::vector<double> GrtGrossul_Expt_LatTCon = {4.08838, 1.91337, 2.26557, 3.05964, 4.01413};
   // std::vector<double> GrtGrossul_Expt_RadTCon = {7.97451e-5, 2.20910, 2.37779, 2.52981, 3.52532};
@@ -253,7 +255,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       Expt_Minerals_TotTcond[OpxEnstati_ExptID] = OpxEnstati_Expt_TotTCon;
       CpxDiopsid_Expt_TotTCon[row] = CpxDiopsid_Expt_LatTCon[row] + CpxDiopsid_Expt_RadTCon[row];
       Expt_Minerals_TotTcond[CpxDiopsid_ExptID] = CpxDiopsid_Expt_TotTCon;
-      // GrtPyropes_Expt_TotTCon[row] = GrtPyropes_Expt_LatTCon[row] + GrtPyropes_Expt_RadTCon[row];
+      GrtPyropes_Expt_TotTCon[row] = GrtPyropes_Expt_LatTCon[row] + GrtPyropes_Expt_RadTCon[row];
+      Expt_Minerals_TotTcond[GrtPyropes_ExptID] = GrtPyropes_Expt_TotTCon;
       // GrtGrossul_Expt_TotTCon[row] = GrtGrossul_Expt_LatTCon[row] + GrtGrossul_Expt_RadTCon[row];
       // GrtAlmandi_Expt_TotTCon[row] = GrtAlmandi_Expt_LatTCon[row] + GrtAlmandi_Expt_RadTCon[row];
       // GrtMajorit_Expt_TotTCon[row] = GrtMajorit_Expt_LatTCon[row] + GrtMajorit_Expt_RadTCon[row];
@@ -277,7 +280,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   // Initialize the expected value matrix with the same dimensions of the composition matrix
   std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
-  unsigned int mID = CpxDiopsid_ExptID;
+  unsigned int mID = GrtPyropes_ExptID;
 
   // Perform element-wise calculation
   for (size_t row = 0; row < compositions.size(); ++row)
@@ -373,9 +376,14 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
+        case 10:
+        {
+          INFO("Computed GrtPyropes k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
+          // Compare the computed thermal conductivity with the expected value
+          REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+          break;
+        }
       }
-    
-      // INFO("Computed GrtPyropes k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed GrtGrossul k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed GrtAlmandi k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed GrtMajorit k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
