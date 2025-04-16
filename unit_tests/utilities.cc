@@ -112,8 +112,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   std::vector<double> Ferroper10_Expt_TotTCon(temperatures.size());
   unsigned int Ferroper56_ExptID = MineralPar_Index++;
   std::vector<double> Ferroper56_Expt_TotTCon(temperatures.size());
-  // unsigned int Davemaoite_ExptID = MineralPar_Index++;
-  // std::vector<double> Davemaoite_Expt_TotTCon(temperatures.size());
+  unsigned int Davemaoite_ExptID = MineralPar_Index++;
+  std::vector<double> Davemaoite_Expt_TotTCon(temperatures.size());
   // unsigned int NewHexAlPh_ExptID = MineralPar_Index++;
   // std::vector<double> NewHexAlPh_Expt_TotTCon(temperatures.size());
   // unsigned int Akimotoite_ExptID = MineralPar_Index++;
@@ -251,8 +251,10 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   Expt_Minerals_LatTcond[Ferroper56_ExptID] = Ferroper56_Expt_LatTCon;
   Expt_Minerals_LatTcond[Ferroper56_ExptID] = Ferroper56_Expt_LatTCon;
   // Davemaoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  // std::vector<double> Davemaoite_Expt_LatTCon = {10.86634, 4.77342, 5.15289, 5.86997, 13.48443};
-  // std::vector<double> Davemaoite_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  std::vector<double> Davemaoite_Expt_LatTCon = {10.86634, 4.77342, 5.15289, 5.86997, 13.48443};
+  std::vector<double> Davemaoite_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  Expt_Minerals_LatTcond[Davemaoite_ExptID] = Davemaoite_Expt_LatTCon;
+  Expt_Minerals_LatTcond[Davemaoite_ExptID] = Davemaoite_Expt_LatTCon;
   // New-hexagonal-alluminium-phase (FeNAL): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   // std::vector<double> NewHexAlPh_Expt_LatTCon = {10.59581, 4.58812, 4.45113, 4.32578, 12.15184};
   // std::vector<double> NewHexAlPh_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
@@ -313,7 +315,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       Expt_Minerals_TotTcond[Ferroper10_ExptID] = Ferroper10_Expt_TotTCon;
       Ferroper56_Expt_TotTCon[row] = Ferroper56_Expt_LatTCon[row] + Ferroper56_Expt_RadTCon[row];
       Expt_Minerals_TotTcond[Ferroper56_ExptID] = Ferroper56_Expt_TotTCon;
-      // Davemaoite_Expt_TotTCon[row] = Davemaoite_Expt_LatTCon[row] + Davemaoite_Expt_RadTCon[row];
+      Davemaoite_Expt_TotTCon[row] = Davemaoite_Expt_LatTCon[row] + Davemaoite_Expt_RadTCon[row];
+      Expt_Minerals_TotTcond[Davemaoite_ExptID] = Davemaoite_Expt_TotTCon;
       // NewHexAlPh_Expt_TotTCon[row] = NewHexAlPh_Expt_LatTCon[row] + NewHexAlPh_Expt_RadTCon[row];
       // Akimotoite_Expt_TotTCon[row] = Akimotoite_Expt_LatTCon[row] + Akimotoite_Expt_RadTCon[row];
   }
@@ -322,7 +325,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   // Initialize the expected value matrix with the same dimensions of the composition matrix
   std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
-  unsigned int mID = Ferroper56_ExptID;
+  unsigned int mID = Davemaoite_ExptID;
 
   // Perform element-wise calculation
   for (size_t row = 0; row < compositions.size(); ++row)
@@ -523,8 +526,14 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
+        case 25:
+        {
+          INFO("Computed Davemaoite k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
+          // Compare the computed thermal conductivity with the expected value
+          REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+          break;
+        }
       }
-      // INFO("Computed Davemaoite k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed NewHexAlPh k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed Akimotoite k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       
