@@ -331,7 +331,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   // Initialize the expected value matrix with the same dimensions of the composition matrix
   std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
-  unsigned int mID = Akimotoite_ExptID;
+  unsigned int mID = OlivineDry_ExptID;
 
   // Perform element-wise calculation
   for (size_t row = 0; row < compositions.size(); ++row)
@@ -344,7 +344,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
 
   std::vector<std::vector<double>> expected_conductivities = expected_total_Tcond;
 
-  INFO("Checking thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X) values");
+  INFO("Checking thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
 
   // Loop over the different compositions
   for (size_t row = 0; row < expected_conductivities.size(); ++row)
@@ -355,201 +355,229 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
     // Loop over the different combinations of pressures (P) and temperatures (T)
     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
     {
-      switch (mID)
+      switch (mID) // Compare the computed thermal conductivity with the expected value
       {
-        case 0:
+        case 0: // OlivineDry
         {
-          INFO("Computed OlivineDry k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("OlivineDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("OlivineDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 1:
+        case 1: // WadsleyDry
         {
-          INFO("Computed WadsleyDry k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("WadsleyDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("WadsleyDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 2:
+        case 2: // RingwooDry
         {
-          INFO("Computed RingwooDry k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("RingwooDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("RingwooDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 3:
+        case 3: // En100Brigm
         {
-          INFO("Computed En100Brigm k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("En100Brigm Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("En100Brigm Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 4:
+        case 4: // En97Brigma
         {
-          INFO("Computed En97Brigma k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("En97Brigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("En97Brigma Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 5:
+        case 5: // En90Brigma
         {
-          INFO("Computed En90Brigma k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("En90Brigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("En90Brigma Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 6:
+        case 6: // AlMgBrigma
         {
-          INFO("Computed AlMgBrigma k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("AlMgBrigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("AlMgBrigma Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 7:
+        case 7: // FeAlBrigma
         {
-          INFO("Computed FeAlBrigma k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("FeAlBrigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("FeAlBrigma Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 8:
+        case 8: // OpxEnstati
         {
-          INFO("Computed OpxEnstati k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("OpxEnstati Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("OpxEnstati Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 9:
+        case 9: // CpxDiopsid
         {
-          INFO("Computed CpxDiopsid k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("CpxDiopsid Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("CpxDiopsid Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 10:
+        case 10: // GrtPyropes
         {
-          INFO("Computed GrtPyropes k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("GrtPyropes Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("GrtPyropes Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 11:
+        case 11: // GrtGrossul
         {
-          INFO("Computed GrtGrossul k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("GrtGrossul Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("GrtGrossul Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 12:
+        case 12: // GrtAlmandi
         {
-          INFO("Computed GrtAlmandi k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("GrtAlmandi Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("GrtAlmandi Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 13:
+        case 13: // GrtMajorit
         {
-          INFO("Computed GrtMajorit k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("GrtMajorit Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("GrtMajorit Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 14:
+        case 14: // QuartzPure
         {
-          INFO("Computed QuartzPure k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("QuartzPure Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("QuartzPure Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 15:
+        case 15: // CoesitSiO2
         {
-          INFO("Computed CoesitSiO2 k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("CoesitSiO2 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("CoesitSiO2 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 16:
+        case 16: // Stishovite
         {
-          INFO("Computed Stishovite k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("Stishovite Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("Stishovite Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 17:
+        case 17: // Al05Stisho
         {
-          INFO("Computed Al05Stisho k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("Al05Stisho Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("Al05Stisho Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 18:
+        case 18: // Antigor010
         {
-          INFO("Computed Antigor010 k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("Antigor010 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("Antigor010 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 19:
+        case 19: // Antigor001
         {
-          INFO("Computed Antigor001 k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("Antigor001 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("Antigor001 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 20:
+        case 20: // FeAlPhaseD
         {
-          INFO("Computed FeAlPhaseD k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("FeAlPhaseD Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("FeAlPhaseD Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 21:
+        case 21: // Al02PhaseD
         {
-          INFO("Computed Al02PhaseD k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("Al02PhaseD Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("Al02PhaseD Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 22:
+        case 22: // Ferroper08
         {
-          INFO("Computed Ferroper08 k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("Ferroper08 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("Ferroper08 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 23:
+        case 23: // Ferroper10
         {
-          INFO("Computed Ferroper10 k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("Ferroper10 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("Ferroper10 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 24:
+        case 24: // Ferroper56
         {
-          INFO("Computed Ferroper56 k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("Ferroper56 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("Ferroper56 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 25:
+        case 25: // Davemaoite
         {
-          INFO("Computed Davemaoite k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("Davemaoite Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("Davemaoite Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 26:
+        case 26: // NewHexAlPh
         {
-          INFO("Computed NewHexAlPh k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("NewHexAlPh Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("NewHexAlPh Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 27:
+        case 27: // Akimotoite
         {
-          INFO("Computed Akimotoite k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-          // Compare the computed thermal conductivity with the expected value
+          INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+          INFO("Akimotoite Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+          INFO("Akimotoite Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
