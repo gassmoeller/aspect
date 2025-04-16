@@ -114,8 +114,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   std::vector<double> Ferroper56_Expt_TotTCon(temperatures.size());
   unsigned int Davemaoite_ExptID = MineralPar_Index++;
   std::vector<double> Davemaoite_Expt_TotTCon(temperatures.size());
-  // unsigned int NewHexAlPh_ExptID = MineralPar_Index++;
-  // std::vector<double> NewHexAlPh_Expt_TotTCon(temperatures.size());
+  unsigned int NewHexAlPh_ExptID = MineralPar_Index++;
+  std::vector<double> NewHexAlPh_Expt_TotTCon(temperatures.size());
   // unsigned int Akimotoite_ExptID = MineralPar_Index++;
   // std::vector<double> Akimotoite_Expt_TotTCon(temperatures.size());
 
@@ -256,8 +256,10 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   Expt_Minerals_LatTcond[Davemaoite_ExptID] = Davemaoite_Expt_LatTCon;
   Expt_Minerals_LatTcond[Davemaoite_ExptID] = Davemaoite_Expt_LatTCon;
   // New-hexagonal-alluminium-phase (FeNAL): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  // std::vector<double> NewHexAlPh_Expt_LatTCon = {10.59581, 4.58812, 4.45113, 4.32578, 12.15184};
-  // std::vector<double> NewHexAlPh_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  std::vector<double> NewHexAlPh_Expt_LatTCon = {10.59581, 4.58812, 4.45113, 4.32578, 12.15184};
+  std::vector<double> NewHexAlPh_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  Expt_Minerals_LatTcond[NewHexAlPh_ExptID] = NewHexAlPh_Expt_LatTCon;
+  Expt_Minerals_LatTcond[NewHexAlPh_ExptID] = NewHexAlPh_Expt_LatTCon;
   // Akimotoite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   // std::vector<double> Akimotoite_Expt_LatTCon = {8.59248, 1.78976, 2.38264, 2.76606, 2.37440};
   // std::vector<double> Akimotoite_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
@@ -317,7 +319,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       Expt_Minerals_TotTcond[Ferroper56_ExptID] = Ferroper56_Expt_TotTCon;
       Davemaoite_Expt_TotTCon[row] = Davemaoite_Expt_LatTCon[row] + Davemaoite_Expt_RadTCon[row];
       Expt_Minerals_TotTcond[Davemaoite_ExptID] = Davemaoite_Expt_TotTCon;
-      // NewHexAlPh_Expt_TotTCon[row] = NewHexAlPh_Expt_LatTCon[row] + NewHexAlPh_Expt_RadTCon[row];
+      NewHexAlPh_Expt_TotTCon[row] = NewHexAlPh_Expt_LatTCon[row] + NewHexAlPh_Expt_RadTCon[row];
+      Expt_Minerals_TotTcond[NewHexAlPh_ExptID] = NewHexAlPh_Expt_TotTCon;
       // Akimotoite_Expt_TotTCon[row] = Akimotoite_Expt_LatTCon[row] + Akimotoite_Expt_RadTCon[row];
   }
 
@@ -325,7 +328,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   // Initialize the expected value matrix with the same dimensions of the composition matrix
   std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
-  unsigned int mID = Davemaoite_ExptID;
+  unsigned int mID = NewHexAlPh_ExptID;
 
   // Perform element-wise calculation
   for (size_t row = 0; row < compositions.size(); ++row)
@@ -533,8 +536,14 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
+        case 26:
+        {
+          INFO("Computed NewHexAlPh k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
+          // Compare the computed thermal conductivity with the expected value
+          REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+          break;
+        }
       }
-      // INFO("Computed NewHexAlPh k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       // INFO("Computed Akimotoite k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
       
 
