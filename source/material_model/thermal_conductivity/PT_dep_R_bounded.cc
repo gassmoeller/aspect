@@ -415,7 +415,7 @@ namespace aspect
         const double Akimotoite_LatTC_b1 =   1.076600000; 
         const double Akimotoite_LatTC_ymin = 2.376025820; 
         const double Akimotoite_LatTC_ymax = 5.010635294;  
-        const double Akimotoite_TDep_n_Exp = 0.5;
+        const double Akimotoite_TDep_n_Exp = 1.01000;
 
         // Define coefficients for radiative thermal conductivity of different minerals
 
@@ -1110,7 +1110,7 @@ namespace aspect
           // Dunite (100% olivine)
           // double AggRock_DuniteOl_TCond = std::pow(OlivineDry_TotTCon,MinFract_DuniteOl[0]);
           // Test Case
-          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[26][2], min_frac);
+          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[27][2], min_frac);
 
           out.thermal_conductivities[i] = AggRock_TestCase_TCond;
         }

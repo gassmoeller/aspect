@@ -116,8 +116,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   std::vector<double> Davemaoite_Expt_TotTCon(temperatures.size());
   unsigned int NewHexAlPh_ExptID = MineralPar_Index++;
   std::vector<double> NewHexAlPh_Expt_TotTCon(temperatures.size());
-  // unsigned int Akimotoite_ExptID = MineralPar_Index++;
-  // std::vector<double> Akimotoite_Expt_TotTCon(temperatures.size());
+  unsigned int Akimotoite_ExptID = MineralPar_Index++;
+  std::vector<double> Akimotoite_Expt_TotTCon(temperatures.size());
 
   // Preallocate matrixes for storing thermal conductivities of minerals
   std::vector<std::vector<double>> Expt_Minerals_LatTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
@@ -261,8 +261,10 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   Expt_Minerals_LatTcond[NewHexAlPh_ExptID] = NewHexAlPh_Expt_LatTCon;
   Expt_Minerals_LatTcond[NewHexAlPh_ExptID] = NewHexAlPh_Expt_LatTCon;
   // Akimotoite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  // std::vector<double> Akimotoite_Expt_LatTCon = {8.59248, 1.78976, 2.38264, 2.76606, 2.37440};
-  // std::vector<double> Akimotoite_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  std::vector<double> Akimotoite_Expt_LatTCon = {10.69504, 2.03810, 2.21218, 2.47430, 5.69003};
+  std::vector<double> Akimotoite_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  Expt_Minerals_LatTcond[Akimotoite_ExptID] = Akimotoite_Expt_LatTCon;
+  Expt_Minerals_LatTcond[Akimotoite_ExptID] = Akimotoite_Expt_LatTCon;
 
   // Perform element-wise sum
   for (size_t row = 0; row < temperatures.size(); ++row)
@@ -321,14 +323,15 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       Expt_Minerals_TotTcond[Davemaoite_ExptID] = Davemaoite_Expt_TotTCon;
       NewHexAlPh_Expt_TotTCon[row] = NewHexAlPh_Expt_LatTCon[row] + NewHexAlPh_Expt_RadTCon[row];
       Expt_Minerals_TotTcond[NewHexAlPh_ExptID] = NewHexAlPh_Expt_TotTCon;
-      // Akimotoite_Expt_TotTCon[row] = Akimotoite_Expt_LatTCon[row] + Akimotoite_Expt_RadTCon[row];
+      Akimotoite_Expt_TotTCon[row] = Akimotoite_Expt_LatTCon[row] + Akimotoite_Expt_RadTCon[row];
+      Expt_Minerals_TotTcond[Akimotoite_ExptID] = Akimotoite_Expt_TotTCon;
   }
 
 
   // Initialize the expected value matrix with the same dimensions of the composition matrix
   std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
-  unsigned int mID = NewHexAlPh_ExptID;
+  unsigned int mID = Akimotoite_ExptID;
 
   // Perform element-wise calculation
   for (size_t row = 0; row < compositions.size(); ++row)
@@ -543,9 +546,14 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-      }
-      // INFO("Computed Akimotoite k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
-      
+        case 27:
+        {
+          INFO("Computed Akimotoite k at T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%] is " << out.thermal_conductivities[i] << "[W/m/K]");
+          // Compare the computed thermal conductivity with the expected value
+          REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+          break;
+        }
+      } 
 
     }
   }
