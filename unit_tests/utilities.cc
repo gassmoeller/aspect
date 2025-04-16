@@ -59,65 +59,67 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       {0.25, 0.25, 0.25, 0.25, 0.25}
   };
 
-  unsigned int MineralPar_Index = 0; // Initialize the counter
+  // unsigned int MineralPar_Index = 0; // Initialize the counter
 
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
-  unsigned int OlivineDry_ExptID = MineralPar_Index++;
+  constexpr int OlivineDry_ExptID = 0;
   std::vector<double> OlivineDry_Expt_TotTCon(temperatures.size());
-  unsigned int WadsleyDry_ExptID = MineralPar_Index++;
+  constexpr int WadsleyDry_ExptID = 1;
   std::vector<double> WadsleyDry_Expt_TotTCon(temperatures.size());
-  unsigned int RingwooDry_ExptID = MineralPar_Index++;
+  constexpr int RingwooDry_ExptID = 2;
   std::vector<double> RingwooDry_Expt_TotTCon(temperatures.size());
-  unsigned int En100Brigm_ExptID = MineralPar_Index++;
+  constexpr int En100Brigm_ExptID = 3;
   std::vector<double> En100Brigm_Expt_TotTCon(temperatures.size());
-  unsigned int En97Brigma_ExptID = MineralPar_Index++;
+  constexpr int En97Brigma_ExptID = 4;
   std::vector<double> En97Brigma_Expt_TotTCon(temperatures.size());
-  unsigned int En90Brigma_ExptID = MineralPar_Index++;
+  constexpr int En90Brigma_ExptID = 5;
   std::vector<double> En90Brigma_Expt_TotTCon(temperatures.size());
-  unsigned int AlMgBrigma_ExptID = MineralPar_Index++;
+  constexpr int AlMgBrigma_ExptID = 6;
   std::vector<double> AlMgBrigma_Expt_TotTCon(temperatures.size());
-  unsigned int FeAlBrigma_ExptID = MineralPar_Index++;
+  constexpr int FeAlBrigma_ExptID = 7;
   std::vector<double> FeAlBrigma_Expt_TotTCon(temperatures.size());
-  unsigned int OpxEnstati_ExptID = MineralPar_Index++;
+  constexpr int OpxEnstati_ExptID = 8;
   std::vector<double> OpxEnstati_Expt_TotTCon(temperatures.size());
-  unsigned int CpxDiopsid_ExptID = MineralPar_Index++;
+  constexpr int CpxDiopsid_ExptID = 9;
   std::vector<double> CpxDiopsid_Expt_TotTCon(temperatures.size());
-  unsigned int GrtPyropes_ExptID = MineralPar_Index++;
+  constexpr int GrtPyropes_ExptID = 10;
   std::vector<double> GrtPyropes_Expt_TotTCon(temperatures.size());
-  unsigned int GrtGrossul_ExptID = MineralPar_Index++;
+  constexpr int GrtGrossul_ExptID = 11;
   std::vector<double> GrtGrossul_Expt_TotTCon(temperatures.size());
-  unsigned int GrtAlmandi_ExptID = MineralPar_Index++;
+  constexpr int GrtAlmandi_ExptID = 12;
   std::vector<double> GrtAlmandi_Expt_TotTCon(temperatures.size());
-  unsigned int GrtMajorit_ExptID = MineralPar_Index++;
+  constexpr int GrtMajorit_ExptID = 13;
   std::vector<double> GrtMajorit_Expt_TotTCon(temperatures.size());
-  unsigned int QuartzPure_ExptID = MineralPar_Index++;
+  constexpr int QuartzPure_ExptID = 14;
   std::vector<double> QuartzPure_Expt_TotTCon(temperatures.size());
-  unsigned int CoesitSiO2_ExptID = MineralPar_Index++;
+  constexpr int CoesitSiO2_ExptID = 15;
   std::vector<double> CoesitSiO2_Expt_TotTCon(temperatures.size());
-  unsigned int Stishovite_ExptID = MineralPar_Index++;
+  constexpr int Stishovite_ExptID = 16;
   std::vector<double> Stishovite_Expt_TotTCon(temperatures.size());
-  unsigned int Al05Stisho_ExptID = MineralPar_Index++;
+  constexpr int Al05Stisho_ExptID = 17;
   std::vector<double> Al05Stisho_Expt_TotTCon(temperatures.size());
-  unsigned int Antigor010_ExptID = MineralPar_Index++;
+  constexpr int Antigor010_ExptID = 18;
   std::vector<double> Antigor010_Expt_TotTCon(temperatures.size());
-  unsigned int Antigor001_ExptID = MineralPar_Index++;
+  constexpr int Antigor001_ExptID = 19;
   std::vector<double> Antigor001_Expt_TotTCon(temperatures.size());
-  unsigned int FeAlPhaseD_ExptID = MineralPar_Index++;
+  constexpr int FeAlPhaseD_ExptID = 20;
   std::vector<double> FeAlPhaseD_Expt_TotTCon(temperatures.size());
-  unsigned int Al02PhaseD_ExptID = MineralPar_Index++;
+  constexpr int Al02PhaseD_ExptID = 21;
   std::vector<double> Al02PhaseD_Expt_TotTCon(temperatures.size());
-  unsigned int Ferroper08_ExptID = MineralPar_Index++;
+  constexpr int Ferroper08_ExptID = 22;
   std::vector<double> Ferroper08_Expt_TotTCon(temperatures.size());
-  unsigned int Ferroper10_ExptID = MineralPar_Index++;
+  constexpr int Ferroper10_ExptID = 23;
   std::vector<double> Ferroper10_Expt_TotTCon(temperatures.size());
-  unsigned int Ferroper56_ExptID = MineralPar_Index++;
+  constexpr int Ferroper56_ExptID = 24;
   std::vector<double> Ferroper56_Expt_TotTCon(temperatures.size());
-  unsigned int Davemaoite_ExptID = MineralPar_Index++;
+  constexpr int Davemaoite_ExptID = 25;
   std::vector<double> Davemaoite_Expt_TotTCon(temperatures.size());
-  unsigned int NewHexAlPh_ExptID = MineralPar_Index++;
+  constexpr int NewHexAlPh_ExptID = 26;
   std::vector<double> NewHexAlPh_Expt_TotTCon(temperatures.size());
-  unsigned int Akimotoite_ExptID = MineralPar_Index++;
+  constexpr int Akimotoite_ExptID = 27;
   std::vector<double> Akimotoite_Expt_TotTCon(temperatures.size());
+
+  unsigned int MineralPar_Index = Akimotoite_ExptID+1; // Number of minerals
 
   // Preallocate matrixes for storing thermal conductivities of minerals
   std::vector<std::vector<double>> Expt_Minerals_LatTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
@@ -331,7 +333,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   // Initialize the expected value matrix with the same dimensions of the composition matrix
   std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
-  unsigned int mID = OlivineDry_ExptID;
+  unsigned int mID = 0;
 
   // Perform element-wise calculation
   for (size_t row = 0; row < compositions.size(); ++row)
@@ -357,7 +359,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
     {
       switch (mID) // Compare the computed thermal conductivity with the expected value
       {
-        case 0: // OlivineDry
+        case OlivineDry_ExptID: // OlivineDry
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("OlivineDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -365,7 +367,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 1: // WadsleyDry
+        case WadsleyDry_ExptID: // WadsleyDry
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("WadsleyDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -373,7 +375,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 2: // RingwooDry
+        case RingwooDry_ExptID: // RingwooDry
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("RingwooDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -381,7 +383,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 3: // En100Brigm
+        case En100Brigm_ExptID: // En100Brigm
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("En100Brigm Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -389,7 +391,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 4: // En97Brigma
+        case En97Brigma_ExptID: // En97Brigma
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("En97Brigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -397,7 +399,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 5: // En90Brigma
+        case En90Brigma_ExptID: // En90Brigma
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("En90Brigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -405,7 +407,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 6: // AlMgBrigma
+        case AlMgBrigma_ExptID: // AlMgBrigma
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("AlMgBrigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -413,7 +415,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 7: // FeAlBrigma
+        case FeAlBrigma_ExptID: // FeAlBrigma
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("FeAlBrigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -421,7 +423,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 8: // OpxEnstati
+        case OpxEnstati_ExptID: // OpxEnstati
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("OpxEnstati Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -429,7 +431,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 9: // CpxDiopsid
+        case CpxDiopsid_ExptID: // CpxDiopsid
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("CpxDiopsid Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -437,7 +439,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 10: // GrtPyropes
+        case GrtPyropes_ExptID: // GrtPyropes
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("GrtPyropes Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -445,7 +447,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 11: // GrtGrossul
+        case GrtGrossul_ExptID: // GrtGrossul
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("GrtGrossul Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -453,7 +455,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 12: // GrtAlmandi
+        case GrtAlmandi_ExptID: // GrtAlmandi
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("GrtAlmandi Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -461,7 +463,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 13: // GrtMajorit
+        case GrtMajorit_ExptID: // GrtMajorit
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("GrtMajorit Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -469,7 +471,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 14: // QuartzPure
+        case QuartzPure_ExptID: // QuartzPure
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("QuartzPure Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -477,7 +479,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 15: // CoesitSiO2
+        case CoesitSiO2_ExptID: // CoesitSiO2
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("CoesitSiO2 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -485,7 +487,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 16: // Stishovite
+        case Stishovite_ExptID: // Stishovite
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("Stishovite Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -493,7 +495,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 17: // Al05Stisho
+        case Al05Stisho_ExptID: // Al05Stisho
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("Al05Stisho Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -501,7 +503,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 18: // Antigor010
+        case Antigor010_ExptID: // Antigor010
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("Antigor010 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -509,7 +511,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 19: // Antigor001
+        case Antigor001_ExptID: // Antigor001
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("Antigor001 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -517,7 +519,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 20: // FeAlPhaseD
+        case FeAlPhaseD_ExptID: // FeAlPhaseD
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("FeAlPhaseD Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -525,7 +527,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 21: // Al02PhaseD
+        case Al02PhaseD_ExptID: // Al02PhaseD
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("Al02PhaseD Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -533,7 +535,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 22: // Ferroper08
+        case Ferroper08_ExptID: // Ferroper08
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("Ferroper08 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -541,7 +543,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 23: // Ferroper10
+        case Ferroper10_ExptID: // Ferroper10
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("Ferroper10 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -549,7 +551,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 24: // Ferroper56
+        case Ferroper56_ExptID: // Ferroper56
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("Ferroper56 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -557,7 +559,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 25: // Davemaoite
+        case Davemaoite_ExptID: // Davemaoite
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("Davemaoite Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -565,7 +567,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 26: // NewHexAlPh
+        case NewHexAlPh_ExptID: // NewHexAlPh
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("NewHexAlPh Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
@@ -573,7 +575,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
           break;
         }
-        case 27: // Akimotoite
+        case Akimotoite_ExptID: // Akimotoite
         {
           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
           INFO("Akimotoite Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
