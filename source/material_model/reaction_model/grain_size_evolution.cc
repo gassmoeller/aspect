@@ -281,6 +281,8 @@ namespace aspect
                               "and likely an effect of a too large sub-timestep, or unrealistic "
                               "input parameters."));
 
+            // Make sure grain size follows minimum grain size
+            grain_sizes[i] = std::max(grain_sizes[i], minimum_grain_size);
 
             // Reduce grain size to recrystallized_grain_size if the grain crossed a phase transition.
             // To do so, check if a grain has moved further than its distance to a phase transition in
@@ -318,7 +320,6 @@ namespace aspect
                     phase_grain_size_reduction = grain_sizes[i] - recrystallized_grain_size[crossed_transition];
               }
 
-            grain_sizes[i] = std::max(grain_sizes[i], minimum_grain_size);
             const double grain_size_change = grain_sizes[i] - in.composition[i][grain_size_index] - phase_grain_size_reduction;
 
             // this reaction model is only responsible for the grain size field
