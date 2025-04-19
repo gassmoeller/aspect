@@ -14,15 +14,11 @@ namespace aspect
     std::pair<std::string,std::string>
     ParticleDensityStatistics<dim>::execute (TableHandler &statistics)
     {
-      /*
-      seems what we need to do is get the particle handler, get the particle iterator, iterate, 
-      get reference locations from each particle in the iteration.
-      I guess eventually this should use <dim>
-      */
       double local_min_score = std::numeric_limits<double>::max();
       double local_max_score = 0;
       double global_score = 0;
       unsigned int cells_with_particles = 0;
+      unsigned int subidivions = 1;
 
       for (const typename Triangulation<dim>::active_cell_iterator &cell : this->get_dof_handler().active_cell_iterators())
       {
@@ -48,34 +44,48 @@ namespace aspect
             if(particles_in_cell > 0)
             {
               cells_with_particles++;
-              unsigned int n_particles_per_quadrant_ideal = particles_in_cell/4;
+              if(dim == 2)
+              {
+                
+                double n_particles_per_quadrant_ideal = particles_in_cell/4;
 
-              unsigned int n_particles_topleft = 0;
-              unsigned int n_particles_topright = 0;
-              unsigned int n_particles_bottomleft = 0;
-              unsigned int n_particles_bottomright = 0;                
-              sortParticles(cell, n_particles_topleft,n_particles_topright,n_particles_bottomleft,n_particles_bottomright);
+                unsigned int n_particles_topleft = 0;
+                unsigned int n_particles_topright = 0;
+                unsigned int n_particles_bottomleft = 0;
+                unsigned int n_particles_bottomright = 0;                
+                sortParticles(cell, n_particles_topleft,n_particles_topright,n_particles_bottomleft,n_particles_bottomright);
 
-              //euclidean distance squared between the "ideal" vector and the "worst case" vector
-              double worst_case_error_squared = 
-              ((particles_in_cell-n_particles_per_quadrant_ideal)*(particles_in_cell-n_particles_per_quadrant_ideal))+
-              (n_particles_per_quadrant_ideal*n_particles_per_quadrant_ideal)+
-              (n_particles_per_quadrant_ideal*n_particles_per_quadrant_ideal)+
-              (n_particles_per_quadrant_ideal*n_particles_per_quadrant_ideal);
-            
-              //euclidean distance squared between the "ideal" vector and the actual distribution vector
-              double actual_error_squared = 
-              ((n_particles_topleft-n_particles_per_quadrant_ideal)*(n_particles_topleft-n_particles_per_quadrant_ideal))+
-              ((n_particles_topright-n_particles_per_quadrant_ideal)*(n_particles_topright-n_particles_per_quadrant_ideal))+
-              ((n_particles_bottomleft-n_particles_per_quadrant_ideal)*(n_particles_bottomleft-n_particles_per_quadrant_ideal))+
-              ((n_particles_bottomright-n_particles_per_quadrant_ideal)*(n_particles_bottomright-n_particles_per_quadrant_ideal));
+                //euclidean distance squared between the "ideal" vector and the "worst case" vector
+                double worst_case_error_squared = 
+                ((particles_in_cell-n_particles_per_quadrant_ideal)*(particles_in_cell-n_particles_per_quadrant_ideal))+
+                (n_particles_per_quadrant_ideal*n_particles_per_quadrant_ideal)+
+                (n_particles_per_quadrant_ideal*n_particles_per_quadrant_ideal)+
+                (n_particles_per_quadrant_ideal*n_particles_per_quadrant_ideal);
               
-              //ratio between the observed distance and the worst case distance. 1 = worst possible distribution, 0 = perfect
-              double distribution_score_current_cell = std::sqrt(actual_error_squared)/std::sqrt(worst_case_error_squared);
+                //euclidean distance squared between the "ideal" vector and the actual distribution vector
+                double actual_error_squared = 
+                ((n_particles_topleft-n_particles_per_quadrant_ideal)*(n_particles_topleft-n_particles_per_quadrant_ideal))+
+                ((n_particles_topright-n_particles_per_quadrant_ideal)*(n_particles_topright-n_particles_per_quadrant_ideal))+
+                ((n_particles_bottomleft-n_particles_per_quadrant_ideal)*(n_particles_bottomleft-n_particles_per_quadrant_ideal))+
+                ((n_particles_bottomright-n_particles_per_quadrant_ideal)*(n_particles_bottomright-n_particles_per_quadrant_ideal));
+                
+                //ratio between the observed distance and the worst case distance. 1 = worst possible distribution, 0 = perfect
+                double distribution_score_current_cell = std::sqrt(actual_error_squared)/std::sqrt(worst_case_error_squared);
 
-              local_min_score = std::min(local_min_score,distribution_score_current_cell);
-              local_max_score = std::max(local_max_score,distribution_score_current_cell);
-              global_score += distribution_score_current_cell;
+                local_min_score = std::min(local_min_score,distribution_score_current_cell);
+                local_max_score = std::max(local_max_score,distribution_score_current_cell);
+                global_score += distribution_score_current_cell;
+              }
+
+              if (dim ==3){
+                double n_particles_per_quadrant_ideal = particles_in_cell/8;
+
+
+
+
+
+              }
+
             }
           }
       }

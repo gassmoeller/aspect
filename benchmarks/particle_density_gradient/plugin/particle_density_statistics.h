@@ -38,6 +38,7 @@ namespace aspect
        * Counts the number of particles in each quadrant. Takes a reference to an unsigned int for each quadrant and modifies them.
        */
       void sortParticles(const typename Triangulation<dim>::active_cell_iterator &cell, unsigned int &n_particles_topleft,unsigned int &n_particles_topright,unsigned int &n_particles_bottomleft,unsigned int &n_particles_bottomright);
+
     };
   }
 }
