@@ -2,20 +2,22 @@
 
 set Dimension                              = 2
 set Use years in output instead of seconds = false
-set End time                               = 8
-set Output directory                       = output-particles-oscillate-grading
+set End time                               = 12
+set Output directory                       = ../output-particles-drop
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Resume computation                     = false
 set Maximum time step                      = 0.03
+set Additional shared libraries = /Users/jarettbaker-dunn/Documents/GitHub/aspect-project/aspect/benchmarks/particle_density_gradient/plugin/libparticle_density_statistics.so
+set Additional shared libraries = /Users/jarettbaker-dunn/Documents/GitHub/aspect-project/aspect/benchmarks/particle_density_gradient/plugin_KDE/libparticle_density_statistics_KDE.so
 
 
 subsection Prescribed Stokes solution
   set Model name = function
 
   subsection Velocity function
-    set Variable names      = x,y,t
-    set Function constants  = velConstant=0
-    set Function expression = 0; (-0.5*sin(pi*t)) +velConstant
+    set Variable names      = x,y
+    set Function constants  = velSlow=-0.1
+    set Function expression = 0; velSlow
   end
 end
 
@@ -102,37 +104,34 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 2
-  set Initial global refinement                = 2
+  set Initial global refinement                = 1
   set Time steps between mesh refinement       = 0
 
   set Strategy = minimum refinement function
 
   subsection Minimum refinement function
-    set Coordinate system   =   cartesian
-    set Function expression = (y<4 ? 2 : 4)
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function expression = if ( y<=4, 2, 4)
   end
-
+  
 end
 
 subsection Particles
-  set Particle generator name =  uniform box
+  set Particle generator name =  reference cell
   set Maximum particles per cell = 80
   set Allow cells without particles = true
   set Load balancing strategy = remove and add particles
   subsection Generator
-    subsection Uniform box
-      set Minimum y = 3.75
-      set Maximum y = 5
-      set Minimum x = 0.01
-      set Maximum x = 0.49
-      set Number of particles = 16000
+    subsection Reference cell
+      set Number of particles per cell per direction = 8
     end
   end
 end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle density statistics, particle density statistics KDE
 
   subsection Visualization
     set Time between graphical output = .001
