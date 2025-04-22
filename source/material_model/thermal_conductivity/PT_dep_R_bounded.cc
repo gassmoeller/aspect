@@ -739,6 +739,8 @@ namespace aspect
           // Take the mineral fraction of the model
           double min_frac = in.composition[0][i];
 
+          unsigned int mID = in.Mineral_ID;
+
           // Compute lattice thermal conductivities for DryOlivine
           double OlivineDry_LatTCon = compute_lattice_thermal_conductivity(
             OlivineDry_LatTC_a0, OlivineDry_LatTC_b1, OlivineDry_LatTC_ymin, OlivineDry_LatTC_ymax,
@@ -1138,7 +1140,7 @@ namespace aspect
           // Dunite (100% olivine)
           // double AggRock_DuniteOl_TCond = std::pow(OlivineDry_TotTCon,MinFract_DuniteOl[0]);
           // Test Case
-          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[24][2], min_frac);
+          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[mID][2], min_frac);
 
           out.thermal_conductivities[i] = AggRock_TestCase_TCond;
         }

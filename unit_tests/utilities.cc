@@ -269,7 +269,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   std::vector<double> NewHexAlPh_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   Expt_Minerals_LatTcond[NewHexAlPh_ExptID] = NewHexAlPh_Expt_LatTCon;
   Expt_Minerals_LatTcond[NewHexAlPh_ExptID] = NewHexAlPh_Expt_LatTCon;
-  // Akimotoite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
+  // Akimotoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> Akimotoite_Expt_LatTCon = {10.69504, 2.03810, 2.21218, 2.47430, 5.69003};
   std::vector<double> Akimotoite_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   Expt_Minerals_LatTcond[Akimotoite_ExptID] = Akimotoite_Expt_LatTCon;
@@ -338,20 +338,22 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
       Expt_Minerals_TotTcond[Akimotoite_ExptID] = Akimotoite_Expt_TotTCon;
   }
 
+// Loop over all mID values
+for (unsigned int mID = 0; mID < MineralPar_Index; ++mID)
+{
+  in.Mineral_ID = mID; // Set the current mID
 
   // Initialize the expected value matrix with the same dimensions of the composition matrix
   std::vector<std::vector<double>> expected_total_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
-  unsigned int mID = 24;
-
   // Perform element-wise calculation
   for (size_t row = 0; row < compositions.size(); ++row)
-  {
-    for (size_t col = 0; col < compositions[row].size(); ++col)
-    {
-      expected_total_Tcond[row][col] = std::pow(Expt_Minerals_TotTcond[mID][col], compositions[row][col]);
+   {
+      for (size_t col = 0; col < compositions[row].size(); ++col)
+      {
+        expected_total_Tcond[row][col] = std::pow(Expt_Minerals_TotTcond[mID][col], compositions[row][col]);
+      }
     }
-  }
 
   std::vector<std::vector<double>> expected_conductivities = expected_total_Tcond;
 
@@ -604,7 +606,8 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
 
     }
   }
-
+}
+  
 }
 
 
