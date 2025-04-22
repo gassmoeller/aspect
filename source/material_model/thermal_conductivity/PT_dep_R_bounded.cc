@@ -359,7 +359,10 @@ namespace aspect
 
         // Coefficients for ferropericlase (Mg1-xFexO)
         // retreived from fitting dataset of
-        // [Hsieh et al., 2018, PNAS, vol. 115, no. 16, p. 4099-4104]
+        // [Hsieh et al., 2018, PNAS, vol. 115, no. 16, p. 4099-4104] - 8%,10%,56% Iron
+        // https://doi.org/10.1073/pnas.1718557115
+        // [Zhang et al., 2023., GRL, 50(7), e2022GL101769] - 20% Iron
+        // https://doi.org/10.1029/2022GL101769
         // mineral composition [Mg0.92Fe0.08O] - (8% Iron)
         unsigned int Ferroper08_Index = MineralPar_Index++;
         const double Ferroper08_LatTC_a0 = -6.9942;
@@ -373,7 +376,14 @@ namespace aspect
         const double Ferroper10_LatTC_b1 =  1.9321;
         const double Ferroper10_LatTC_ymin = 1.5040773968; 
         const double Ferroper10_LatTC_ymax = 4.0250359042;
-        const double Ferroper10_TDep_n_Exp = 0.025;
+        const double Ferroper10_TDep_n_Exp = 0.5;
+        // mineral composition [Mg0.80Fe0.20O] (20% Iron)
+        unsigned int Ferroper20_Index = MineralPar_Index++;
+        const double Ferroper20_LatTC_a0 = -5.2408;
+        const double Ferroper20_LatTC_b1 =  0.9649;
+        const double Ferroper20_LatTC_ymin = 1.2490430868; 
+        const double Ferroper20_LatTC_ymax = 3.9318256327;
+        const double Ferroper20_TDep_n_Exp = 0.025;
         // mineral composition [Mg0.44Fe0.56O] (56% Iron)
         unsigned int Ferroper56_Index = MineralPar_Index++;
         const double Ferroper56_LatTC_a0 = -3.8298;
@@ -633,7 +643,12 @@ namespace aspect
         const double Ferroper10_RadTC_c0 =  66.278;
         const double Ferroper10_RadTC_d1 = -8.2756; 
         const double Ferroper10_RadTC_jmin = -7.2568958208;         
-        const double Ferroper10_RadTC_jmax = -0.3403920329;  
+        const double Ferroper10_RadTC_jmax = -0.3403920329; 
+        // mineral composition [Mg0.80Fe0.20O] - (20% Iron)
+        const double Ferroper20_RadTC_c0 =  66.278;
+        const double Ferroper20_RadTC_d1 = -8.2756; 
+        const double Ferroper20_RadTC_jmin = -7.2568958208;         
+        const double Ferroper20_RadTC_jmax = -0.3403920329;  
         // mineral composition [Mg0.44Fe0.56O] (56% Iron)
         const double Ferroper56_RadTC_c0 =  66.278;
         const double Ferroper56_RadTC_d1 = -8.2756; 
@@ -844,6 +859,11 @@ namespace aspect
             Ferroper10_LatTC_a0, Ferroper10_LatTC_b1, Ferroper10_LatTC_ymin, Ferroper10_LatTC_ymax,
             P_log, T_mod, T_room, Ferroper10_TDep_n_Exp);
           All_Minerals_LatTcond[Ferroper10_Index] = Ferroper10_LatTCon;
+          // Compute lattice thermal conductivities for Ferropericlase (Mg80Fe20O)
+          double Ferroper20_LatTCon = compute_lattice_thermal_conductivity(
+            Ferroper20_LatTC_a0, Ferroper20_LatTC_b1, Ferroper20_LatTC_ymin, Ferroper20_LatTC_ymax,
+            P_log, T_mod, T_room, Ferroper20_TDep_n_Exp);
+          All_Minerals_LatTcond[Ferroper20_Index] = Ferroper20_LatTCon;
           // Compute lattice thermal conductivities for Ferropericlase (Mg56Fe44O)
           double Ferroper56_LatTCon = compute_lattice_thermal_conductivity(
             Ferroper56_LatTC_a0, Ferroper56_LatTC_b1, Ferroper56_LatTC_ymin, Ferroper56_LatTC_ymax,
@@ -961,6 +981,10 @@ namespace aspect
           double Ferroper10_RadTCon = compute_radiative_thermal_conductivity(
             Ferroper10_RadTC_c0, Ferroper10_RadTC_d1, Ferroper10_RadTC_jmin, Ferroper10_RadTC_jmax, T_log);
           All_Minerals_RadTcond[Ferroper10_Index] = Ferroper10_RadTCon;
+          // Compute radiative thermal conductivities for Ferropericlase (Mg90Fe10O)
+          double Ferroper20_RadTCon = compute_radiative_thermal_conductivity(
+            Ferroper20_RadTC_c0, Ferroper20_RadTC_d1, Ferroper20_RadTC_jmin, Ferroper20_RadTC_jmax, T_log);
+          All_Minerals_RadTcond[Ferroper20_Index] = Ferroper20_RadTCon;
           // Compute radiative thermal conductivities for Ferropericlase (Mg56Fe44O)
           double Ferroper56_RadTCon = compute_radiative_thermal_conductivity(
             Ferroper56_RadTC_c0, Ferroper56_RadTC_d1, Ferroper56_RadTC_jmin, Ferroper56_RadTC_jmax, T_log);
@@ -1074,6 +1098,10 @@ namespace aspect
           double Ferroper10_TotTCon = compute_total_thermal_conductivity(
             Ferroper10_LatTCon, Ferroper10_RadTCon);
           All_Minerals_TotTcond[Ferroper10_Index] = Ferroper10_TotTCon;
+          // Compute total thermal conductivities for Ferropericlase (Mg80Fe20O)
+          double Ferroper20_TotTCon = compute_total_thermal_conductivity(
+            Ferroper20_LatTCon, Ferroper20_RadTCon);
+          All_Minerals_TotTcond[Ferroper20_Index] = Ferroper20_TotTCon;
           // Compute total thermal conductivities for Ferropericlase (Mg56Fe44O)
           double Ferroper56_TotTCon = compute_total_thermal_conductivity(
             Ferroper56_LatTCon, Ferroper56_RadTCon);
@@ -1110,7 +1138,7 @@ namespace aspect
           // Dunite (100% olivine)
           // double AggRock_DuniteOl_TCond = std::pow(OlivineDry_TotTCon,MinFract_DuniteOl[0]);
           // Test Case
-          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[0][2], min_frac);
+          double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[24][2], min_frac);
 
           out.thermal_conductivities[i] = AggRock_TestCase_TCond;
         }
