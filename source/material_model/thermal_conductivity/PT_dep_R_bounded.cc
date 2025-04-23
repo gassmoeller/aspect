@@ -686,30 +686,96 @@ namespace aspect
         const double Akimotoite_RadTC_jmax = -0.3403920329;  
 
         // Preallocate a vector for mineral fractions of different rocks
-        // Pyrolite (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
-        std::vector<double> MinFract_Pyrolite = {0.58,0.13,0.18,0.11}; 
-        // Harzburgite (80% olivine, 20% ensatite)
-        std::vector<double> MinFract_Harzburg = {0.80,0.20}; 
-        // Meta-basaltic crust MORB (80% diopside, 20% pyrope)
-        std::vector<double> MinFract_MetaMORB = {0.80,0.20}; 
-        // Dunite (100% olivine)
-        std::vector<double> MinFract_DuniteOl = {1.00}; 
+        // Pyrolite Upper Mantle (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
+        std::vector<double> MinFract_Pyrolite_UM = {0.58,0.13,0.18,0.11}; 
+        // Pyrolite Upper Mantle Transition Zone (58% wadsleyite, 28% majorite, 14% diopside)
+        std::vector<double> MinFract_Pyrolite_UMTZ = {0.58,0.28,0.14}; 
+        // Pyrolite Lower Mantle Transition Zone (58% ringwoodite, 42% majorite)
+        std::vector<double> MinFract_Pyrolite_LMTZ = {0.58,0.42}; 
+        // Pyrolite Lower Mantle (80% bridgmanite, 14% ferropericlase, 6% davemaoite)
+        std::vector<double> MinFract_Pyrolite_LM = {0.80,0.14,0.06}; 
+
+        // Harzburgite Upper Mantle (80% olivine, 20% ensatite)
+        std::vector<double> MinFract_Harzburg_UM = {0.80,0.20}; 
+        // Harzburgite Upper Mantle Transition Zone (80% wadsleyite, 13% diopside, 7% majorite)
+        std::vector<double> MinFract_Harzburg_UMTZ = {0.80,0.13,0.07}; 
+        // Harzburgite Lower Mantle Transition Zone (80% olivine, 20% majorite)
+        std::vector<double> MinFract_Harzburg_LMTZ = {0.80,0.20}; 
+        // Harzburgite Lower Mantle (76% bridgmanite, 24% ferropericlase)
+        std::vector<double> MinFract_Harzburg_LM = {0.76,0.24}; 
+
+        // Meta-basaltic crust MORB Upper Mantle (80% diopside, 20% pyrope)
+        std::vector<double> MinFract_MetaMORB_UM = {0.80,0.20}; 
+        // Meta-basaltic crust MORB Upper Mantle Transition Zone (50% majorite, 4% stishovite, 46% diopside)
+        std::vector<double> MinFract_MetaMORB_UMTZ = {0.50,0.04,0.46}; 
+        // Meta-basaltic crust MORB Lower Mantle Transition Zone (92% majorite, 8% stishovite)
+        std::vector<double> MinFract_MetaMORB_LMTZ = {0.92,0.08}; 
+        // Meta-basaltic crust MORB Lower Mantle (35% bridgmanite, 28% davemaoite, 19% Fe-NAL, 18% stishovite)
+        std::vector<double> MinFract_MetaMORB_LM = {0.35,0.28,0.19,0.18}; 
+
+        // Dunite Upper Mantle (100% olivine)
+        std::vector<double> MinFract_DuniteOl_UM = {1.00}; 
+        // Dunite Upper Mantle Transition Zone (100% wadsleyite)
+        std::vector<double> MinFract_DuniteOl_UMTZ = {1.00};
+        // Dunite Lower Mantle Transition Zone (100% ringwoodite)
+        std::vector<double> MinFract_DuniteOl_LMTZ = {1.00};
+        // Dunite Lower Mantle (100% bridgmanite)
+        std::vector<double> MinFract_DuniteOl_LM = {1.00};
 
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
         // Check if the sum of Rock Mineral Fraction is equal to 1
-        double sum_min_fract_pyrolite = std::accumulate(MinFract_Pyrolite.begin(), MinFract_Pyrolite.end(), 0.0);
-        AssertThrow(std::abs(sum_min_fract_pyrolite - 1.0) < 1e-6,
-                    dealii::ExcMessage("Error: The sum of MinFract_Pyrolite must be equal to 1."));
-        double sum_min_fract_harzburg = std::accumulate(MinFract_Harzburg.begin(), MinFract_Harzburg.end(), 0.0);
-        AssertThrow(std::abs(sum_min_fract_harzburg - 1.0) < 1e-6,
-                    dealii::ExcMessage("Error: The sum of MinFract_Harzburg must be equal to 1."));
-        double sum_min_fract_metaMORB = std::accumulate(MinFract_MetaMORB.begin(), MinFract_MetaMORB.end(), 0.0);
-        AssertThrow(std::abs(sum_min_fract_metaMORB - 1.0) < 1e-6,
-                    dealii::ExcMessage("Error: The sum of MinFract_MetaMORB must be equal to 1."));
-        double sum_min_fract_DuniteOl = std::accumulate(MinFract_DuniteOl.begin(), MinFract_DuniteOl.end(), 0.0);
-        AssertThrow(std::abs(sum_min_fract_DuniteOl - 1.0) < 1e-6,
-                    dealii::ExcMessage("Error: The sum of MinFract_DuniteOl must be equal to 1."));
+        double sum_min_fract_pyrolite_UM = std::accumulate(MinFract_Pyrolite_UM.begin(), MinFract_Pyrolite_UM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_pyrolite_UM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_Pyrolite_UM must be equal to 1."));
+        double sum_min_fract_pyrolite_UMTZ = std::accumulate(MinFract_Pyrolite_UMTZ.begin(), MinFract_Pyrolite_UMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_pyrolite_UMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_Pyrolite_UMTZ must be equal to 1."));
+        double sum_min_fract_pyrolite_LMTZ = std::accumulate(MinFract_Pyrolite_LMTZ.begin(), MinFract_Pyrolite_LMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_pyrolite_LMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_Pyrolite_LMTZ must be equal to 1."));
+        double sum_min_fract_pyrolite_LM = std::accumulate(MinFract_Pyrolite_LM.begin(), MinFract_Pyrolite_LM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_pyrolite_LM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_Pyrolite_LM must be equal to 1."));
+
+        double sum_min_fract_harzburg_UM = std::accumulate(MinFract_Harzburg_UM.begin(), MinFract_Harzburg_UM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_harzburg_UM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_Harzburg_UM must be equal to 1."));
+        double sum_min_fract_harzburg_UMTZ = std::accumulate(MinFract_Harzburg_UMTZ.begin(), MinFract_Harzburg_UMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_harzburg_UMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_Harzburg_UMTZ must be equal to 1."));
+        double sum_min_fract_harzburg_LMTZ = std::accumulate(MinFract_Harzburg_LMTZ.begin(), MinFract_Harzburg_LMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_harzburg_LMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_Harzburg_LMTZ must be equal to 1."));
+        double sum_min_fract_harzburg_LM = std::accumulate(MinFract_Harzburg_LM.begin(), MinFract_Harzburg_LM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_harzburg_LM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_Harzburg_LM must be equal to 1."));
+
+        double sum_min_fract_metaMORB_UM = std::accumulate(MinFract_MetaMORB_UM.begin(), MinFract_MetaMORB_UM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_metaMORB_UM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_MetaMORB_UM must be equal to 1."));
+        double sum_min_fract_metaMORB_UMTZ = std::accumulate(MinFract_MetaMORB_UMTZ.begin(), MinFract_MetaMORB_UMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_metaMORB_UMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_MetaMORB_UMTZ must be equal to 1."));
+        double sum_min_fract_metaMORB_LMTZ = std::accumulate(MinFract_MetaMORB_LMTZ.begin(), MinFract_MetaMORB_LMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_metaMORB_LMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_MetaMORB_LMTZ must be equal to 1."));
+        double sum_min_fract_metaMORB_LM = std::accumulate(MinFract_MetaMORB_LM.begin(), MinFract_MetaMORB_LM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_metaMORB_LM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_MetaMORB_LM must be equal to 1."));
+
+        double sum_min_fract_DuniteOl_UM = std::accumulate(MinFract_DuniteOl_UM.begin(), MinFract_DuniteOl_UM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_DuniteOl_UM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_DuniteOl_UM must be equal to 1."));
+        double sum_min_fract_DuniteOl_UMTZ = std::accumulate(MinFract_DuniteOl_UMTZ.begin(), MinFract_DuniteOl_UMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_DuniteOl_UMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_DuniteOl_UMTZ must be equal to 1."));
+        double sum_min_fract_DuniteOl_LMTZ = std::accumulate(MinFract_DuniteOl_LMTZ.begin(), MinFract_DuniteOl_LMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_DuniteOl_LMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_DuniteOl_LMTZ must be equal to 1."));
+        double sum_min_fract_DuniteOl_LM = std::accumulate(MinFract_DuniteOl_LM.begin(), MinFract_DuniteOl_LM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_DuniteOl_LM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of MinFract_DuniteOl_LM must be equal to 1."));
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
