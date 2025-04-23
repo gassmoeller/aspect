@@ -129,7 +129,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   std::vector<std::vector<double>> Expt_Minerals_TotTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
 
 
-  // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K]
+  // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> OlivineDry_Expt_LatTCon = {3.58888, 1.58719, 2.36282, 3.67868, 4.25767};
   std::vector<double> OlivineDry_Expt_RadTCon = {0.00138288, 2.23152, 2.34978, 2.45486, 3.12273};
   Expt_Minerals_LatTcond[OlivineDry_ExptID] = OlivineDry_Expt_LatTCon;
