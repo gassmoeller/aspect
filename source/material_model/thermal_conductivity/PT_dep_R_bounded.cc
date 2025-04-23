@@ -756,6 +756,7 @@ namespace aspect
              All_Minerals_LatTcond[OlivineDry_Index] = OlivineDry_LatTCon;
              All_Minerals_RadTcond[OlivineDry_Index] = OlivineDry_RadTCon;
              All_Minerals_TotTcond[OlivineDry_Index] = OlivineDry_TotTCon;
+             break;
             }
             case WadsleyDry_Index: // Dry Wadsleyite 
             { 
@@ -770,6 +771,7 @@ namespace aspect
              All_Minerals_LatTcond[WadsleyDry_Index] = WadsleyDry_LatTCon;
              All_Minerals_RadTcond[WadsleyDry_Index] = WadsleyDry_RadTCon;       
              All_Minerals_TotTcond[WadsleyDry_Index] = WadsleyDry_TotTCon;
+             break;
             }
             case RingwooDry_Index: // Dry Ringwoodite
             { 
@@ -784,6 +786,7 @@ namespace aspect
              All_Minerals_LatTcond[RingwooDry_Index] = RingwooDry_LatTCon;
              All_Minerals_RadTcond[RingwooDry_Index] = RingwooDry_RadTCon;
              All_Minerals_TotTcond[RingwooDry_Index] = RingwooDry_TotTCon;
+             break;
             }
             case En100Brigm_Index: // Mg-Bridgmanite
             { 
@@ -798,6 +801,7 @@ namespace aspect
              All_Minerals_LatTcond[En100Brigm_Index] = En100Brigm_LatTCon;
              All_Minerals_TotTcond[En100Brigm_Index] = En100Brigm_TotTCon;
              All_Minerals_RadTcond[En100Brigm_Index] = En100Brigm_RadTCon;
+             break;
             }
             case En97Brigma_Index: // Fe-Bridgmanite (3%)
             { 
@@ -812,6 +816,7 @@ namespace aspect
              All_Minerals_LatTcond[En97Brigma_Index] = En97Brigma_LatTCon;
              All_Minerals_RadTcond[En97Brigma_Index] = En97Brigma_RadTCon;
              All_Minerals_TotTcond[En97Brigma_Index] = En97Brigma_TotTCon;
+             break;
             }
             case En90Brigma_Index: // Fe-Bridgmanite (10%)
             { 
@@ -826,6 +831,7 @@ namespace aspect
              All_Minerals_LatTcond[En90Brigma_Index] = En90Brigma_LatTCon;
              All_Minerals_RadTcond[En90Brigma_Index] = En90Brigma_RadTCon;
              All_Minerals_TotTcond[En90Brigma_Index] = En90Brigma_TotTCon;
+             break;
             }
             case AlMgBrigma_Index: // Al-Bridgmanite
             { 
@@ -840,6 +846,7 @@ namespace aspect
              All_Minerals_LatTcond[AlMgBrigma_Index] = AlMgBrigma_LatTCon;
              All_Minerals_RadTcond[AlMgBrigma_Index] = AlMgBrigma_RadTCon;
              All_Minerals_TotTcond[AlMgBrigma_Index] = AlMgBrigma_TotTCon;
+             break;
             }
             case FeAlBrigma_Index: // Fe,Al-Bridgmanite
             { 
@@ -854,6 +861,7 @@ namespace aspect
              All_Minerals_LatTcond[FeAlBrigma_Index] = FeAlBrigma_LatTCon;
              All_Minerals_RadTcond[FeAlBrigma_Index] = FeAlBrigma_RadTCon;
              All_Minerals_TotTcond[FeAlBrigma_Index] = FeAlBrigma_TotTCon;
+             break;
             }
             case OpxEnstati_Index: // Orthopyroxene (Enstatite)
             { 
@@ -868,6 +876,7 @@ namespace aspect
              All_Minerals_LatTcond[OpxEnstati_Index] = OpxEnstati_LatTCon;
              All_Minerals_RadTcond[OpxEnstati_Index] = OpxEnstati_RadTCon;
              All_Minerals_TotTcond[OpxEnstati_Index] = OpxEnstati_TotTCon;
+             break;
             }
             case CpxDiopsid_Index: // Clinopyroxene (Diopside)
             { 
@@ -882,6 +891,7 @@ namespace aspect
              All_Minerals_LatTcond[CpxDiopsid_Index] = CpxDiopsid_LatTCon;
              All_Minerals_RadTcond[CpxDiopsid_Index] = CpxDiopsid_RadTCon;
              All_Minerals_TotTcond[CpxDiopsid_Index] = CpxDiopsid_TotTCon;
+             break;
             }
             case GrtPyropes_Index: // Garnet (Pyrope)
             { 
@@ -896,6 +906,7 @@ namespace aspect
              All_Minerals_LatTcond[GrtPyropes_Index] = GrtPyropes_LatTCon;
              All_Minerals_RadTcond[GrtPyropes_Index] = GrtPyropes_RadTCon;
              All_Minerals_TotTcond[GrtPyropes_Index] = GrtPyropes_TotTCon;
+             break;
             }
             case GrtGrossul_Index: // Garnet (Grossular)
             { 
@@ -910,6 +921,7 @@ namespace aspect
              All_Minerals_LatTcond[GrtGrossul_Index] = GrtGrossul_LatTCon;
              All_Minerals_RadTcond[GrtGrossul_Index] = GrtGrossul_RadTCon;
              All_Minerals_TotTcond[GrtGrossul_Index] = GrtGrossul_TotTCon;
+             break;
             }
             case GrtAlmandi_Index: // Garnet (Almandine)
             { 
@@ -924,6 +936,7 @@ namespace aspect
              All_Minerals_LatTcond[GrtAlmandi_Index] = GrtAlmandi_LatTCon;
              All_Minerals_RadTcond[GrtAlmandi_Index] = GrtAlmandi_RadTCon;
              All_Minerals_TotTcond[GrtAlmandi_Index] = GrtAlmandi_TotTCon;
+             break;
             }
             case GrtMajorit_Index: // Garnet (Majorite)
             { 
@@ -938,6 +951,7 @@ namespace aspect
              All_Minerals_LatTcond[GrtMajorit_Index] = GrtMajorit_LatTCon;
              All_Minerals_RadTcond[GrtMajorit_Index] = GrtMajorit_RadTCon;
              All_Minerals_TotTcond[GrtMajorit_Index] = GrtMajorit_TotTCon;
+             break;
             }
             case QuartzPure_Index: // Quartz
             { 
@@ -952,6 +966,7 @@ namespace aspect
              All_Minerals_LatTcond[QuartzPure_Index] = QuartzPure_LatTCon;
              All_Minerals_RadTcond[QuartzPure_Index] = QuartzPure_RadTCon;
              All_Minerals_TotTcond[QuartzPure_Index] = QuartzPure_TotTCon;
+             break;
             }
             case CoesitSiO2_Index: // Coesite
             { 
@@ -966,6 +981,7 @@ namespace aspect
              All_Minerals_LatTcond[CoesitSiO2_Index] = CoesitSiO2_LatTCon;
              All_Minerals_RadTcond[CoesitSiO2_Index] = CoesitSiO2_RadTCon;
              All_Minerals_TotTcond[CoesitSiO2_Index] = CoesitSiO2_TotTCon;
+             break;
             }
             case Stishovite_Index: // Stishovite
             { 
@@ -980,6 +996,7 @@ namespace aspect
              All_Minerals_LatTcond[Stishovite_Index] = Stishovite_LatTCon;
              All_Minerals_RadTcond[Stishovite_Index] = Stishovite_RadTCon;
              All_Minerals_TotTcond[Stishovite_Index] = Stishovite_TotTCon;
+             break;
             }
             case Al05Stisho_Index: // Al-stishovite (5 vol%)
             { 
@@ -994,6 +1011,7 @@ namespace aspect
              All_Minerals_LatTcond[Al05Stisho_Index] = Al05Stisho_LatTCon;
              All_Minerals_RadTcond[Al05Stisho_Index] = Al05Stisho_RadTCon;
              All_Minerals_TotTcond[Al05Stisho_Index] = Al05Stisho_TotTCon;
+             break;
             }
             case Antigor010_Index: // Antigorite (010)
             { 
@@ -1008,6 +1026,7 @@ namespace aspect
              All_Minerals_LatTcond[Antigor010_Index] = Antigor010_LatTCon;
              All_Minerals_RadTcond[Antigor010_Index] = Antigor010_RadTCon;
              All_Minerals_TotTcond[Antigor010_Index] = Antigor010_TotTCon;
+             break;
             }
             case Antigor001_Index: // Antigorite (001)
             { 
@@ -1022,6 +1041,7 @@ namespace aspect
              All_Minerals_LatTcond[Antigor001_Index] = Antigor001_LatTCon;
              All_Minerals_RadTcond[Antigor001_Index] = Antigor001_RadTCon;
              All_Minerals_TotTcond[Antigor001_Index] = Antigor001_TotTCon;
+             break;
             }
             case FeAlPhaseD_Index: // Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
             { 
@@ -1036,6 +1056,7 @@ namespace aspect
              All_Minerals_LatTcond[FeAlPhaseD_Index] = FeAlPhaseD_LatTCon;
              All_Minerals_RadTcond[FeAlPhaseD_Index] = FeAlPhaseD_RadTCon;
              All_Minerals_TotTcond[FeAlPhaseD_Index] = FeAlPhaseD_TotTCon;
+             break;
             }
             case Al02PhaseD_Index: // Al-phase D (Dense Hydrous Magnesium Silicate)
             { 
@@ -1050,6 +1071,7 @@ namespace aspect
              All_Minerals_LatTcond[Al02PhaseD_Index] = Al02PhaseD_LatTCon;
              All_Minerals_RadTcond[Al02PhaseD_Index] = Al02PhaseD_RadTCon;
              All_Minerals_TotTcond[Al02PhaseD_Index] = Al02PhaseD_TotTCon;
+             break;
             }
             case Ferroper08_Index: // Ferropericlase (Mg92Fe8O)
             { 
@@ -1064,6 +1086,7 @@ namespace aspect
              All_Minerals_LatTcond[Ferroper08_Index] = Ferroper08_LatTCon;
              All_Minerals_RadTcond[Ferroper08_Index] = Ferroper08_RadTCon;
              All_Minerals_TotTcond[Ferroper08_Index] = Ferroper08_TotTCon;
+             break;
             }
             case Ferroper10_Index: // Ferropericlase (Mg90Fe10O)
             { 
@@ -1078,6 +1101,7 @@ namespace aspect
              All_Minerals_LatTcond[Ferroper10_Index] = Ferroper10_LatTCon;
              All_Minerals_RadTcond[Ferroper10_Index] = Ferroper10_RadTCon;
              All_Minerals_TotTcond[Ferroper10_Index] = Ferroper10_TotTCon;
+             break;
             }
             case Ferroper20_Index: // Ferropericlase (Mg80Fe20O)
             { 
@@ -1092,6 +1116,7 @@ namespace aspect
              All_Minerals_LatTcond[Ferroper20_Index] = Ferroper20_LatTCon;
              All_Minerals_RadTcond[Ferroper20_Index] = Ferroper20_RadTCon;
              All_Minerals_TotTcond[Ferroper20_Index] = Ferroper20_TotTCon;
+             break;
             }
             case Ferroper56_Index: // Ferropericlase (Mg56Fe44O)
             { 
@@ -1106,6 +1131,7 @@ namespace aspect
              All_Minerals_LatTcond[Ferroper56_Index] = Ferroper56_LatTCon;
              All_Minerals_RadTcond[Ferroper56_Index] = Ferroper56_RadTCon;
              All_Minerals_TotTcond[Ferroper56_Index] = Ferroper56_TotTCon;
+             break;
             }
             case Davemaoite_Index: // Davemaoite
             { 
@@ -1120,6 +1146,7 @@ namespace aspect
              All_Minerals_LatTcond[Davemaoite_Index] = Davemaoite_LatTCon;
              All_Minerals_RadTcond[Davemaoite_Index] = Davemaoite_RadTCon;
              All_Minerals_TotTcond[Davemaoite_Index] = Davemaoite_TotTCon;
+             break;
             }
             case NewHexAlPh_Index: // New-hexagonal-alluminium-phase (FeNAL)
             { 
@@ -1134,6 +1161,7 @@ namespace aspect
              All_Minerals_LatTcond[NewHexAlPh_Index] = NewHexAlPh_LatTCon;
              All_Minerals_RadTcond[NewHexAlPh_Index] = NewHexAlPh_RadTCon; 
              All_Minerals_TotTcond[NewHexAlPh_Index] = NewHexAlPh_TotTCon;
+             break;
             }
             case Akimotoite_Index: // Akimotoite
             { 
@@ -1148,6 +1176,7 @@ namespace aspect
              All_Minerals_LatTcond[Akimotoite_Index] = Akimotoite_LatTCon;
              All_Minerals_RadTcond[Akimotoite_Index] = Akimotoite_RadTCon;
              All_Minerals_TotTcond[Akimotoite_Index] = Akimotoite_TotTCon;
+             break;
             }
           }
 
