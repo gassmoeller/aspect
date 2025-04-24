@@ -1257,13 +1257,41 @@ namespace aspect
           // Compute P,T-dependent thermal conductivities of aggregate rocks 
 
           // Pyrolite (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
-          // double AggRock_Pyrolite_TCond = std::pow(OlivineDry_TotTCon,MinFract_Pyrolite[0])*std::pow(GrtPyropes_TotTCon,MinFract_Pyrolite[1])*std::pow(OpxEnstati_TotTCon,MinFract_Pyrolite[2])*std::pow(CpxDiopsid_TotTCon,MinFract_Pyrolite[3]);   
+          // double AggRock_Pyrolite_TCond = std::pow(OlivineDry_TotTCon,MinFract_Pyrolite_UM[0])*std::pow(GrtPyropes_TotTCon,MinFract_Pyrolite_UM[1])*std::pow(OpxEnstati_TotTCon,MinFract_Pyrolite_UM[2])*std::pow(CpxDiopsid_TotTCon,MinFract_Pyrolite_UM[3]);   
+          // Pyrolite Upper Mantle Transition Zone (58% wadsleyite, 28% majorite, 14% diopside)
+          // double AggRock_Pyrolite_TCond = std::pow(WadsleyDry_TotTCon,MinFract_Pyrolite_UMTZ[0])*std::pow(GrtMajorit_TotTCon,MinFract_Pyrolite_UMTZ[1])*std::pow(CpxDiopsid_TotTCon,MinFract_Pyrolite_UMTZ[2]); 
+          // Pyrolite Lower Mantle Transition Zone (58% ringwoodite, 42% majorite)
+          // double AggRock_Pyrolite_TCond = std::pow(RingwooDry_TotTCon,MinFract_Pyrolite_LMTZ[0])*std::pow(GrtMajorit_TotTCon,MinFract_Pyrolite_LMTZ[1]); 
+          // Pyrolite Lower Mantle (80% bridgmanite, 14% ferropericlase, 6% davemaoite)
+          // double AggRock_Pyrolite_TCond = std::pow(FeAlBrigma_TotTCon,MinFract_Pyrolite_LM[0])*std::pow(Ferroper10_TotTCon,MinFract_Pyrolite_LM[1])*std::pow(Davemaoite_TotTCon,MinFract_Pyrolite_LM[2]); 
+
           // Harzburgite (80% olivine, 20% ensatite)
-          // double AggRock_Harzburg_TCond = std::pow(OlivineDry_TotTCon,MinFract_Harzburg[0])*std::pow(OpxEnstati_TotTCon,MinFract_Harzburg[1]);
+          // double AggRock_Harzburg_TCond = std::pow(OlivineDry_TotTCon,MinFract_Harzburg_UM[0])*std::pow(OpxEnstati_TotTCon,MinFract_Harzburg_UM[1]);
+          // Harzburgite Upper Mantle Transition Zone (80% wadsleyite, 13% diopside, 7% majorite)
+          // double AggRock_Harzburg_TCond = std::pow(WadsleyDry_TotTCon,MinFract_Harzburg_UMTZ[0])*std::pow(CpxDiopsid_TotTCon,MinFract_Harzburg_UMTZ[1])*std::pow(GrtMajorit_TotTCon,MinFract_Harzburg_UMTZ[2]);
+          // Harzburgite Lower Mantle Transition Zone (80% olivine, 20% majorite)
+          // double AggRock_Harzburg_TCond = std::pow(RingwooDry_TotTCon,MinFract_Harzburg_LMTZ[0])*std::pow(GrtMajorit_TotTCon,MinFract_Harzburg_LMTZ[1]);
+          // Harzburgite Lower Mantle (76% bridgmanite, 24% ferropericlase)
+          // double AggRock_Harzburg_TCond = std::pow(FeAlBrigma_TotTCon,MinFract_Harzburg_LM[0])*std::pow(Ferroper10_TotTCon,MinFract_Harzburg_LM[1]);
+
           // Meta-basaltic crust MORB (80% diopside, 20% pyrope)
-          // double AggRock_MetaMORB_TCond = std::pow(CpxDiopsid_TotTCon,MinFract_MetaMORB[0])*std::pow(GrtPyropes_TotTCon,MinFract_MetaMORB[1]);
+          // double AggRock_MetaMORB_TCond = std::pow(CpxDiopsid_TotTCon,MinFract_MetaMORB_UM[0])*std::pow(GrtPyropes_TotTCon,MinFract_MetaMORB_UM[1]);
+          // Meta-basaltic crust MORB Upper Mantle Transition Zone (50% majorite, 4% stishovite, 46% diopside)
+          // double AggRock_MetaMORB_TCond = std::pow(GrtMajorit_TotTCon,MinFract_MetaMORB_UMTZ[0])*std::pow(Al05Stisho_TotTCon,MinFract_MetaMORB_UMTZ[1])*std::pow(CpxDiopsid_TotTCon,MinFract_MetaMORB_UMTZ[2]);
+          // Meta-basaltic crust MORB Lower Mantle Transition Zone (92% majorite, 8% stishovite)
+          // double AggRock_MetaMORB_TCond = std::pow(GrtMajorit_TotTCon,MinFract_MetaMORB_LMTZ[0])*std::pow(Al05Stisho_TotTCon,MinFract_MetaMORB_LMTZ[1]);
+          // Meta-basaltic crust MORB Lower Mantle (35% bridgmanite, 28% davemaoite, 19% Fe-NAL, 18% stishovite) 
+          // double AggRock_MetaMORB_TCond = std::pow(FeAlBrigma_TotTCon,MinFract_MetaMORB_LM[0])*std::pow(Davemaoite_TotTCon,MinFract_MetaMORB_LM[1])*std::pow(NewHexAlPh_TotTCon,MinFract_MetaMORB_LM[2])*std::pow(Al05Stisho_TotTCon,MinFract_MetaMORB_LM[3]);
+
           // Dunite (100% olivine)
-          // double AggRock_DuniteOl_TCond = std::pow(OlivineDry_TotTCon,MinFract_DuniteOl[0]);
+          // double AggRock_DuniteOl_TCond = std::pow(OlivineDry_TotTCon,MinFract_DuniteOl_UM[0]);
+          // Dunite Upper Mantle Transition Zone (100% wadsleyite)
+          // double AggRock_DuniteOl_TCond = std::pow(WadsleyDry_TotTCon,MinFract_DuniteOl_UMTZ[0]);
+          // Dunite Lower Mantle Transition Zone (100% ringwoodite)
+          // double AggRock_DuniteOl_TCond = std::pow(RingwooDry_TotTCon,MinFract_DuniteOl_LMTZ[0]);
+          // Dunite Lower Mantle (100% bridgmanite)
+          // double AggRock_DuniteOl_TCond = std::pow(FeAlBrigma_TotTCon,MinFract_DuniteOl_LM[0]);
+
           // Test Case
           double AggRock_TestCase_TCond = std::pow(All_Minerals_TConds[mID][2], min_frac);
 
