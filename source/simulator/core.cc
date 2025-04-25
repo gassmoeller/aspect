@@ -54,6 +54,7 @@
 #include <deal.II/fe/mapping_q.h>
 #include <deal.II/fe/mapping_cartesian.h>
 #include <deal.II/fe/mapping_q_cache.h>
+#include <deal.II/fe/mapping_manifold.h>
 
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/derivative_approximation.h>
@@ -108,7 +109,7 @@ namespace aspect
                       const InitialTopographyModel::Interface<dim> &initial_topography_model)
     {
       if (geometry_model.has_curved_elements())
-        return std::make_unique<MappingQCache<dim>>(4);
+        return std::make_unique<MappingManifold<dim>>();
 
       if (Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(initial_topography_model))
         return std::make_unique<MappingCartesian<dim>>();
