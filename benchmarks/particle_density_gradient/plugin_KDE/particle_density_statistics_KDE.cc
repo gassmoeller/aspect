@@ -16,8 +16,9 @@ namespace aspect
     {
       unsigned int cells_with_particles = 0;
       unsigned int pdf_granularity = 20;
-      double max_standard_deviation = std::numeric_limits<double>::min();
+      double standard_deviation_mean = 0;
       double min = std::numeric_limits<double>::max();
+      double max = std::numeric_limits<double>::min();
 
       for (const typename Triangulation<dim>::active_cell_iterator &cell : this->get_dof_handler().active_cell_iterators())
       {
@@ -36,31 +37,37 @@ namespace aspect
               ParticleDensityPDF pdf = ParticleDensityPDF(dim,pdf_granularity);
               generatePDF(cell,pdf,KernelFunctions::EUCLIDEAN);
               pdf.setStatisticalValues();
-              if (pdf.max > max_standard_deviation)
+              if (pdf.max > max)
               {
-                max_standard_deviation = pdf.max;
+                max = pdf.max;
               }
               if (pdf.min < min)
               {
                 min = pdf.min;
               }
+              standard_deviation_mean += pdf.standard_deviation;
             }
           }
       }
-
+      //standard_deviation_mean /= cells_with_particles;
       //get final values from all processors
-      double global_max_standard_deviation = Utilities::MPI::max (max_standard_deviation, this->get_mpi_communicator());
-      double global_min = Utilities::MPI::max (min, this->get_mpi_communicator());
-      //double summed_score = Utilities::MPI::sum (global_score, this->get_mpi_communicator());
-      //double global_cells_with_particles = Utilities::MPI::sum (cells_with_particles, this->get_mpi_communicator());
-      //double average_score = summed_score / global_cells_with_particles;
+      double global_max = Utilities::MPI::max (max, this->get_mpi_communicator());
+      double global_min = Utilities::MPI::min (min, this->get_mpi_communicator());
+      double global_cells_with_particles = Utilities::MPI::sum (cells_with_particles, this->get_mpi_communicator());
+      double global_standard_deviation_mean = Utilities::MPI::sum (standard_deviation_mean, this->get_mpi_communicator());
+      global_standard_deviation_mean /= global_cells_with_particles;
+  
 
+      // write to statistics file
+      statistics.add_value ("Minimum PDF minimum value ", global_min);
+      statistics.add_value ("Maximum PDF maximum value: ", global_max);
+      statistics.add_value ("Mean of PDF standard deviation: ", global_standard_deviation_mean);
 
 
       std::ostringstream output;
-      output << global_max_standard_deviation <<"," << global_min;
+      output << global_max <<"," << global_min <<"," << global_standard_deviation_mean;
 
-      return std::pair<std::string, std::string> ("KDE postprocessor score (cell max/min of max/min of PDF function):",
+      return std::pair<std::string, std::string> ("KDE postprocessor score (function max/min/mean standard deviation):",
                                                   output.str());
     }
 
