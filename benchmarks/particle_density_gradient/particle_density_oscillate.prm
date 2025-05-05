@@ -2,12 +2,12 @@
 
 set Dimension                              = 2
 set Use years in output instead of seconds = false
-set End time                               = 0.5
+set End time                               = 8
 set Output directory                       = ../output-particles-oscillate
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Resume computation                     = false
 set Maximum time step                      = 0.03
-set Additional shared libraries = /Users/jarettbaker-dunn/Documents/GitHub/aspect-project/aspect/benchmarks/particle_density_gradient/plugin_KDE/libparticle_density_statistics_KDE.so
+set Additional shared libraries = /Users/jarettbaker-dunn/Documents/GitHub/aspect-project/aspect/benchmarks/particle_density_gradient/plugin_KDE/libparticle_density_statistics_KDE.so,/Users/jarettbaker-dunn/Documents/GitHub/aspect-project/aspect/benchmarks/particle_density_gradient/plugin/libparticle_density_statistics.so
 
 
 subsection Prescribed Stokes solution
@@ -130,7 +130,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle density statistics KDE
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle density statistics KDE, particle density statistics
 
   subsection Visualization
     set Time between graphical output = .001
