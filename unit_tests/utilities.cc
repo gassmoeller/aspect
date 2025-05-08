@@ -230,7 +230,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   Expt_Minerals_LatTcond[Antigor001_ExptID] = Antigor001_Expt_LatTCon;
   Expt_Minerals_LatTcond[Antigor001_ExptID] = Antigor001_Expt_LatTCon;
   // Fe,Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> FeAlPhaseD_Expt_LatTCon = {2.59325, 1.13915, 1.31955, 1.59985, 1.78759};
+  std::vector<double> FeAlPhaseD_Expt_LatTCon = {2.59325, 1.13915, 1.31955, 1.59985, 6.12649};
   std::vector<double> FeAlPhaseD_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   Expt_Minerals_LatTcond[FeAlPhaseD_ExptID] = FeAlPhaseD_Expt_LatTCon;
   Expt_Minerals_LatTcond[FeAlPhaseD_ExptID] = FeAlPhaseD_Expt_LatTCon;

@@ -332,25 +332,25 @@ namespace aspect
         // mineral composition [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
         constexpr int FeAlPhaseD_Index = 20;
         // (Fe,Al)-Phase D - 0-24 [GPa]
-        const double FeAlPhaseD_LatTC_a0 = -3.9909;
-        const double FeAlPhaseD_LatTC_b1 =  1.7710;
-        const double FeAlPhaseD_LatTC_ymin = 0.956005323; 
-        const double FeAlPhaseD_LatTC_ymax = 1.747361025;
+        const double FeAlPhaseD_LatTC_1_a0 = -3.9909;
+        const double FeAlPhaseD_LatTC_1_b1 =  1.7710;
+        const double FeAlPhaseD_LatTC_1_ymin = 0.956005323; 
+        const double FeAlPhaseD_LatTC_1_ymax = 1.747361025;
         // (Fe,Al)-Phase D - 24-38 [GPa]
-        // const double FeAlPhaseD_LatTC_c0 = -32.890;
-        // const double FeAlPhaseD_LatTC_d1 =  9.6282;
-        // const double FeAlPhaseD_LatTC_ymin = 1.442700096; 
-        // const double FeAlPhaseD_LatTC_ymax = 3.512683919;
+        const double FeAlPhaseD_LatTC_2_a0 = -32.890;
+        const double FeAlPhaseD_LatTC_2_b1 =  9.6282;
+        const double FeAlPhaseD_LatTC_2_ymin = 1.442700096; 
+        const double FeAlPhaseD_LatTC_2_ymax = 3.512683919;
         // (Fe,Al)-Phase D - 38-48 [GPa]
-        // const double FeAlPhaseD_LatTC_e0 =  141.88;
-        // const double FeAlPhaseD_LatTC_f1 = -37.409;
-        // const double FeAlPhaseD_LatTC_ymin = 1.789742436; 
-        // const double FeAlPhaseD_LatTC_ymax = 3.270312073;
+        const double FeAlPhaseD_LatTC_3_a0 =  141.88;
+        const double FeAlPhaseD_LatTC_3_b1 = -37.409;
+        const double FeAlPhaseD_LatTC_3_ymin = 1.789742436; 
+        const double FeAlPhaseD_LatTC_3_ymax = 3.270312073;
         // (Fe,Al)-Phase D - > 48 [GPa]
-        // const double FeAlPhaseD_LatTC_g0 = -23.986;
-        // const double FeAlPhaseD_LatTC_h1 =  6.1139;
-        // const double FeAlPhaseD_LatTC_ymin = 1.313988596; 
-        // const double FeAlPhaseD_LatTC_ymax = 2.992561000;
+        const double FeAlPhaseD_LatTC_4_a0 = -23.986;
+        const double FeAlPhaseD_LatTC_4_b1 =  6.1139;
+        const double FeAlPhaseD_LatTC_4_ymin = 1.313988596; 
+        const double FeAlPhaseD_LatTC_4_ymax = 2.992561000;
         // Temperature-dependency
         const double FeAlPhaseD_TDep_n_Exp = 0.5;
 
@@ -1151,9 +1151,35 @@ namespace aspect
             }
             case FeAlPhaseD_Index: // Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
             { 
-             double FeAlPhaseD_LatTCon = compute_lattice_thermal_conductivity(
-             FeAlPhaseD_LatTC_a0, FeAlPhaseD_LatTC_b1, FeAlPhaseD_LatTC_ymin, FeAlPhaseD_LatTC_ymax,
-             P_log, T_mod, T_room, FeAlPhaseD_TDep_n_Exp);
+             double FeAlPhaseD_LatTCon; // Declare the variable
+             if (P_GPa < 24) // Pressure < 24 [GPa]
+             {
+              FeAlPhaseD_LatTCon = compute_lattice_thermal_conductivity(
+              FeAlPhaseD_LatTC_1_a0, FeAlPhaseD_LatTC_1_b1, FeAlPhaseD_LatTC_1_ymin, FeAlPhaseD_LatTC_1_ymax,
+              P_log, T_mod, T_room, FeAlPhaseD_TDep_n_Exp);
+             }
+             else if (P_GPa >= 24 && P_GPa <= 38) // Pressure between 24 and 38 [GPa]
+             {
+              FeAlPhaseD_LatTCon = compute_lattice_thermal_conductivity(
+              FeAlPhaseD_LatTC_2_a0, FeAlPhaseD_LatTC_2_b1, FeAlPhaseD_LatTC_2_ymin, FeAlPhaseD_LatTC_2_ymax,
+              P_log, T_mod, T_room, FeAlPhaseD_TDep_n_Exp);
+             }
+             else if (P_GPa >= 38 && P_GPa <= 48) // Pressure between 38 and 48 [GPa]
+             {
+              FeAlPhaseD_LatTCon = compute_lattice_thermal_conductivity(
+              FeAlPhaseD_LatTC_3_a0, FeAlPhaseD_LatTC_3_b1, FeAlPhaseD_LatTC_3_ymin, FeAlPhaseD_LatTC_3_ymax,
+              P_log, T_mod, T_room, FeAlPhaseD_TDep_n_Exp);
+             }
+             else if (P_GPa > 48) // Pressure > 48 [GPa]
+             {
+              FeAlPhaseD_LatTCon = compute_lattice_thermal_conductivity(
+              FeAlPhaseD_LatTC_4_a0, FeAlPhaseD_LatTC_4_b1, FeAlPhaseD_LatTC_4_ymin, FeAlPhaseD_LatTC_4_ymax,
+              P_log, T_mod, T_room, FeAlPhaseD_TDep_n_Exp);
+             }
+             else
+             {
+              AssertThrow(false, dealii::ExcMessage("Invalid pressure value for FeAlPhaseD_LatTC coefficients."));
+             } 
              double FeAlPhaseD_RadTCon = compute_radiative_thermal_conductivity(
              FeAlPhaseD_RadTC_c0, FeAlPhaseD_RadTC_d1, FeAlPhaseD_RadTC_jmin, FeAlPhaseD_RadTC_jmax, T_log);
              double FeAlPhaseD_TotTCon = compute_total_thermal_conductivity(
