@@ -274,21 +274,22 @@ namespace aspect
         // https://doi.org/10.1016/j.epsl.2022.117477
         // mineral composition [SiO2]
         constexpr int Stishovite_Index = 16;
-        // < 52 [GPa]
-        const double Stishovite_LatTC_a0 =  16.917;
-        const double Stishovite_LatTC_b1 = -4.6187;
-        const double Stishovite_LatTC_ymin = 4.096113064; 
-        const double Stishovite_LatTC_ymax = 4.217974805;
-        // 52-56 [GPa]
-        // const double Stishovite_LatTC_c0 = -156.12;
-        // const double Stishovite_LatTC_d1 =  39.182;
-        // const double Stishovite_LatTC_ymin = 4.077505176;
-        // const double Stishovite_LatTC_ymax = 4.264199335;
-        // > 56 [GPa]
-        // const double Stishovite_LatTC_e0 = -12.728;
-        // const double Stishovite_LatTC_f1 =  2.9998;
-        // const double Stishovite_LatTC_ymin = 3.960844211;
-        // const double Stishovite_LatTC_ymax = 4.738489125;
+        // Assign coefficients based on pressure ranges
+        // Pressure < 52 [GPa]
+        const double Stishovite_LatTC_1_a0 =  16.917;
+        const double Stishovite_LatTC_1_b1 = -4.6187;
+        const double Stishovite_LatTC_1_ymin = 4.096113064; 
+        const double Stishovite_LatTC_1_ymax = 4.217974805;
+        // Pressure between 52 and 56 [GPa]
+        const double Stishovite_LatTC_2_a0 = -156.12;
+        const double Stishovite_LatTC_2_b1 =  39.182;
+        const double Stishovite_LatTC_2_ymin = 4.077505176;
+        const double Stishovite_LatTC_2_ymax = 4.264199335;
+        // Pressure > 56 [GPa]
+        const double Stishovite_LatTC_3_a0 = -12.728;
+        const double Stishovite_LatTC_3_b1 =  2.9998;
+        const double Stishovite_LatTC_3_ymin = 3.960844211;
+        const double Stishovite_LatTC_3_ymax = 4.738489125;
         // Temperature
         const double Stishovite_TDep_n_Exp = 0.5;
 
@@ -1070,9 +1071,29 @@ namespace aspect
             }
             case Stishovite_Index: // Stishovite
             { 
-             double Stishovite_LatTCon = compute_lattice_thermal_conductivity(
-             Stishovite_LatTC_a0, Stishovite_LatTC_b1, Stishovite_LatTC_ymin, Stishovite_LatTC_ymax,
-             P_log, T_mod, T_room, Stishovite_TDep_n_Exp);
+              double Stishovite_LatTCon; // Declare the variable
+              if (P_GPa < 52) // Pressure < 52 [GPa]
+              {
+               Stishovite_LatTCon = compute_lattice_thermal_conductivity(
+               Stishovite_LatTC_1_a0, Stishovite_LatTC_1_b1, Stishovite_LatTC_1_ymin, Stishovite_LatTC_1_ymax,
+               P_log, T_mod, T_room, Stishovite_TDep_n_Exp);
+              }
+              else if (P_GPa >= 52 && P_GPa <= 56) // Pressure between 52 and 56 [GPa]
+              {
+               Stishovite_LatTCon = compute_lattice_thermal_conductivity(
+               Stishovite_LatTC_2_a0, Stishovite_LatTC_2_b1, Stishovite_LatTC_2_ymin, Stishovite_LatTC_2_ymax,
+               P_log, T_mod, T_room, Stishovite_TDep_n_Exp);
+              }
+              else if (P_GPa > 56) // Pressure > 56 [GPa]
+              {
+               Stishovite_LatTCon = compute_lattice_thermal_conductivity(
+               Stishovite_LatTC_3_a0, Stishovite_LatTC_3_b1, Stishovite_LatTC_3_ymin, Stishovite_LatTC_3_ymax,
+               P_log, T_mod, T_room, Stishovite_TDep_n_Exp);
+              }
+              else
+              {
+               AssertThrow(false, dealii::ExcMessage("Invalid pressure value for Stishovite_LatTC coefficients."));
+              } 
              double Stishovite_RadTCon = compute_radiative_thermal_conductivity(
              Stishovite_RadTC_c0, Stishovite_RadTC_d1, Stishovite_RadTC_jmin, Stishovite_RadTC_jmax, T_log);
              double Stishovite_TotTCon = compute_total_thermal_conductivity(

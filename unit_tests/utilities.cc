@@ -210,7 +210,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
   Expt_Minerals_LatTcond[CoesitSiO2_ExptID] = CoesitSiO2_Expt_LatTCon;
   Expt_Minerals_LatTcond[CoesitSiO2_ExptID] = CoesitSiO2_Expt_LatTCon;
   // Stishovite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> Stishovite_Expt_LatTCon = {67.68617, 29.30897, 28.43361, 27.62648, 18.97792};
+  std::vector<double> Stishovite_Expt_LatTCon = {67.68617, 29.30897, 28.43361, 27.62648, 29.60473};
   std::vector<double> Stishovite_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   Expt_Minerals_LatTcond[Stishovite_ExptID] = Stishovite_Expt_LatTCon;
   Expt_Minerals_LatTcond[Stishovite_ExptID] = Stishovite_Expt_LatTCon;
