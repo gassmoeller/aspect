@@ -81,7 +81,17 @@ namespace aspect
         const double OlivineDry_LatTC_b1 =    2.1469;
         const double OlivineDry_LatTC_ymin =  1.28093384543429;
         const double OlivineDry_LatTC_ymax =  2.60726381956037;
-        const double OlivineDry_TDep_n_Exp =  0.5;     
+        const double OlivineDry_TDep_n_Exp =  0.5;    
+        
+        // Coefficients for NON-DIMENSIONAL dry olivine 
+        // retreived from fitting TDTR dataset of
+        // [Chang et al., 2017, PNAS, vol 114, p. 4078-4081]
+        // https://doi.org/10.1073/pnas.1616216114
+        // mineral composition [Mg1.8 Fe0.2 SiO4]    
+        // const double OlivinNonD_LatTC_a0 =    1.6023;
+        // const double OlivinNonD_LatTC_b1 =    2.1469;
+        // const double OlivinNonD_LatTC_ymin =  1.28093384543429;
+        // const double OlivinNonD_LatTC_ymax =  2.60726381956037;  
         
         // Coefficients for dry wadsleyite
         // retreived from fitting dataset of
@@ -437,6 +447,15 @@ namespace aspect
         const double OlivineDry_RadTC_d1 =    1.883900000;
         const double OlivineDry_RadTC_jmin = -23.02585093;
         const double OlivineDry_RadTC_jmax =  1.289885976;
+
+        // Coefficients for NON-DIMENSIONAL dry olivine
+        // retreived from fitting dataset of
+        // [Marzotto et al. 2025, Nature Communication, under review]
+        // mineral composition [Mg1.8 Fe0.2 SiO4]
+        // const double OlivinNonD_RadTC_c0 =   -5.6162;
+        // const double OlivinNonD_RadTC_d1 =    1.8839;
+        // const double OlivinNonD_RadTC_jmin = -23.02585093;
+        // const double OlivinNonD_RadTC_jmax =  1.289885976;
 
         // Coefficients for dry wadsleyite
         // retreived from fitting dataset of
