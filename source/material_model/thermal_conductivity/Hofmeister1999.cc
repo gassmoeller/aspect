@@ -116,80 +116,91 @@ namespace aspect
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
-        // Convert pressure unit from [Pa] to [GPa]
-        double P_GPa = in.pressure[1]/1e9;
-        // Take the temperature field of the model [K]
-        double T_mod = in.temperature[1];
+        
+        const unsigned int n_points = in.n_evaluation_points();
 
-        unsigned int mID = 0;
-
-        // Preallocate a vector for storing thermal conductivities of minerals
-        std::vector<double> Hof99_Minerals_LatTcond(MineralPar_Index, 0.0); // Lattice thermal conductivity
-        std::vector<double> Hof99_Minerals_RadTcond(MineralPar_Index, 0.0); // Radiative thermal conductivity
-        std::vector<double> Hof99_Minerals_TotTcond(MineralPar_Index, 0.0); // Total thermal conductivity
-        // Preallocate a matrix for storing thermal conductivities of minerals
-        std::vector<std::vector<double>> Hof99_All_Minerals_TConds(MineralPar_Index, std::vector<double>(3, 0.0));
-
-        switch (mID) // Compute the lattice, radiative and total thermal conductivities of the given mineral
+        for (unsigned int i = 0; i < n_points; ++i) 
         {
-         case OlivineDry_Index: // Dry Olivine
-          { 
-           double OlivineDry_Hof99_LatTCon = Compute_Lat_TCond_Hofmeister1999(
-           OlivineDry_Hof99_LatTC_Room, OlivineDry_Hof99_LatTC_TExp, OlivineDry_Hof99_LatTC_GruP, OlivineDry_Hof99_LatTC_Alph,
-           OlivineDry_Hof99_LatTC_Bulk, OlivineDry_Hof99_LatTC_PDev, T_room, T_mod, P_GPa);   
-           double OlivineDry_Hof99_RadTCon = Compute_Rad_TCond_Hofmeister1999(
-           OlivineDry_Hof99_RadTC_CoA0, OlivineDry_Hof99_RadTC_CoB1, OlivineDry_Hof99_RadTC_CoC2, OlivineDry_Hof99_RadTC_CoD3, T_mod); 
-           double OlivineDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
-           OlivineDry_Hof99_LatTCon, OlivineDry_Hof99_RadTCon); 
-           // Store the thermal conductivities in the vector
-           Hof99_Minerals_LatTcond[OlivineDry_Index] = OlivineDry_Hof99_LatTCon;
-           Hof99_Minerals_RadTcond[OlivineDry_Index] = OlivineDry_Hof99_RadTCon;
-           Hof99_Minerals_TotTcond[OlivineDry_Index] = OlivineDry_Hof99_TotTCon;
-           break;
-          }
-         case WadsleyDry_Index: // Dry Wadsleyite 
-          { 
-           double WadsleyDry_Hof99_LatTCon = Compute_Lat_TCond_Hofmeister1999(
-           WadsleyDry_Hof99_LatTC_Room, WadsleyDry_Hof99_LatTC_TExp, WadsleyDry_Hof99_LatTC_GruP, WadsleyDry_Hof99_LatTC_Alph,
-           WadsleyDry_Hof99_LatTC_Bulk, WadsleyDry_Hof99_LatTC_PDev, T_room, T_mod, P_GPa); 
-           double WadsleyDry_Hof99_RadTCon = Compute_Rad_TCond_Hofmeister1999(
-           WadsleyDry_Hof99_RadTC_CoA0, WadsleyDry_Hof99_RadTC_CoB1, WadsleyDry_Hof99_RadTC_CoC2, WadsleyDry_Hof99_RadTC_CoD3, T_mod); 
-           double WadsleyDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
-           WadsleyDry_Hof99_LatTCon, WadsleyDry_Hof99_RadTCon);
-           // Store the thermal conductivities in the vector
-           Hof99_Minerals_LatTcond[WadsleyDry_Index] = WadsleyDry_Hof99_LatTCon;
-           Hof99_Minerals_RadTcond[WadsleyDry_Index] = WadsleyDry_Hof99_RadTCon;
-           Hof99_Minerals_TotTcond[WadsleyDry_Index] = WadsleyDry_Hof99_TotTCon;
-           break;
-          }
-         case RingwooDry_Index: // Dry Ringwoodite
-          { 
-           double RingwooDry_Hof99_LatTCon = Compute_Lat_TCond_Hofmeister1999(
-           RingwooDry_Hof99_LatTC_Room, RingwooDry_Hof99_LatTC_TExp, RingwooDry_Hof99_LatTC_GruP, RingwooDry_Hof99_LatTC_Alph,
-           RingwooDry_Hof99_LatTC_Bulk, RingwooDry_Hof99_LatTC_PDev, T_room, T_mod, P_GPa); 
-           double RingwooDry_Hof99_RadTCon = Compute_Rad_TCond_Hofmeister1999(
-           RingwooDry_Hof99_RadTC_CoA0, RingwooDry_Hof99_RadTC_CoB1, RingwooDry_Hof99_RadTC_CoC2, RingwooDry_Hof99_RadTC_CoD3, T_mod); 
-           double RingwooDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
-           RingwooDry_Hof99_LatTCon, RingwooDry_Hof99_RadTCon);
-           // Store the thermal conductivities in the vector
-           Hof99_Minerals_LatTcond[RingwooDry_Index] = RingwooDry_Hof99_LatTCon;
-           Hof99_Minerals_RadTcond[RingwooDry_Index] = RingwooDry_Hof99_RadTCon;
-           Hof99_Minerals_TotTcond[RingwooDry_Index] = RingwooDry_Hof99_TotTCon;
-           break;
-          }
-        }
 
-        // Fill the matrix column by column
-        for (unsigned int row = 0; row < MineralPar_Index; ++row)
-        {
-          Hof99_All_Minerals_TConds[row][0] = Hof99_Minerals_LatTcond[row]; // Column 0: Lattice conductivities
-          Hof99_All_Minerals_TConds[row][1] = Hof99_Minerals_RadTcond[row]; // Column 1: Radiative conductivities
-          Hof99_All_Minerals_TConds[row][2] = Hof99_Minerals_TotTcond[row]; // Column 2: Total conductivities
-        }
+         // Preallocate a vector for storing thermal conductivities of minerals
+         std::vector<double> Hof99_Minerals_LatTcond(MineralPar_Index, 0.0); // Lattice thermal conductivity
+         std::vector<double> Hof99_Minerals_RadTcond(MineralPar_Index, 0.0); // Radiative thermal conductivity
+         std::vector<double> Hof99_Minerals_TotTcond(MineralPar_Index, 0.0); // Total thermal conductivity
+         // Preallocate a matrix for storing thermal conductivities of minerals
+         std::vector<std::vector<double>> Hof99_All_Minerals_TConds(MineralPar_Index, std::vector<double>(3, 0.0));
 
-        std::vector<double> Hofmeister99_Tcond(5, Hof99_All_Minerals_TConds[0][2]);
-        out.thermal_conductivities = Hofmeister99_Tcond;
-  
+         // Convert pressure unit from [Pa] to [GPa]
+         double P_GPa = in.pressure[i]/1e9;
+         // Take the temperature field of the model [K]
+         double T_mod = in.temperature[i];
+         // Take the mineral fraction of the model
+         double min_frac = in.composition[0][i];
+ 
+         unsigned int mID = in.Mineral_ID;
+
+         switch (mID) // Compute the lattice, radiative and total thermal conductivities of the given mineral
+         {
+           case OlivineDry_Index: // Dry Olivine
+           { 
+             double OlivineDry_Hof99_LatTCon = Compute_Lat_TCond_Hofmeister1999(
+             OlivineDry_Hof99_LatTC_Room, OlivineDry_Hof99_LatTC_TExp, OlivineDry_Hof99_LatTC_GruP, OlivineDry_Hof99_LatTC_Alph,
+             OlivineDry_Hof99_LatTC_Bulk, OlivineDry_Hof99_LatTC_PDev, T_room, T_mod, P_GPa);   
+             double OlivineDry_Hof99_RadTCon = Compute_Rad_TCond_Hofmeister1999(
+             OlivineDry_Hof99_RadTC_CoA0, OlivineDry_Hof99_RadTC_CoB1, OlivineDry_Hof99_RadTC_CoC2, OlivineDry_Hof99_RadTC_CoD3, T_mod); 
+             double OlivineDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
+             OlivineDry_Hof99_LatTCon, OlivineDry_Hof99_RadTCon); 
+             // Store the thermal conductivities in the vector
+             Hof99_Minerals_LatTcond[OlivineDry_Index] = OlivineDry_Hof99_LatTCon;
+             Hof99_Minerals_RadTcond[OlivineDry_Index] = OlivineDry_Hof99_RadTCon;
+             Hof99_Minerals_TotTcond[OlivineDry_Index] = OlivineDry_Hof99_TotTCon;
+             break;
+           }
+           case WadsleyDry_Index: // Dry Wadsleyite 
+           { 
+             double WadsleyDry_Hof99_LatTCon = Compute_Lat_TCond_Hofmeister1999(
+             WadsleyDry_Hof99_LatTC_Room, WadsleyDry_Hof99_LatTC_TExp, WadsleyDry_Hof99_LatTC_GruP, WadsleyDry_Hof99_LatTC_Alph,
+             WadsleyDry_Hof99_LatTC_Bulk, WadsleyDry_Hof99_LatTC_PDev, T_room, T_mod, P_GPa); 
+             double WadsleyDry_Hof99_RadTCon = Compute_Rad_TCond_Hofmeister1999(
+             WadsleyDry_Hof99_RadTC_CoA0, WadsleyDry_Hof99_RadTC_CoB1, WadsleyDry_Hof99_RadTC_CoC2, WadsleyDry_Hof99_RadTC_CoD3, T_mod); 
+             double WadsleyDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
+             WadsleyDry_Hof99_LatTCon, WadsleyDry_Hof99_RadTCon);
+             // Store the thermal conductivities in the vector
+             Hof99_Minerals_LatTcond[WadsleyDry_Index] = WadsleyDry_Hof99_LatTCon;
+             Hof99_Minerals_RadTcond[WadsleyDry_Index] = WadsleyDry_Hof99_RadTCon;
+             Hof99_Minerals_TotTcond[WadsleyDry_Index] = WadsleyDry_Hof99_TotTCon;
+             break;
+           }
+           case RingwooDry_Index: // Dry Ringwoodite
+           { 
+             double RingwooDry_Hof99_LatTCon = Compute_Lat_TCond_Hofmeister1999(
+             RingwooDry_Hof99_LatTC_Room, RingwooDry_Hof99_LatTC_TExp, RingwooDry_Hof99_LatTC_GruP, RingwooDry_Hof99_LatTC_Alph,
+             RingwooDry_Hof99_LatTC_Bulk, RingwooDry_Hof99_LatTC_PDev, T_room, T_mod, P_GPa); 
+             double RingwooDry_Hof99_RadTCon = Compute_Rad_TCond_Hofmeister1999(
+             RingwooDry_Hof99_RadTC_CoA0, RingwooDry_Hof99_RadTC_CoB1, RingwooDry_Hof99_RadTC_CoC2, RingwooDry_Hof99_RadTC_CoD3, T_mod); 
+             double RingwooDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
+             RingwooDry_Hof99_LatTCon, RingwooDry_Hof99_RadTCon);
+             // Store the thermal conductivities in the vector
+             Hof99_Minerals_LatTcond[RingwooDry_Index] = RingwooDry_Hof99_LatTCon;
+             Hof99_Minerals_RadTcond[RingwooDry_Index] = RingwooDry_Hof99_RadTCon;
+             Hof99_Minerals_TotTcond[RingwooDry_Index] = RingwooDry_Hof99_TotTCon;
+             break;
+           }
+         } 
+
+         // Fill the matrix column by column
+         for (unsigned int row = 0; row < MineralPar_Index; ++row)
+         {
+           Hof99_All_Minerals_TConds[row][0] = Hof99_Minerals_LatTcond[row]; // Column 0: Lattice conductivities
+           Hof99_All_Minerals_TConds[row][1] = Hof99_Minerals_RadTcond[row]; // Column 1: Radiative conductivities
+           Hof99_All_Minerals_TConds[row][2] = Hof99_Minerals_TotTcond[row]; // Column 2: Total conductivities
+         }
+
+         // Test Case
+         double AggRock_TestCase_Hof99_TCond = std::pow(Hof99_All_Minerals_TConds[mID][2], min_frac);
+
+         // std::vector<double> Hofmeister99_Tcond(5, Hof99_All_Minerals_TConds[0][2]);
+         out.thermal_conductivities[i] = AggRock_TestCase_Hof99_TCond;
+       }
       }
     }
   }

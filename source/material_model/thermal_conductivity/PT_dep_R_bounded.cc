@@ -54,7 +54,7 @@ namespace aspect
       {
         double thermal_conductivity = lattice_conductivity + radiative_conductivity;
         return thermal_conductivity;
-       }
+      }
      
       // Helper function: Compute aggregate thermal conductivity
       // double compute_aggregate_thermal_conductivity(const std::vector<std::vector<double>> &thermal_conductivities, double min_frac, int col)
@@ -829,7 +829,7 @@ namespace aspect
 
           switch (mID) // Compute the lattice, radiative and total thermal conductivities of the given mineral
           {
-            case OlivineDry_Index: // Dry Olivine
+           case OlivineDry_Index: // Dry Olivine
             {      
              double OlivineDry_LatTCon = compute_lattice_thermal_conductivity(
              OlivineDry_LatTC_a0, OlivineDry_LatTC_b1, OlivineDry_LatTC_ymin, OlivineDry_LatTC_ymax,
