@@ -55,6 +55,13 @@ namespace aspect
         return HRadTCon;
       }
 
+      // Helper function: Compute total thermal conductivity
+      double Compute_Tot_TCond_Hofmeister1999(double lattice_conductivity, double radiative_conductivity)
+      {
+        double thermal_conductivity = lattice_conductivity + radiative_conductivity;
+        return thermal_conductivity;
+      }
+
       // Main function: 
       template <int dim>
       void
@@ -112,6 +119,20 @@ namespace aspect
         // Take the temperature field of the model [K]
         double T_mod = in.temperature[1];
 
+        unsigned int mID = in.Mineral_ID;
+
+        // switch (mID) // Compute the lattice, radiative and total thermal conductivities of the given mineral
+        // {
+         //  case OlivineDry_Index: // Dry Olivine
+         // {   
+
+                     // Store the thermal conductivities in the vector
+            // All_Minerals_LatTcond[OlivineDry_Index] = OlivineDry_LatTCon;
+            //  All_Minerals_RadTcond[OlivineDry_Index] = OlivineDry_RadTCon;
+            // All_Minerals_TotTcond[OlivineDry_Index] = OlivineDry_TotTCon;
+            //  break;
+            // }
+
         double OlivineDry_Hof99_LatTCon = Compute_Lat_TCond_Hofmeister1999(
         OlivineDry_Hof99_LatTC_Room, OlivineDry_Hof99_LatTC_TExp, OlivineDry_Hof99_LatTC_GruP, OlivineDry_Hof99_LatTC_Alph,
         OlivineDry_Hof99_LatTC_Bulk, OlivineDry_Hof99_LatTC_PDev, T_room, T_mod, P_GPa); 
@@ -129,7 +150,14 @@ namespace aspect
         double RingwooDry_Hof99_RadTCon = Compute_Rad_TCond_Hofmeister1999(
         RingwooDry_Hof99_RadTC_CoA0, RingwooDry_Hof99_RadTC_CoB1, RingwooDry_Hof99_RadTC_CoC2, RingwooDry_Hof99_RadTC_CoD3, T_mod); 
 
-        std::vector<double> Hofmeister99_Tcond(5, OlivineDry_Hof99_LatTCon);
+        double OlivineDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
+        OlivineDry_Hof99_LatTCon, OlivineDry_Hof99_RadTCon); 
+        double WadsleyDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
+        WadsleyDry_Hof99_LatTCon, WadsleyDry_Hof99_RadTCon);
+        double RingwooDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
+        RingwooDry_Hof99_LatTCon, RingwooDry_Hof99_RadTCon);
+
+        std::vector<double> Hofmeister99_Tcond(5, OlivineDry_Hof99_TotTCon);
         out.thermal_conductivities = Hofmeister99_Tcond;
   
       }
