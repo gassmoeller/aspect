@@ -21,6 +21,7 @@
 #include "common.h"
 #include <aspect/utilities.h>
 #include <aspect/material_model/thermal_conductivity/PT_dep_R_bounded.h>
+#include <aspect/material_model/thermal_conductivity/Hofmeister1999.h>
 
 TEST_CASE("Utilities::weighted_p_norm_average")
 {
@@ -609,7 +610,6 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
  } 
 }
 
-/*
 TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
 {
   aspect::MaterialModel::ThermalConductivity::Hofmeister1999<3> model;
@@ -635,18 +635,18 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
     
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
   constexpr int OlivineDry_Hof99ID = 0;
-  std::vector<double> OlivineDry_Hof99_TotTCon(temperatures.size());
+  std::vector<double> OlivineDry_Expt_Hof99_TotTCon(temperatures.size());
   constexpr int WadsleyDry_Hof99ID = 1;
-  std::vector<double> WadsleyDry_Hof99_TotTCon(temperatures.size());
+  std::vector<double> WadsleyDry_Expt_Hof99_TotTCon(temperatures.size());
   constexpr int RingwooDry_Hof99ID = 2;
-  std::vector<double> RingwooDry_Hof99_TotTCon(temperatures.size());
+  std::vector<double> RingwooDry_Expt_Hof99_TotTCon(temperatures.size());
 
   unsigned int Hofm1999Par_Index = RingwooDry_Hof99ID+1; // Number of minerals
 
   // Preallocate matrixes for storing thermal conductivities of minerals
-  std::vector<std::vector<double>> Expt_Hofm1999_LatTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
-  std::vector<std::vector<double>> Expt_Hofm1999_RadTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
-  std::vector<std::vector<double>> Expt_Hofm1999_TotTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+  std::vector<std::vector<double>> Expt_Hofm1999_LatTcond(Hofm1999Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> Expt_Hofm1999_RadTcond(Hofm1999Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
+  std::vector<std::vector<double>> Expt_Hofm1999_TotTcond(Hofm1999Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
 
   // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> OlivineDry_Expt_Hof99_LatTCon = {3.58888, 1.58719, 2.36282, 3.67868, 4.25767};
@@ -695,41 +695,47 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
    std::vector<std::vector<double>> expected_conductivities = expected_Hof1999_Tcond;
 
    INFO("Checking Hof1999 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
-    
-   // Loop over the different combinations of pressures (P) and temperatures (T)
-   for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+
+   // Loop over the different compositions
+   for (size_t row = 0; row < expected_conductivities.size(); ++row)
    {
-     switch (mID) // Compare the computed thermal conductivity with the expected value
+     in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
+     model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+
+     // Loop over the different combinations of pressures (P) and temperatures (T)
+     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
      {
-       case OlivineDry_Hof99ID: // OlivineDry
+       switch (mID) // Compare the computed thermal conductivity with the expected value
        {
-         INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-         INFO("OlivineDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-         INFO("OlivineDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
-         REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
-         break;
-       }
-       case WadsleyDry_Hof99ID: // WadsleyDry
-       {
-         INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-         INFO("WadsleyDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-         INFO("WadsleyDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
-         REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
-         break;
-       }
-       case RingwooDry_ExptID: // RingwooDry
-       {
-         INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-         INFO("RingwooDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-         INFO("RingwooDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
-         REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
-         break;
-       }
-     } 
-   }
+         case OlivineDry_Hof99ID: // OlivineDry
+         {
+           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("OlivineDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("OlivineDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case WadsleyDry_Hof99ID: // WadsleyDry
+         {
+           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("WadsleyDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("WadsleyDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case RingwooDry_Hof99ID: // RingwooDry
+         {
+           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("RingwooDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("RingwooDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+        } 
+      }
+    }
   }
 }
-*/
 
 TEST_CASE("Utilities::AsciiDataLookup")
 {
