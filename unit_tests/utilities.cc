@@ -649,18 +649,18 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
   std::vector<std::vector<double>> Expt_Hofm1999_TotTcond(Hofm1999Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
 
   // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> OlivineDry_Expt_Hof99_LatTCon = {3.58888, 1.58719, 2.36282, 3.67868, 4.25767};
-  std::vector<double> OlivineDry_Expt_Hof99_RadTCon = {0.00138288, 2.23152, 2.34978, 2.45486, 3.12273};
+  std::vector<double> OlivineDry_Expt_Hof99_LatTCon = {4.69000, 2.41949, 2.66506, 2.97359, 7.19819};
+  std::vector<double> OlivineDry_Expt_Hof99_RadTCon = {0.00572, 0.28688, 0.32277, 0.35967, 0.80725};
   Expt_Hofm1999_LatTcond[OlivineDry_Hof99ID] = OlivineDry_Expt_Hof99_LatTCon;
   Expt_Hofm1999_RadTcond[OlivineDry_Hof99ID] = OlivineDry_Expt_Hof99_RadTCon;
   // Dry Wadsleyite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> WadsleyDry_Expt_Hof99_LatTCon = {5.88364, 3.08196, 3.21488, 3.22817, 2.77368};
-  std::vector<double> WadsleyDry_Expt_Hof99_RadTCon = {1.1834e-9, 1.51515, 1.71067, 1.87995, 2.71457};
+  std::vector<double> WadsleyDry_Expt_Hof99_LatTCon = {7.68434, 4.20366, 4.53114, 4.95031, 11.17803};
+  std::vector<double> WadsleyDry_Expt_Hof99_RadTCon = {0.00572, 0.28688, 0.32277, 0.35967, 0.80725};
   Expt_Hofm1999_LatTcond[WadsleyDry_Hof99ID] = WadsleyDry_Expt_Hof99_LatTCon;
   Expt_Hofm1999_RadTcond[WadsleyDry_Hof99ID] = WadsleyDry_Expt_Hof99_RadTCon;
   // Dry Ringwoodite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> RingwooDry_Expt_Hof99_LatTCon = {4.98456, 2.17063, 2.41846, 3.19795, 5.89102};
-  std::vector<double> RingwooDry_Expt_Hof99_RadTCon = {5.52667e-10, 0.74367, 0.85004, 0.94227, 1.38818};
+  std::vector<double> RingwooDry_Expt_Hof99_LatTCon = {7.68419, 4.14794, 4.47408, 4.89128, 11.00724};
+  std::vector<double> RingwooDry_Expt_Hof99_RadTCon = {0.00572, 0.28688, 0.32277, 0.35967, 0.80725};
   Expt_Hofm1999_LatTcond[RingwooDry_Hof99ID] = RingwooDry_Expt_Hof99_LatTCon;
   Expt_Hofm1999_RadTcond[RingwooDry_Hof99ID] = RingwooDry_Expt_Hof99_RadTCon;
 

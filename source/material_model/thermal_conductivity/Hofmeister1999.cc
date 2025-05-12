@@ -41,7 +41,7 @@ namespace aspect
       {
         // Lambda_Lat(P,T) [W m^-1 K^-1] = Lambda_Room(T_room/T_model)^N_Texp * exp[-(4*Gamma + 1/3)*Alpha*(T_model-T_room)] * (1+(K_prime*P_model/K0))
         double Factor_1 = Lambda0 * std::pow((T_room / T_model), N_Texp);
-        double Factor_2 = exp(-((4*Gamma)+(1/3))*(Alpha*(T_model-298)));
+        double Factor_2 = std::exp(-((4*Gamma)+(1.0/3.0)) * (Alpha * (T_model - T_room)));
         double Factor_3 = (1+((K_prime*P_model)/K0));
         double HLatTCon = Factor_1 * Factor_2 * Factor_3;
         return HLatTCon;
