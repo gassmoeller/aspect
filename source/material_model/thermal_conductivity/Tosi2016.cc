@@ -45,8 +45,9 @@ namespace aspect
 
              // Test Case
              double AggRock_TestCase_Tos16_TCond = 1;
+             std::vector<double> Tosi2016_Tcond(5, AggRock_TestCase_Tos16_TCond);
 
-             out.thermal_conductivities[i] = AggRock_TestCase_Tos16_TCond;
+             out.thermal_conductivities = Tosi2016_Tcond;
          }
      }
   }

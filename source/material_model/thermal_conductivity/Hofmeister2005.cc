@@ -45,8 +45,9 @@ namespace aspect
 
              // Test Case
              double AggRock_TestCase_Hof05_TCond = 1;
+             std::vector<double> Hofmeister2005_Tcond(5, AggRock_TestCase_Hof05_TCond);
 
-             out.thermal_conductivities[i] = AggRock_TestCase_Hof05_TCond;
+             out.thermal_conductivities = Hofmeister2005_Tcond;
          }
      }
   }

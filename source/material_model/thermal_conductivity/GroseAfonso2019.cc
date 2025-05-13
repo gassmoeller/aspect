@@ -45,8 +45,9 @@ namespace aspect
 
              // Test Case
              double AggRock_TestCase_GrA19_TCond = 1;
+             std::vector<double> GroseAfonso2019_Tcond(5, AggRock_TestCase_GrA19_TCond);
 
-             out.thermal_conductivities[i] = AggRock_TestCase_GrA19_TCond;
+             out.thermal_conductivities = GroseAfonso2019_Tcond;
          }
      }
   }

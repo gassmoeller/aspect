@@ -45,8 +45,9 @@ namespace aspect
 
              // Test Case
              double AggRock_TestCase_Sta15_TCond = 1;
+             std::vector<double> Stackhouse2015_Tcond(5, AggRock_TestCase_Sta15_TCond);
 
-             out.thermal_conductivities[i] = AggRock_TestCase_Sta15_TCond;
+             out.thermal_conductivities = Stackhouse2015_Tcond;
          }
      }
   }

@@ -45,8 +45,9 @@ namespace aspect
 
              // Test Case
              double AggRock_TestCase_And87_TCond = 1;
+             std::vector<double> Anderson1987_Tcond(5, AggRock_TestCase_And87_TCond);
 
-             out.thermal_conductivities[i] = AggRock_TestCase_And87_TCond;
+             out.thermal_conductivities = Anderson1987_Tcond;
          }
      }
   }

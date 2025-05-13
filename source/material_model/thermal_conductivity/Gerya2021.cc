@@ -45,8 +45,9 @@ namespace aspect
 
              // Test Case
              double AggRock_TestCase_Ger21_TCond = 1;
+             std::vector<double> Gerya2021_Tcond(5, AggRock_TestCase_Ger21_TCond);
 
-             out.thermal_conductivities[i] = AggRock_TestCase_Ger21_TCond;
+             out.thermal_conductivities = Gerya2021_Tcond;
          }
      }
   }
