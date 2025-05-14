@@ -19,13 +19,14 @@
 
 */
 
-// This function computes the thermal conductivity of .
-// 
-// 
-// 
-// 
-// 
-// 
+// This function computes the lattice thermal conductivity of: 
+// (1) oceanic crust
+// (2) lithospheric and asthenospheric mantle.
+// using the Gerya (2021) formulation (see Extended Data Table 1 in the paper). 
+// [Gerya, 2021, Nature, vol. 599(7884), p. 245-250] 
+// https://doi.org/10.1038/s41586-021-03937-x
+// Lambda_1(P,T) [W m^-1 K^-1] = 1.18 + (474  / (T_model+77)) * std::exp(4e-5 * P_model_MPa);
+// Lambda_2(P,T) [W m^-1 K^-1] = 0.73 + (1293 / (T_model+77)) * std::exp(4e-5 * P_model_MPa);
 
 #include <aspect/material_model/thermal_conductivity/Gerya2021.h>
 
