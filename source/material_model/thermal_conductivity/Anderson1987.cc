@@ -19,13 +19,12 @@
 
 */
 
-// This function computes the thermal conductivity of .
-// 
-// 
-// 
-// 
-// 
-// 
+// This function computes the lattice thermal conductivity of minerals (olivine, pyroxene, and garnet)
+// based on the Anderson (1987) formulation used in StagYY.
+// [Anderson, 1987, Phys. Earth Planet, vol. 45(4), p. 307-323]
+// https://doi.org/10.1016/0031-9201(87)90039-2
+// Lambda_Lat(P,T) [W m^-1 K^-1] = Lambda_Room(rho_room/rho_model)^K_exp
+
 
 #include <aspect/material_model/thermal_conductivity/Anderson1987.h>
 

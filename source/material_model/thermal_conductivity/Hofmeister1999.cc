@@ -21,7 +21,7 @@
 
 // This function computes the thermal conductivity of olivine, wadsleyite, and ringwoodite 
 // using the Hofmeister (1999) formulation (see equations 11-12 in the paper).
-// [Hofmeister, 1999, Science, vol. 283(5408), p. 1699-1706.]
+// [Hofmeister, 1999, Science, vol. 283(5408), p. 1699-1706]
 // https://www.science.org/doi/10.1126/science.283.5408.1699
 // The formulation includes lattice and radiative thermal conductivity
 // Lambda_Lat(P,T) [W m^-1 K^-1] = Lambda_Room(T_room/T_model)^N_Texp * exp[-(4*Gamma + 1/3)*Alpha*(T_model-T_room)] * (1+(K_prime*P_model/K0))
