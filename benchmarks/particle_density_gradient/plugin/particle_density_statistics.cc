@@ -6,6 +6,7 @@
 #include <deal.II/grid/tria_accessor.h>
 #include <cmath>
 
+
 namespace aspect
 {
   namespace Postprocess
@@ -14,11 +15,27 @@ namespace aspect
     std::pair<std::string,std::string>
     ParticleDensityStatistics<dim>::execute (TableHandler &statistics)
     {
-      double local_min_score = std::numeric_limits<double>::max();
+      double  = std::numeric_limits<double>::max();
       double local_max_score = 0;
       double global_score = 0;
       unsigned int cells_with_particles = 0;
-      unsigned int subidivions = 1;
+
+      /*
+      if granularity is 2, we have 2^dim buckets to sort particles into: 4 buckets in 2D, 8 buckets in 3D
+      so the size of the key is granularity^dim
+      we can probably assume only 2-3 dimensions.
+      so, we will use a multidimensional unordered map? a map of map of maps
+
+
+
+      */
+      unsigned int granularity = 2;
+      std::unordered_map<unsigned int,std::unordered_map<unsigned int,std::unordered_map<unsigned int,unsigned int>>> buckets;
+
+
+
+
+      
 
       for (const typename Triangulation<dim>::active_cell_iterator &cell : this->get_dof_handler().active_cell_iterators())
       {
@@ -46,35 +63,12 @@ namespace aspect
               cells_with_particles++;
               if(dim == 2)
               {
-                
-                double n_particles_per_quadrant_ideal = particles_in_cell/4;
+                populate_unordered_map(cell,buckets,granularity);
 
-                unsigned int n_particles_topleft = 0;
-                unsigned int n_particles_topright = 0;
-                unsigned int n_particles_bottomleft = 0;
-                unsigned int n_particles_bottomright = 0;                
-                sortParticles(cell, n_particles_topleft,n_particles_topright,n_particles_bottomleft,n_particles_bottomright);
 
-                //euclidean distance squared between the "ideal" vector and the "worst case" vector
-                double worst_case_error_squared = 
-                ((particles_in_cell-n_particles_per_quadrant_ideal)*(particles_in_cell-n_particles_per_quadrant_ideal))+
-                (n_particles_per_quadrant_ideal*n_particles_per_quadrant_ideal)+
-                (n_particles_per_quadrant_ideal*n_particles_per_quadrant_ideal)+
-                (n_particles_per_quadrant_ideal*n_particles_per_quadrant_ideal);
-              
-                //euclidean distance squared between the "ideal" vector and the actual distribution vector
-                double actual_error_squared = 
-                ((n_particles_topleft-n_particles_per_quadrant_ideal)*(n_particles_topleft-n_particles_per_quadrant_ideal))+
-                ((n_particles_topright-n_particles_per_quadrant_ideal)*(n_particles_topright-n_particles_per_quadrant_ideal))+
-                ((n_particles_bottomleft-n_particles_per_quadrant_ideal)*(n_particles_bottomleft-n_particles_per_quadrant_ideal))+
-                ((n_particles_bottomright-n_particles_per_quadrant_ideal)*(n_particles_bottomright-n_particles_per_quadrant_ideal));
-                
-                //ratio between the observed distance and the worst case distance. 1 = worst possible distribution, 0 = perfect
-                double distribution_score_current_cell = std::sqrt(actual_error_squared)/std::sqrt(worst_case_error_squared);
 
-                local_min_score = std::min(local_min_score,distribution_score_current_cell);
-                local_max_score = std::max(local_max_score,distribution_score_current_cell);
-                global_score += distribution_score_current_cell;
+
+
               }
 
               if (dim ==3){
@@ -158,6 +152,60 @@ namespace aspect
           }
         }       
       }
+    }
+   
+    /*
+    This function does not actually sort anything yet, havent had the chance to finish it.
+    Because it is unfinished, running this plugin will always output the default values of local_min_score, local_max_score, global_score
+    */
+    template <int dim>
+    void ParticleDensityStatistics<dim>::populate_unordered_map(const typename Triangulation<dim>::active_cell_iterator &cell, std::unordered_map<unsigned int, std::unordered_map<unsigned int, std::unordered_map<unsigned int, unsigned int>>> &buckets, unsigned int granularity)
+    {
+      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+      {
+        //sort only the particles within the cell 
+        auto particle_iterator = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell).begin();
+        auto last_particle_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell).end();
+    
+        for(particle_iterator; particle_iterator != last_particle_in_cell; std::advance(particle_iterator,1))
+        {
+          double particle_x = particle_iterator->get_reference_location()[0];
+          double particle_y = particle_iterator->get_reference_location()[1];
+          double particle_z = particle_iterator->get_reference_location()[2];
+          double bucket_size = 1 / granularity;
+
+
+          for(unsigned int x=0; x < granularity; x++)
+          {
+            for(unsigned int y=0; y < granularity; y++)
+            {
+              unsigned int bucket_x = 0;
+              unsigned int bucket_y = 0;
+
+
+              if (dim == 3)
+              {
+                for(unsigned int z=0; z < granularity; z++)
+                {
+
+                } 
+              } else 
+              {
+                unsigned int bucket_z = 0;
+
+              }
+
+
+
+            }
+          }
+          
+
+
+
+
+        }       
+      }      
     }
   }
 }

@@ -25,18 +25,13 @@ namespace aspect
       ParticleDensityPDF(unsigned int dim, unsigned int granularity);
       void addValue(unsigned int x_index, unsigned int y_index, double value);
       double evaluate(unsigned int x_index, unsigned int y_index);
-      void setStatisticalValues();//just set max, min, std deviation, mean, median, q1,q2,iqr all at once so getters just return them. 
-      //needs to be called once the pdf is filled though.
-      double getMax();
-      double getMin();
-      double getStandardDeviation();
-      double getMean();
-      double getMedian();
-      double getQuartileFirst();
-      double getQuartileSecond();
-      double getQuartileIQR();
+      void setStatisticalValues();
+      /*
+      setStatisticalValues just sets max, min, std deviation, mean, median, q1,q2,iqr all at once. 
+      needs to be called once the pdf is filled though.
+      */
       unsigned int granularity,dim;
-      std::map<std::array<unsigned int,3>,double> function_output_map;
+      std::map<std::array<unsigned int,3>,double> function_output_map;//could change this to an unordered_map which would be faster, would need to write a hashing function which I haven't done yet.
       double max,min,standard_deviation,mean,median,quartile_first,quartile_second,quartile_IQR;
     };
   }
