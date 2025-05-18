@@ -4,6 +4,8 @@
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
+#include <unordered_map>
+#include <set>
 
 namespace aspect
 {
@@ -38,6 +40,12 @@ namespace aspect
        * Counts the number of particles in each quadrant. Takes a reference to an unsigned int for each quadrant and modifies them.
        */
       void sortParticles(const typename Triangulation<dim>::active_cell_iterator &cell, unsigned int &n_particles_topleft,unsigned int &n_particles_topright,unsigned int &n_particles_bottomleft,unsigned int &n_particles_bottomright);
+      /** 
+        In the future the plugin will use this function instead of sortParticles.
+        It uses an unordered map instead of the four quadrants which should allow different levels of granularity for this plugin.
+      */
+      void populate_unordered_map(const typename Triangulation<dim>::active_cell_iterator &cell,std::unordered_map<unsigned int,std::unordered_map<unsigned int,std::unordered_map<unsigned int,unsigned int>>> &buckets,unsigned int granularity);
+
 
     };
   }

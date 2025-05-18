@@ -37,14 +37,9 @@ namespace aspect
       private:
 
       enum class KernelFunctions {
-        GAUSSIAN, //"bell curve"
-        EUCLIDEAN, //"triangle"
-        MANHATTAN, //"square"
+        GAUSSIAN,
+        EUCLIDEAN,
       };
-
-
-
-
 
       /**
        * fills the supplied PDF instance for the given cell.
@@ -59,9 +54,6 @@ namespace aspect
        * but for now I am using this and calling the function with samplerZ = 0 for 2D cases.
        */
       double kernelFunctionEuclidean(double samplerX, double samplerY, double samplerZ, Particles::ParticleIterator<dim> particle_iterator);
-
-      //returns the value of the pdf at the given point. It uses integers since the PDF is discrete
-      //double evaluatePDF(ParticleDensityPDF &probability_density_function,unsigned int x, unsigned int y, unsigned int z);
 
     };
   }
