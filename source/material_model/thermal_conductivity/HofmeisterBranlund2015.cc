@@ -19,10 +19,10 @@
 
 */
 
-// This function computes the thermal conductivity of .
-// 
-// 
-// 
+// This function computes the thermal conductivity of the oceanic crust (pyroxene, plagioclase)
+// using the Hofmeister & Brandlund (2015) formulation
+// [Hofmeister & Branlund 2015, Treatise on Geophysics, Vol. 2, chap. 2.23, pp. 583–608]
+// https://doi.org/10.1016/B978-0-444-53802-4.00047-6
 // 
 // 
 // 
