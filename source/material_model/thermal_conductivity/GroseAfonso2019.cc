@@ -19,10 +19,10 @@
 
 */
 
-// This function computes the thermal conductivity of .
-// 
-// 
-// 
+// This function computes the radiative thermal conductivity of olivine, pyroxenes and garnet.
+// using the Grose & Afonso (2019) formulation 
+// [Grose & Afonso, 2019, Geochemistry, Geophysics, Geosystems, vol. 20(5), p. 2378-2394]
+// https://doi.org/10.1029/2019GC008187
 // 
 // 
 // 
