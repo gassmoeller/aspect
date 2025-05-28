@@ -24,12 +24,9 @@
 // using the Tosi et al. (2016) formulation
 // [Tosi et al. 2016, Subduction Dynamics: From Mantle Flow to Mega Disasters, 115-133]
 // https://doi.org/10.1002/9781118888865.ch6
-// 
-// 
-// 
+// Lambda_Lat(P,T) [W m^-1 K^-1] = (c_0 + c_1*z)*(300/T_mod)^c_2
 
 #include <aspect/material_model/thermal_conductivity/Tosi2016.h>
-
 namespace aspect
 {
   namespace MaterialModel
