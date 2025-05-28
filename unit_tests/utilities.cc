@@ -29,7 +29,7 @@
 // #include <aspect/material_model/thermal_conductivity/HofmeisterBranlund2015.h>
 // #include <aspect/material_model/thermal_conductivity/Stackhouse2015.h>
 // #include <aspect/material_model/thermal_conductivity/Tosi2016.h>
-// #include <aspect/material_model/thermal_conductivity/Xu2004.h>
+#include <aspect/material_model/thermal_conductivity/Xu2004.h>
 
 TEST_CASE("Utilities::weighted_p_norm_average")
 {
@@ -808,14 +808,125 @@ TEST_CASE("Utilities:: Thermal Conductivity Tosi 2016")
 }
 */
 
-/*
 TEST_CASE("Utilities:: Thermal Conductivity Xu 2004")
 {
   aspect::MaterialModel::ThermalConductivity::Xu2004<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+
+  // Assigning an array of values to in.temperature (T) in [K]
+  std::vector<double> temperatures = {300, 1600, 1700, 1800, 3000};
+  in.temperature = temperatures;
+
+  // Assigning an array of values to in.pressure (P) in [Pa]
+  std::vector<double> pressures = {1e5, 1e9, 5e9, 10e9, 100e9};
+  in.pressure = pressures;
+
+  // Assigning a matrix of volume fractions to in.composition (X) in [%]
+  std::vector<std::vector<double>> compositions = 
+  {
+    {1.00, 1.00, 1.00, 1.00, 1.00},
+    {0.75, 0.75, 0.75, 0.75, 0.75},
+    {0.50, 0.50, 0.50, 0.50, 0.50},
+    {0.25, 0.25, 0.25, 0.25, 0.25}
+  };
+
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K]
+  constexpr int OlivineDry_Xu004ID = 0;
+  std::vector<double> OlivineDry_Expt_Xu004_TotTCon(temperatures.size());
+  constexpr int WadsleyDry_Xu004ID = 1;
+  std::vector<double> WadsleyDry_Expt_Xu004_TotTCon(temperatures.size());
+  constexpr int RingwooDry_Xu004ID = 2;
+  std::vector<double> RingwooDry_Expt_Xu004_TotTCon(temperatures.size());
+
+  unsigned int Xu2004Par_Index = RingwooDry_Xu004ID+1; // Number of minerals
+
+  // Preallocate matrixes for storing thermal conductivities of minerals
+  std::vector<std::vector<double>> Expt_Xu2004_LatTcond(Xu2004Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> Expt_Xu2004_TotTcond(Xu2004Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+
+  // Dry Olivine: expected lattice thermal conductivities (k) in [W/m/K] 
+  std::vector<double> OlivineDry_Expt_Xu004_LatTCon = {4.11726, 1.83987, 2.00632, 2.21873, 5.46835};
+  Expt_Xu2004_LatTcond[OlivineDry_Xu004ID] = OlivineDry_Expt_Xu004_LatTCon;
+  // Dry Wadsleyite: expected lattice thermal conductivities (k) in [W/m/K]
+  std::vector<double> WadsleyDry_Expt_Xu004_LatTCon = {8.07501, 3.57699, 3.78227, 4.05482, 8.42667};
+  Expt_Xu2004_LatTcond[WadsleyDry_Xu004ID] = WadsleyDry_Expt_Xu004_LatTCon;
+  // Dry Ringwoodite: expected lattice thermal conductivities (k) in [W/m/K] 
+  std::vector<double> RingwooDry_Expt_Xu004_LatTCon = {9.51056, 4.20878, 4.43470, 4.73685, 9.62399};
+  Expt_Xu2004_LatTcond[RingwooDry_Xu004ID] = RingwooDry_Expt_Xu004_LatTCon;
+
+  // Perform element-wise sum
+  for (size_t row = 0; row < temperatures.size(); ++row)
+  {
+    OlivineDry_Expt_Xu004_TotTCon[row] = OlivineDry_Expt_Xu004_LatTCon[row];
+    Expt_Xu2004_TotTcond[OlivineDry_Xu004ID] = OlivineDry_Expt_Xu004_TotTCon;
+    WadsleyDry_Expt_Xu004_TotTCon[row] = WadsleyDry_Expt_Xu004_LatTCon[row];
+    Expt_Xu2004_TotTcond[WadsleyDry_Xu004ID] = WadsleyDry_Expt_Xu004_TotTCon;
+    RingwooDry_Expt_Xu004_TotTCon[row] = RingwooDry_Expt_Xu004_LatTCon[row];
+    Expt_Xu2004_TotTcond[RingwooDry_Xu004ID] = RingwooDry_Expt_Xu004_TotTCon;
+  }
+
+  // Loop over all mID values
+  for (unsigned int mID = 0; mID < Xu2004Par_Index; ++mID)
+  {
+   in.Mineral_ID = mID; // Set the current mID
+
+   // Initialize the expected value matrix with the same dimensions of the composition matrix
+   std::vector<std::vector<double>> expected_Xu2004_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+
+   // Perform element-wise calculation
+   for (size_t row = 0; row < compositions.size(); ++row)
+    {
+      for (size_t col = 0; col < compositions[row].size(); ++col)
+      {
+        expected_Xu2004_Tcond[row][col] = std::pow(Expt_Xu2004_TotTcond[mID][col], compositions[row][col]);
+      }
+    }
+
+   std::vector<std::vector<double>> expected_conductivities = expected_Xu2004_Tcond;
+
+   INFO("Checking Xu2004 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
+
+   // Loop over the different compositions
+   for (size_t row = 0; row < expected_conductivities.size(); ++row)
+   {
+     in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
+     model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+
+     // Loop over the different combinations of pressures (P) and temperatures (T)
+     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+     {
+       switch (mID) // Compare the computed thermal conductivity with the expected value
+       {
+         case OlivineDry_Xu004ID: // OlivineDry
+         {
+           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("OlivineDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("OlivineDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case WadsleyDry_Xu004ID: // WadsleyDry
+         {
+           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("WadsleyDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("WadsleyDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case RingwooDry_Xu004ID: // RingwooDry
+         {
+           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("RingwooDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("RingwooDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+        } 
+      }
+    }
+  }
 }
-*/
 
 TEST_CASE("Utilities::AsciiDataLookup")
 {

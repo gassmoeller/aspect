@@ -142,11 +142,6 @@ namespace aspect
 
           out.thermal_conductivities[i] = AggRock_TestCase_Xu004_TCond;
 
-          // Test Case
-          // double AggRock_TestCase_Xu04_TCond = 1;
-          // std::vector<double> Xu2004_Tcond(5, AggRock_TestCase_Xu04_TCond);
-          // out.thermal_conductivities = Xu2004_Tcond;
-
         }
       }
     }
