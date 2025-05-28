@@ -22,6 +22,14 @@
 #include <aspect/utilities.h>
 #include <aspect/material_model/thermal_conductivity/PT_dep_R_bounded.h>
 #include <aspect/material_model/thermal_conductivity/Hofmeister1999.h>
+// #include <aspect/material_model/thermal_conductivity/Anderson1987.h>
+// #include <aspect/material_model/thermal_conductivity/Gerya2021.h>
+// #include <aspect/material_model/thermal_conductivity/GroseAfonso2019.h>
+// #include <aspect/material_model/thermal_conductivity/Hofmeister2005.h>
+// #include <aspect/material_model/thermal_conductivity/HofmeisterBranlund2015.h>
+// #include <aspect/material_model/thermal_conductivity/Stackhouse2015.h>
+// #include <aspect/material_model/thermal_conductivity/Tosi2016.h>
+// #include <aspect/material_model/thermal_conductivity/Xu2004.h>
 
 TEST_CASE("Utilities::weighted_p_norm_average")
 {
