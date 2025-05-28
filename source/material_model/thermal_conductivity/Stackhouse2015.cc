@@ -19,13 +19,13 @@
 
 */
 
-// This function computes the thermal conductivity of .
-// 
-// 
-// 
-// 
-// 
-// 
+// This function computes the thermal conductivity of lower mantle lithology
+// using the Stackhouse (2015) formulation
+// [Stackhouse et al. 2015, EPSL, vol. 427, p. 11-17]
+// https://doi.org/10.1016/j.epsl.2015.06.050
+// xT = 250 / T_model
+// f = ( 2.0/3.0 * xT^0.5) + ( 1.0/3.0 * xT)
+// Lambda_Lat (P,T) = ( 4.9 + 0.105*P_model) * (f * T_model/1200)
 
 #include <aspect/material_model/thermal_conductivity/Stackhouse2015.h>
 
