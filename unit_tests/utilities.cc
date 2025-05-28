@@ -28,7 +28,7 @@
 // #include <aspect/material_model/thermal_conductivity/Hofmeister2005.h>
 // #include <aspect/material_model/thermal_conductivity/HofmeisterBranlund2015.h>
 // #include <aspect/material_model/thermal_conductivity/Stackhouse2015.h>
-// #include <aspect/material_model/thermal_conductivity/Tosi2016.h>
+#include <aspect/material_model/thermal_conductivity/Tosi2016.h>
 #include <aspect/material_model/thermal_conductivity/Xu2004.h>
 
 TEST_CASE("Utilities::weighted_p_norm_average")
@@ -799,14 +799,142 @@ TEST_CASE("Utilities:: Thermal Conductivity Stackhouse 2015")
 }
 */
 
-/*
+
 TEST_CASE("Utilities:: Thermal Conductivity Tosi 2016")
 {
   aspect::MaterialModel::ThermalConductivity::Tosi2016<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+
+  // Assigning an array of values to in.temperature (T) in [K]
+  std::vector<double> temperatures = {300, 1600, 1700, 1800, 3000};
+  in.temperature = temperatures;
+
+  // Assigning an array of values to in.pressure (P) in [Pa]
+  std::vector<double> pressures = {1e5, 1e9, 5e9, 10e9, 100e9};
+  in.pressure = pressures;
+
+  // Assigning a matrix of volume fractions to in.composition (X) in [%]
+  std::vector<std::vector<double>> compositions = 
+  {
+    {1.00, 1.00, 1.00, 1.00, 1.00},
+    {0.75, 0.75, 0.75, 0.75, 0.75},
+    {0.50, 0.50, 0.50, 0.50, 0.50},
+    {0.25, 0.25, 0.25, 0.25, 0.25}
+  };
+
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K]
+  constexpr int UpperMantl_Tos16ID = 0;
+  std::vector<double> UpperMantl_Expt_Tos16_TotTCon(temperatures.size());
+  constexpr int UManTraZon_Tos16ID = 1;
+  std::vector<double> UManTraZon_Expt_Tos16_TotTCon(temperatures.size());
+  constexpr int LManTraZon_Tos16ID = 2;
+  std::vector<double> LManTraZon_Expt_Tos16_TotTCon(temperatures.size());
+  constexpr int LowerMantl_Tos16ID = 3;
+  std::vector<double> LowerMantl_Expt_Tos16_TotTCon(temperatures.size());
+
+  unsigned int Tosi2016Par_Index = LowerMantl_Tos16ID+1; // Number of minerals
+
+  // Preallocate matrixes for storing thermal conductivities of minerals
+  std::vector<std::vector<double>> Expt_Tos16_LatTcond(Tosi2016Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> Expt_Tos16_TotTcond(Tosi2016Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+
+  // Upper Mantle: expected lattice thermal conductivities (k) in [W/m/K] 
+  std::vector<double> UpperMantl_Expt_Tos16_LatTCon = {2.46271, 1.24999, 1.78653, 2.43429, 11.71039};
+  Expt_Tos16_LatTcond[UpperMantl_Tos16ID] = UpperMantl_Expt_Tos16_LatTCon;
+  // Upper Mantle Transition Zone: expected lattice thermal conductivities (k) in [W/m/K]
+  std::vector<double> UManTraZon_Expt_Tos16_LatTCon = {3.79686, 1.61966, 2.07866, 2.63431, 10.37773};
+  Expt_Tos16_LatTcond[UManTraZon_Tos16ID] = UManTraZon_Expt_Tos16_LatTCon;
+  // Lower Mantle Transition Zone: expected lattice thermal conductivities (k) in [W/m/K] 
+  std::vector<double> LManTraZon_Expt_Tos16_LatTCon = {3.50678, 1.39227, 1.83968, 2.37777, 9.66447};
+  Expt_Tos16_LatTcond[LManTraZon_Tos16ID] = LManTraZon_Expt_Tos16_LatTCon;
+  // Lower Mantle: expected lattice thermal conductivities (k) in [W/m/K] 
+  std::vector<double> LowerMantl_Expt_Tos16_LatTCon = {3.47335, 2.13845, 2.37846, 2.68032, 7.56725};
+  Expt_Tos16_LatTcond[LowerMantl_Tos16ID] = LowerMantl_Expt_Tos16_LatTCon;
+
+  // Perform element-wise sum
+  for (size_t row = 0; row < temperatures.size(); ++row)
+  {
+    UpperMantl_Expt_Tos16_TotTCon[row] = UpperMantl_Expt_Tos16_LatTCon[row];
+    Expt_Tos16_TotTcond[UpperMantl_Tos16ID] = UpperMantl_Expt_Tos16_TotTCon;
+    UManTraZon_Expt_Tos16_TotTCon[row] = UManTraZon_Expt_Tos16_LatTCon[row];
+    Expt_Tos16_TotTcond[UManTraZon_Tos16ID] = UManTraZon_Expt_Tos16_TotTCon;
+    LManTraZon_Expt_Tos16_TotTCon[row] = LManTraZon_Expt_Tos16_LatTCon[row];
+    Expt_Tos16_TotTcond[LManTraZon_Tos16ID] = LManTraZon_Expt_Tos16_TotTCon;
+    LowerMantl_Expt_Tos16_TotTCon[row] = LowerMantl_Expt_Tos16_LatTCon[row];
+    Expt_Tos16_TotTcond[LowerMantl_Tos16ID] = LowerMantl_Expt_Tos16_TotTCon;
+  }
+
+  // Loop over all mID values
+  for (unsigned int mID = 0; mID < Tosi2016Par_Index; ++mID)
+  {
+   in.Mineral_ID = mID; // Set the current mID
+
+   // Initialize the expected value matrix with the same dimensions of the composition matrix
+   std::vector<std::vector<double>> expected_Tos16_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+
+   // Perform element-wise calculation
+   for (size_t row = 0; row < compositions.size(); ++row)
+    {
+      for (size_t col = 0; col < compositions[row].size(); ++col)
+      {
+        expected_Tos16_Tcond[row][col] = std::pow(Expt_Tos16_TotTcond[mID][col], compositions[row][col]);
+      }
+    }
+
+   std::vector<std::vector<double>> expected_conductivities = expected_Tos16_Tcond;
+
+   INFO("Checking Tosi2016 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
+
+   // Loop over the different compositions
+   for (size_t row = 0; row < expected_conductivities.size(); ++row)
+   {
+     in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
+     model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+
+     // Loop over the different combinations of pressures (P) and temperatures (T)
+     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+     {
+       switch (mID) // Compare the computed thermal conductivity with the expected value
+       {
+         case UpperMantl_Tos16ID: // Upper Mantle (UM)
+         {
+           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("UpperMantl Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("UpperMantl Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case UManTraZon_Tos16ID: // Upper Mantle Transition Zone (uMTZ)
+         {
+           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("UManTraZon Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("UManTraZon Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case LManTraZon_Tos16ID: // Lower Mantle Transition Zone (lMTZ)
+         {
+           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("LManTraZon Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("LManTraZon Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case LowerMantl_Tos16ID: // Lower Mantle (LM)
+         {
+           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("LowerMantl Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("LowerMantl Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+        } 
+      }
+    }
+  }
 }
-*/
+
 
 TEST_CASE("Utilities:: Thermal Conductivity Xu 2004")
 {
