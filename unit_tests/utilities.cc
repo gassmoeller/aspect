@@ -745,6 +745,78 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
   }
 }
 
+/*
+TEST_CASE("Utilities:: Thermal Conductivity Anderson 1987")
+{
+  aspect::MaterialModel::ThermalConductivity::Anderson1987<3> model;
+  aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
+  aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+}
+*/
+
+/*
+TEST_CASE("Utilities:: Thermal Conductivity Gerya 2021")
+{
+  aspect::MaterialModel::ThermalConductivity::Gerya2021<3> model;
+  aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
+  aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+}
+*/
+
+/*
+TEST_CASE("Utilities:: Thermal Conductivity Grose & Afonso 2019")
+{
+  aspect::MaterialModel::ThermalConductivity::GroseAfonso2019<3> model;
+  aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
+  aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+}
+*/
+
+/*
+TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 2005")
+{
+  aspect::MaterialModel::ThermalConductivity::Hofmeister2005<3> model;
+  aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
+  aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+}
+*/
+
+/*
+TEST_CASE("Utilities:: Thermal Conductivity Hofmeister & Branlund 2015")
+{
+  aspect::MaterialModel::ThermalConductivity::HofmeisterBranlund2015<3> model;
+  aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
+  aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+}
+*/
+
+/*
+TEST_CASE("Utilities:: Thermal Conductivity Stackhouse 2015")
+{
+  aspect::MaterialModel::ThermalConductivity::Stackhouse2015<3> model;
+  aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
+  aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+}
+*/
+
+/*
+TEST_CASE("Utilities:: Thermal Conductivity Tosi 2016")
+{
+  aspect::MaterialModel::ThermalConductivity::Tosi2016<3> model;
+  aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
+  aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+}
+*/
+
+/*
+TEST_CASE("Utilities:: Thermal Conductivity Xu 2004")
+{
+  aspect::MaterialModel::ThermalConductivity::Xu2004<3> model;
+  aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
+  aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+}
+*/
+
 TEST_CASE("Utilities::AsciiDataLookup")
 {
   using namespace dealii;
