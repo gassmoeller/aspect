@@ -200,7 +200,7 @@ namespace aspect
 
          // std::vector<double> Hofmeister99_Tcond(5, Hof99_All_Minerals_TConds[0][2]);
          out.thermal_conductivities[i] = AggRock_TestCase_Hof99_TCond;
-       }
+        }
       }
     }
   }
