@@ -19,13 +19,21 @@
 
 */
 
-// This function computes the thermal conductivity of .
+// This function computes the thermal conductivity of olivine, pyroxene and garnet.
+// using the Grose & Afonso (2019) formulation
+// [Grose & Afonso 2019, G-Cubed, 20(5), 2378-2394]
+// https://doi.org/10.1029/2019GC008187
+//
+// Grose & Afonso (2019) have elaborated an effective medium theory (EMT) to compute 
+// Λ_rad as a function of temperature (T) and grain size (d). 
+// The equations are a n-th-order polynomial, extracted from Fig. 6 of Grose & Afonso (2019) 
+// with WebPlotDigitizer (https://apps.automeris.io/wpd/), to compute 
+// the T-dependent radiative thermal conductivity of a rock with a grain size of 1 cm 
 // 
-// 
-// 
-// 
-// 
-// 
+// Olivine : (G_6 * T^6) + (F_5 * T^5) + (E_4 * T^4) + (D_3 * T^3) + (C_2 * T^2) + (B_1 * T) + A_0
+// Pyroxene: (E_4 * T^4) + (D_3 * T^3) + (C_2 * T^2) + (B_1 * T) + A_0
+// Garnet  : (E_4 * T^4) + (D_3 * T^3) + (C_2 * T^2) + (B_1 * T) + A_0
+
 
 #include <aspect/material_model/thermal_conductivity/GroseAfonso2019.h>
 
