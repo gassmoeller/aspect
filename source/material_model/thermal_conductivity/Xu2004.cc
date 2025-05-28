@@ -23,7 +23,7 @@
 // using the linear formulation of Xu et al. (2004)
 // [Xu et al., 2004, PEPI, vol. 143, p. 321-336]
 // https://doi.org/10.1016/j.pepi.2004.03.005
-// Lambda_Lat (P,T) = Lambda_Room(T_room/T_model)^N_Texp * (1 + a*P_model)
+// Lambda_Lat (P,T) = Lambda_Room(T_room/T_model)^N_Texp * (1 + A_linear*P_model)
 
 #include <aspect/material_model/thermal_conductivity/Xu2004.h>
 
@@ -36,7 +36,7 @@ namespace aspect
       // Helper function: Compute the lattice thermal conductivity using the Xu et al. (2004) formulation
       double Compute_Lat_TCond_Xu2004(double Lambda0, double N_Texp, double A_linear, double T_room, double T_model, double P_model)
       {
-        // Lambda_Lat (P,T) = Lambda_Room(T_room/T_model)^N_Texp * (1.0 + a*P_model)
+        // Lambda_Lat (P,T) = Lambda_Room(T_room/T_model)^N_Texp * (1.0 + A_linear*P_model)
         double Factor_1 = Lambda0 * std::pow((T_room / T_model), N_Texp);
         double Factor_2 = (1.0 + (A_linear * P_model));
         double HLatTCon = Factor_1 * Factor_2;
