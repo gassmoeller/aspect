@@ -308,7 +308,7 @@ namespace aspect
                                       "recompile deal.II with the DEAL_II_WITH_64BIT_INDICES option enabled, to use 64-bit integers for "
                                       "particle ids."));
             }
-
+          
           std::mt19937 random_number_generator;
 
           // Loop over all cells and generate or remove the particles cell-wise
