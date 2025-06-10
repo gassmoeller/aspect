@@ -3,7 +3,7 @@
 set Dimension                              = 2
 set Use years in output instead of seconds = false
 set End time                               = 12
-set Output directory                       = ../output-particles-drop
+set Output directory                       = ../output-particles-drop-prime
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Resume computation                     = false
 set Maximum time step                      = 0.03
@@ -25,8 +25,8 @@ subsection Geometry model
 
   subsection Box
     set X extent = 0.5
-    set Y extent = 5
-    set Y repetitions = 10
+    set Y extent = 2
+    set Y repetitions = 4
     set Box origin X coordinate = 0
     set Box origin Y coordinate = 0
   end
@@ -111,25 +111,25 @@ subsection Mesh refinement
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
-    set Function expression = if ( y<=4, 2, 4)
+    set Function expression = if ( y<=1, 2, 4)
   end
   
 end
 
 subsection Particles
   set Particle generator name =  reference cell
-  set Maximum particles per cell = 127
+  set Maximum particles per cell = 29
   set Load balancing strategy = remove and add particles
   subsection Generator
     subsection Reference cell
-      set Number of particles per cell per direction = 8
+      set Number of particles per cell per direction = 5
     end
   end
 end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle density statistics
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle density statistics KDE
 
   subsection Visualization
     set Time between graphical output = .001

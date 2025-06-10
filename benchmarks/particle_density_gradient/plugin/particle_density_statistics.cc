@@ -5,7 +5,7 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/grid/tria_accessor.h>
 #include <cmath>
-
+#include <deal.II/base/table.h>
 
 namespace aspect
 {
@@ -15,43 +15,24 @@ namespace aspect
     std::pair<std::string,std::string>
     ParticleDensityStatistics<dim>::execute (TableHandler &statistics)
     {
-      double  = std::numeric_limits<double>::max();
+      double  local_min_score = std::numeric_limits<double>::max();
       double local_max_score = 0;
       double global_score = 0;
       unsigned int cells_with_particles = 0;
-
-      /*
-      if granularity is 2, we have 2^dim buckets to sort particles into: 4 buckets in 2D, 8 buckets in 3D
-      so the size of the key is granularity^dim
-      we can probably assume only 2-3 dimensions.
-      so, we will use a multidimensional unordered map? a map of map of maps
-
-
-
-      */
-      unsigned int granularity = 2;
-      std::unordered_map<unsigned int,std::unordered_map<unsigned int,std::unordered_map<unsigned int,unsigned int>>> buckets;
-
-
-
-
-      
+      //granularity of the bucket data structure. ex- a value of 2 means 2x2=4 buckets.
+      const unsigned int granularity = 2;
 
       for (const typename Triangulation<dim>::active_cell_iterator &cell : this->get_dof_handler().active_cell_iterators())
       {
         if (cell->is_locally_owned())
           {
             /*
-            2d only for now:
-            n_particles_in_cell/4 is the ideal number per cell quadrant.
-            count particles in each quadrant using reference location.
-
-            Treat the quadrant as a vector of 4 elements, take the distance between this
-            imaginary vector and a similar vector with the ideal particle # per cell
-
-            create a vector with the worst possible distribution, take the distance between this and the ideal vector
-
-            return the ratio between the actual error distance and the worst possible error distance
+              Create a table with perfect distribution (even number of particles in each bucket)
+              take the distance squared between the "perfect" table and the worst case table
+              Create a table with the actual distribution
+              Take distance between "perfect" table and the actual table
+              return the ratio between the observed distance and the worst case distance.
+              a value of 1 represents the worst possible distribution, a value of 0 represents a completely even distribution.
             */
             unsigned int particles_in_cell = 0;
             for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
@@ -61,25 +42,48 @@ namespace aspect
             if(particles_in_cell > 0)
             {
               cells_with_particles++;
-              if(dim == 2)
-              {
-                populate_unordered_map(cell,buckets,granularity);
+              unsigned int ideal_n_particles_per_bucket = particles_in_cell/(granularity*granularity);
 
-
-
-
-
+              Table<dim,unsigned int> buckets_ideal; 
+              TableIndices<dim> bucket_sizes;
+              for (unsigned int i=0; i<dim; ++i){
+                bucket_sizes[i] = granularity;
               }
+              buckets_ideal.reinit(bucket_sizes);
+              double bucket_width = 1/granularity;
+              buckets_ideal.fill(ideal_n_particles_per_bucket);
 
-              if (dim ==3){
-                double n_particles_per_quadrant_ideal = particles_in_cell/8;
+              //unsigned int in each bucket to count particles.
+              Table<dim,unsigned int> buckets_actual; 
+              buckets_actual.reinit(bucket_sizes);
+              sortParticles(cell,buckets_actual,bucket_width);
 
+              //in the worst case, all particles are in one bucket. (granularity*dim)-1 is equal to the number of buckets in the table excluding the first at 0,0,0
+              double worst_case_error_squared = 
+              ((particles_in_cell-ideal_n_particles_per_bucket)*(particles_in_cell-ideal_n_particles_per_bucket))+
+              ((ideal_n_particles_per_bucket*ideal_n_particles_per_bucket)*((granularity*dim)-1));
 
+              double actual_error_squared = 0;
+              for (unsigned int x=0; x<granularity; x++){
+                for (unsigned int y=0; y<granularity; y++){
+                  
+                  TableIndices<dim> entry_index;
+                  entry_index[0] = x;
+                  entry_index[1] = y;
+                  //do another loop if in 3d
+                  if (dim == 3){
+                    for (unsigned int z=0; z<granularity; z++){                   
+                        entry_index[2] = z;
+                    }
+                  }                  
+                  unsigned int value_ideal = buckets_ideal(entry_index);
+                  unsigned int value_actual = buckets_actual(entry_index);
+                  actual_error_squared += (value_ideal - value_actual)*(value_ideal - value_actual);
 
-
-
-              }
-
+                }                    
+              }    
+              double distribution_score_current_cell = actual_error_squared/worst_case_error_squared;
+              global_score += distribution_score_current_cell;
             }
           }
       }
@@ -115,8 +119,10 @@ namespace aspect
 
     //for 2 dimensions, 4 subcells
     template <int dim>
-    void ParticleDensityStatistics<dim>::sortParticles(const typename Triangulation<dim>::active_cell_iterator &cell, unsigned int &n_particles_topleft,unsigned int &n_particles_topright,unsigned int &n_particles_bottomleft,unsigned int &n_particles_bottomright)
+    void ParticleDensityStatistics<dim>::sortParticles(const typename Triangulation<dim>::active_cell_iterator &cell,Table<dim,unsigned int> &buckets,double &bucket_width)
     {
+
+
       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
       {
         //sort only the particles within the cell 
@@ -127,29 +133,20 @@ namespace aspect
         {
           double particle_x = particle_iterator->get_reference_location()[0];
           double particle_y = particle_iterator->get_reference_location()[1];
+          //divide the position by the bucket size,round up. 
+          //premultiply by 100 so that you're not dividing two fractions--is this needed?
+          unsigned int x_index = std::floor((particle_x*100) / (bucket_width*100));
+          unsigned int y_index = std::floor((particle_y*100) / (bucket_width*100));
 
-          if (particle_y < 0.5) //top
-          { 
-            if (particle_x < 0.5) // top left
-            {
-              n_particles_topleft ++;
-            }
-            else //top right
-            {
-              n_particles_topright ++;
-            }
-          } 
-          else //bottom
-          { 
-            if (particle_x < 0.5) // bottom left
-            {
-              n_particles_bottomleft ++;
-            }
-            else //bottom right
-            {
-              n_particles_bottomright ++;
-            }
+          TableIndices<dim> entry_index;
+          entry_index[0] = x_index;
+          entry_index[1] = y_index;
+          if (dim == 3){
+            double particle_z = particle_iterator->get_reference_location()[2];
+            unsigned int z_index = std::floor((particle_z*100) / (bucket_width*100));
+            entry_index[2] = z_index;
           }
+          buckets(entry_index) = buckets(entry_index)++;    
         }       
       }
     }
@@ -163,6 +160,8 @@ namespace aspect
     {
       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
       {
+
+
         //sort only the particles within the cell 
         auto particle_iterator = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell).begin();
         auto last_particle_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell).end();

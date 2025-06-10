@@ -1,9 +1,9 @@
-# Adapted from the drop-supg.prm benchmark
+ # Adapted from the drop-supg.prm benchmark
 
 set Dimension                              = 2
 set Use years in output instead of seconds = false
 set End time                               = 12
-set Output directory                       = ../output-particles-drop
+set Output directory                       = ../output-particles-rise
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Resume computation                     = false
 set Maximum time step                      = 0.03
@@ -15,7 +15,7 @@ subsection Prescribed Stokes solution
 
   subsection Velocity function
     set Variable names      = x,y
-    set Function constants  = velSlow=-0.1
+    set Function constants  = velSlow=0.1
     set Function expression = 0; velSlow
   end
 end
@@ -111,7 +111,7 @@ subsection Mesh refinement
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
-    set Function expression = if ( y<=4, 2, 4)
+    set Function expression = if ( y>=4, 2, 4)
   end
   
 end
@@ -129,7 +129,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle density statistics
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles
 
   subsection Visualization
     set Time between graphical output = .001

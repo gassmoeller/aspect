@@ -2,11 +2,11 @@
 
 set Dimension                              = 2
 set Use years in output instead of seconds = false
-set End time                               = 12
-set Output directory                       = ../output-particles-drop
+set End time                               = 18
+set Output directory                       = ../output-particles-fixedmesh
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Resume computation                     = false
-set Maximum time step                      = 0.03
+set Maximum time step                      = 0.1
 set Additional shared libraries = /Users/jarettbaker-dunn/Documents/GitHub/aspect-project/aspect/benchmarks/particle_density_gradient/plugin_KDE/libparticle_density_statistics_KDE.so,/Users/jarettbaker-dunn/Documents/GitHub/aspect-project/aspect/benchmarks/particle_density_gradient/plugin/libparticle_density_statistics.so
 
 
@@ -15,8 +15,8 @@ subsection Prescribed Stokes solution
 
   subsection Velocity function
     set Variable names      = x,y
-    set Function constants  = velSlow=-0.1
-    set Function expression = 0; velSlow
+    set Function constants  = velSlow=-0.2
+    set Function expression = 0; velSlow*y*0.95
   end
 end
 
@@ -25,8 +25,8 @@ subsection Geometry model
 
   subsection Box
     set X extent = 0.5
-    set Y extent = 5
-    set Y repetitions = 10
+    set Y extent = 1
+    set Y repetitions = 2
     set Box origin X coordinate = 0
     set Box origin Y coordinate = 0
   end
@@ -102,7 +102,7 @@ subsection Compositional fields
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement              = 2
+  set Initial adaptive refinement              = 1
   set Initial global refinement                = 1
   set Time steps between mesh refinement       = 0
 
@@ -111,14 +111,14 @@ subsection Mesh refinement
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
-    set Function expression = if ( y<=4, 2, 4)
+    set Function expression = if ( y<=4, 2, 2)
   end
   
 end
 
 subsection Particles
   set Particle generator name =  reference cell
-  set Maximum particles per cell = 127
+  set Maximum particles per cell = 65
   set Load balancing strategy = remove and add particles
   subsection Generator
     subsection Reference cell
@@ -129,7 +129,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle density statistics
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle density statistics KDE
 
   subsection Visualization
     set Time between graphical output = .001
