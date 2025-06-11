@@ -19,8 +19,11 @@ namespace aspect
       double local_max_score = 0;
       double global_score = 0;
       unsigned int cells_with_particles = 0;
-      //granularity of the bucket data structure. ex- a value of 2 means 2x2=4 buckets.
-      const unsigned int granularity = 2;
+      /*
+      granularity determines how many buckets are used in the histogram.
+      for example a value of 2 means 2x2=4 buckets in 2D.
+      */
+      const unsigned int granularity = 4;
 
       for (const typename Triangulation<dim>::active_cell_iterator &cell : this->get_dof_handler().active_cell_iterators())
       {
@@ -42,32 +45,38 @@ namespace aspect
             if(particles_in_cell > 0)
             {
               cells_with_particles++;
-              double ideal_n_particles_per_bucket = particles_in_cell/(granularity*granularity);
+              double particles_in_cell_double = static_cast<double>(particles_in_cell);
+              double granularity_double = static_cast<double>(granularity);
+              double ideal_n_particles_per_bucket = particles_in_cell_double/(granularity_double*granularity_double);
 
-              //we use a double here because maybe that will be more accurate
+              /*
+              buckets_ideal contains doubles because the ideal
+              number of particles per bucket will not always be an integer.
+              */
               Table<dim,double> buckets_ideal; 
               TableIndices<dim> bucket_sizes;
               for (unsigned int i=0; i<dim; ++i){
                 bucket_sizes[i] = granularity;
               }
               buckets_ideal.reinit(bucket_sizes);
-              double bucket_width = 1/granularity;
+              double bucket_width = 1.0/granularity_double;
               buckets_ideal.fill(ideal_n_particles_per_bucket);
 
-              //unsigned int in each bucket to count particles.
               Table<dim,unsigned int> buckets_actual; 
               buckets_actual.reinit(bucket_sizes);
               sortParticles(cell,buckets_actual,bucket_width);
-
-              //in the worst case, all particles are in one bucket. (granularity*dim)-1 is equal to the number of buckets in the table excluding the first at 0,0,0
+              /*
+              in the worst case, all particles are in one bucket. 
+              (granularity*dim)-1 is equal to the number of buckets
+              in the table minus 1 (the bucket all the particles are in)
+              */
               double worst_case_error_squared = 
-              ((particles_in_cell-ideal_n_particles_per_bucket)*(particles_in_cell-ideal_n_particles_per_bucket))+
-              ((ideal_n_particles_per_bucket*ideal_n_particles_per_bucket)*((granularity*dim)-1));
-
+              ((particles_in_cell_double-ideal_n_particles_per_bucket)*(particles_in_cell_double-ideal_n_particles_per_bucket))+
+              ((ideal_n_particles_per_bucket*ideal_n_particles_per_bucket)*((granularity_double*static_cast<double>(dim))-1.0));
+              
               double actual_error_squared = 0;
               for (unsigned int x=0; x<granularity; x++){
                 for (unsigned int y=0; y<granularity; y++){
-                  
                   TableIndices<dim> entry_index;
                   entry_index[0] = x;
                   entry_index[1] = y;
@@ -78,25 +87,25 @@ namespace aspect
                     }
                   }                  
                   double value_ideal = buckets_ideal(entry_index);
-                  unsigned int value_actual = buckets_actual(entry_index);
-                  actual_error_squared += value_actual;//(value_ideal - value_actual)*(value_ideal - value_actual);
+                  double value_actual = static_cast<double>(buckets_actual(entry_index));
+                  actual_error_squared = (value_ideal - value_actual)*(value_ideal - value_actual);
                 }                    
               }    
+              /*
+              take the ratio between the actual error and the worst case 
+              error, resulting in a score from 0 to 1 for the cell
+              */
               double distribution_score_current_cell = actual_error_squared/worst_case_error_squared;
               //average
-              global_score += actual_error_squared;
+              global_score += distribution_score_current_cell;
               //max
-              if (actual_error_squared >local_max_score){
-                local_max_score = actual_error_squared;
+              if (distribution_score_current_cell >local_max_score){
+                local_max_score = distribution_score_current_cell;
               }
               //min
-              if (actual_error_squared < local_min_score){
-                local_min_score = actual_error_squared;
+              if (distribution_score_current_cell < local_min_score){
+                local_min_score = distribution_score_current_cell;
               }
-              /*
-              something is wrong here. The min score should be zero at the start of the run.
-
-              */
             }
           }
       }
@@ -107,7 +116,6 @@ namespace aspect
       double summed_score = Utilities::MPI::sum (global_score, this->get_mpi_communicator());
       double global_cells_with_particles = Utilities::MPI::sum (cells_with_particles, this->get_mpi_communicator());
       double average_score = summed_score / global_cells_with_particles;
-
 
       // write to statistics file
       statistics.add_value ("Minimal density gradient score: ", global_min_score);
@@ -137,30 +145,49 @@ namespace aspect
       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
       {
         //sort only the particles within the cell 
-        auto particle_iterator = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell).begin();
+        auto first_particle_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell).begin();
         auto last_particle_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell).end();
         
-        for(particle_iterator; particle_iterator != last_particle_in_cell; std::advance(particle_iterator,1))
+        for(auto particle_iterator=first_particle_in_cell; particle_iterator != last_particle_in_cell; std::advance(particle_iterator,1))
         {
           double particle_x = particle_iterator->get_reference_location()[0];
           double particle_y = particle_iterator->get_reference_location()[1];
-          //divide the position by the bucket size,round up. 
-          //premultiply by 100 so that you're not dividing two fractions--is this needed?
-          unsigned int x_index = std::floor((particle_x) / (bucket_width));
-          unsigned int y_index = std::floor((particle_y) / (bucket_width));
+
+          double x_ratio = (particle_x) / (bucket_width);
+          double y_ratio = (particle_y) / (bucket_width);
+
+          unsigned int x_index = static_cast<unsigned int>(std::floor(x_ratio));
+          unsigned int y_index = static_cast<unsigned int>(std::floor(y_ratio));
+
+          /*
+          if a particle is exactly on the boundary of two cells it's 
+          reference location will equal 1 and if this is the case
+          the x/y/z_index will be outside of the range of the table without
+          these checks.
+          */
+          if (x_index == (dim-1)){
+            x_index = dim-1;
+          }
+          if (y_index == (dim-1)){
+            y_index = dim-1;
+          }
 
           TableIndices<dim> entry_index;
           entry_index[0] = x_index;
           entry_index[1] = y_index;
           if (dim == 3){
-            double particle_z = particle_iterator->get_reference_location()[2];
-            unsigned int z_index = std::floor((particle_z) / (bucket_width));
+            const double particle_z = particle_iterator->get_reference_location()[2];
+            double z_ratio = (particle_z) / (bucket_width);
+            unsigned int z_index = static_cast<unsigned int>(std::floor(z_ratio));
+            if (z_index == (dim-1)){
+              z_index = dim-1;
+            }
             entry_index[2] = z_index;
           }
 
           unsigned int particles_in_bucket = buckets(entry_index);
           particles_in_bucket++;
-          buckets(entry_index) = 0;    
+          buckets(entry_index) = particles_in_bucket;    
         }       
       }
     }
