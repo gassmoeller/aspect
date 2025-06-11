@@ -45,7 +45,7 @@ namespace aspect
        * fills the supplied PDF instance for the given cell.
        * takes a KernelFunction parameter (see enum above). Might use a different method later to pass in different functions.
        */
-      void generatePDF(const typename Triangulation<dim>::active_cell_iterator &cell, ParticleDensityPDF &pdf, KernelFunctions kernel_function);
+      void generatePDF(const typename Triangulation<dim>::active_cell_iterator &cell, ParticleDensityPDF<dim> &pdf, KernelFunctions kernel_function);
       
       /**
        * sampler X,Y,Z denote the position from which to estimate the kernel function.

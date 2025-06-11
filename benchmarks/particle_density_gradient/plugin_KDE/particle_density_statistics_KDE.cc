@@ -34,7 +34,7 @@ namespace aspect
             if(particles_in_cell > 0)
             {
               cells_with_particles++;
-              ParticleDensityPDF pdf = ParticleDensityPDF(dim,pdf_granularity);
+              ParticleDensityPDF pdf = ParticleDensityPDF<dim>(pdf_granularity);
               generatePDF(cell,pdf,KernelFunctions::EUCLIDEAN);
               pdf.setStatisticalValues();
               if (pdf.max > max)
@@ -81,7 +81,7 @@ namespace aspect
     }
     
     template <int dim>
-    void ParticleDensityStatisticsKDE<dim>::generatePDF(const typename Triangulation<dim>::active_cell_iterator &cell,ParticleDensityPDF &pdf, KernelFunctions kernel_function)
+    void ParticleDensityStatisticsKDE<dim>::generatePDF(const typename Triangulation<dim>::active_cell_iterator &cell,ParticleDensityPDF<dim> &pdf, KernelFunctions kernel_function)
     {
       unsigned int granularity = pdf.granularity;
       unsigned int particles_in_cell = 0;
