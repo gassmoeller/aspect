@@ -2,7 +2,7 @@
 
 set Dimension                              = 2
 set Use years in output instead of seconds = false
-set End time                               = 12
+set End time                               = 3
 set Output directory                       = ../output-particles-drop
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Resume computation                     = false
@@ -118,7 +118,7 @@ end
 
 subsection Particles
   set Particle generator name =  reference cell
-  set Maximum particles per cell = 127
+  set Maximum particles per cell = 64
   set Load balancing strategy = remove and add particles
   subsection Generator
     subsection Reference cell

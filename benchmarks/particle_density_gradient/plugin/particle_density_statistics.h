@@ -41,7 +41,7 @@ namespace aspect
        * Takes a reference to an deal.ii table to populate with particle information
        * takes a reference to the width of each bucket in the table, which depends on granularity
        */
-      void sortParticles(const typename Triangulation<dim>::active_cell_iterator &cell,Table<dim,unsigned int> &buckets,double &bucket_width);
+      void sortParticles(const typename Triangulation<dim>::active_cell_iterator &cell,Table<dim,unsigned int> &buckets,double bucket_width);
       /** 
         In the future the plugin will use this function instead of sortParticles.
         It uses an unordered map instead of the four quadrants which should allow different levels of granularity for this plugin.

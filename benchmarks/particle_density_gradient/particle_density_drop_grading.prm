@@ -117,7 +117,7 @@ end
 
 subsection Particles
   set Particle generator name =  reference cell
-  set Maximum particles per cell = 80
+  set Maximum particles per cell = 64
   set Allow cells without particles = true
   set Load balancing strategy = remove and add particles
   subsection Generator

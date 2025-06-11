@@ -42,9 +42,10 @@ namespace aspect
             if(particles_in_cell > 0)
             {
               cells_with_particles++;
-              unsigned int ideal_n_particles_per_bucket = particles_in_cell/(granularity*granularity);
+              double ideal_n_particles_per_bucket = particles_in_cell/(granularity*granularity);
 
-              Table<dim,unsigned int> buckets_ideal; 
+              //we use a double here because maybe that will be more accurate
+              Table<dim,double> buckets_ideal; 
               TableIndices<dim> bucket_sizes;
               for (unsigned int i=0; i<dim; ++i){
                 bucket_sizes[i] = granularity;
@@ -76,14 +77,26 @@ namespace aspect
                         entry_index[2] = z;
                     }
                   }                  
-                  unsigned int value_ideal = buckets_ideal(entry_index);
+                  double value_ideal = buckets_ideal(entry_index);
                   unsigned int value_actual = buckets_actual(entry_index);
-                  actual_error_squared += (value_ideal - value_actual)*(value_ideal - value_actual);
-
+                  actual_error_squared += value_actual;//(value_ideal - value_actual)*(value_ideal - value_actual);
                 }                    
               }    
               double distribution_score_current_cell = actual_error_squared/worst_case_error_squared;
-              global_score += distribution_score_current_cell;
+              //average
+              global_score += actual_error_squared;
+              //max
+              if (actual_error_squared >local_max_score){
+                local_max_score = actual_error_squared;
+              }
+              //min
+              if (actual_error_squared < local_min_score){
+                local_min_score = actual_error_squared;
+              }
+              /*
+              something is wrong here. The min score should be zero at the start of the run.
+
+              */
             }
           }
       }
@@ -117,12 +130,10 @@ namespace aspect
       return {"particles"};
     }
 
-    //for 2 dimensions, 4 subcells
+    
     template <int dim>
-    void ParticleDensityStatistics<dim>::sortParticles(const typename Triangulation<dim>::active_cell_iterator &cell,Table<dim,unsigned int> &buckets,double &bucket_width)
+    void ParticleDensityStatistics<dim>::sortParticles(const typename Triangulation<dim>::active_cell_iterator &cell,Table<dim,unsigned int> &buckets,double bucket_width)
     {
-
-
       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
       {
         //sort only the particles within the cell 
@@ -135,76 +146,23 @@ namespace aspect
           double particle_y = particle_iterator->get_reference_location()[1];
           //divide the position by the bucket size,round up. 
           //premultiply by 100 so that you're not dividing two fractions--is this needed?
-          unsigned int x_index = std::floor((particle_x*100) / (bucket_width*100));
-          unsigned int y_index = std::floor((particle_y*100) / (bucket_width*100));
+          unsigned int x_index = std::floor((particle_x) / (bucket_width));
+          unsigned int y_index = std::floor((particle_y) / (bucket_width));
 
           TableIndices<dim> entry_index;
           entry_index[0] = x_index;
           entry_index[1] = y_index;
           if (dim == 3){
             double particle_z = particle_iterator->get_reference_location()[2];
-            unsigned int z_index = std::floor((particle_z*100) / (bucket_width*100));
+            unsigned int z_index = std::floor((particle_z) / (bucket_width));
             entry_index[2] = z_index;
           }
-          buckets(entry_index) = buckets(entry_index)++;    
+
+          unsigned int particles_in_bucket = buckets(entry_index);
+          particles_in_bucket++;
+          buckets(entry_index) = 0;    
         }       
       }
-    }
-   
-    /*
-    This function does not actually sort anything yet, havent had the chance to finish it.
-    Because it is unfinished, running this plugin will always output the default values of local_min_score, local_max_score, global_score
-    */
-    template <int dim>
-    void ParticleDensityStatistics<dim>::populate_unordered_map(const typename Triangulation<dim>::active_cell_iterator &cell, std::unordered_map<unsigned int, std::unordered_map<unsigned int, std::unordered_map<unsigned int, unsigned int>>> &buckets, unsigned int granularity)
-    {
-      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
-      {
-
-
-        //sort only the particles within the cell 
-        auto particle_iterator = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell).begin();
-        auto last_particle_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell).end();
-    
-        for(particle_iterator; particle_iterator != last_particle_in_cell; std::advance(particle_iterator,1))
-        {
-          double particle_x = particle_iterator->get_reference_location()[0];
-          double particle_y = particle_iterator->get_reference_location()[1];
-          double particle_z = particle_iterator->get_reference_location()[2];
-          double bucket_size = 1 / granularity;
-
-
-          for(unsigned int x=0; x < granularity; x++)
-          {
-            for(unsigned int y=0; y < granularity; y++)
-            {
-              unsigned int bucket_x = 0;
-              unsigned int bucket_y = 0;
-
-
-              if (dim == 3)
-              {
-                for(unsigned int z=0; z < granularity; z++)
-                {
-
-                } 
-              } else 
-              {
-                unsigned int bucket_z = 0;
-
-              }
-
-
-
-            }
-          }
-          
-
-
-
-
-        }       
-      }      
     }
   }
 }
