@@ -5,7 +5,7 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/grid/tria_accessor.h>
 #include <cmath>
-#include <deal.II/base/table.h>
+
 
 namespace aspect
 {
@@ -19,11 +19,7 @@ namespace aspect
       double local_max_score = 0;
       double global_score = 0;
       unsigned int cells_with_particles = 0;
-      /*
-      granularity determines how many buckets are used in the histogram.
-      for example a value of 2 means 2x2=4 buckets in 2D.
-      */
-      const unsigned int granularity = 4;
+
 
       for (const typename Triangulation<dim>::active_cell_iterator &cell : this->get_dof_handler().active_cell_iterators())
       {
@@ -191,6 +187,47 @@ namespace aspect
         }       
       }
     }
+  
+  
+    template <int dim>
+    void
+    ParticleDensityStatistics<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Particle Density Statistics");
+        {
+          prm.declare_entry("Histogram Granularity","2",
+                            Patterns::Integer (0),
+                            "This parameter determines how many bins the histogram plugin sorts particles "
+                            "into. The ideal value for granularity depends on the maximum number of particles "
+                            "in the cell. Generally higher values lead to more accuracy, but excessively high "
+                            "granularity can mean there are too few particles in each bin."
+                            );
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+    
+    template <int dim>
+    void
+    ParticleDensityStatistics<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      CitationInfo::add("particle density statistics");
+
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Particle Density Statistics");
+        {
+          granularity = prm.get_integer ("Histogram Granularity");
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
+
   }
 }
 
@@ -201,7 +238,7 @@ namespace aspect
   namespace Postprocess
   {
     ASPECT_REGISTER_POSTPROCESSOR(ParticleDensityStatistics,
-                                  "particle density statistics",
+                                  "Particle Density Statistics",
                                   "A postprocessor that computes some statistics about "
                                   "the particle distribution, if present in this simulation. "
                                   "In particular, it computes minimal, average and maximal "

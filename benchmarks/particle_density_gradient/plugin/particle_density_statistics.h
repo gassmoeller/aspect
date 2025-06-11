@@ -4,8 +4,7 @@
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
-#include <unordered_map>
-#include <set>
+#include <deal.II/base/table.h>
 
 namespace aspect
 {
@@ -34,20 +33,32 @@ namespace aspect
          */
         std::list<std::string>
         required_other_postprocessors() const override;
-      private:
 
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm) override;
+
+      private:
+      /*
+      granularity determines how many buckets are used in the histogram.
+      for example a value of 2 means 2x2=4 buckets in 2D.
+      */
+      unsigned int granularity;
       /**
-       * Counts the number of particles in each quadrant. 
+        Sorts all of the particles within the cell into a deal.ii table based on their position.
        * Takes a reference to an deal.ii table to populate with particle information
-       * takes a reference to the width of each bucket in the table, which depends on granularity
+       * takes a reference to the width of each bucket in the table, which depends on granularity.
        */
       void sortParticles(const typename Triangulation<dim>::active_cell_iterator &cell,Table<dim,unsigned int> &buckets,double bucket_width);
-      /** 
-        In the future the plugin will use this function instead of sortParticles.
-        It uses an unordered map instead of the four quadrants which should allow different levels of granularity for this plugin.
-      */
-      void populate_unordered_map(const typename Triangulation<dim>::active_cell_iterator &cell,std::unordered_map<unsigned int,std::unordered_map<unsigned int,std::unordered_map<unsigned int,unsigned int>>> &buckets,unsigned int granularity);
-
 
     };
   }
