@@ -50,35 +50,27 @@ namespace aspect
           TableIndices<dim> entry_index;
             entry_index[0] = x_index;
             entry_index[1] = y_index;
-            if (dim == 3){       
+            if (dim == 3){
                   entry_index[2] = z_index;
-            }    
-
+            }
           if (x_index > granularity || x_index < 0 || y_index > granularity || y_index < 0)
           {
             throw std::invalid_argument("x or y index out of range");
           } else {
-            double value = 
-
-
-
-            if (function_output_map.find(key) == function_output_map.end()) {
-              function_output_map.insert({key,value});
-            } else {//otherwise, we add the new value
-              double currentValue = function_output_map[key];
-              currentValue += value;
-              function_output_map.insert({key,currentValue});
-            }
+            double currentValue = function_output_table(entry_index);
+            currentValue += value;
+            function_output_table(entry_index) = currentValue;
           }
-
-
         };
 
-        double evaluate(unsigned int x_index, unsigned int y_index)
+        double evaluate(unsigned int x_index, unsigned int y_index, unsigned int z_index)
         {
-          //I believe that .at() throws an error if the key doesn't exist, which is what I want
-          std::array<unsigned int,3> key = {x_index,y_index,0};
-          return function_output_map.at(key);
+          entry_index[0] = x_index;
+          entry_index[1] = y_index;
+          if (dim == 3){
+                entry_index[2] = z_index;
+          }         
+          return function_output_table(entry_index);
         }
 
         /*
