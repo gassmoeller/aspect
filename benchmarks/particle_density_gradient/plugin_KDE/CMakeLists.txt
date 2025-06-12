@@ -46,5 +46,5 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "particle_density_statistics_KDE")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED particle_density_statistics_KDE.cc particle_density_PDF.cc)
+ADD_LIBRARY(${TARGET} SHARED particle_density_statistics_KDE.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})

@@ -22,12 +22,15 @@ namespace aspect
     class ParticleDensityPDF
     {
       public:
+        Table<dim,double> function_output_table;
+        unsigned int pdf_granularity;
+        double max,min,standard_deviation,mean,median,quartile_first,quartile_second,quartile_IQR;
+
+
+
         ParticleDensityPDF(unsigned int granularity)
         {
-            this-> granularity = granularity;
-            if (this->granularity > 100){//granularity shouldnt really be higher than this imo
-              this->granularity = 100;
-            }
+            this->pdf_granularity = granularity;
             max = std::numeric_limits<double>::min();
             min = -1;
             standard_deviation = -1; //-1 is not really possible, so if this value is returned, we know something is wrong
@@ -37,7 +40,6 @@ namespace aspect
             quartile_second = -1;
             quartile_IQR = -1;
 
-
             TableIndices<dim> bucket_sizes;
             for (unsigned int i=0; i<dim; ++i){
               bucket_sizes[i] = granularity;
@@ -45,26 +47,29 @@ namespace aspect
             function_output_table.reinit(bucket_sizes);
         };
 
-        void addValue(unsigned int x_index, unsigned int y_index, unsigned int z_index,double value)
+
+
+        void add_value_to_function_table(const unsigned int x_index, const unsigned int y_index, const unsigned int z_index,const double input_value)
         {
           TableIndices<dim> entry_index;
-            entry_index[0] = x_index;
-            entry_index[1] = y_index;
-            if (dim == 3){
-                  entry_index[2] = z_index;
-            }
-          if (x_index > granularity || x_index < 0 || y_index > granularity || y_index < 0)
+          entry_index[0] = x_index;
+          entry_index[1] = y_index;
+          if (dim == 3){
+                entry_index[2] = z_index;
+          }
+          if (x_index > function_output_table.size()[0] || x_index < 0 || y_index > function_output_table.size()[1] || y_index < 0)
           {
             throw std::invalid_argument("x or y index out of range");
           } else {
-            double currentValue = function_output_table(entry_index);
-            currentValue += value;
-            function_output_table(entry_index) = currentValue;
+            function_output_table(entry_index) = input_value;
           }
         };
 
-        double evaluate(unsigned int x_index, unsigned int y_index, unsigned int z_index)
+
+
+        double evaluate_function_at_index(const unsigned int x_index, const unsigned int y_index, const unsigned int z_index) const
         {
+          TableIndices<dim> entry_index;
           entry_index[0] = x_index;
           entry_index[1] = y_index;
           if (dim == 3){
@@ -73,11 +78,13 @@ namespace aspect
           return function_output_table(entry_index);
         }
 
+
+
         /*
         setStatisticalValues just sets max, min, std deviation, mean, median, q1,q2,iqr all at once. 
         needs to be called once the pdf is filled though.
         */
-        void setStatisticalValues()
+        void set_statistical_values()
         {
           max = std::numeric_limits<double>::min();;
           min = std::numeric_limits<double>::max();
@@ -89,49 +96,46 @@ namespace aspect
           quartile_IQR = 0;
 
           //loop through all values of the function to set initial stats.
-          for(unsigned int x = 0; x< granularity;x++)
+          for(unsigned int x = 0; x< pdf_granularity;x++)
           {
-            for(unsigned int y = 0; y< granularity;y++)
+            for(unsigned int y = 0; y< pdf_granularity;y++)
             {
-              std::array<unsigned int,3> key = {x,y,0};
-              double this_value = function_output_map.at(key);
-              //set max
+              double this_value = evaluate_function_at_index(x,y,0);
+
               if (this_value > max)
-              {
                 max = this_value;
-              }
-              //set min
+  
               if (this_value < min)
-              {
                 min = this_value;
-              }
+
               //sum in mean, then divide after this loop
               mean += this_value;
             }
           }
           //set the true mean
-          mean /= (granularity*dim);//think this should be the total number of points.
+          mean /= (pdf_granularity*dim);//think this should be the total number of points.
           double squared_deviation_sum = 0;
 
           //this sum all the squared deviations for standard deviation.
-          for(unsigned int x = 0; x< granularity;x++)
+          for(unsigned int x = 0; x< pdf_granularity;x++)
           {
-            for(unsigned int y = 0; y< granularity;y++)
+            for(unsigned int y = 0; y< pdf_granularity;y++)
             {
-              std::array<unsigned int,3> key = {x,y,0};
-              double this_value = function_output_map.at(key);
+              TableIndices<dim> entry_index;
+              entry_index[0] = x;
+              entry_index[1] = y;
+              double this_value = function_output_table(entry_index);
               double deviation_squared = (this_value-mean)*(this_value-mean);
               squared_deviation_sum += deviation_squared;
             }
           }
-          squared_deviation_sum /= (granularity*dim);
+          squared_deviation_sum /= (pdf_granularity*dim);
           standard_deviation =  std::sqrt(squared_deviation_sum);
         };  
 
-        static unsigned int granularity;
-        Table<dim,double> function_output_table;
-        double max,min,standard_deviation,mean,median,quartile_first,quartile_second,quartile_IQR;
-    };
+
+
+   };
   }
 }
 

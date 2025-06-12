@@ -15,8 +15,7 @@ namespace aspect
     ParticleDensityStatisticsKDE<dim>::execute (TableHandler &statistics)
     {
       unsigned int cells_with_particles = 0;
-      unsigned int pdf_granularity = 20;
-      double standard_deviation_mean = 0;
+      double standard_deviation_sum = 0;
       double min = std::numeric_limits<double>::max();
       double max = std::numeric_limits<double>::min();
 
@@ -30,37 +29,33 @@ namespace aspect
             {
               particles_in_cell += this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
             }
-            //call generatePDF 1 time per cell
+            //call fill_PDF_from_cell 1 time per cell
             if(particles_in_cell > 0)
             {
               cells_with_particles++;
-              ParticleDensityPDF pdf = ParticleDensityPDF<dim>(pdf_granularity);
-              generatePDF(cell,pdf,KernelFunctions::EUCLIDEAN);
-              pdf.setStatisticalValues();
-              if (pdf.max > max)
-              {
-                max = pdf.max;
-              }
-              if (pdf.min < min)
-              {
-                min = pdf.min;
-              }
-              standard_deviation_mean += pdf.standard_deviation;
+              ParticleDensityPDF pdf = ParticleDensityPDF<dim>(granularity);
+              fill_PDF_from_cell(cell,pdf,KernelFunctions::EUCLIDEAN);
+              pdf.set_statistical_values();
+              if (pdf.standard_deviation > max)
+                max = pdf.standard_deviation;
+              if (pdf.standard_deviation < min)
+                min = pdf.standard_deviation;
+              standard_deviation_sum += pdf.standard_deviation;
             }
           }
       }
       //standard_deviation_mean /= cells_with_particles;
       //get final values from all processors
-      double global_max = Utilities::MPI::max (max, this->get_mpi_communicator());
-      double global_min = Utilities::MPI::min (min, this->get_mpi_communicator());
-      double global_cells_with_particles = Utilities::MPI::sum (cells_with_particles, this->get_mpi_communicator());
-      double global_standard_deviation_mean = Utilities::MPI::sum (standard_deviation_mean, this->get_mpi_communicator());
-      global_standard_deviation_mean /= global_cells_with_particles;
+      const double global_max = Utilities::MPI::max (max, this->get_mpi_communicator());
+      const double global_min = Utilities::MPI::min (min, this->get_mpi_communicator());
+      const double global_cells_with_particles = Utilities::MPI::sum (cells_with_particles, this->get_mpi_communicator());
+      const double global_standard_deviation_sum = Utilities::MPI::sum (standard_deviation_sum, this->get_mpi_communicator());
+      const double global_standard_deviation_mean = global_standard_deviation_sum/global_cells_with_particles;
   
 
       // write to statistics file
-      statistics.add_value ("Minimum PDF minimum value ", global_min);
-      statistics.add_value ("Maximum PDF maximum value: ", global_max);
+      statistics.add_value ("Minimum PDF standard deviation ", global_min);
+      statistics.add_value ("Maximum PDF standard deviation: ", global_max);
       statistics.add_value ("Mean of PDF standard deviation: ", global_standard_deviation_mean);
 
 
@@ -80,10 +75,11 @@ namespace aspect
       return {"particles"};
     }
     
+
+
     template <int dim>
-    void ParticleDensityStatisticsKDE<dim>::generatePDF(const typename Triangulation<dim>::active_cell_iterator &cell,ParticleDensityPDF<dim> &pdf, KernelFunctions kernel_function)
+    void ParticleDensityStatisticsKDE<dim>::fill_PDF_from_cell(const typename Triangulation<dim>::active_cell_iterator &cell,ParticleDensityPDF<dim> &pdf, KernelFunctions kernel_function)
     {
-      unsigned int granularity = pdf.granularity;
       unsigned int particles_in_cell = 0;
       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
       {
@@ -115,8 +111,17 @@ namespace aspect
             for(Particle::ParticleIterator particle_iterator=first_particle_in_cell; particle_iterator != last_particle_in_cell; std::advance(particle_iterator,1))
             {
 
-              double PDF_value = kernelFunctionEuclidean(reference_x,reference_y,0,particle_iterator);
-              pdf.addValue(x,y,PDF_value/particles_in_cell);
+              if (kernel_function == KernelFunctions::EUCLIDEAN){
+                double PDF_value = kernelfunction_euclidian(reference_x,reference_y,0,particle_iterator);
+                pdf.add_value_to_function_table(x,y,0,PDF_value/particles_in_cell);
+              } else if (kernel_function == KernelFunctions::GAUSSIAN) {//gaussian not implemented yet.
+                double PDF_value = kernelfunction_euclidian(reference_x,reference_y,0,particle_iterator);
+                pdf.add_value_to_function_table(x,y,0,PDF_value/particles_in_cell);
+              } else { //default to euclidean
+                double PDF_value = kernelfunction_euclidian(reference_x,reference_y,0,particle_iterator);
+                pdf.add_value_to_function_table(x,y,0,PDF_value/particles_in_cell);
+              }
+
               
             }       
           }
@@ -124,16 +129,59 @@ namespace aspect
       }
     }
 
+
+
     //this function is called from getPDF, if getPDF is called with the KernelFunctions::Euclidean parameter
     template <int dim>
-    double ParticleDensityStatisticsKDE<dim>::kernelFunctionEuclidean(double samplerX, double samplerY, double samplerZ, Particles::ParticleIterator<dim> particle_iterator)
+    double ParticleDensityStatisticsKDE<dim>::kernelfunction_euclidian(double samplerX, double samplerY, double samplerZ, Particles::ParticleIterator<dim> particle_iterator)
     {
-        auto coordinates = particle_iterator->get_reference_location();
-        double particle_x = coordinates[0];
-        double particle_y = coordinates[1];
-        double particle_z = coordinates[1];
-        double distanceSquared = std::sqrt(((samplerX-particle_x)*(samplerX-particle_x))+((samplerY-particle_y)*(samplerY-particle_y))+((samplerZ-particle_z)*(samplerZ-particle_z)));
-        return distanceSquared;
+        const auto coordinates = particle_iterator->get_reference_location();
+        const double particle_x = coordinates[0];
+        const double particle_y = coordinates[1];
+        const double particle_z = coordinates[1];
+        const double distance = std::sqrt(((samplerX-particle_x)*(samplerX-particle_x))+((samplerY-particle_y)*(samplerY-particle_y))+((samplerZ-particle_z)*(samplerZ-particle_z)));
+        return distance;
+    }
+
+
+
+    template <int dim>
+    void
+    ParticleDensityStatisticsKDE<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Particle Density KDE");
+        {
+          prm.declare_entry("KDE Granularity","2",
+                            Patterns::Integer (1),
+                            "The granularity parameter determines how many discrete inputs exist for "
+                            "the probability density function generated by the kernel density estimator. "
+                            "The domain of the function is multidimensional so the granularity value determines "
+                            "the range of inputs in each dimension. For example, a granularity value of 2 "
+                            "results in a PDF which is defined for the inputs 0-1 in each of its dimensions. "
+                                                                                                            );
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+
+
+
+    template <int dim>
+    void
+    ParticleDensityStatisticsKDE<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Particle Density KDE");
+        {
+          granularity = prm.get_integer("KDE Granularity");
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
     }
   }
 }
@@ -145,7 +193,7 @@ namespace aspect
   namespace Postprocess
   {
     ASPECT_REGISTER_POSTPROCESSOR(ParticleDensityStatisticsKDE,
-                                  "particle density statistics KDE",
+                                  "Particle Density KDE",
                                   "A postprocessor that computes some statistics about "
                                   "the particle distribution, if present in this simulation. ")
   }

@@ -34,8 +34,21 @@ namespace aspect
          */
         std::list<std::string>
         required_other_postprocessors() const override;
-      private:
 
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm) override;
+      private:
+      unsigned int granularity;
       enum class KernelFunctions {
         GAUSSIAN,
         EUCLIDEAN,
@@ -45,7 +58,7 @@ namespace aspect
        * fills the supplied PDF instance for the given cell.
        * takes a KernelFunction parameter (see enum above). Might use a different method later to pass in different functions.
        */
-      void generatePDF(const typename Triangulation<dim>::active_cell_iterator &cell, ParticleDensityPDF<dim> &pdf, KernelFunctions kernel_function);
+      void fill_PDF_from_cell(const typename Triangulation<dim>::active_cell_iterator &cell, ParticleDensityPDF<dim> &pdf, KernelFunctions kernel_function);
       
       /**
        * sampler X,Y,Z denote the position from which to estimate the kernel function.
@@ -53,7 +66,7 @@ namespace aspect
        * to the granularity and cell size. There may be a point template class which would be a better input,
        * but for now I am using this and calling the function with samplerZ = 0 for 2D cases.
        */
-      double kernelFunctionEuclidean(double samplerX, double samplerY, double samplerZ, Particles::ParticleIterator<dim> particle_iterator);
+      double kernelfunction_euclidian(double samplerX, double samplerY, double samplerZ, Particles::ParticleIterator<dim> particle_iterator);
 
     };
   }
