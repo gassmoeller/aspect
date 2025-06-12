@@ -19,32 +19,30 @@ namespace aspect
       double min = std::numeric_limits<double>::max();
       double max = std::numeric_limits<double>::min();
 
-      for (const typename Triangulation<dim>::active_cell_iterator &cell : this->get_dof_handler().active_cell_iterators())
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
       {
         if (cell->is_locally_owned())
+        {
+          unsigned int particles_in_cell = 0;
+          for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+            particles_in_cell += this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
+          
+          //call fill_PDF_from_cell 1 time per cell
+          if(particles_in_cell > 0)
           {
-
-            unsigned int particles_in_cell = 0;
-            for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
-            {
-              particles_in_cell += this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
-            }
-            //call fill_PDF_from_cell 1 time per cell
-            if(particles_in_cell > 0)
-            {
-              cells_with_particles++;
-              ParticleDensityPDF pdf = ParticleDensityPDF<dim>(granularity);
-              fill_PDF_from_cell(cell,pdf,KernelFunctions::EUCLIDEAN);
-              pdf.set_statistical_values();
-              if (pdf.standard_deviation > max)
-                max = pdf.standard_deviation;
-              if (pdf.standard_deviation < min)
-                min = pdf.standard_deviation;
-              standard_deviation_sum += pdf.standard_deviation;
-            }
+            cells_with_particles++;
+            ParticleDensityPDF pdf = ParticleDensityPDF<dim>(granularity);
+            fill_PDF_from_cell(cell,pdf,KernelFunctions::EUCLIDEAN);
+            pdf.set_statistical_values();
+            if (pdf.standard_deviation > max)
+              max = pdf.standard_deviation;
+            if (pdf.standard_deviation < min)
+              min = pdf.standard_deviation;
+            standard_deviation_sum += pdf.standard_deviation;
           }
+        }
       }
-      //standard_deviation_mean /= cells_with_particles;
+     
       //get final values from all processors
       const double global_max = Utilities::MPI::max (max, this->get_mpi_communicator());
       const double global_min = Utilities::MPI::min (min, this->get_mpi_communicator());
@@ -60,9 +58,9 @@ namespace aspect
 
 
       std::ostringstream output;
-      output << global_max <<"," << global_min <<"," << global_standard_deviation_mean;
+      output << global_min <<"," << global_max <<"," << global_standard_deviation_mean;
 
-      return std::pair<std::string, std::string> ("KDE postprocessor score (function max/min/mean standard deviation):",
+      return std::pair<std::string, std::string> ("KDE postprocessor score (function min/max/mean standard deviation):",
                                                   output.str());
     }
 
@@ -86,20 +84,23 @@ namespace aspect
         particles_in_cell += this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
       }
 
-      //need a nested loop to build the PDF. two loops for 2D, later 3 loops for 3D.
-      //double spacing_x = cell->extent_in_direction(0)/granularity;
-      //double spacing_y = cell->extent_in_direction(1)/granularity;
-      if (dim == 3)
-      {
-        //double spacing_z = cell->extent_in_direction(2)/granularity;
-      }
+
+
+
+
 
       for(unsigned int x=0;x<granularity;x++)
       {
         for(unsigned int y=0;y<granularity;y++)
         {
-          double reference_x = x/granularity;
-          double reference_y = y/granularity;
+          const double reference_x = x/granularity;
+          const double reference_y = y/granularity;
+          double reference_z = 0;
+          if (dim == 3) {
+            
+          }
+            
+
 
           //in here, add every particle in the cell using the kernel function and add that value to the PDF
           for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
@@ -112,17 +113,15 @@ namespace aspect
             {
 
               if (kernel_function == KernelFunctions::EUCLIDEAN){
-                double PDF_value = kernelfunction_euclidian(reference_x,reference_y,0,particle_iterator);
+                double PDF_value = kernelfunction_euclidian(reference_x,reference_y,reference_z,particle_iterator);
                 pdf.add_value_to_function_table(x,y,0,PDF_value/particles_in_cell);
               } else if (kernel_function == KernelFunctions::GAUSSIAN) {//gaussian not implemented yet.
-                double PDF_value = kernelfunction_euclidian(reference_x,reference_y,0,particle_iterator);
+                double PDF_value = kernelfunction_euclidian(reference_x,reference_y,reference_z,particle_iterator);
                 pdf.add_value_to_function_table(x,y,0,PDF_value/particles_in_cell);
               } else { //default to euclidean
-                double PDF_value = kernelfunction_euclidian(reference_x,reference_y,0,particle_iterator);
+                double PDF_value = kernelfunction_euclidian(reference_x,reference_y,reference_z,particle_iterator);
                 pdf.add_value_to_function_table(x,y,0,PDF_value/particles_in_cell);
               }
-
-              
             }       
           }
         }

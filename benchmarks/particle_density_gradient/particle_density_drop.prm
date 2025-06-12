@@ -2,7 +2,7 @@
 
 set Dimension                              = 2
 set Use years in output instead of seconds = false
-set End time                               = 3
+set End time                               = 12
 set Output directory                       = ../output-particles-drop
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Resume computation                     = false
@@ -142,7 +142,7 @@ subsection Postprocess
   end
 
   subsection Particle Density KDE
-    set KDE Granularity = 4
+    set KDE Granularity = 20
   end
 
 end

@@ -54,10 +54,10 @@ namespace aspect
           TableIndices<dim> entry_index;
           entry_index[0] = x_index;
           entry_index[1] = y_index;
-          if (dim == 3){
-                entry_index[2] = z_index;
-          }
-          if (x_index > function_output_table.size()[0] || x_index < 0 || y_index > function_output_table.size()[1] || y_index < 0)
+          if (dim == 3)
+            entry_index[2] = z_index;
+
+          if (x_index > function_output_table.size()[0] || x_index < 0 || y_index > function_output_table.size()[1] || y_index < 0 || z_index > function_output_table.size()[2] || z_index < 0)
           {
             throw std::invalid_argument("x or y index out of range");
           } else {
@@ -72,9 +72,9 @@ namespace aspect
           TableIndices<dim> entry_index;
           entry_index[0] = x_index;
           entry_index[1] = y_index;
-          if (dim == 3){
-                entry_index[2] = z_index;
-          }         
+          if (dim == 3)
+            entry_index[2] = z_index;
+
           return function_output_table(entry_index);
         }
 
