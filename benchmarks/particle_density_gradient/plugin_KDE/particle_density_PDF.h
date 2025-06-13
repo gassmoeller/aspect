@@ -90,7 +90,7 @@ namespace aspect
           quartile_second = 0;
           quartile_IQR = 0;
 
-          //loop through all values of the function to set initial stats.
+          // loop through all values of the function to set initial stats.
           for(unsigned int x = 0; x< pdf_granularity;x++)
           {
             for(unsigned int y = 0; y< pdf_granularity;y++)
@@ -121,11 +121,11 @@ namespace aspect
               }
             }
           }
-          //set the true mean
+          // set the true mean
           mean /= (pdf_granularity*dim);//think this should be the total number of points.
           double squared_deviation_sum = 0;
 
-          //this sum all the squared deviations for standard deviation.
+          // this sum all the squared deviations for standard deviation.
           for(unsigned int x = 0; x< pdf_granularity;x++)
           {
             for(unsigned int y = 0; y< pdf_granularity;y++)
@@ -138,6 +138,7 @@ namespace aspect
               squared_deviation_sum += deviation_squared;
             }
           }
+          // standard deviation of all the defined points in the density function
           squared_deviation_sum /= (pdf_granularity*dim);
           standard_deviation =  std::sqrt(squared_deviation_sum);
         };  
