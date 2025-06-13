@@ -73,11 +73,18 @@ namespace aspect
       };
 
       /**
-       * fills the supplied PDF instance for the given cell.
+       * Fills the supplied PDF instance with values from the particles in the given cell.
        * takes a KernelFunction parameter (see enum above). Might use a different method later to pass in different functions.
        */
       void fill_PDF_from_cell(const typename Triangulation<dim>::active_cell_iterator &cell, ParticleDensityPDF<dim> &pdf, KernelFunctions kernel_function);
       
+      /**
+       * This function loops through every particle
+       * in the given cell and sums the kernel function from each particle on the given position
+       * within the cell. This is only meant to be called from fill_PDF_from_cell. 
+       */
+      void fill_PDF_point_from_cell(const typename Triangulation<dim>::active_cell_iterator &cell, ParticleDensityPDF<dim> &pdf, KernelFunctions kernel_function,const double reference_x,const double reference_y,const double reference_z,const unsigned int table_x,const unsigned int table_y,const unsigned int table_z,const unsigned int particles_in_cell);
+
       /**
        * sampler X,Y,Z denote the position from which to estimate the kernel function.
        * So as the algorithm iterates through the KDE arrays, samplerX/Y/Z are increased by values according 

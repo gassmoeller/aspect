@@ -95,7 +95,6 @@ namespace aspect
           {
             for(unsigned int y = 0; y< pdf_granularity;y++)
             {
-              double this_value = evaluate_function_at_index(x,y,0);
               if (dim == 3){
                 for(unsigned int z = 0; z< pdf_granularity;z++)
                 {
