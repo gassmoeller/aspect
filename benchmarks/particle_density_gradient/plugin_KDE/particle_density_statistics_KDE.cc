@@ -176,6 +176,7 @@ namespace aspect
       {
         prm.enter_subsection("Particle Density KDE");
         {
+          KDE_per_particle = prm.get_integer("Use KDE Per Particle");
           granularity = prm.get_integer("KDE Granularity");
         }
         prm.leave_subsection ();

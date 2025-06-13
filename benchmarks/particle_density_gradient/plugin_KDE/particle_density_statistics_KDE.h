@@ -48,7 +48,25 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
       private:
+      /**
+       * If `KDE_per_particle` is true, the point-density function is defined
+       * at the position of every particle in the cell. If it is false, the 
+       * point-density-function is defined on a regular grid throughout the cell.
+       */
+      bool KDE_per_particle;
+      /**
+       * The `granularity` variable determines the number of points at which
+       * the point-density function is defined within each cell. For example,
+       * a value of 2 means that the point-density function is defined at
+       * $2\times 2=4$ points in 2D. This variable only applies if 
+       * `KDE_per_particle` is false.
+       */
       unsigned int granularity;
+      /**
+       * The `KernelFunctions` enum class is a data structure which
+       * contains the kernel functions available for use in the Kernel
+       * Density Estimator.
+       */
       enum class KernelFunctions {
         GAUSSIAN,
         EUCLIDEAN,

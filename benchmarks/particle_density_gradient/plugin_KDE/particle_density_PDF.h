@@ -57,12 +57,7 @@ namespace aspect
           if (dim == 3)
             entry_index[2] = z_index;
 
-          if (x_index > function_output_table.size()[0] || x_index < 0 || y_index > function_output_table.size()[1] || y_index < 0 || z_index > function_output_table.size()[2] || z_index < 0)
-          {
-            throw std::invalid_argument("x or y index out of range");
-          } else {
-            function_output_table(entry_index) = input_value;
-          }
+          function_output_table(entry_index) = input_value;
         };
 
 
@@ -101,15 +96,30 @@ namespace aspect
             for(unsigned int y = 0; y< pdf_granularity;y++)
             {
               double this_value = evaluate_function_at_index(x,y,0);
+              if (dim == 3){
+                for(unsigned int z = 0; z< pdf_granularity;z++)
+                {
+                  double this_value = evaluate_function_at_index(x,y,z);
+                  if (this_value > max)
+                    max = this_value;
+      
+                  if (this_value < min)
+                    min = this_value;
 
-              if (this_value > max)
-                max = this_value;
-  
-              if (this_value < min)
-                min = this_value;
+                  //sum in mean, then divide after this loop
+                  mean += this_value;
+                }
+              } else {
+                  double this_value = evaluate_function_at_index(x,y,0);
+                  if (this_value > max)
+                    max = this_value;
+      
+                  if (this_value < min)
+                    min = this_value;
 
-              //sum in mean, then divide after this loop
-              mean += this_value;
+                  //sum in mean, then divide after this loop
+                  mean += this_value;
+              }
             }
           }
           //set the true mean
