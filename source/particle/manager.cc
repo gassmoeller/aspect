@@ -308,8 +308,13 @@ namespace aspect
                                       "recompile deal.II with the DEAL_II_WITH_64BIT_INDICES option enabled, to use 64-bit integers for "
                                       "particle ids."));
             }
-
-          std::mt19937 random_number_generator;
+          
+          /*
+          notice that this is set every time this function is called per cell
+          set it using a random seed from the current time (for now)
+          or make this a member variable of the particle handler class
+          */
+          //std::mt19937 random_number_generator(0000000);
 
           // Loop over all cells and generate or remove the particles cell-wise
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
