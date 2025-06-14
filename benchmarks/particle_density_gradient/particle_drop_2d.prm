@@ -3,7 +3,7 @@
 set Dimension                              = 2
 set Use years in output instead of seconds = false
 set End time                               = 12
-set Output directory                       = ../output-particles-drop
+set Output directory                       = ../output-drop-2d
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Resume computation                     = false
 set Maximum time step                      = 0.03
@@ -142,7 +142,9 @@ subsection Postprocess
   end
 
   subsection Particle Density KDE
-    set KDE Granularity = 20
+    set KDE Granularity = 10
+    set Kernel Bandwidth = 1.0
+    set Kernel Function = Uniform
   end
 
 end
