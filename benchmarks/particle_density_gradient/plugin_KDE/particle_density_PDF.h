@@ -32,7 +32,7 @@ namespace aspect
         {
             this->pdf_granularity = granularity;
             max = std::numeric_limits<double>::min();
-            min = -1;
+            min = std::numeric_limits<double>::max();
             standard_deviation = -1; //-1 is not really possible, so if this value is returned, we know something is wrong
             mean = -1;
             median = -1;
@@ -57,7 +57,7 @@ namespace aspect
           if (dim == 3)
             entry_index[2] = z_index;
 
-          function_output_table(entry_index) = input_value;
+          function_output_table(entry_index) += input_value;
         };
 
 
@@ -81,7 +81,7 @@ namespace aspect
         */
         void set_statistical_values()
         {
-          max = std::numeric_limits<double>::min();;
+          max = std::numeric_limits<double>::min();
           min = std::numeric_limits<double>::max();
           standard_deviation = 0;
           mean = 0;
@@ -110,11 +110,9 @@ namespace aspect
                 }
               } else {
                   double this_value = evaluate_function_at_index(x,y,0);
-                  if (this_value > max)
-                    max = this_value;
-      
-                  if (this_value < min)
-                    min = this_value;
+
+                  max = std::max(max, this_value);
+                  min = std::min(min, this_value);
 
                   //sum in mean, then divide after this loop
                   mean += this_value;
@@ -122,7 +120,7 @@ namespace aspect
             }
           }
           // set the true mean
-          mean /= (pdf_granularity*dim);//think this should be the total number of points.
+          mean /= (Utilities::fixed_power<dim>(pdf_granularity));//think this should be the total number of points.
           double squared_deviation_sum = 0;
 
           // this sum all the squared deviations for standard deviation.
@@ -140,7 +138,7 @@ namespace aspect
           }
           // standard deviation of all the defined points in the density function
           squared_deviation_sum /= (pdf_granularity*dim);
-          standard_deviation =  std::sqrt(squared_deviation_sum);
+          standard_deviation = std::sqrt(squared_deviation_sum);
         };  
 
 

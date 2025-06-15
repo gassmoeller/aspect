@@ -2,7 +2,7 @@
 
 set Dimension                              = 2
 set Use years in output instead of seconds = false
-set End time                               = 12
+set End time                               = 1
 set Output directory                       = ../output-drop-2d
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Resume computation                     = false
@@ -142,8 +142,8 @@ subsection Postprocess
   end
 
   subsection Particle Density KDE
-    set KDE Granularity = 10
-    set Kernel Bandwidth = 1.0
+    set KDE Granularity = 2
+    set Kernel Bandwidth = 0.1
     set Kernel Function = Uniform
   end
 

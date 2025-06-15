@@ -102,9 +102,9 @@ namespace aspect
        * to the granularity and cell size. There may be a point template class which would be a better input,
        * but for now I am using this and calling the function with samplerZ = 0 for 2D cases.
        */
-      double kernelfunction_euclidian(double samplerX, double samplerY, double samplerZ, Particles::ParticleIterator<dim> particle_iterator);
+      double kernelfunction_euclidian(double samplerX, double samplerY, double samplerZ, Particles::ParticleAccessor<dim> particle);
 
-      double kernelfunction_uniform(double samplerX, double samplerY, double samplerZ, Particles::ParticleIterator<dim> particle_iterator);
+      double kernelfunction_uniform(double samplerX, double samplerY, double samplerZ, Particles::ParticleAccessor<dim> particle);
 
 
     };

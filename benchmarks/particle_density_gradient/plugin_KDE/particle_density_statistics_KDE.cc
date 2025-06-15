@@ -16,9 +16,11 @@ namespace aspect
     {
       unsigned int cells_with_particles = 0;
       double standard_deviation_sum = 0;
-      double min = std::numeric_limits<double>::max();
-      double max = std::numeric_limits<double>::min();
- 
+      double standard_deviation_min = std::numeric_limits<double>::max();
+      double standard_deviation_max = std::numeric_limits<double>::min();
+      double function_min_sum = 0;
+      double function_max_sum = 0;
+
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
       {
         if (cell->is_locally_owned())
@@ -34,33 +36,45 @@ namespace aspect
             ParticleDensityPDF pdf = ParticleDensityPDF<dim>(granularity);
             fill_PDF_from_cell(cell,pdf);
             pdf.set_statistical_values();
-            if (pdf.standard_deviation > max)
-              max = pdf.standard_deviation;
-            if (pdf.standard_deviation < min)
-              min = pdf.standard_deviation;
+            if (pdf.standard_deviation > standard_deviation_max)
+              standard_deviation_max = pdf.standard_deviation;
+            if (pdf.standard_deviation < standard_deviation_min)
+              standard_deviation_min = pdf.standard_deviation;
+
             standard_deviation_sum += pdf.standard_deviation;
+            function_min_sum += pdf.min;
+            function_max_sum += pdf.max;
           }
         }
       }
      
-      //get final values from all processors
-      const double global_max = Utilities::MPI::max (max, this->get_mpi_communicator());
-      const double global_min = Utilities::MPI::min (min, this->get_mpi_communicator());
+      // Get final values from all processors
+      const double global_standard_deviation_max = Utilities::MPI::max (standard_deviation_max, this->get_mpi_communicator());
+      const double global_standard_deviation_min = Utilities::MPI::min (standard_deviation_min, this->get_mpi_communicator());
       const double global_cells_with_particles = Utilities::MPI::sum (cells_with_particles, this->get_mpi_communicator());
       const double global_standard_deviation_sum = Utilities::MPI::sum (standard_deviation_sum, this->get_mpi_communicator());
       const double global_standard_deviation_mean = global_standard_deviation_sum/global_cells_with_particles;
   
+      // Get the average of the functions max and min values
+      const double global_function_min_sum = Utilities::MPI::sum (function_min_sum, this->get_mpi_communicator());
+      const double global_function_max_sum = Utilities::MPI::sum (function_max_sum, this->get_mpi_communicator());
+      const double global_function_min_mean = global_function_min_sum/global_cells_with_particles;
+      const double global_function_max_mean = global_function_max_sum/global_cells_with_particles;
 
       // write to statistics file
-      statistics.add_value ("Minimum PDF standard deviation ", global_min);
+      statistics.add_value ("Minimum PDF standard deviation ", global_standard_deviation_min);
       statistics.add_value ("Mean of PDF standard deviation: ", global_standard_deviation_mean);
-      statistics.add_value ("Maximum PDF standard deviation: ", global_max);
+      statistics.add_value ("Maximum PDF standard deviation: ", global_standard_deviation_max);
+      statistics.add_value ("Mean of PDF minimum values: ", global_function_min_mean);
+      statistics.add_value ("Maximum PDF maximum values: ", global_function_max_mean);
 
 
       std::ostringstream output;
-      output << global_min <<"," << global_standard_deviation_mean <<"," << global_max;
+      output << global_standard_deviation_min <<"," << global_standard_deviation_mean <<"," << global_standard_deviation_max <<",";
+      output << "\n" << "Particle Distribution Statistics (mean of function min/max): " << global_function_min_mean <<"," << global_function_max_mean;
 
-      return std::pair<std::string, std::string> ("Particle Distribution Statistics (function min/mean/max standard deviation):",
+
+      return std::pair<std::string, std::string> ("Particle Distribution Statistics (function standard deviation min/mean/max):",
                                                   output.str());
     }
 
@@ -115,32 +129,38 @@ namespace aspect
         auto first_particle_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell).begin();
         auto last_particle_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell).end();
 
-        for(Particle::ParticleIterator particle_iterator=first_particle_in_cell; particle_iterator != last_particle_in_cell; std::advance(particle_iterator,1))
-        {
+        const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell);
 
+        for (const auto &particle: particle_range) {
           if (kernel_function == KernelFunctions::UNIFORM){
-            const double PDF_value = kernelfunction_uniform(reference_x,reference_y,reference_z,particle_iterator);
+            const double PDF_value = kernelfunction_uniform(reference_x,reference_y,reference_z,particle);
             pdf.add_value_to_function_table(table_x,table_y,table_z,PDF_value/particles_in_cell);
-          } else if (kernel_function == KernelFunctions::GAUSSIAN) {//gaussian not implemented yet.
-            const double PDF_value = kernelfunction_euclidian(reference_x,reference_y,reference_z,particle_iterator);
+          } 
+          else if (kernel_function == KernelFunctions::EUCLIDEAN) {//gaussian not implemented yet.
+            const double PDF_value = kernelfunction_euclidian(reference_x,reference_y,reference_z,particle);
             pdf.add_value_to_function_table(table_x,table_y,table_z,PDF_value/particles_in_cell);
+          }          
+          else if (kernel_function == KernelFunctions::GAUSSIAN) {//gaussian not implemented yet.
+           // const double PDF_value = kernelfunction_euclidian(reference_x,reference_y,reference_z,particle);
+            //pdf.add_value_to_function_table(table_x,table_y,table_z,PDF_value/particles_in_cell);
           } else { //default to euclidean
-            const double PDF_value = kernelfunction_euclidian(reference_x,reference_y,reference_z,particle_iterator);
-            pdf.add_value_to_function_table(table_x,table_y,table_z,PDF_value/particles_in_cell);
+            //const double PDF_value = kernelfunction_euclidian(reference_x,reference_y,reference_z,particle);
+            //pdf.add_value_to_function_table(table_x,table_y,table_z,PDF_value/particles_in_cell);
           }
-        }       
+        }
       }
     }
 
 
-    //this function is called from getPDF, if getPDF is called with the KernelFunctions::Euclidean parameter
+    // this function is called from getPDF, if getPDF is called with the KernelFunctions::Euclidean parameter.
+    // in 2d, this would be a circle? in 3d a sphere?
     template <int dim>
     double ParticleDensityStatisticsKDE<dim>::kernelfunction_euclidian(double samplerX, 
                                                                        double samplerY, 
                                                                        double samplerZ, 
-                                                                       Particles::ParticleIterator<dim> particle_iterator)
+                                                                       Particles::ParticleAccessor<dim> particle)
     {
-        const auto coordinates = particle_iterator->get_reference_location();
+        const auto coordinates = particle.get_reference_location();
         const double particle_x = coordinates[0];
         const double particle_y = coordinates[1];
         const double particle_z = coordinates[1];
@@ -150,20 +170,32 @@ namespace aspect
     }
 
     template <int dim>
-    double ParticleDensityStatisticsKDE<dim>::kernelfunction_uniform(double samplerX, double samplerY, double samplerZ, Particles::ParticleIterator<dim> particle_iterator)
+    double ParticleDensityStatisticsKDE<dim>::kernelfunction_uniform(double samplerX, 
+                                                                     double samplerY, 
+                                                                     double samplerZ, 
+                                                                     Particles::ParticleAccessor<dim> particle)
     {
-        const auto coordinates = particle_iterator->get_reference_location();
+        const auto coordinates = particle.get_reference_location();
         const double particle_x = coordinates[0];
         const double particle_y = coordinates[1];
         const double particle_z = coordinates[1];
-        const double distance = ((samplerX-particle_x)*(samplerX-particle_x))+((samplerY-particle_y)*(samplerY-particle_y))+((samplerZ-particle_z)*(samplerZ-particle_z));
-        //we shouldn't use euclidian distance for this....
-        
-        
-        
-        
-        // With a uniform function, anything within the function outputs a value of 0.5.
-        if ((distance*distance) < (bandwidth*bandwidth)){
+        //const double distance = ((samplerX-particle_x)*(samplerX-particle_x))+((samplerY-particle_y)*(samplerY-particle_y))+((samplerZ-particle_z)*(samplerZ-particle_z));
+       
+        // I think this should be equivalent to a uniform function in 3d.
+        // https://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use
+        bool sampler_within_function = true;
+        if (std::abs(samplerX-particle_x)>bandwidth){
+          sampler_within_function = false;
+        }
+        if (std::abs(samplerY-particle_y)>bandwidth){
+          sampler_within_function = false;
+        }    
+        if (dim==3 && (std::abs(samplerZ-particle_z))>bandwidth){
+          sampler_within_function = false;
+        }
+      
+        // With a uniform function, anything within the function outputs a value of 0.5. According to wikipedia...
+        if (sampler_within_function == true){
           return 0.5;
         } else {
           return 0.0;
@@ -179,7 +211,7 @@ namespace aspect
         prm.enter_subsection("Particle Density KDE");
         {
          prm.declare_entry("Kernel Function","Uniform",
-                            Patterns::Selection("Uniform|Gaussian|Triangular"),
+                            Patterns::Selection("Uniform|Gaussian|Triangular|Euclidean"),
                             "The kernel smoothing function to use for kernel density estimation."
                             );
           prm.declare_entry("KDE Granularity","2",
@@ -226,6 +258,10 @@ namespace aspect
           {
             kernel_function = KernelFunctions::GAUSSIAN;
           } 
+          else if (kernel_function_string =="Euclidean")
+          {
+            kernel_function = KernelFunctions::EUCLIDEAN;
+          }           
           else
           {
             kernel_function = KernelFunctions::UNIFORM;
