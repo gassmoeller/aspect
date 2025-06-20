@@ -22,7 +22,7 @@
 #include <aspect/utilities.h>
 #include <aspect/material_model/thermal_conductivity/PT_dep_R_bounded.h>
 #include <aspect/material_model/thermal_conductivity/Hofmeister1999.h>
-// #include <aspect/material_model/thermal_conductivity/Anderson1987.h>
+// #include <aspect/material_model/thermal_conductivity/anderson_1987.h>
 // #include <aspect/material_model/thermal_conductivity/Gerya2021.h>
 // #include <aspect/material_model/thermal_conductivity/GroseAfonso2019.h>
 // #include <aspect/material_model/thermal_conductivity/Hofmeister2005.h>
@@ -748,7 +748,7 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
 /*
 TEST_CASE("Utilities:: Thermal Conductivity Anderson 1987")
 {
-  aspect::MaterialModel::ThermalConductivity::Anderson1987<3> model;
+  aspect::MaterialModel::ThermalConductivity::anderson_1987<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
 }
