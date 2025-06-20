@@ -25,7 +25,7 @@
 // https://doi.org/10.1016/j.pepi.2004.03.005
 // Lambda_Lat (P,T) = Lambda_Room(T_room/T_model)^N_Texp * (1 + A_linear*P_model)
 
-#include <aspect/material_model/thermal_conductivity/Xu2004.h>
+#include <aspect/material_model/thermal_conductivity/xu_2004.h>
 
 namespace aspect
 {
@@ -46,7 +46,7 @@ namespace aspect
       // Main function: 
       template <int dim>
       void
-      Xu2004<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+      xu_2004<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
@@ -156,7 +156,7 @@ namespace aspect
     namespace ThermalConductivity
     {
       #define INSTANTIATE(dim) \
-      template class Xu2004<dim>;
+      template class xu_2004<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

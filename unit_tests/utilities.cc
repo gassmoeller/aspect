@@ -29,7 +29,7 @@
 // #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
 // #include <aspect/material_model/thermal_conductivity/stackhouse_2015.h>
 #include <aspect/material_model/thermal_conductivity/tosi_2016.h>
-#include <aspect/material_model/thermal_conductivity/Xu2004.h>
+#include <aspect/material_model/thermal_conductivity/xu_2004.h>
 
 TEST_CASE("Utilities::weighted_p_norm_average")
 {
@@ -938,7 +938,7 @@ TEST_CASE("Utilities:: Thermal Conductivity Tosi 2016")
 
 TEST_CASE("Utilities:: Thermal Conductivity Xu 2004")
 {
-  aspect::MaterialModel::ThermalConductivity::Xu2004<3> model;
+  aspect::MaterialModel::ThermalConductivity::xu_2004<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
 
@@ -1013,7 +1013,7 @@ TEST_CASE("Utilities:: Thermal Conductivity Xu 2004")
 
    std::vector<std::vector<double>> expected_conductivities = expected_Xu2004_Tcond;
 
-   INFO("Checking Xu2004 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
+   INFO("Checking xu_2004 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
 
    // Loop over the different compositions
    for (size_t row = 0; row < expected_conductivities.size(); ++row)
