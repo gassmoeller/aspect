@@ -409,6 +409,11 @@ namespace aspect
          */
         std::vector<SymmetricTensor<2,dim>> strain_rate;
 
+         /**
+         * Index of the current mineral ID. Used for Thermal Conductivity calulations
+         */
+        unsigned int Mineral_ID; // Add this line to include mID
+
         /**
          * Optional cell object that contains these quadrature
          * points. This allows for evaluating properties at the cell vertices

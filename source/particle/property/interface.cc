@@ -519,7 +519,7 @@ namespace aspect
                                 << "----------------------------------------------------"
                                 << std::endl;
                       std::cerr << "Exception on MPI process <"
-                                << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                                << dealii::Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                                 << "> while generating new particle properties: "
                                 << std::endl
                                 << exc.what() << std::endl
@@ -779,8 +779,8 @@ namespace aspect
                 ExcMessage ("No postprocessors registered!?"));
 
         // now also see which derived quantities we are to compute
-        this->plugin_names = Utilities::split_string_list(prm.get("List of particle properties"));
-        AssertThrow(Utilities::has_unique_entries(this->plugin_names),
+        this->plugin_names = dealii::Utilities::split_string_list(prm.get("List of particle properties"));
+        AssertThrow(aspect::Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Particles/List of particle properties' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
