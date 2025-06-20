@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/thermal_conductivity/PT_dep_R_bounded.h>
+#include <aspect/material_model/thermal_conductivity/marzotto_tcond.h>
 
 namespace aspect
 {
@@ -65,7 +65,7 @@ namespace aspect
       // Main function: 
       template <int dim>
       void
-      PTdepRbounded<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+      marzotto_tcond<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
       {
 
@@ -1376,7 +1376,7 @@ namespace aspect
     namespace ThermalConductivity
     {
 #define INSTANTIATE(dim) \
-  template class PTdepRbounded<dim>;
+  template class marzotto_tcond<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 
