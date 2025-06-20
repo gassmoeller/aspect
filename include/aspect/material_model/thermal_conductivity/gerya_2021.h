@@ -31,7 +31,6 @@ namespace aspect
   {
     namespace ThermalConductivity
     {
-      using namespace dealii;
       
       template <int dim>
       class gerya_2021 : public Interface<dim>

@@ -31,7 +31,6 @@ namespace aspect
   {
     namespace ThermalConductivity
     {
-      using namespace dealii;
       
       template <int dim>
       class hofmeister_1999 : public Interface<dim>

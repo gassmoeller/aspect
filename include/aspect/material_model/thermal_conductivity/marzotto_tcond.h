@@ -30,7 +30,6 @@ namespace aspect
   {
     namespace ThermalConductivity
     {
-      using namespace dealii;
 
       /**
        * A base class for parameterizations of material models. Classes derived

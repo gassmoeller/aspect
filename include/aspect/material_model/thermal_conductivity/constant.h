@@ -30,7 +30,6 @@ namespace aspect
   {
     namespace ThermalConductivity
     {
-      using namespace dealii;
 
       /**
        * A class that implements a constant thermal conductivity.
