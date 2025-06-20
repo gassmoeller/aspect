@@ -19,8 +19,8 @@
 
 */
 
-#ifndef _aspect_material_model_thermal_conductivity_Hofmeister2005_h
-#define _aspect_material_model_thermal_conductivity_Hofmeister2005_h
+#ifndef _aspect_material_model_thermal_conductivity_hofmeister_2005_h
+#define _aspect_material_model_thermal_conductivity_hofmeister_2005_h
 
 #include <aspect/material_model/thermal_conductivity/interface.h>
 
@@ -34,7 +34,7 @@ namespace aspect
       using namespace dealii;
       
       template <int dim>
-      class Hofmeister2005 : public Interface<dim>
+      class hofmeister_2005 : public Interface<dim>
       {
       public:
         void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,

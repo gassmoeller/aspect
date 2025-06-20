@@ -27,7 +27,7 @@
 // 0.2 <= d <= 1.2 [cm]: Lambda_Rad(T,d) [W m^-1 K^-1] = (5+22*(1-d)) * std::exp[(-((T_model-2800-2600 * (1-d)))^2) / (400+1400*(1-d))^2] + (1.7-0.2*(1-d)) * std::exp[(-((T_model-1400-300*(1-d)))^2)/(500+200*(1-d))^2]
 // 1.2 < d <= 100 [cm]: Lambda_Rad(T,d) [W m^-1 K^-1] = (1.35 + 0.03 * (10-d)) * std::exp[(-((T_model-900-6 * (10-d)^2))^2) / (230+2 * (10-d)^2)^2]
 
-#include <aspect/material_model/thermal_conductivity/Hofmeister2005.h>
+#include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
 
 namespace aspect
 {
@@ -38,16 +38,16 @@ namespace aspect
          // Main function: 
          template <int dim>
          void
-         Hofmeister2005<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+         hofmeister_2005<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
          {
              #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
              // Test Case
              double AggRock_TestCase_Hof05_TCond = 1;
-             std::vector<double> Hofmeister2005_Tcond(5, AggRock_TestCase_Hof05_TCond);
+             std::vector<double> hofmeister_2005_Tcond(5, AggRock_TestCase_Hof05_TCond);
 
-             out.thermal_conductivities = Hofmeister2005_Tcond;
+             out.thermal_conductivities = hofmeister_2005_Tcond;
          }
      }
   }
@@ -61,7 +61,7 @@ namespace aspect
     namespace ThermalConductivity
     {
       #define INSTANTIATE(dim) \
-      template class Hofmeister2005<dim>;
+      template class hofmeister_2005<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 
