@@ -20,13 +20,13 @@
 
 #include "common.h"
 #include <aspect/utilities.h>
-#include <aspect/material_model/thermal_conductivity/marzotto_tcond.h>
-#include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
 // #include <aspect/material_model/thermal_conductivity/anderson_1987.h>
 // #include <aspect/material_model/thermal_conductivity/gerya_2021.h>
 // #include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
+#include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
 // #include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
 // #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
+#include <aspect/material_model/thermal_conductivity/marzotto_tcond.h>
 // #include <aspect/material_model/thermal_conductivity/stackhouse_2015.h>
 #include <aspect/material_model/thermal_conductivity/tosi_2016.h>
 #include <aspect/material_model/thermal_conductivity/xu_2004.h>
