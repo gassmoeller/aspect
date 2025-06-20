@@ -19,14 +19,6 @@
 
 */
 
-<<<<<<< HEAD
-// This function computes the radiative thermal conductivity of olivine, pyroxenes and garnet.
-// using the Grose & Afonso (2019) formulation 
-// [Grose & Afonso, 2019, Geochemistry, Geophysics, Geosystems, vol. 20(5), p. 2378-2394]
-// https://doi.org/10.1029/2019GC008187
-// 
-// 
-=======
 // This function computes the thermal conductivity of olivine, pyroxene and garnet.
 // using the Grose & Afonso (2019) formulation
 // [Grose & Afonso 2019, G-Cubed, 20(5), 2378-2394]
@@ -37,14 +29,13 @@
 // The equations are a n-th-order polynomial, extracted from Fig. 6 of Grose & Afonso (2019) 
 // with WebPlotDigitizer (https://apps.automeris.io/wpd/), to compute 
 // the T-dependent radiative thermal conductivity of a rock with a grain size of 1 cm 
->>>>>>> 225b7eb24c031ebcbb1882121029daa62dc366e7
 // 
 // Olivine : (G_6 * T^6) + (F_5 * T^5) + (E_4 * T^4) + (D_3 * T^3) + (C_2 * T^2) + (B_1 * T) + A_0
 // Pyroxene: (E_4 * T^4) + (D_3 * T^3) + (C_2 * T^2) + (B_1 * T) + A_0
 // Garnet  : (E_4 * T^4) + (D_3 * T^3) + (C_2 * T^2) + (B_1 * T) + A_0
 
 
-#include <aspect/material_model/thermal_conductivity/GroseAfonso2019.h>
+#include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
 
 namespace aspect
 {
@@ -55,16 +46,16 @@ namespace aspect
          // Main function: 
          template <int dim>
          void
-         GroseAfonso2019<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+         grose_afonso_2019<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
          {
              #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
              // Test Case
              double AggRock_TestCase_GrA19_TCond = 1;
-             std::vector<double> GroseAfonso2019_Tcond(5, AggRock_TestCase_GrA19_TCond);
+             std::vector<double> grose_afonso_2019_Tcond(5, AggRock_TestCase_GrA19_TCond);
 
-             out.thermal_conductivities = GroseAfonso2019_Tcond;
+             out.thermal_conductivities = grose_afonso_2019_Tcond;
          }
      }
   }
@@ -78,7 +69,7 @@ namespace aspect
     namespace ThermalConductivity
     {
       #define INSTANTIATE(dim) \
-      template class GroseAfonso2019<dim>;
+      template class grose_afonso_2019<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

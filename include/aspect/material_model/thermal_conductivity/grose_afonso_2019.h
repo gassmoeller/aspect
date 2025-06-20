@@ -19,8 +19,8 @@
 
 */
 
-#ifndef _aspect_material_model_thermal_conductivity_GroseAfonso2019_h
-#define _aspect_material_model_thermal_conductivity_GroseAfonso2019_h
+#ifndef _aspect_material_model_thermal_conductivity_grose_afonso_2019_h
+#define _aspect_material_model_thermal_conductivity_grose_afonso_2019_h
 
 #include <aspect/material_model/thermal_conductivity/interface.h>
 
@@ -34,7 +34,7 @@ namespace aspect
       using namespace dealii;
       
       template <int dim>
-      class GroseAfonso2019 : public Interface<dim>
+      class grose_afonso_2019 : public Interface<dim>
       {
       public:
         void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
