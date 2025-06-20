@@ -26,7 +26,7 @@
 // https://doi.org/10.1002/9781118888865.ch6
 // Lambda_Lat(P,T) [W m^-1 K^-1] = (Lambda_Room + A_linear*P_model)*(T_room/T_model)^N_Texp
 
-#include <aspect/material_model/thermal_conductivity/Tosi2016.h>
+#include <aspect/material_model/thermal_conductivity/tosi_2016.h>
 namespace aspect
 {
   namespace MaterialModel
@@ -46,7 +46,7 @@ namespace aspect
       // Main function: 
       template <int dim>
       void
-      Tosi2016<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+      tosi_2016<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
@@ -169,7 +169,7 @@ namespace aspect
     namespace ThermalConductivity
     {
       #define INSTANTIATE(dim) \
-      template class Tosi2016<dim>;
+      template class tosi_2016<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

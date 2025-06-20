@@ -19,8 +19,8 @@
 
 */
 
-#ifndef _aspect_material_model_thermal_conductivity_Tosi2016_h
-#define _aspect_material_model_thermal_conductivity_Tosi2016_h
+#ifndef _aspect_material_model_thermal_conductivity_tosi_2016_h
+#define _aspect_material_model_thermal_conductivity_tosi_2016_h
 
 #include <aspect/material_model/thermal_conductivity/interface.h>
 
@@ -34,7 +34,7 @@ namespace aspect
       using namespace dealii;
       
       template <int dim>
-      class Tosi2016 : public Interface<dim>
+      class tosi_2016 : public Interface<dim>
       {
       public:
         void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
