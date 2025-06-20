@@ -27,7 +27,7 @@
 // f = ( 2.0/3.0 * xT^0.5) + ( 1.0/3.0 * xT)
 // Lambda_Lat (P,T) = ( 4.9 + 0.105*P_model) * (f * T_model/1200)
 
-#include <aspect/material_model/thermal_conductivity/Stackhouse2015.h>
+#include <aspect/material_model/thermal_conductivity/stackhouse_2015.h>
 
 namespace aspect
 {
@@ -38,16 +38,16 @@ namespace aspect
          // Main function: 
          template <int dim>
          void
-         Stackhouse2015<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+         stackhouse_2015<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
          {
              #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
              // Test Case
              double AggRock_TestCase_Sta15_TCond = 1;
-             std::vector<double> Stackhouse2015_Tcond(5, AggRock_TestCase_Sta15_TCond);
+             std::vector<double> stackhouse_2015_Tcond(5, AggRock_TestCase_Sta15_TCond);
 
-             out.thermal_conductivities = Stackhouse2015_Tcond;
+             out.thermal_conductivities = stackhouse_2015_Tcond;
          }
      }
   }
@@ -61,7 +61,7 @@ namespace aspect
     namespace ThermalConductivity
     {
       #define INSTANTIATE(dim) \
-      template class Stackhouse2015<dim>;
+      template class stackhouse_2015<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 
