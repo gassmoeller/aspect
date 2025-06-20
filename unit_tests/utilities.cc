@@ -26,7 +26,7 @@
 // #include <aspect/material_model/thermal_conductivity/gerya_2021.h>
 // #include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
 // #include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
-// #include <aspect/material_model/thermal_conductivity/HofmeisterBranlund2015.h>
+// #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
 // #include <aspect/material_model/thermal_conductivity/Stackhouse2015.h>
 #include <aspect/material_model/thermal_conductivity/Tosi2016.h>
 #include <aspect/material_model/thermal_conductivity/Xu2004.h>
@@ -784,7 +784,7 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 2005")
 /*
 TEST_CASE("Utilities:: Thermal Conductivity Hofmeister & Branlund 2015")
 {
-  aspect::MaterialModel::ThermalConductivity::HofmeisterBranlund2015<3> model;
+  aspect::MaterialModel::ThermalConductivity::hofmeister_branlund_2015<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
 }

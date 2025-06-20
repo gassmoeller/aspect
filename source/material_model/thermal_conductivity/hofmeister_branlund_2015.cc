@@ -25,7 +25,7 @@
 // https://doi.org/10.1016/B978-0-444-53802-4.00047-6
 // Lambda_Rad (T) = 1.2170 + ( 407.34 / (T_model+0.000080555 * T_model) )
 
-#include <aspect/material_model/thermal_conductivity/HofmeisterBranlund2015.h>
+#include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
 
 namespace aspect
 {
@@ -36,16 +36,16 @@ namespace aspect
          // Main function: 
          template <int dim>
          void
-         HofmeisterBranlund2015<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+         hofmeister_branlund_2015<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
          {
              #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
              // Test Case
              double AggRock_TestCase_HBr15_TCond = 1;
-             std::vector<double> HofmeisterBranlund2015_Tcond(5, AggRock_TestCase_HBr15_TCond);
+             std::vector<double> hofmeister_branlund_2015_Tcond(5, AggRock_TestCase_HBr15_TCond);
 
-             out.thermal_conductivities = HofmeisterBranlund2015_Tcond;
+             out.thermal_conductivities = hofmeister_branlund_2015_Tcond;
          }
      }
   }
@@ -59,7 +59,7 @@ namespace aspect
     namespace ThermalConductivity
     {
       #define INSTANTIATE(dim) \
-      template class HofmeisterBranlund2015<dim>;
+      template class hofmeister_branlund_2015<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 
