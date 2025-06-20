@@ -19,8 +19,8 @@
 
 */
 
-#ifndef _aspect_material_model_thermal_conductivity_Gerya2021_h
-#define _aspect_material_model_thermal_conductivity_Gerya2021_h
+#ifndef _aspect_material_model_thermal_conductivity_gerya_2021_h
+#define _aspect_material_model_thermal_conductivity_gerya_2021_h
 
 #include <aspect/material_model/thermal_conductivity/interface.h>
 
@@ -34,7 +34,7 @@ namespace aspect
       using namespace dealii;
       
       template <int dim>
-      class Gerya2021 : public Interface<dim>
+      class gerya_2021 : public Interface<dim>
       {
       public:
         void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,

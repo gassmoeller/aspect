@@ -28,7 +28,7 @@
 // Lambda_1(P,T) [W m^-1 K^-1] = 1.18 + (474  / (T_model+77)) * std::exp(4e-5 * P_model_MPa);
 // Lambda_2(P,T) [W m^-1 K^-1] = 0.73 + (1293 / (T_model+77)) * std::exp(4e-5 * P_model_MPa);
 
-#include <aspect/material_model/thermal_conductivity/Gerya2021.h>
+#include <aspect/material_model/thermal_conductivity/gerya_2021.h>
 
 namespace aspect
 {
@@ -39,16 +39,16 @@ namespace aspect
          // Main function: 
          template <int dim>
          void
-         Gerya2021<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+         gerya_2021<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
          {
              #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
              // Test Case
              double AggRock_TestCase_Ger21_TCond = 1;
-             std::vector<double> Gerya2021_Tcond(5, AggRock_TestCase_Ger21_TCond);
+             std::vector<double> gerya_2021_Tcond(5, AggRock_TestCase_Ger21_TCond);
 
-             out.thermal_conductivities = Gerya2021_Tcond;
+             out.thermal_conductivities = gerya_2021_Tcond;
          }
      }
   }
@@ -62,7 +62,7 @@ namespace aspect
     namespace ThermalConductivity
     {
       #define INSTANTIATE(dim) \
-      template class Gerya2021<dim>;
+      template class gerya_2021<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 
