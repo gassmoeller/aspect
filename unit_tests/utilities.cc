@@ -21,7 +21,7 @@
 #include "common.h"
 #include <aspect/utilities.h>
 #include <aspect/material_model/thermal_conductivity/PT_dep_R_bounded.h>
-#include <aspect/material_model/thermal_conductivity/Hofmeister1999.h>
+#include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
 // #include <aspect/material_model/thermal_conductivity/anderson_1987.h>
 // #include <aspect/material_model/thermal_conductivity/gerya_2021.h>
 // #include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
@@ -620,7 +620,7 @@ TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
 
 TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
 {
-  aspect::MaterialModel::ThermalConductivity::Hofmeister1999<3> model;
+  aspect::MaterialModel::ThermalConductivity::hofmeister_1999<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
 

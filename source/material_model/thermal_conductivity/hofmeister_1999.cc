@@ -28,7 +28,7 @@
 // Lambda_Rad(T)   [W m^-1 K^-1] = A0 - B1*T + C2*T^2 + D3*T^3
 // Lambda_Tot(P,T) [W m^-1 K^-1] = Lambda_Lat(P,T) + Lambda_Rad(T)
 
-#include <aspect/material_model/thermal_conductivity/Hofmeister1999.h>
+#include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
 
 namespace aspect
 {
@@ -65,7 +65,7 @@ namespace aspect
       // Main function: 
       template <int dim>
       void
-      Hofmeister1999<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+      hofmeister_1999<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
@@ -214,7 +214,7 @@ namespace aspect
     namespace ThermalConductivity
     {
       #define INSTANTIATE(dim) \
-      template class Hofmeister1999<dim>;
+      template class hofmeister_1999<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 
