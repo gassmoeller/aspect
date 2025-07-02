@@ -12,20 +12,22 @@ set Pressure normalization                 = volume
 set Nonlinear solver scheme                = no Advection, single Stokes
 set Max nonlinear iterations               = 1
 set Use years in output instead of seconds = false
-set Output directory = output-gmg
 
 # Follow as closely as possible the parameters from Rudi et al. (2017)
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Stokes solver type = block GMG
-    set Number of cheap Stokes solver steps             = 200
-    set Maximum number of expensive Stokes solver steps = 0
+    set Stokes solver type = direct solver
+    set Use full A block as preconditioner              = true
+    set Number of cheap Stokes solver steps             = 500
+    set Maximum number of expensive Stokes solver steps = 1000
     set Linear solver tolerance                         = 1e-6
     set GMRES solver restart length                     = 100
+    set Use weighted BFBT for Schur complement          = false
+    set Krylov method for cheap solver steps            = GMRES
   end
 
-  subsection Matrix Free
-    set Output details = true
+  subsection AMG parameters
+    set AMG aggregation threshold = 0.02
   end
 end
 
@@ -52,7 +54,7 @@ subsection Material model
   set Material averaging = none
 
   subsection NSinker
-    set Number of sinkers = 4
+    set Number of sinkers = 8
     set Dynamic viscosity ratio = 1e4
   end
 end
@@ -70,27 +72,14 @@ subsection Initial temperature model
 end
 
 subsection Mesh refinement
-  set Initial global refinement = 4
-  set Initial adaptive refinement = 5
-  set Adapt by fraction of cells = true
-  set Strategy = velocity
-  set Run postprocessors on initial refinement = true
-  set Coarsening fraction       = 0.0
-  set Refinement fraction       = 0.147 #0.14285714285
+  set Initial global refinement                = 4
+  set Initial adaptive refinement              = 0
 end
 
 subsection Postprocess
-  set List of postprocessors = memory statistics, visualization
-
-  subsection Memory statistics
-    set Output peak virtual memory (VmPeak) = true
-  end
+  set List of postprocessors = visualization
 
   subsection Visualization
     set List of output variables = material properties
-
-    subsection Material properties
-      set List of material properties = viscosity
-    end
   end
 end
