@@ -26,7 +26,7 @@
 #include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
 // #include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
 // #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
-#include <aspect/material_model/thermal_conductivity/marzotto_tcond.h>
+#include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
 // #include <aspect/material_model/thermal_conductivity/stackhouse_2015.h>
 #include <aspect/material_model/thermal_conductivity/tosi_2016.h>
 #include <aspect/material_model/thermal_conductivity/xu_2004.h>
@@ -48,7 +48,7 @@ TEST_CASE("Utilities::weighted_p_norm_average")
 
 TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
 {
-  aspect::MaterialModel::ThermalConductivity::marzotto_tcond<3> model;
+  aspect::MaterialModel::ThermalConductivity::marzotto_2025<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
 

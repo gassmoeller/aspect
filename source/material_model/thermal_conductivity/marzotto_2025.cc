@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/thermal_conductivity/marzotto_tcond.h>
+#include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
 
 namespace aspect
 {
@@ -65,7 +65,7 @@ namespace aspect
       // Main function: 
       template <int dim>
       void
-      marzotto_tcond<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+      marzotto_2025<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
       {
 
@@ -442,7 +442,8 @@ namespace aspect
 
         // Coefficients for dry olivine
         // retreived from fitting dataset of
-        // [Marzotto et al. 2025, Nature Communication, under review]
+        // [Marzotto et al. 2025, Nature Communication, 16, 6058]
+        // https://doi.org/10.1038/s41467-025-61148-8
         // mineral composition [Mg1.8 Fe0.2 SiO4]
         const double OlivineDry_RadTC_c0 =   -10.00900000;
         const double OlivineDry_RadTC_d1 =    1.883900000;
@@ -451,7 +452,8 @@ namespace aspect
 
         // Coefficients for NON-DIMENSIONAL dry olivine
         // retreived from fitting dataset of
-        // [Marzotto et al. 2025, Nature Communication, under review]
+        // [Marzotto et al. 2025, Nature Communication, 16, 6058]
+        // https://doi.org/10.1038/s41467-025-61148-8
         // mineral composition [Mg1.8 Fe0.2 SiO4]
         // const double OlivinNonD_RadTC_c0 =   -5.6162;
         // const double OlivinNonD_RadTC_d1 =    1.8839;
@@ -1376,7 +1378,7 @@ namespace aspect
     namespace ThermalConductivity
     {
 #define INSTANTIATE(dim) \
-  template class marzotto_tcond<dim>;
+  template class marzotto_2025<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

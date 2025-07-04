@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_thermal_conductivity_marzotto_tcond_h
-#define _aspect_material_model_thermal_conductivity_marzotto_tcond_h
+#ifndef _aspect_material_model_thermal_conductivity_marzotto_2025_h
+#define _aspect_material_model_thermal_conductivity_marzotto_2025_h
 
 #include <aspect/material_model/thermal_conductivity/interface.h>
 
@@ -36,7 +36,7 @@ namespace aspect
        */
 
       template <int dim>
-      class marzotto_tcond : public Interface<dim>
+      class marzotto_2025 : public Interface<dim>
       {
         public:
           /**
