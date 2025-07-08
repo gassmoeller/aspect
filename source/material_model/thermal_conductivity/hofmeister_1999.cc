@@ -21,39 +21,43 @@
 
 #include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
 
+// Helper functions in anonymous namespace
+namespace 
+{
+  // Helper function: Compute the lattice thermal conductivity using the Hofmeister (1999) formulation
+  double Compute_Lat_TCond_Hofmeister1999(double Lambda0, double N_Texp, double Gamma, double Alpha, double K0, double K_prime, double T_room, double T_model, double P_model)
+  {
+   // Lambda_Lat(P,T) [W m^-1 K^-1] = Lambda_Room(T_room/T_model)^N_Texp * exp[-(4*Gamma + 1/3)*Alpha*(T_model-T_room)] * (1+(K_prime*P_model/K0))
+   double Factor_1 = Lambda0 * std::pow((T_room / T_model), N_Texp);
+   double Factor_2 = std::exp(-((4*Gamma)+(1.0/3.0)) * (Alpha * (T_model - T_room)));
+   double Factor_3 = (1+((K_prime*P_model)/K0));
+   double HLatTCon = Factor_1 * Factor_2 * Factor_3;
+   return HLatTCon;
+  }
+
+  // Helper function: Compute the radiative thermal conductivity using the Hofmeister (1999) formulation
+  double Compute_Rad_TCond_Hofmeister1999(double A0, double B1, double C2, double D3, double T_model)
+  {
+   // Lambda_Rad(T)   [W m^-1 K^-1] = A0 - B1*T + C2*T^2 + D3*T^3
+   double HRadTCon = A0 + (B1 * T_model) + (C2 * std::pow(T_model, 2)) + (D3 * std::pow(T_model, 3));
+   return HRadTCon;
+  }
+
+  // Helper function: Compute total thermal conductivity
+  double Compute_Tot_TCond_Hofmeister1999(double lattice_conductivity, double radiative_conductivity)
+  {
+   // Lambda_Tot(P,T) [W m^-1 K^-1] = Lambda_Lat(P,T) + Lambda_Rad(T)
+   double thermal_conductivity = lattice_conductivity + radiative_conductivity;
+   return thermal_conductivity;
+  }
+}
+
 namespace aspect
 {
   namespace MaterialModel
   {
     namespace ThermalConductivity
     {
-      // Helper function: Compute the lattice thermal conductivity using the Hofmeister (1999) formulation
-      double Compute_Lat_TCond_Hofmeister1999(double Lambda0, double N_Texp, double Gamma, double Alpha, double K0, double K_prime, double T_room, double T_model, double P_model)
-      {
-        // Lambda_Lat(P,T) [W m^-1 K^-1] = Lambda_Room(T_room/T_model)^N_Texp * exp[-(4*Gamma + 1/3)*Alpha*(T_model-T_room)] * (1+(K_prime*P_model/K0))
-        double Factor_1 = Lambda0 * std::pow((T_room / T_model), N_Texp);
-        double Factor_2 = std::exp(-((4*Gamma)+(1.0/3.0)) * (Alpha * (T_model - T_room)));
-        double Factor_3 = (1+((K_prime*P_model)/K0));
-        double HLatTCon = Factor_1 * Factor_2 * Factor_3;
-        return HLatTCon;
-      }
-
-      // Helper function: Compute the radiative thermal conductivity using the Hofmeister (1999) formulation
-      double Compute_Rad_TCond_Hofmeister1999(double A0, double B1, double C2, double D3, double T_model)
-      {
-        // Lambda_Rad(T)   [W m^-1 K^-1] = A0 - B1*T + C2*T^2 + D3*T^3
-        double HRadTCon = A0 + (B1 * T_model) + (C2 * std::pow(T_model, 2)) + (D3 * std::pow(T_model, 3));
-        return HRadTCon;
-      }
-
-      // Helper function: Compute total thermal conductivity
-      double Compute_Tot_TCond_Hofmeister1999(double lattice_conductivity, double radiative_conductivity)
-      {
-        // Lambda_Tot(P,T) [W m^-1 K^-1] = Lambda_Lat(P,T) + Lambda_Rad(T)
-        double thermal_conductivity = lattice_conductivity + radiative_conductivity;
-        return thermal_conductivity;
-      }
-
       // Main function: 
       template <int dim>
       void
