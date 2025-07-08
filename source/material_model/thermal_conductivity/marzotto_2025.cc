@@ -20,48 +20,52 @@
 
 #include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
 
+// Helper functions in anonymous namespace
+namespace 
+{
+  // Helper function: Compute lattice thermal conductivity
+  double compute_lattice_thermal_conductivity(double a0, double b1, double ymin, double ymax, double P_log, double T_mod, double T_room, double n_exp)
+  {
+    // Compute the lattice thermal conductivity in real (+,-) and simplex (0->1) space considering the boundaries (ymin) and (ymax)
+    double zSimpl = a0 + b1 * P_log;
+    double ySimpl = std::exp(zSimpl);
+    double yPrime = ySimpl / (1 + ySimpl);
+    double yRealS = ymin + (ymax - ymin) * yPrime;
+    double PDep_LatTCon = std::exp(yRealS);
+    return PDep_LatTCon * std::pow((T_room / T_mod), n_exp);
+  }
+     
+  // Helper function: Compute radiative thermal conductivity
+  double compute_radiative_thermal_conductivity(double c0, double d1, double jmin, double jmax, double T_log)
+  {
+    // Compute the radiative thermal conductivity in real (+,-) and simplex (0->1) space considering the boundaries (ymin) and (ymax)
+    double zSimpl = c0 + d1 * T_log;
+    double ySimpl = std::exp(zSimpl);
+    double yPrime = ySimpl / (1 + ySimpl);
+    double yRealS = jmin + (jmax - jmin) * yPrime;
+    return std::exp(yRealS);
+  }
+     
+  // Helper function: Compute total thermal conductivity
+  double compute_total_thermal_conductivity(double lattice_conductivity, double radiative_conductivity)
+  {
+    double thermal_conductivity = lattice_conductivity + radiative_conductivity;
+    return thermal_conductivity;
+  }
+     
+  // Helper function: Compute aggregate thermal conductivity
+  // double compute_aggregate_thermal_conductivity(const std::vector<std::vector<double>> &thermal_conductivities, double min_frac, int col)
+  // {
+  // return std::pow(thermal_conductivities[3][col], min_frac);
+  // }
+}
+
 namespace aspect
 {
   namespace MaterialModel
   {
     namespace ThermalConductivity
-    {
-      // Helper function: Compute lattice thermal conductivity
-      double compute_lattice_thermal_conductivity(double a0, double b1, double ymin, double ymax, double P_log, double T_mod, double T_room, double n_exp)
-      {
-        // Compute the lattice thermal conductivity in real (+,-) and simplex (0->1) space considering the boundaries (ymin) and (ymax)
-        double zSimpl = a0 + b1 * P_log;
-        double ySimpl = std::exp(zSimpl);
-        double yPrime = ySimpl / (1 + ySimpl);
-        double yRealS = ymin + (ymax - ymin) * yPrime;
-        double PDep_LatTCon = std::exp(yRealS);
-        return PDep_LatTCon * std::pow((T_room / T_mod), n_exp);
-      }
-     
-      // Helper function: Compute radiative thermal conductivity
-      double compute_radiative_thermal_conductivity(double c0, double d1, double jmin, double jmax, double T_log)
-      {
-        // Compute the radiative thermal conductivity in real (+,-) and simplex (0->1) space considering the boundaries (ymin) and (ymax)
-        double zSimpl = c0 + d1 * T_log;
-        double ySimpl = std::exp(zSimpl);
-        double yPrime = ySimpl / (1 + ySimpl);
-        double yRealS = jmin + (jmax - jmin) * yPrime;
-        return std::exp(yRealS);
-      }
-     
-      // Helper function: Compute total thermal conductivity
-      double compute_total_thermal_conductivity(double lattice_conductivity, double radiative_conductivity)
-      {
-        double thermal_conductivity = lattice_conductivity + radiative_conductivity;
-        return thermal_conductivity;
-      }
-     
-      // Helper function: Compute aggregate thermal conductivity
-      // double compute_aggregate_thermal_conductivity(const std::vector<std::vector<double>> &thermal_conductivities, double min_frac, int col)
-      // {
-        // return std::pow(thermal_conductivities[3][col], min_frac);
-      // }
-     
+    { 
       // Main function: 
       template <int dim>
       void
