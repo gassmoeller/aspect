@@ -34,7 +34,7 @@ namespace aspect
       /**
        * A class that implements a constant thermal conductivity.
        *
-       * @ingroup MaterialModels
+       * @ingroup ThermalConductivity
        */
       template <int dim>
       class Constant : public Interface<dim>

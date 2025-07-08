@@ -32,8 +32,14 @@ namespace aspect
     {
 
       /**
-       * @ingroup MaterialModels
-       */
+      * This function computes the thermal conductivity of olivine, pyroxene and garnet.
+      * using the Marzotto et al. (2025) formulation
+      * [Marzotto et al. 2025, Nature Communication, 16, 6058]
+      * https://doi.org/10.1038/s41467-025-61148-8
+      * 
+      * @ingroup ThermalConductivity
+      * 
+      */
 
       template <int dim>
       class marzotto_2025 : public Interface<dim>

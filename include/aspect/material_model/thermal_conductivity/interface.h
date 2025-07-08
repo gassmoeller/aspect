@@ -34,14 +34,16 @@ namespace aspect
     {
 
       /**
-       * A base class for parametrizations of the thermal conductivity. Classes derived
-       * from this class will need to implement a function that computes the thermal
-       * conductivities in @p out given the inputs in @p in. Derived classes can in addition
-       * implement the functions of the base class Plugins::InterfaceBase as needed (e.g.
-       * to read in input parameters or update the parametrization at the beginning of time steps).
-       *
-       * @ingroup MaterialModels
-       */
+      * A base class for parametrizations of the thermal conductivity. Classes derived
+      * from this class will need to implement a function that computes the thermal
+      * conductivities in @p out given the inputs in @p in. Derived classes can in addition
+      * implement the functions of the base class Plugins::InterfaceBase as needed (e.g.
+      * to read in input parameters or update the parametrization at the beginning of time steps).
+      *
+      * @ingroup MaterialModels
+      * 
+      */
+
       template <int dim>
       class Interface : public Plugins::InterfaceBase
       {
