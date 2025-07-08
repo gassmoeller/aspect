@@ -19,6 +19,12 @@
 
 */
 
+// This function computes the thermal conductivity of mantle minerals.
+// using the linear formulation of Xu et al. (2004)
+// [Xu et al., 2004, PEPI, vol. 143, p. 321-336]
+// https://doi.org/10.1016/j.pepi.2004.03.005
+// Lambda_Lat (P,T) = Lambda_Room(T_room/T_model)^N_Texp * (1 + A_linear*P_model)
+
 #ifndef _aspect_material_model_thermal_conductivity_xu_2004_h
 #define _aspect_material_model_thermal_conductivity_xu_2004_h
 
