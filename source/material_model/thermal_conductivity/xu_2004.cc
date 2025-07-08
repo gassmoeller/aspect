@@ -21,21 +21,25 @@
 
 #include <aspect/material_model/thermal_conductivity/xu_2004.h>
 
+namespace
+{
+  // Helper function: Compute the lattice thermal conductivity using the Xu et al. (2004) formulation
+  double Compute_Lat_TCond_Xu2004(double Lambda0, double N_Texp, double A_linear, double T_room, double T_model, double P_model)
+  {
+    // Lambda_Lat (P,T) = Lambda_Room(T_room/T_model)^N_Texp * (1.0 + A_linear*P_model)
+    double Factor_1 = Lambda0 * std::pow((T_room / T_model), N_Texp);
+    double Factor_2 = (1.0 + (A_linear * P_model));
+    double HLatTCon = Factor_1 * Factor_2;
+    return HLatTCon;
+  }
+}
+
 namespace aspect
 {
   namespace MaterialModel
   {
     namespace ThermalConductivity
     {   
-      // Helper function: Compute the lattice thermal conductivity using the Xu et al. (2004) formulation
-      double Compute_Lat_TCond_Xu2004(double Lambda0, double N_Texp, double A_linear, double T_room, double T_model, double P_model)
-      {
-        // Lambda_Lat (P,T) = Lambda_Room(T_room/T_model)^N_Texp * (1.0 + A_linear*P_model)
-        double Factor_1 = Lambda0 * std::pow((T_room / T_model), N_Texp);
-        double Factor_2 = (1.0 + (A_linear * P_model));
-        double HLatTCon = Factor_1 * Factor_2;
-        return HLatTCon;
-      }
 
       // Main function: 
       template <int dim>
