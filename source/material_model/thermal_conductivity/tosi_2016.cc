@@ -20,21 +20,27 @@
 */
 
 #include <aspect/material_model/thermal_conductivity/tosi_2016.h>
+
+// Helper functions in anonymous namespace
+namespace
+{
+  // Helper function: Compute the lattice thermal conductivity using the Tosi et al. (2016) formulation
+  double Compute_Lat_TCond_Tosi2016(double Lambda0, double A_linear, double N_Texp, double T_room, double T_model, double P_model)
+  {
+    // Lambda_Lat(P,T) [W m^-1 K^-1] = (Lambda_Room + A_linear*P_model)*(T_room/T_model)^N_Texp
+    double Factor_1 = Lambda0 + A_linear * P_model;
+    double Factor_2 = std::pow((T_room / T_model), N_Texp);
+    double HLatTCon = Factor_1 * Factor_2;
+    return HLatTCon;
+  }
+}
+
 namespace aspect
 {
   namespace MaterialModel
   {
     namespace ThermalConductivity
     {  
-      // Helper function: Compute the lattice thermal conductivity using the Tosi et al. (2016) formulation
-      double Compute_Lat_TCond_Tosi2016(double Lambda0, double A_linear, double N_Texp, double T_room, double T_model, double P_model)
-      {
-        // Lambda_Lat(P,T) [W m^-1 K^-1] = (Lambda_Room + A_linear*P_model)*(T_room/T_model)^N_Texp
-        double Factor_1 = Lambda0 + A_linear * P_model;
-        double Factor_2 = std::pow((T_room / T_model), N_Texp);
-        double HLatTCon = Factor_1 * Factor_2;
-        return HLatTCon;
-      }
 
       // Main function: 
       template <int dim>
