@@ -36,10 +36,10 @@ namespace aspect
       * using the Hofmeister (1999) formulation (see equations 11-12 in the paper).
       * [Hofmeister, 1999, Science, vol. 283(5408), p. 1699-1706]
       * https://www.science.org/doi/10.1126/science.283.5408.1699
-      * The formulation includes lattice and radiative thermal conductivity
-      * Lambda_Lat(P,T) [W m^-1 K^-1] = Lambda_Room(T_room/T_model)^N_Texp * std::exp[-(4*Gamma + 1.0/3.0)*Alpha*(T_model-T_room)] * (1+(K_prime*P_model/K0))
-      * Lambda_Rad(T)   [W m^-1 K^-1] = A0 - B1*T + C2*T^2 + D3*T^3
-      * Lambda_Tot(P,T) [W m^-1 K^-1] = Lambda_Lat(P,T) + Lambda_Rad(T)
+      * The formulation includes lattice (latTC) and radiative (radTC) thermal conductivity
+      * latTC(P,T) [W m^-1 K^-1] = latTC_room(T_room/T_model)^n_Texp * std::exp[-(4*gamma + 1.0/3.0)*alpha*(T_model-T_room)] * (1+(K_prime*P_model/K0))
+      * radTC(T)   [W m^-1 K^-1] = a0 - b1*T + c2*T^2 + d3*T^3
+      * totTC(P,T) [W m^-1 K^-1] = latTC(P,T) + radTC(T)
       * 
       * @ingroup ThermalConductivity
       * 

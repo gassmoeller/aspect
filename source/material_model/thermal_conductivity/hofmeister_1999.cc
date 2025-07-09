@@ -21,34 +21,28 @@
 
 #include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
 
-// Helper functions in anonymous namespace
+// Helper functions in anonymous namespace to compute thermal conductivities using the Hofmeister (1999) formulations
 namespace 
 {
-  // Helper function: Compute the lattice thermal conductivity using the Hofmeister (1999) formulation
-  double Compute_Lat_TCond_Hofmeister1999(double Lambda0, double N_Texp, double Gamma, double Alpha, double K0, double K_prime, double T_room, double T_model, double P_model)
+  double compute_lattice_thermal_conductivity_hof1999(const double latTC_room, const double n_Texp, const double gamma, const double alpha, const double K0, const double K_prime, const double T_room, const double T_model, const double P_model)
   {
-   // Lambda_Lat(P,T) [W m^-1 K^-1] = Lambda_Room(T_room/T_model)^N_Texp * exp[-(4*Gamma + 1/3)*Alpha*(T_model-T_room)] * (1+(K_prime*P_model/K0))
-   double Factor_1 = Lambda0 * std::pow((T_room / T_model), N_Texp);
-   double Factor_2 = std::exp(-((4*Gamma)+(1.0/3.0)) * (Alpha * (T_model - T_room)));
-   double Factor_3 = (1+((K_prime*P_model)/K0));
-   double HLatTCon = Factor_1 * Factor_2 * Factor_3;
-   return HLatTCon;
+   double factor_1 = latTC_room * std::pow((T_room / T_model), n_Texp);
+   double factor_2 = std::exp(-((4*gamma)+(1.0/3.0)) * (alpha * (T_model - T_room)));
+   double factor_3 = (1+((K_prime*P_model)/K0));
+   double lattice_thermal_conductivity = factor_1 * factor_2 * factor_3;
+   return lattice_thermal_conductivity;
   }
 
-  // Helper function: Compute the radiative thermal conductivity using the Hofmeister (1999) formulation
-  double Compute_Rad_TCond_Hofmeister1999(double A0, double B1, double C2, double D3, double T_model)
+  double compute_radiative_thermal_conductivity_hof1999(const double a0, const double b1, const double c2, const double d3, const double T_model)
   {
-   // Lambda_Rad(T)   [W m^-1 K^-1] = A0 - B1*T + C2*T^2 + D3*T^3
-   double HRadTCon = A0 + (B1 * T_model) + (C2 * std::pow(T_model, 2)) + (D3 * std::pow(T_model, 3));
-   return HRadTCon;
+   double radiative_thermal_conductivity = a0 + (b1 * T_model) + (c2 * std::pow(T_model, 2)) + (d3 * std::pow(T_model, 3));
+   return radiative_thermal_conductivity;
   }
 
-  // Helper function: Compute total thermal conductivity
-  double Compute_Tot_TCond_Hofmeister1999(double lattice_conductivity, double radiative_conductivity)
+  double compute_total_thermal_conductivity_hof1999(const double lattice_thermal_conductivity, const double radiative_thermal_conductivity)
   {
-   // Lambda_Tot(P,T) [W m^-1 K^-1] = Lambda_Lat(P,T) + Lambda_Rad(T)
-   double thermal_conductivity = lattice_conductivity + radiative_conductivity;
-   return thermal_conductivity;
+   double total_thermal_conductivity = lattice_thermal_conductivity + radiative_thermal_conductivity;
+   return total_thermal_conductivity;
   }
 }
 
@@ -68,47 +62,47 @@ namespace aspect
 
         // Coefficients for dry olivine 
         // mineral composition [(Mg1.8Fe0.2)SiO4]    
-        constexpr int OlivineDry_Index = 0;
-        const double OlivineDry_Hof99_LatTC_Room =  4.7;        // lattice thermal conductivity at room temperature (Lambda_Room)
-        const double OlivineDry_Hof99_LatTC_TExp =  0.3;        // temperature exponent (N_Texp)
-        const double OlivineDry_Hof99_LatTC_GruP =  1.28;       // Grueneisen parameter(Gamma)
-        const double OlivineDry_Hof99_LatTC_Alph =  2.7500e-5;  // thermal expansion coefficient (Alpha)
-        const double OlivineDry_Hof99_LatTC_Bulk =  128.1;      // bulk modulus (K0)
-        const double OlivineDry_Hof99_LatTC_PDev =  4.6;        // pressure derivative of bulk modulus (K_prime)
-        const double OlivineDry_Hof99_RadTC_CoA0 =  1.7530e-2;  // coefficient for radiative thermal conductivity T^0 (A0)
-        const double OlivineDry_Hof99_RadTC_CoB1 = -1.0365e-4;  // coefficient for radiative thermal conductivity T^1 (B1)
-        const double OlivineDry_Hof99_RadTC_CoC2 =  2.2451e-7;  // coefficient for radiative thermal conductivity T^2 (C2)
-        const double OlivineDry_Hof99_RadTC_CoD3 = -3.4071e-11; // coefficient for radiative thermal conductivity T^3 (D3)
+        constexpr int olivinedry_index = 0;
+        const double olivinedry_hof99_latTC_room =  4.7;        // lattice thermal conductivity at room P,T conditions (latTC__room)
+        const double olivinedry_hof99_latTC_Texp =  0.3;        // temperature exponent (n_Texp)
+        const double olivinedry_hof99_latTC_grun =  1.28;       // Grueneisen parameter(gamma)
+        const double olivinedry_hof99_latTC_alph =  2.7500e-5;  // thermal expansion coefficient (alpha)
+        const double olivinedry_hof99_latTC_Kzer =  128.1;      // bulk modulus (K0)
+        const double olivinedry_hof99_latTC_Kpri =  4.6;        // pressure derivative of bulk modulus (K_prime)
+        const double olivinedry_hof99_radTC_coa0 =  1.7530e-2;  // coefficient for radiative thermal conductivity T^0 (a0)
+        const double olivinedry_hof99_radTC_cob1 = -1.0365e-4;  // coefficient for radiative thermal conductivity T^1 (b1)
+        const double olivinedry_hof99_radTC_coc2 =  2.2451e-7;  // coefficient for radiative thermal conductivity T^2 (c2)
+        const double olivinedry_hof99_radTC_cod3 = -3.4071e-11; // coefficient for radiative thermal conductivity T^3 (d3)
         
         // Coefficients for dry wadsleyite
         // mineral composition [(Mg1.8Fe0.2)SiO4]
-        constexpr int WadsleyDry_Index = 1;
-        const double WadsleyDry_Hof99_LatTC_Room =  7.7;        // lattice thermal conductivity at room temperature (Lambda_Room)
-        const double WadsleyDry_Hof99_LatTC_TExp =  0.3;        // temperature exponent (N_Texp)
-        const double WadsleyDry_Hof99_LatTC_GruP =  1.00;       // Grueneisen parameter (Gamma)
-        const double WadsleyDry_Hof99_LatTC_Alph =  2.2821e-5;  // thermal expansion coefficient (Alpha)
-        const double WadsleyDry_Hof99_LatTC_Bulk =  172;        // bulk modulus (K0)
-        const double WadsleyDry_Hof99_LatTC_PDev =  4.8;        // pressure derivative of bulk modulus (K_prime)
-        const double WadsleyDry_Hof99_RadTC_CoA0 =  1.7530e-2;  // coefficient for radiative thermal conductivity T^0 (A0)
-        const double WadsleyDry_Hof99_RadTC_CoB1 = -1.0365e-4;  // coefficient for radiative thermal conductivity T^1 (B1)
-        const double WadsleyDry_Hof99_RadTC_CoC2 =  2.2451e-7;  // coefficient for radiative thermal conductivity T^2 (C2)
-        const double WadsleyDry_Hof99_RadTC_CoD3 = -3.4071e-11; // coefficient for radiative thermal conductivity T^3 (D3)
+        constexpr int wadsleydry_index = 1;
+        const double wadsleydry_hof99_latTC_room =  7.7;        // lattice thermal conductivity at room P,T conditions (latTC__room)
+        const double wadsleydry_hof99_latTC_Texp =  0.3;        // temperature exponent (n_Texp)
+        const double wadsleydry_hof99_latTC_grun =  1.00;       // Grueneisen parameter (gamma)
+        const double wadsleydry_hof99_latTC_alph =  2.2821e-5;  // thermal expansion coefficient (alpha)
+        const double wadsleydry_hof99_latTC_Kzer =  172;        // bulk modulus (K0)
+        const double wadsleydry_hof99_latTC_Kpri =  4.8;        // pressure derivative of bulk modulus (K_prime)
+        const double wadsleydry_hof99_radTC_coa0 =  1.7530e-2;  // coefficient for radiative thermal conductivity T^0 (a0)
+        const double wadsleydry_hof99_radTC_cob1 = -1.0365e-4;  // coefficient for radiative thermal conductivity T^1 (b1)
+        const double wadsleydry_hof99_radTC_coc2 =  2.2451e-7;  // coefficient for radiative thermal conductivity T^2 (c2)
+        const double wadsleydry_hof99_radTC_cod3 = -3.4071e-11; // coefficient for radiative thermal conductivity T^3 (d3)
 
         // Coefficients for dry ringwoodite
         // mineral composition [(Mg1.8Fe0.2)SiO4]
-        constexpr int RingwooDry_Index = 2;
-        const double RingwooDry_Hof99_LatTC_Room =  7.7;        // lattice thermal conductivity at room temperature (Lambda_Room)
-        const double RingwooDry_Hof99_LatTC_TExp =  0.3;        // temperature exponent (N_Texp)
-        const double RingwooDry_Hof99_LatTC_GruP =  1.25;       // Grueneisen parameter (Gamma)
-        const double RingwooDry_Hof99_LatTC_Alph =  2.0535e-5;  // thermal expansion coefficient (Alpha)
-        const double RingwooDry_Hof99_LatTC_Bulk =  183;        // bulk modulus (K0)
-        const double RingwooDry_Hof99_LatTC_PDev =  5.2;        // pressure derivative of bulk modulus (K_prime)
-        const double RingwooDry_Hof99_RadTC_CoA0 =  1.7530e-2;  // coefficient for radiative thermal conductivity T^0 (A0)
-        const double RingwooDry_Hof99_RadTC_CoB1 = -1.0365e-4;  // coefficient for radiative thermal conductivity T^1 (B1)
-        const double RingwooDry_Hof99_RadTC_CoC2 =  2.2451e-7;  // coefficient for radiative thermal conductivity T^2 (C2)
-        const double RingwooDry_Hof99_RadTC_CoD3 = -3.4071e-11; // coefficient for radiative thermal conductivity T^3 (D3)
+        constexpr int ringwoodry_index = 2;
+        const double ringwoodry_hof99_latTC_room =  7.7;        // lattice thermal conductivity at room P,T conditions (latTC__room)
+        const double ringwoodry_hof99_latTC_Texp =  0.3;        // temperature exponent (n_Texp)
+        const double ringwoodry_hof99_latTC_grun =  1.25;       // Grueneisen parameter (gamma)
+        const double ringwoodry_hof99_latTC_alph =  2.0535e-5;  // thermal expansion coefficient (alpha)
+        const double ringwoodry_hof99_latTC_Kzer =  183;        // bulk modulus (K0)
+        const double ringwoodry_hof99_latTC_Kpri =  5.2;        // pressure derivative of bulk modulus (K_prime)
+        const double ringwoodry_hof99_radTC_coa0 =  1.7530e-2;  // coefficient for radiative thermal conductivity T^0 (a0)
+        const double ringwoodry_hof99_radTC_cob1 = -1.0365e-4;  // coefficient for radiative thermal conductivity T^1 (b1)
+        const double ringwoodry_hof99_radTC_coc2 =  2.2451e-7;  // coefficient for radiative thermal conductivity T^2 (c2)
+        const double ringwoodry_hof99_radTC_cod3 = -3.4071e-11; // coefficient for radiative thermal conductivity T^3 (d3)
 
-        unsigned int MineralPar_Index = RingwooDry_Index+1; // Number of minerals
+        unsigned int mineralpar_index = ringwoodry_index+1; // Number of minerals
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
@@ -119,11 +113,11 @@ namespace aspect
         {
 
          // Preallocate a vector for storing thermal conductivities of minerals
-         std::vector<double> Hof99_Minerals_LatTcond(MineralPar_Index, 0.0); // Lattice thermal conductivity
-         std::vector<double> Hof99_Minerals_RadTcond(MineralPar_Index, 0.0); // Radiative thermal conductivity
-         std::vector<double> Hof99_Minerals_TotTcond(MineralPar_Index, 0.0); // Total thermal conductivity
+         std::vector<double> hof99_minerals_latTcond(mineralpar_index, 0.0); // Lattice thermal conductivity
+         std::vector<double> hof99_minerals_radTcond(mineralpar_index, 0.0); // Radiative thermal conductivity
+         std::vector<double> hof99_minerals_totTcond(mineralpar_index, 0.0); // Total thermal conductivity
          // Preallocate a matrix for storing thermal conductivities of minerals
-         std::vector<std::vector<double>> Hof99_All_Minerals_TConds(MineralPar_Index, std::vector<double>(3, 0.0));
+         std::vector<std::vector<double>> hof99_all_minerals_Tconds(mineralpar_index, std::vector<double>(3, 0.0));
 
          // Convert pressure unit from [Pa] to [GPa]
          double P_GPa = in.pressure[i]/1e9;
@@ -136,66 +130,103 @@ namespace aspect
 
          switch (mID) // Compute the lattice, radiative and total thermal conductivities of the given mineral
          {
-           case OlivineDry_Index: // Dry Olivine
+           case olivinedry_index: // Dry Olivine
            { 
-             double OlivineDry_Hof99_LatTCon = Compute_Lat_TCond_Hofmeister1999(
-             OlivineDry_Hof99_LatTC_Room, OlivineDry_Hof99_LatTC_TExp, OlivineDry_Hof99_LatTC_GruP, OlivineDry_Hof99_LatTC_Alph,
-             OlivineDry_Hof99_LatTC_Bulk, OlivineDry_Hof99_LatTC_PDev, T_room, T_mod, P_GPa);   
-             double OlivineDry_Hof99_RadTCon = Compute_Rad_TCond_Hofmeister1999(
-             OlivineDry_Hof99_RadTC_CoA0, OlivineDry_Hof99_RadTC_CoB1, OlivineDry_Hof99_RadTC_CoC2, OlivineDry_Hof99_RadTC_CoD3, T_mod); 
-             double OlivineDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
-             OlivineDry_Hof99_LatTCon, OlivineDry_Hof99_RadTCon); 
+             double olivinedry_hof99_latTcon = compute_lattice_thermal_conductivity_hof1999(
+             olivinedry_hof99_latTC_room, 
+             olivinedry_hof99_latTC_Texp, 
+             olivinedry_hof99_latTC_grun, 
+             olivinedry_hof99_latTC_alph,
+             olivinedry_hof99_latTC_Kzer, 
+             olivinedry_hof99_latTC_Kpri, 
+             T_room, 
+             T_mod, 
+             P_GPa);   
+             double olivinedry_hof99_radTcon = compute_radiative_thermal_conductivity_hof1999(
+             olivinedry_hof99_radTC_coa0, 
+             olivinedry_hof99_radTC_cob1, 
+             olivinedry_hof99_radTC_coc2, 
+             olivinedry_hof99_radTC_cod3, 
+             T_mod); 
+             double olivinedry_hof99_totTcon = compute_total_thermal_conductivity_hof1999(
+             olivinedry_hof99_latTcon, 
+             olivinedry_hof99_radTcon); 
              // Store the thermal conductivities in the vector
-             Hof99_Minerals_LatTcond[OlivineDry_Index] = OlivineDry_Hof99_LatTCon;
-             Hof99_Minerals_RadTcond[OlivineDry_Index] = OlivineDry_Hof99_RadTCon;
-             Hof99_Minerals_TotTcond[OlivineDry_Index] = OlivineDry_Hof99_TotTCon;
+             hof99_minerals_latTcond[olivinedry_index] = olivinedry_hof99_latTcon;
+             hof99_minerals_radTcond[olivinedry_index] = olivinedry_hof99_radTcon;
+             hof99_minerals_totTcond[olivinedry_index] = olivinedry_hof99_totTcon;
              break;
            }
-           case WadsleyDry_Index: // Dry Wadsleyite 
+           case wadsleydry_index: // Dry Wadsleyite 
            { 
-             double WadsleyDry_Hof99_LatTCon = Compute_Lat_TCond_Hofmeister1999(
-             WadsleyDry_Hof99_LatTC_Room, WadsleyDry_Hof99_LatTC_TExp, WadsleyDry_Hof99_LatTC_GruP, WadsleyDry_Hof99_LatTC_Alph,
-             WadsleyDry_Hof99_LatTC_Bulk, WadsleyDry_Hof99_LatTC_PDev, T_room, T_mod, P_GPa); 
-             double WadsleyDry_Hof99_RadTCon = Compute_Rad_TCond_Hofmeister1999(
-             WadsleyDry_Hof99_RadTC_CoA0, WadsleyDry_Hof99_RadTC_CoB1, WadsleyDry_Hof99_RadTC_CoC2, WadsleyDry_Hof99_RadTC_CoD3, T_mod); 
-             double WadsleyDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
-             WadsleyDry_Hof99_LatTCon, WadsleyDry_Hof99_RadTCon);
+             double wadsleydry_hof99_latTcon = compute_lattice_thermal_conductivity_hof1999(
+             wadsleydry_hof99_latTC_room, 
+             wadsleydry_hof99_latTC_Texp, 
+             wadsleydry_hof99_latTC_grun, 
+             wadsleydry_hof99_latTC_alph,
+             wadsleydry_hof99_latTC_Kzer, 
+             wadsleydry_hof99_latTC_Kpri, 
+             T_room, 
+             T_mod, 
+             P_GPa); 
+             double wadsleydry_hof99_radTcon = compute_radiative_thermal_conductivity_hof1999(
+             wadsleydry_hof99_radTC_coa0,
+             wadsleydry_hof99_radTC_cob1, 
+             wadsleydry_hof99_radTC_coc2, 
+             wadsleydry_hof99_radTC_cod3, 
+             T_mod); 
+             double wadsleydry_hof99_totTcon = compute_total_thermal_conductivity_hof1999(
+             wadsleydry_hof99_latTcon, 
+             wadsleydry_hof99_radTcon);
              // Store the thermal conductivities in the vector
-             Hof99_Minerals_LatTcond[WadsleyDry_Index] = WadsleyDry_Hof99_LatTCon;
-             Hof99_Minerals_RadTcond[WadsleyDry_Index] = WadsleyDry_Hof99_RadTCon;
-             Hof99_Minerals_TotTcond[WadsleyDry_Index] = WadsleyDry_Hof99_TotTCon;
+             hof99_minerals_latTcond[wadsleydry_index] = wadsleydry_hof99_latTcon;
+             hof99_minerals_radTcond[wadsleydry_index] = wadsleydry_hof99_radTcon;
+             hof99_minerals_totTcond[wadsleydry_index] = wadsleydry_hof99_totTcon;
              break;
            }
-           case RingwooDry_Index: // Dry Ringwoodite
+           case ringwoodry_index: // Dry Ringwoodite
            { 
-             double RingwooDry_Hof99_LatTCon = Compute_Lat_TCond_Hofmeister1999(
-             RingwooDry_Hof99_LatTC_Room, RingwooDry_Hof99_LatTC_TExp, RingwooDry_Hof99_LatTC_GruP, RingwooDry_Hof99_LatTC_Alph,
-             RingwooDry_Hof99_LatTC_Bulk, RingwooDry_Hof99_LatTC_PDev, T_room, T_mod, P_GPa); 
-             double RingwooDry_Hof99_RadTCon = Compute_Rad_TCond_Hofmeister1999(
-             RingwooDry_Hof99_RadTC_CoA0, RingwooDry_Hof99_RadTC_CoB1, RingwooDry_Hof99_RadTC_CoC2, RingwooDry_Hof99_RadTC_CoD3, T_mod); 
-             double RingwooDry_Hof99_TotTCon = Compute_Tot_TCond_Hofmeister1999(
-             RingwooDry_Hof99_LatTCon, RingwooDry_Hof99_RadTCon);
+             double ringwoodry_hof99_latTcon = compute_lattice_thermal_conductivity_hof1999(
+             ringwoodry_hof99_latTC_room, 
+             ringwoodry_hof99_latTC_Texp, 
+             ringwoodry_hof99_latTC_grun, 
+             ringwoodry_hof99_latTC_alph,
+             ringwoodry_hof99_latTC_Kzer, 
+             ringwoodry_hof99_latTC_Kpri, 
+             T_room, 
+             T_mod, 
+             P_GPa); 
+             double ringwoodry_hof99_radTcon = compute_radiative_thermal_conductivity_hof1999(
+             ringwoodry_hof99_radTC_coa0, 
+             ringwoodry_hof99_radTC_cob1, 
+             ringwoodry_hof99_radTC_coc2, 
+             ringwoodry_hof99_radTC_cod3, 
+             T_mod); 
+             double ringwoodry_hof99_totTcon = compute_total_thermal_conductivity_hof1999(
+             ringwoodry_hof99_latTcon, 
+             ringwoodry_hof99_radTcon);
              // Store the thermal conductivities in the vector
-             Hof99_Minerals_LatTcond[RingwooDry_Index] = RingwooDry_Hof99_LatTCon;
-             Hof99_Minerals_RadTcond[RingwooDry_Index] = RingwooDry_Hof99_RadTCon;
-             Hof99_Minerals_TotTcond[RingwooDry_Index] = RingwooDry_Hof99_TotTCon;
+             hof99_minerals_latTcond[ringwoodry_index] = ringwoodry_hof99_latTcon;
+             hof99_minerals_radTcond[ringwoodry_index] = ringwoodry_hof99_radTcon;
+             hof99_minerals_totTcond[ringwoodry_index] = ringwoodry_hof99_totTcon;
              break;
            }
          } 
 
          // Fill the matrix column by column
-         for (unsigned int row = 0; row < MineralPar_Index; ++row)
+         for (unsigned int row = 0; row < mineralpar_index; ++row)
          {
-           Hof99_All_Minerals_TConds[row][0] = Hof99_Minerals_LatTcond[row]; // Column 0: Lattice conductivities
-           Hof99_All_Minerals_TConds[row][1] = Hof99_Minerals_RadTcond[row]; // Column 1: Radiative conductivities
-           Hof99_All_Minerals_TConds[row][2] = Hof99_Minerals_TotTcond[row]; // Column 2: Total conductivities
+           hof99_all_minerals_Tconds[row][0] = hof99_minerals_latTcond[row]; // Column 0: Lattice conductivities
+           hof99_all_minerals_Tconds[row][1] = hof99_minerals_radTcond[row]; // Column 1: Radiative conductivities
+           hof99_all_minerals_Tconds[row][2] = hof99_minerals_totTcond[row]; // Column 2: Total conductivities
          }
 
-         // Test Case
-         double AggRock_TestCase_Hof99_TCond = std::pow(Hof99_All_Minerals_TConds[mID][2], min_frac);
+         // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
+         double aggrock_testcase_hof99_Tcond = std::pow(hof99_all_minerals_Tconds[mID][2], min_frac); 
 
-         // std::vector<double> Hofmeister99_Tcond(5, Hof99_All_Minerals_TConds[0][2]);
-         out.thermal_conductivities[i] = AggRock_TestCase_Hof99_TCond;
+         // Test Case
+         out.thermal_conductivities[i] = aggrock_testcase_hof99_Tcond;
+
         }
       }
     }
