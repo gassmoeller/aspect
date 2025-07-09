@@ -63,7 +63,7 @@ namespace aspect
         // Coefficients for dry olivine 
         // mineral composition [(Mg1.8Fe0.2)SiO4]    
         constexpr int olivinedry_index = 0;
-        const double olivinedry_hof99_latTC_room =  4.7;        // lattice thermal conductivity at room P,T conditions (latTC__room)
+        const double olivinedry_hof99_latTC_room =  4.7;        // lattice thermal conductivity at room P,T conditions (latTC_room)
         const double olivinedry_hof99_latTC_Texp =  0.3;        // temperature exponent (n_Texp)
         const double olivinedry_hof99_latTC_grun =  1.28;       // Grueneisen parameter(gamma)
         const double olivinedry_hof99_latTC_alph =  2.7500e-5;  // thermal expansion coefficient (alpha)
@@ -77,7 +77,7 @@ namespace aspect
         // Coefficients for dry wadsleyite
         // mineral composition [(Mg1.8Fe0.2)SiO4]
         constexpr int wadsleydry_index = 1;
-        const double wadsleydry_hof99_latTC_room =  7.7;        // lattice thermal conductivity at room P,T conditions (latTC__room)
+        const double wadsleydry_hof99_latTC_room =  7.7;        // lattice thermal conductivity at room P,T conditions (latTC_room)
         const double wadsleydry_hof99_latTC_Texp =  0.3;        // temperature exponent (n_Texp)
         const double wadsleydry_hof99_latTC_grun =  1.00;       // Grueneisen parameter (gamma)
         const double wadsleydry_hof99_latTC_alph =  2.2821e-5;  // thermal expansion coefficient (alpha)
@@ -91,7 +91,7 @@ namespace aspect
         // Coefficients for dry ringwoodite
         // mineral composition [(Mg1.8Fe0.2)SiO4]
         constexpr int ringwoodry_index = 2;
-        const double ringwoodry_hof99_latTC_room =  7.7;        // lattice thermal conductivity at room P,T conditions (latTC__room)
+        const double ringwoodry_hof99_latTC_room =  7.7;        // lattice thermal conductivity at room P,T conditions (latTC_room)
         const double ringwoodry_hof99_latTC_Texp =  0.3;        // temperature exponent (n_Texp)
         const double ringwoodry_hof99_latTC_grun =  1.25;       // Grueneisen parameter (gamma)
         const double ringwoodry_hof99_latTC_alph =  2.0535e-5;  // thermal expansion coefficient (alpha)
