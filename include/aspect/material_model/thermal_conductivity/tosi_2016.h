@@ -38,7 +38,7 @@ namespace aspect
       * using the Tosi et al. (2016) formulation
       * [Tosi et al. 2016, Subduction Dynamics: From Mantle Flow to Mega Disasters, 115-133]
       * https://doi.org/10.1002/9781118888865.ch6
-      * Lambda_Lat(P,T) [W m^-1 K^-1] = (Lambda_Room + A_linear*P_model)*(T_room/T_model)^N_Texp
+      * latTC (P,T) [W m^-1 K^-1] = (latTC_room + a_linear*P_model)*(T_room/T_model)^n_Texp
       * 
       * @ingroup ThermalConductivity
       * 

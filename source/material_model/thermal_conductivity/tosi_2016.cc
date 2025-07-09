@@ -21,17 +21,15 @@
 
 #include <aspect/material_model/thermal_conductivity/tosi_2016.h>
 
-// Helper functions in anonymous namespace
+// Helper functions in anonymous namespace to compute thermal conductivities using the Tosi et al. (2016) formulations
 namespace
 {
-  // Helper function: Compute the lattice thermal conductivity using the Tosi et al. (2016) formulation
-  double Compute_Lat_TCond_Tosi2016(double Lambda0, double A_linear, double N_Texp, double T_room, double T_model, double P_model)
+  double compute_lattice_thermal_conductivity_tos2016(const double latTC_room, const double a_linear, const double n_Texp, const double T_room, const double T_model, const double P_model)
   {
-    // Lambda_Lat(P,T) [W m^-1 K^-1] = (Lambda_Room + A_linear*P_model)*(T_room/T_model)^N_Texp
-    double Factor_1 = Lambda0 + A_linear * P_model;
-    double Factor_2 = std::pow((T_room / T_model), N_Texp);
-    double HLatTCon = Factor_1 * Factor_2;
-    return HLatTCon;
+    double factor_1 = latTC_room + a_linear * P_model;
+    double factor_2 = std::pow((T_room / T_model), n_Texp);
+    double lattice_thermal_conductivity = factor_1 * factor_2;
+    return lattice_thermal_conductivity;
   }
 }
 
@@ -51,30 +49,30 @@ namespace aspect
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
         // Coefficients for Upper Mantle (UM) 
-        constexpr int UpperMantl_Index = 0;
-        const double UpperMantl_Tos16_LatTC_Room =  2.47; // lattice thermal conductivity at room temperature (Lambda_Room)
-        const double UpperMantl_Tos16_LatTC_Alin =  0.33; // linear coefficient (A_linear)
-        const double UpperMantl_Tos16_LatTC_TExp =  0.48; // temperature exponent (N_Texp)
+        constexpr int uppermantl_index = 0;
+        const double uppermantl_tos16_latTC_room =  2.47; // lattice thermal conductivity at room temperature (latTC_room)
+        const double uppermantl_tos16_latTC_alin =  0.33; // linear coefficient (a_linear)
+        const double uppermantl_tos16_latTC_Texp =  0.48; // temperature exponent (n_Texp)
 
         // Coefficients for Upper Mantle Transition Zone (uMTZ) 
-        constexpr int UManTraZon_Index = 1;
-        const double UManTraZon_Tos16_LatTC_Room =  3.81; // lattice thermal conductivity at room temperature (Lambda_Room)
-        const double UManTraZon_Tos16_LatTC_Alin =  0.34; // linear coefficient (A_linear)
-        const double UManTraZon_Tos16_LatTC_TExp =  0.56; // temperature exponent (N_Texp)
+        constexpr int umantrazon_index = 1;
+        const double umantrazon_tos16_latTC_room =  3.81; // lattice thermal conductivity at room temperature (latTC_room)
+        const double umantrazon_tos16_latTC_alin =  0.34; // linear coefficient (a_linear)
+        const double umantrazon_tos16_latTC_Texp =  0.56; // temperature exponent (n_Texp)
         
         // Coefficients for Lower Mantle Transition Zone (lMTZ) 
-        constexpr int LManTraZon_Index = 2;
-        const double LManTraZon_Tos16_LatTC_Room =  3.52; // lattice thermal conductivity at room temperature (Lambda_Room)
-        const double LManTraZon_Tos16_LatTC_Alin =  0.36; // linear coefficient (A_linear)
-        const double LManTraZon_Tos16_LatTC_TExp =  0.61; // temperature exponent (N_Texp)
+        constexpr int lmantrazon_index = 2;
+        const double lmantrazon_tos16_latTC_room =  3.52; // lattice thermal conductivity at room temperature (latTC_room)
+        const double lmantrazon_tos16_latTC_alin =  0.36; // linear coefficient (a_linear)
+        const double lmantrazon_tos16_latTC_Texp =  0.61; // temperature exponent (n_Texp)
 
         // Coefficients for Lower Mantle (LM) 
-        constexpr int LowerMantl_Index = 3;
-        const double LowerMantl_Tos16_LatTC_Room =  3.48; // lattice thermal conductivity at room temperature (Lambda_Room)
-        const double LowerMantl_Tos16_LatTC_Alin =  0.12; // linear coefficient (A_linear)
-        const double LowerMantl_Tos16_LatTC_TExp =  0.31; // temperature exponent (N_Texp)
+        constexpr int lowermantl_index = 3;
+        const double lowermantl_tos16_latTC_room =  3.48; // lattice thermal conductivity at room temperature (latTC_room)
+        const double lowermantl_tos16_latTC_alin =  0.12; // linear coefficient (a_linear)
+        const double lowermantl_tos16_latTC_Texp =  0.31; // temperature exponent (n_Texp)
 
-        unsigned int MineralPar_Index = LowerMantl_Index+1; // Number of minerals
+        unsigned int mineralpar_index = lowermantl_index+1; // Number of minerals
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
@@ -84,10 +82,10 @@ namespace aspect
         for (unsigned int i = 0; i < n_points; ++i) 
         {
           // Preallocate a vector for storing thermal conductivities of minerals
-          std::vector<double> Tos16_Minerals_LatTcond(MineralPar_Index, 0.0); // Lattice thermal conductivity
-          std::vector<double> Tos16_Minerals_TotTcond(MineralPar_Index, 0.0); // Total thermal conductivity
+          std::vector<double> tos16_minerals_latTcond(mineralpar_index, 0.0); // Lattice thermal conductivity
+          std::vector<double> tos16_minerals_totTcond(mineralpar_index, 0.0); // Total thermal conductivity
           // Preallocate a matrix for storing thermal conductivities of minerals
-          std::vector<std::vector<double>> Tos16_All_Minerals_TConds(MineralPar_Index, std::vector<double>(2, 0.0));
+          std::vector<std::vector<double>> tos16_all_minerals_Tconds(mineralpar_index, std::vector<double>(2, 0.0));
 
           // Convert pressure unit from [Pa] to [GPa]
           double P_GPa = in.pressure[i]/1e9;
@@ -100,59 +98,80 @@ namespace aspect
 
           switch (mID) // Compute the lattice and total thermal conductivities of the given mineral
           {
-            case UpperMantl_Index: // Upper Mantle (UM)
+            case uppermantl_index: // Upper Mantle (UM)
             { 
-              double UpperMantl_Tos16_LatTCon = Compute_Lat_TCond_Tosi2016(
-              UpperMantl_Tos16_LatTC_Room, UpperMantl_Tos16_LatTC_Alin, UpperMantl_Tos16_LatTC_TExp, T_room, T_mod, P_GPa);   
-              double UpperMantl_Tos16_TotTCon = UpperMantl_Tos16_LatTCon; 
+              double uppermantl_tos16_latTcon = compute_lattice_thermal_conductivity_tos2016(
+              uppermantl_tos16_latTC_room, 
+              uppermantl_tos16_latTC_alin, 
+              uppermantl_tos16_latTC_Texp, 
+              T_room, 
+              T_mod, 
+              P_GPa);   
+              double uppermantl_tos16_totTcon = uppermantl_tos16_latTcon; 
               // Store the thermal conductivities in the vector
-              Tos16_Minerals_LatTcond[UpperMantl_Index] = UpperMantl_Tos16_LatTCon;
-              Tos16_Minerals_TotTcond[UpperMantl_Index] = UpperMantl_Tos16_TotTCon;
+              tos16_minerals_latTcond[uppermantl_index] = uppermantl_tos16_latTcon;
+              tos16_minerals_totTcond[uppermantl_index] = uppermantl_tos16_totTcon;
               break;
             }
-            case UManTraZon_Index: // Upper Mantle Transition Zone (uMTZ)  
+            case umantrazon_index: // Upper Mantle Transition Zone (uMTZ)  
             { 
-              double UManTraZon_Tos16_LatTCon = Compute_Lat_TCond_Tosi2016(
-              UManTraZon_Tos16_LatTC_Room, UManTraZon_Tos16_LatTC_Alin, UManTraZon_Tos16_LatTC_TExp, T_room, T_mod, P_GPa);   
-              double UManTraZon_Tos16_TotTCon = UManTraZon_Tos16_LatTCon; 
+              double umantrazon_tos16_latTcon = compute_lattice_thermal_conductivity_tos2016(
+              umantrazon_tos16_latTC_room, 
+              umantrazon_tos16_latTC_alin, 
+              umantrazon_tos16_latTC_Texp, 
+              T_room, 
+              T_mod, 
+              P_GPa);   
+              double umantrazon_tos16_totTcon = umantrazon_tos16_latTcon; 
               // Store the thermal conductivities in the vector
-              Tos16_Minerals_LatTcond[UManTraZon_Index] = UManTraZon_Tos16_LatTCon;
-              Tos16_Minerals_TotTcond[UManTraZon_Index] = UManTraZon_Tos16_TotTCon;
+              tos16_minerals_latTcond[umantrazon_index] = umantrazon_tos16_latTcon;
+              tos16_minerals_totTcond[umantrazon_index] = umantrazon_tos16_totTcon;
               break;
             }
-            case LManTraZon_Index: // Lower Mantle Transition Zone (lMTZ) 
+            case lmantrazon_index: // Lower Mantle Transition Zone (lMTZ) 
             { 
-              double LManTraZon_Tos16_LatTCon = Compute_Lat_TCond_Tosi2016(
-              LManTraZon_Tos16_LatTC_Room, LManTraZon_Tos16_LatTC_Alin, LManTraZon_Tos16_LatTC_TExp, T_room, T_mod, P_GPa);   
-              double LManTraZon_Tos16_TotTCon = LManTraZon_Tos16_LatTCon; 
+              double lmantrazon_tos16_latTcon = compute_lattice_thermal_conductivity_tos2016(
+              lmantrazon_tos16_latTC_room, 
+              lmantrazon_tos16_latTC_alin, 
+              lmantrazon_tos16_latTC_Texp, 
+              T_room, 
+              T_mod, 
+              P_GPa);   
+              double lmantrazon_tos16_totTcon = lmantrazon_tos16_latTcon; 
               // Store the thermal conductivities in the vector
-              Tos16_Minerals_LatTcond[LManTraZon_Index] = LManTraZon_Tos16_LatTCon;
-              Tos16_Minerals_TotTcond[LManTraZon_Index] = LManTraZon_Tos16_TotTCon;
+              tos16_minerals_latTcond[lmantrazon_index] = lmantrazon_tos16_latTcon;
+              tos16_minerals_totTcond[lmantrazon_index] = lmantrazon_tos16_totTcon;
               break;
             }
-            case LowerMantl_Index: // Lower Mantle (LM)
+            case lowermantl_index: // Lower Mantle (LM)
             { 
-              double LowerMantl_Tos16_LatTCon = Compute_Lat_TCond_Tosi2016(
-              LowerMantl_Tos16_LatTC_Room, LowerMantl_Tos16_LatTC_Alin, LowerMantl_Tos16_LatTC_TExp, T_room, T_mod, P_GPa);   
-              double LowerMantl_Tos16_TotTCon = LowerMantl_Tos16_LatTCon; 
+              double lowermantl_tos16_latTcon = compute_lattice_thermal_conductivity_tos2016(
+              lowermantl_tos16_latTC_room, 
+              lowermantl_tos16_latTC_alin, 
+              lowermantl_tos16_latTC_Texp, 
+              T_room, 
+              T_mod, 
+              P_GPa);   
+              double lowermantl_tos16_totTcon = lowermantl_tos16_latTcon; 
               // Store the thermal conductivities in the vector
-              Tos16_Minerals_LatTcond[LowerMantl_Index] = LowerMantl_Tos16_LatTCon;
-              Tos16_Minerals_TotTcond[LowerMantl_Index] = LowerMantl_Tos16_TotTCon;
+              tos16_minerals_latTcond[lowermantl_index] = lowermantl_tos16_latTcon;
+              tos16_minerals_totTcond[lowermantl_index] = lowermantl_tos16_totTcon;
               break;
             }
           }
 
           // Fill the matrix column by column
-          for (unsigned int row = 0; row < MineralPar_Index; ++row)
+          for (unsigned int row = 0; row < mineralpar_index; ++row)
           {
-            Tos16_All_Minerals_TConds[row][0] = Tos16_Minerals_LatTcond[row]; // Column 0: Lattice conductivities
-            Tos16_All_Minerals_TConds[row][1] = Tos16_Minerals_TotTcond[row]; // Column 1: Total conductivities
+            tos16_all_minerals_Tconds[row][0] = tos16_minerals_latTcond[row]; // Column 0: Lattice conductivities
+            tos16_all_minerals_Tconds[row][1] = tos16_minerals_totTcond[row]; // Column 1: Total conductivities
           }
 
-          // Test Case
-          double AggRock_TestCase_Tos16_TCond = std::pow(Tos16_All_Minerals_TConds[mID][1], min_frac);
+          // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
+          double aggrock_testcase_tos16_Tcond = std::pow(tos16_all_minerals_Tconds[mID][1], min_frac);
 
-          out.thermal_conductivities[i] = AggRock_TestCase_Tos16_TCond;
+          // Test Case
+          out.thermal_conductivities[i] = aggrock_testcase_tos16_Tcond;
 
         }
       }
