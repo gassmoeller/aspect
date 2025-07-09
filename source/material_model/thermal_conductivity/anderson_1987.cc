@@ -35,10 +35,12 @@ namespace aspect
          {
              #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
-             // Test Case
-             double AggRock_TestCase_And87_TCond = 1;
-             std::vector<double> anderson_1987_Tcond(5, AggRock_TestCase_And87_TCond);
+             // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
+             double aggrock_testcase_and87_Tcond = 1;
 
+             std::vector<double> anderson_1987_Tcond(5, aggrock_testcase_and87_Tcond);
+
+             // Test Case
              out.thermal_conductivities = anderson_1987_Tcond;
          }
      }

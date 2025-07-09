@@ -19,8 +19,8 @@
 
 */
 
-// Lambda_1(P,T) [W m^-1 K^-1] = 1.18 + (474  / (T_model+77)) * std::exp(4e-5 * P_model_MPa); (1) oceanic crust
-// Lambda_2(P,T) [W m^-1 K^-1] = 0.73 + (1293 / (T_model+77)) * std::exp(4e-5 * P_model_MPa); (2) lithospheric and asthenospheric mantle
+// latTC_1(P,T) [W m^-1 K^-1] = 1.18 + (474  / (T_model+77)) * std::exp(4e-5 * P_model_MPa); (1) oceanic crust
+// latTC_2(P,T) [W m^-1 K^-1] = 0.73 + (1293 / (T_model+77)) * std::exp(4e-5 * P_model_MPa); (2) lithospheric and asthenospheric mantle
 
 #include <aspect/material_model/thermal_conductivity/gerya_2021.h>
 
@@ -38,10 +38,12 @@ namespace aspect
          {
              #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
-             // Test Case
-             double AggRock_TestCase_Ger21_TCond = 1;
-             std::vector<double> gerya_2021_Tcond(5, AggRock_TestCase_Ger21_TCond);
+             // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
+             double aggrock_testcase_ger21_Tcond = 1;
 
+             std::vector<double> gerya_2021_Tcond(5, aggrock_testcase_ger21_Tcond);
+
+             // Test Case
              out.thermal_conductivities = gerya_2021_Tcond;
          }
      }

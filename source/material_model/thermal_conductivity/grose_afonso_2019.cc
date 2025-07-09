@@ -19,9 +19,9 @@
 
 */
 
-// Olivine : (G_6 * T^6) + (F_5 * T^5) + (E_4 * T^4) + (D_3 * T^3) + (C_2 * T^2) + (B_1 * T) + A_0
-// Pyroxene: (E_4 * T^4) + (D_3 * T^3) + (C_2 * T^2) + (B_1 * T) + A_0
-// Garnet  : (E_4 * T^4) + (D_3 * T^3) + (C_2 * T^2) + (B_1 * T) + A_0
+// Olivine : (g6 * T^6) + (f5 * T^5) + (e4 * T^4) + (d3 * T^3) + (c2 * T^2) + (b1 * T) + a0
+// Pyroxene: (e4 * T^4) + (d3 * T^3) + (c2 * T^2) + (b1 * T) + a0
+// Garnet  : (e4 * T^4) + (d3 * T^3) + (c2 * T^2) + (b1 * T) + a0
 
 #include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
 
@@ -39,10 +39,12 @@ namespace aspect
          {
              #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
-             // Test Case
-             double AggRock_TestCase_GrA19_TCond = 1;
-             std::vector<double> grose_afonso_2019_Tcond(5, AggRock_TestCase_GrA19_TCond);
+             // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
+             double aggrock_testcase_gra19_Tcond = 1;
 
+             std::vector<double> grose_afonso_2019_Tcond(5, aggrock_testcase_gra19_Tcond);
+
+             // Test Case
              out.thermal_conductivities = grose_afonso_2019_Tcond;
          }
      }
