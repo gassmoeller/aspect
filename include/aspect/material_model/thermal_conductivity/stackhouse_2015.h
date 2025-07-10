@@ -39,7 +39,7 @@ namespace aspect
       * https://doi.org/10.1016/j.epsl.2015.06.050
       * xT = 250 / T_model
       * f = ( 2.0/3.0 * xT^0.5) + ( 1.0/3.0 * xT)
-      * Lambda_Lat (P,T) = ( 4.9 + 0.105*P_model) * (f * T_model/1200)
+      * latTC (P,T) = ( 4.9 + 0.105 * P_model) * (f * T_model/1200)
       * 
       * @ingroup ThermalConductivity
       * 

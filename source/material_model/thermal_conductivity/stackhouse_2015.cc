@@ -19,10 +19,6 @@
 
 */
 
-// xT = 250 / T_model
-// f = ( 2.0/3.0 * xT^0.5) + ( 1.0/3.0 * xT)
-// Lambda_Lat (P,T) = ( 4.9 + 0.105*P_model) * (f * T_model/1200)
-
 #include <aspect/material_model/thermal_conductivity/stackhouse_2015.h>
 
 namespace aspect
@@ -37,13 +33,15 @@ namespace aspect
          stackhouse_2015<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
          {
-             #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
+           #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
-             // Test Case
-             double AggRock_TestCase_Sta15_TCond = 1;
-             std::vector<double> stackhouse_2015_Tcond(5, AggRock_TestCase_Sta15_TCond);
+           // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
+           double aggrock_testcase_sta15_Tcond = 1;
+           std::vector<double> stackhouse_2015_Tcond(5, aggrock_testcase_sta15_Tcond);
 
-             out.thermal_conductivities = stackhouse_2015_Tcond;
+           // Test Case
+           out.thermal_conductivities = stackhouse_2015_Tcond;
+
          }
      }
   }
