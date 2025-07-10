@@ -19,10 +19,6 @@
 
 */
 
-// d < 0.2 [cm]: Lambda_Rad(T,d) [W m^-1 K^-1] = 10*d * (0.36776 - (0.0010594 * T_model) + (8.3496 * T_model^2))
-// 0.2 <= d <= 1.2 [cm]: Lambda_Rad(T,d) [W m^-1 K^-1] = (5+22*(1-d)) * std::exp[(-((T_model-2800-2600 * (1-d)))^2) / (400+1400*(1-d))^2] + (1.7-0.2*(1-d)) * std::exp[(-((T_model-1400-300*(1-d)))^2)/(500+200*(1-d))^2]
-// 1.2 < d <= 100 [cm]: Lambda_Rad(T,d) [W m^-1 K^-1] = (1.35 + 0.03 * (10-d)) * std::exp[(-((T_model-900-6 * (10-d)^2))^2) / (230+2 * (10-d)^2)^2]
-
 #include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
 
 namespace aspect
@@ -37,13 +33,17 @@ namespace aspect
          hofmeister_2005<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
          {
-             #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
+           #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
-             // Test Case
-             double AggRock_TestCase_Hof05_TCond = 1;
-             std::vector<double> hofmeister_2005_Tcond(5, AggRock_TestCase_Hof05_TCond);
+           
+           double aggrock_testcase_hof05_Tcond = 1;
 
-             out.thermal_conductivities = hofmeister_2005_Tcond;
+           // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
+           std::vector<double> hofmeister_2005_Tcond(5, aggrock_testcase_hof05_Tcond);
+
+           // Test Case
+           out.thermal_conductivities = hofmeister_2005_Tcond;
+
          }
      }
   }
