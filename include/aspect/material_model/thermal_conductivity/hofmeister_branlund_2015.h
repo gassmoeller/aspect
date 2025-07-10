@@ -36,7 +36,7 @@ namespace aspect
       * using the Hofmeister & Brandlund (2015) formulation
       * [Hofmeister & Branlund 2015, Treatise on Geophysics, Vol. 2, chap. 2.23, pp. 583–608]
       * https://doi.org/10.1016/B978-0-444-53802-4.00047-6
-      * Lambda_Rad (T) = 1.2170 + ( 407.34 / (T_model+0.000080555 * T_model) 
+      * latTC (T) = 1.2170 + ( 407.34 / (T_model+0.000080555 * T_model) 
       *
       * @ingroup ThermalConductivity
       * 

@@ -19,8 +19,6 @@
 
 */
 
-// Lambda_Rad (T) = 1.2170 + ( 407.34 / (T_model+0.000080555 * T_model) )
-
 #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
 
 namespace aspect
@@ -35,13 +33,17 @@ namespace aspect
          hofmeister_branlund_2015<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
          {
-             #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
+           #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
-             // Test Case
-             double AggRock_TestCase_HBr15_TCond = 1;
-             std::vector<double> hofmeister_branlund_2015_Tcond(5, AggRock_TestCase_HBr15_TCond);
+             
+           double aggrock_testcase_hbr15_Tcond = 1;
 
-             out.thermal_conductivities = hofmeister_branlund_2015_Tcond;
+           // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
+           std::vector<double> hofmeister_branlund_2015_Tcond(5, aggrock_testcase_hbr15_Tcond);
+
+           // Test Case
+           out.thermal_conductivities = hofmeister_branlund_2015_Tcond;
+
          }
      }
   }
