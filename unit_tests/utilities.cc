@@ -70,287 +70,287 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
     {0.25, 0.25, 0.25, 0.25, 0.25}
   };
 
-  // unsigned int MineralPar_Index = 0; // Initialize the counter
+  // unsigned int mineralpar_index = 0; // Initialize the counter
 
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
-  constexpr int OlivineDry_ExptID = 0;
-  std::vector<double> OlivineDry_Expt_TotTCon(temperatures.size());
-  constexpr int WadsleyDry_ExptID = 1;
-  std::vector<double> WadsleyDry_Expt_TotTCon(temperatures.size());
-  constexpr int RingwooDry_ExptID = 2;
-  std::vector<double> RingwooDry_Expt_TotTCon(temperatures.size());
-  constexpr int En100Brigm_ExptID = 3;
-  std::vector<double> En100Brigm_Expt_TotTCon(temperatures.size());
-  constexpr int En97Brigma_ExptID = 4;
-  std::vector<double> En97Brigma_Expt_TotTCon(temperatures.size());
-  constexpr int En90Brigma_ExptID = 5;
-  std::vector<double> En90Brigma_Expt_TotTCon(temperatures.size());
-  constexpr int AlMgBrigma_ExptID = 6;
-  std::vector<double> AlMgBrigma_Expt_TotTCon(temperatures.size());
-  constexpr int FeAlBrigma_ExptID = 7;
-  std::vector<double> FeAlBrigma_Expt_TotTCon(temperatures.size());
-  constexpr int OpxEnstati_ExptID = 8;
-  std::vector<double> OpxEnstati_Expt_TotTCon(temperatures.size());
-  constexpr int CpxDiopsid_ExptID = 9;
-  std::vector<double> CpxDiopsid_Expt_TotTCon(temperatures.size());
-  constexpr int GrtPyropes_ExptID = 10;
-  std::vector<double> GrtPyropes_Expt_TotTCon(temperatures.size());
-  constexpr int GrtGrossul_ExptID = 11;
-  std::vector<double> GrtGrossul_Expt_TotTCon(temperatures.size());
-  constexpr int GrtAlmandi_ExptID = 12;
-  std::vector<double> GrtAlmandi_Expt_TotTCon(temperatures.size());
-  constexpr int GrtMajorit_ExptID = 13;
-  std::vector<double> GrtMajorit_Expt_TotTCon(temperatures.size());
-  constexpr int QuartzPure_ExptID = 14;
-  std::vector<double> QuartzPure_Expt_TotTCon(temperatures.size());
-  constexpr int CoesitSiO2_ExptID = 15;
-  std::vector<double> CoesitSiO2_Expt_TotTCon(temperatures.size());
-  constexpr int Stishovite_ExptID = 16;
-  std::vector<double> Stishovite_Expt_TotTCon(temperatures.size());
-  constexpr int Al05Stisho_ExptID = 17;
-  std::vector<double> Al05Stisho_Expt_TotTCon(temperatures.size());
-  constexpr int Antigor010_ExptID = 18;
-  std::vector<double> Antigor010_Expt_TotTCon(temperatures.size());
-  constexpr int Antigor001_ExptID = 19;
-  std::vector<double> Antigor001_Expt_TotTCon(temperatures.size());
-  constexpr int FeAlPhaseD_ExptID = 20;
-  std::vector<double> FeAlPhaseD_Expt_TotTCon(temperatures.size());
-  constexpr int Al02PhaseD_ExptID = 21;
-  std::vector<double> Al02PhaseD_Expt_TotTCon(temperatures.size());
-  constexpr int Ferroper08_ExptID = 22;
-  std::vector<double> Ferroper08_Expt_TotTCon(temperatures.size());
-  constexpr int Ferroper10_ExptID = 23;
-  std::vector<double> Ferroper10_Expt_TotTCon(temperatures.size());
-  constexpr int Ferroper20_ExptID = 24;
-  std::vector<double> Ferroper20_Expt_TotTCon(temperatures.size());
-  constexpr int Ferroper56_ExptID = 25;
-  std::vector<double> Ferroper56_Expt_TotTCon(temperatures.size());
-  constexpr int Davemaoite_ExptID = 26;
-  std::vector<double> Davemaoite_Expt_TotTCon(temperatures.size());
-  constexpr int NewHexAlPh_ExptID = 27;
-  std::vector<double> NewHexAlPh_Expt_TotTCon(temperatures.size());
-  constexpr int Akimotoite_ExptID = 28;
-  std::vector<double> Akimotoite_Expt_TotTCon(temperatures.size());
+  constexpr int olivinedry_exptID = 0;
+  std::vector<double> olivinedry_expt_totTcon(temperatures.size());
+  constexpr int wadsleydry_exptID = 1;
+  std::vector<double> wadsleydry_expt_totTcon(temperatures.size());
+  constexpr int ringwoodry_exptID = 2;
+  std::vector<double> ringwoodry_expt_totTcon(temperatures.size());
+  constexpr int brigm100Mg_exptID = 3;
+  std::vector<double> brigm100Mg_expt_totTcon(temperatures.size());
+  constexpr int brigma97Mg_exptID = 4;
+  std::vector<double> brigma97Mg_expt_totTcon(temperatures.size());
+  constexpr int brigma90Mg_exptID = 5;
+  std::vector<double> brigma90Mg_expt_totTcon(temperatures.size());
+  constexpr int brigmaAlMg_exptID = 6;
+  std::vector<double> brigmaAlMg_expt_totTcon(temperatures.size());
+  constexpr int brigmaFeAl_exptID = 7;
+  std::vector<double> brigmaFeAl_expt_totTcon(temperatures.size());
+  constexpr int opxenstati_exptID = 8;
+  std::vector<double> opxenstati_expt_totTcon(temperatures.size());
+  constexpr int cpxdiopsid_exptID = 9;
+  std::vector<double> cpxdiopsid_expt_totTcon(temperatures.size());
+  constexpr int grtpyropes_exptID = 10;
+  std::vector<double> grtpyropes_expt_totTcon(temperatures.size());
+  constexpr int grtgrossul_exptID = 11;
+  std::vector<double> grtgrossul_expt_totTcon(temperatures.size());
+  constexpr int grtalmandi_exptID = 12;
+  std::vector<double> grtalmandi_expt_totTcon(temperatures.size());
+  constexpr int grtmajorit_exptID = 13;
+  std::vector<double> grtmajorit_expt_totTcon(temperatures.size());
+  constexpr int quartzpure_exptID = 14;
+  std::vector<double> quartzpure_expt_totTcon(temperatures.size());
+  constexpr int coesitSiO2_exptID = 15;
+  std::vector<double> coesitSiO2_expt_totTcon(temperatures.size());
+  constexpr int stishovite_exptID = 16;
+  std::vector<double> stishovite_expt_totTcon(temperatures.size());
+  constexpr int stisho05Al_exptID = 17;
+  std::vector<double> stisho05Al_expt_totTcon(temperatures.size());
+  constexpr int antigor010_exptID = 18;
+  std::vector<double> antigor010_expt_totTcon(temperatures.size());
+  constexpr int antigor001_exptID = 19;
+  std::vector<double> antigor001_expt_totTcon(temperatures.size());
+  constexpr int phaseDFeAl_exptID = 20;
+  std::vector<double> phaseDFeAl_expt_totTcon(temperatures.size());
+  constexpr int phaseD02Al_exptID = 21;
+  std::vector<double> phaseD02Al_expt_totTcon(temperatures.size());
+  constexpr int ferroper08_exptID = 22;
+  std::vector<double> ferroper08_expt_totTcon(temperatures.size());
+  constexpr int ferroper10_exptID = 23;
+  std::vector<double> ferroper10_expt_totTcon(temperatures.size());
+  constexpr int ferroper20_exptID = 24;
+  std::vector<double> ferroper20_expt_totTcon(temperatures.size());
+  constexpr int ferroper56_exptID = 25;
+  std::vector<double> ferroper56_expt_totTcon(temperatures.size());
+  constexpr int davemaoite_exptID = 26;
+  std::vector<double> davemaoite_expt_totTcon(temperatures.size());
+  constexpr int newhexAlph_exptID = 27;
+  std::vector<double> newhexAlph_expt_totTcon(temperatures.size());
+  constexpr int akimotoite_exptID = 28;
+  std::vector<double> akimotoite_expt_totTcon(temperatures.size());
 
-  unsigned int MineralPar_Index = Akimotoite_ExptID+1; // Number of minerals
+  unsigned int mineralpar_index = akimotoite_exptID+1; // Number of minerals
 
   // Preallocate matrixes for storing thermal conductivities of minerals
-  std::vector<std::vector<double>> Expt_Minerals_LatTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
-  std::vector<std::vector<double>> Expt_Minerals_RadTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
-  std::vector<std::vector<double>> Expt_Minerals_TotTcond(MineralPar_Index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+  std::vector<std::vector<double>> expt_minerals_latTcond(mineralpar_index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_minerals_radTcond(mineralpar_index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
+  std::vector<std::vector<double>> expt_minerals_totTcond(mineralpar_index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
 
 
   // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> OlivineDry_Expt_LatTCon = {3.58888, 1.58719, 2.36282, 3.67868, 4.25767};
-  std::vector<double> OlivineDry_Expt_RadTCon = {0.00138288, 2.23152, 2.34978, 2.45486, 3.12273};
-  Expt_Minerals_LatTcond[OlivineDry_ExptID] = OlivineDry_Expt_LatTCon;
-  Expt_Minerals_RadTcond[OlivineDry_ExptID] = OlivineDry_Expt_RadTCon;
+  std::vector<double> olivinedry_expt_latTcon = {3.58888, 1.58719, 2.36282, 3.67868, 4.25767};
+  std::vector<double> olivinedry_expt_radTcon = {0.00138288, 2.23152, 2.34978, 2.45486, 3.12273};
+  expt_minerals_latTcond[olivinedry_exptID] = olivinedry_expt_latTcon;
+  expt_minerals_radTcond[olivinedry_exptID] = olivinedry_expt_radTcon;
   // Dry Wadsleyite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> WadsleyDry_Expt_LatTCon = {5.88364, 3.08196, 3.21488, 3.22817, 2.77368};
-  std::vector<double> WadsleyDry_Expt_RadTCon = {1.1834e-9, 1.51515, 1.71067, 1.87995, 2.71457};
-  Expt_Minerals_LatTcond[WadsleyDry_ExptID] = WadsleyDry_Expt_LatTCon;
-  Expt_Minerals_RadTcond[WadsleyDry_ExptID] = WadsleyDry_Expt_RadTCon;
+  std::vector<double> wadsleydry_expt_latTcon = {5.88364, 3.08196, 3.21488, 3.22817, 2.77368};
+  std::vector<double> wadsleydry_expt_radTcon = {1.1834e-9, 1.51515, 1.71067, 1.87995, 2.71457};
+  expt_minerals_latTcond[wadsleydry_exptID] = wadsleydry_expt_latTcon;
+  expt_minerals_radTcond[wadsleydry_exptID] = wadsleydry_expt_radTcon;
   // Dry Ringwoodite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> RingwooDry_Expt_LatTCon = {4.98456, 2.17063, 2.41846, 3.19795, 5.89102};
-  std::vector<double> RingwooDry_Expt_RadTCon = {5.52667e-10, 0.74367, 0.85004, 0.94227, 1.38818};
-  Expt_Minerals_LatTcond[RingwooDry_ExptID] = RingwooDry_Expt_LatTCon;
-  Expt_Minerals_RadTcond[RingwooDry_ExptID] = RingwooDry_Expt_RadTCon;
+  std::vector<double> ringwoodry_expt_latTcon = {4.98456, 2.17063, 2.41846, 3.19795, 5.89102};
+  std::vector<double> ringwoodry_expt_radTcon = {5.52667e-10, 0.74367, 0.85004, 0.94227, 1.38818};
+  expt_minerals_latTcond[ringwoodry_exptID] = ringwoodry_expt_latTcon;
+  expt_minerals_radTcond[ringwoodry_exptID] = ringwoodry_expt_radTcon;
   // Mg-Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> En100Brigm_Expt_LatTCon = {10.69504, 2.03810, 2.21218, 2.47430, 5.69003};
-  std::vector<double> En100Brigm_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[En100Brigm_ExptID] = En100Brigm_Expt_LatTCon;
-  Expt_Minerals_RadTcond[En100Brigm_ExptID] = En100Brigm_Expt_RadTCon;
+  std::vector<double> brigm100Mg_expt_latTcon = {10.69504, 2.03810, 2.21218, 2.47430, 5.69003};
+  std::vector<double> brigm100Mg_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[brigm100Mg_exptID] = brigm100Mg_expt_latTcon;
+  expt_minerals_radTcond[brigm100Mg_exptID] = brigm100Mg_expt_radTcon;
   // Fe-Bridgmanite (3%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> En97Brigma_Expt_LatTCon = {5.73751, 2.29118, 2.48780, 2.75655, 6.95242};
-  std::vector<double> En97Brigma_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[En97Brigma_ExptID] = En97Brigma_Expt_LatTCon;
-  Expt_Minerals_RadTcond[En97Brigma_ExptID] = En97Brigma_Expt_RadTCon;
+  std::vector<double> brigma97Mg_expt_latTcon = {5.73751, 2.29118, 2.48780, 2.75655, 6.95242};
+  std::vector<double> brigma97Mg_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[brigma97Mg_exptID] = brigma97Mg_expt_latTcon;
+  expt_minerals_radTcond[brigma97Mg_exptID] = brigma97Mg_expt_radTcon;
   // Fe-Bridgmanite (10%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> En90Brigma_Expt_LatTCon = {3.79122, 2.91572, 3.14193, 3.43191, 8.92076};
-  std::vector<double> En90Brigma_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[En90Brigma_ExptID] = En90Brigma_Expt_LatTCon;
-  Expt_Minerals_RadTcond[En90Brigma_ExptID] = En90Brigma_Expt_RadTCon;
+  std::vector<double> brigma90Mg_expt_latTcon = {3.79122, 2.91572, 3.14193, 3.43191, 8.92076};
+  std::vector<double> brigma90Mg_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[brigma90Mg_exptID] = brigma90Mg_expt_latTcon;
+  expt_minerals_radTcond[brigma90Mg_exptID] = brigma90Mg_expt_radTcon;
   // Al-Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> AlMgBrigma_Expt_LatTCon = {6.30403, 2.31503, 2.56860, 2.91357, 7.88626};
-  std::vector<double> AlMgBrigma_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[AlMgBrigma_ExptID] = AlMgBrigma_Expt_LatTCon;
-  Expt_Minerals_RadTcond[AlMgBrigma_ExptID] = AlMgBrigma_Expt_RadTCon;
+  std::vector<double> brigmaAlMg_expt_latTcon = {6.30403, 2.31503, 2.56860, 2.91357, 7.88626};
+  std::vector<double> brigmaAlMg_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[brigmaAlMg_exptID] = brigmaAlMg_expt_latTcon;
+  expt_minerals_radTcond[brigmaAlMg_exptID] = brigmaAlMg_expt_radTcon;
   // Fe,Al-Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> FeAlBrigma_Expt_LatTCon = {3.99962, 1.87753, 2.05369, 2.30265, 6.17198};
-  std::vector<double> FeAlBrigma_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[FeAlBrigma_ExptID] = FeAlBrigma_Expt_LatTCon;
-  Expt_Minerals_RadTcond[FeAlBrigma_ExptID] = FeAlBrigma_Expt_RadTCon;
+  std::vector<double> brigmaFeAl_expt_latTcon = {3.99962, 1.87753, 2.05369, 2.30265, 6.17198};
+  std::vector<double> brigmaFeAl_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[brigmaFeAl_exptID] = brigmaFeAl_expt_latTcon;
+  expt_minerals_radTcond[brigmaFeAl_exptID] = brigmaFeAl_expt_radTcon;
   // Orthopyroxene (Enstatite): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> OpxEnstati_Expt_LatTCon = {5.79950, 2.55142, 3.15043, 3.26008, 2.56641};
-  std::vector<double> OpxEnstati_Expt_RadTCon = {5.45056e-5, 2.93307, 3.08161, 3.20925, 3.90772};
-  Expt_Minerals_LatTcond[OpxEnstati_ExptID] = OpxEnstati_Expt_LatTCon;
-  Expt_Minerals_LatTcond[OpxEnstati_ExptID] = OpxEnstati_Expt_LatTCon;
+  std::vector<double> opxenstati_expt_latTcon = {5.79950, 2.55142, 3.15043, 3.26008, 2.56641};
+  std::vector<double> opxenstati_expt_radTcon = {5.45056e-5, 2.93307, 3.08161, 3.20925, 3.90772};
+  expt_minerals_latTcond[opxenstati_exptID] = opxenstati_expt_latTcon;
+  expt_minerals_latTcond[opxenstati_exptID] = opxenstati_expt_latTcon;
   // Clinopyroxene (Diopside): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> CpxDiopsid_Expt_LatTCon = {5.99273, 2.65322, 3.13819, 3.61301, 3.41681};
-  std::vector<double> CpxDiopsid_Expt_RadTCon = {2.64987e-5, 2.99817, 3.14622, 3.27243, 3.94085};
-  Expt_Minerals_LatTcond[CpxDiopsid_ExptID] = CpxDiopsid_Expt_LatTCon;
-  Expt_Minerals_LatTcond[CpxDiopsid_ExptID] = CpxDiopsid_Expt_LatTCon;
+  std::vector<double> cpxdiopsid_expt_latTcon = {5.99273, 2.65322, 3.13819, 3.61301, 3.41681};
+  std::vector<double> cpxdiopsid_expt_radTcon = {2.64987e-5, 2.99817, 3.14622, 3.27243, 3.94085};
+  expt_minerals_latTcond[cpxdiopsid_exptID] = cpxdiopsid_expt_latTcon;
+  expt_minerals_latTcond[cpxdiopsid_exptID] = cpxdiopsid_expt_latTcon;
   // Garnet (Pyrope): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> GrtPyropes_Expt_LatTCon = {4.38827, 2.15733, 2.64684, 3.54118, 4.22405};
-  std::vector<double> GrtPyropes_Expt_RadTCon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
-  Expt_Minerals_LatTcond[GrtPyropes_ExptID] = GrtPyropes_Expt_LatTCon;
-  Expt_Minerals_LatTcond[GrtPyropes_ExptID] = GrtPyropes_Expt_LatTCon;
+  std::vector<double> grtpyropes_expt_latTcon = {4.38827, 2.15733, 2.64684, 3.54118, 4.22405};
+  std::vector<double> grtpyropes_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
+  expt_minerals_latTcond[grtpyropes_exptID] = grtpyropes_expt_latTcon;
+  expt_minerals_latTcond[grtpyropes_exptID] = grtpyropes_expt_latTcon;
   // Garnet (Grossular): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> GrtGrossul_Expt_LatTCon = {4.08838, 1.91337, 2.26557, 3.05964, 4.01413};
-  std::vector<double> GrtGrossul_Expt_RadTCon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
-  Expt_Minerals_LatTcond[GrtGrossul_ExptID] = GrtGrossul_Expt_LatTCon;
-  Expt_Minerals_LatTcond[GrtGrossul_ExptID] = GrtGrossul_Expt_LatTCon;
+  std::vector<double> grtgrossul_expt_latTcon = {4.08838, 1.91337, 2.26557, 3.05964, 4.01413};
+  std::vector<double> grtgrossul_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
+  expt_minerals_latTcond[grtgrossul_exptID] = grtgrossul_expt_latTcon;
+  expt_minerals_latTcond[grtgrossul_exptID] = grtgrossul_expt_latTcon;
   // Garnet (Almandine): expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> GrtAlmandi_Expt_LatTCon = {3.39124, 1.70813, 2.17978, 3.13522, 4.07543};
-  std::vector<double> GrtAlmandi_Expt_RadTCon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
-  Expt_Minerals_LatTcond[GrtAlmandi_ExptID] = GrtAlmandi_Expt_LatTCon;
-  Expt_Minerals_LatTcond[GrtAlmandi_ExptID] = GrtAlmandi_Expt_LatTCon;
+  std::vector<double> grtalmandi_expt_latTcon = {3.39124, 1.70813, 2.17978, 3.13522, 4.07543};
+  std::vector<double> grtalmandi_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
+  expt_minerals_latTcond[grtalmandi_exptID] = grtalmandi_expt_latTcon;
+  expt_minerals_latTcond[grtalmandi_exptID] = grtalmandi_expt_latTcon;
   // Garnet (Majorite): expected lattice and radiative thermal conductivities (k) in [W/m/K]  
-  std::vector<double> GrtMajorit_Expt_LatTCon = {9.73983, 4.24079, 4.57076, 5.13035, 4.76249};
-  std::vector<double> GrtMajorit_Expt_RadTCon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
-  Expt_Minerals_LatTcond[GrtMajorit_ExptID] = GrtMajorit_Expt_LatTCon;
-  Expt_Minerals_LatTcond[GrtMajorit_ExptID] = GrtMajorit_Expt_LatTCon;
+  std::vector<double> grtmajorit_expt_latTcon = {9.73983, 4.24079, 4.57076, 5.13035, 4.76249};
+  std::vector<double> grtmajorit_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
+  expt_minerals_latTcond[grtmajorit_exptID] = grtmajorit_expt_latTcon;
+  expt_minerals_latTcond[grtmajorit_exptID] = grtmajorit_expt_latTcon;
   // Quartz: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> QuartzPure_Expt_LatTCon = {9.53243, 1.84339, 2.49820, 2.47676, 1.49323};
-  std::vector<double> QuartzPure_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  Expt_Minerals_LatTcond[QuartzPure_ExptID] = QuartzPure_Expt_LatTCon;
-  Expt_Minerals_LatTcond[QuartzPure_ExptID] = QuartzPure_Expt_LatTCon;
+  std::vector<double> quartzpure_expt_latTcon = {9.53243, 1.84339, 2.49820, 2.47676, 1.49323};
+  std::vector<double> quartzpure_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  expt_minerals_latTcond[quartzpure_exptID] = quartzpure_expt_latTcon;
+  expt_minerals_latTcond[quartzpure_exptID] = quartzpure_expt_latTcon;
   // Coesite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> CoesitSiO2_Expt_LatTCon = {7.21196, 1.31776, 1.23920, 1.17013, 0.84983};
-  std::vector<double> CoesitSiO2_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  Expt_Minerals_LatTcond[CoesitSiO2_ExptID] = CoesitSiO2_Expt_LatTCon;
-  Expt_Minerals_LatTcond[CoesitSiO2_ExptID] = CoesitSiO2_Expt_LatTCon;
-  // Stishovite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> Stishovite_Expt_LatTCon = {67.68617, 29.30897, 28.43361, 27.62648, 29.60473};
-  std::vector<double> Stishovite_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  Expt_Minerals_LatTcond[Stishovite_ExptID] = Stishovite_Expt_LatTCon;
-  Expt_Minerals_LatTcond[Stishovite_ExptID] = Stishovite_Expt_LatTCon;
+  std::vector<double> coesitSiO2_expt_latTcon = {7.21196, 1.31776, 1.23920, 1.17013, 0.84983};
+  std::vector<double> coesitSiO2_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  expt_minerals_latTcond[coesitSiO2_exptID] = coesitSiO2_expt_latTcon;
+  expt_minerals_latTcond[coesitSiO2_exptID] = coesitSiO2_expt_latTcon;
+  // stishovite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
+  std::vector<double> stishovite_expt_latTcon = {67.68617, 29.30897, 28.43361, 27.62648, 29.60473};
+  std::vector<double> stishovite_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  expt_minerals_latTcond[stishovite_exptID] = stishovite_expt_latTcon;
+  expt_minerals_latTcond[stishovite_exptID] = stishovite_expt_latTcon;
   // Al-stishovite (5 vol%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> Al05Stisho_Expt_LatTCon = {24.18571, 10.48883, 10.35956, 10.44473, 15.11569};
-  std::vector<double> Al05Stisho_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  Expt_Minerals_LatTcond[Al05Stisho_ExptID] = Al05Stisho_Expt_LatTCon;
-  Expt_Minerals_LatTcond[Al05Stisho_ExptID] = Al05Stisho_Expt_LatTCon;
+  std::vector<double> stisho05Al_expt_latTcon = {24.18571, 10.48883, 10.35956, 10.44473, 15.11569};
+  std::vector<double> stisho05Al_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  expt_minerals_latTcond[stisho05Al_exptID] = stisho05Al_expt_latTcon;
+  expt_minerals_latTcond[stisho05Al_exptID] = stisho05Al_expt_latTcon;
   // Antigorite (010): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> Antigor010_Expt_LatTCon = {4.55589, 1.99618, 2.41198, 3.15852, 3.57446};
-  std::vector<double> Antigor010_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  Expt_Minerals_LatTcond[Antigor010_ExptID] = Antigor010_Expt_LatTCon;
-  Expt_Minerals_LatTcond[Antigor010_ExptID] = Antigor010_Expt_LatTCon;
+  std::vector<double> antigor010_expt_latTcon = {4.55589, 1.99618, 2.41198, 3.15852, 3.57446};
+  std::vector<double> antigor010_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  expt_minerals_latTcond[antigor010_exptID] = antigor010_expt_latTcon;
+  expt_minerals_latTcond[antigor010_exptID] = antigor010_expt_latTcon;
   // Antigorite (001): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> Antigor001_Expt_LatTCon = {1.06669, 0.49210, 1.01828, 1.51143, 1.48578};
-  std::vector<double> Antigor001_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  Expt_Minerals_LatTcond[Antigor001_ExptID] = Antigor001_Expt_LatTCon;
-  Expt_Minerals_LatTcond[Antigor001_ExptID] = Antigor001_Expt_LatTCon;
+  std::vector<double> antigor001_expt_latTcon = {1.06669, 0.49210, 1.01828, 1.51143, 1.48578};
+  std::vector<double> antigor001_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  expt_minerals_latTcond[antigor001_exptID] = antigor001_expt_latTcon;
+  expt_minerals_latTcond[antigor001_exptID] = antigor001_expt_latTcon;
   // Fe,Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> FeAlPhaseD_Expt_LatTCon = {2.59325, 1.13915, 1.31955, 1.59985, 6.12649};
-  std::vector<double> FeAlPhaseD_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  Expt_Minerals_LatTcond[FeAlPhaseD_ExptID] = FeAlPhaseD_Expt_LatTCon;
-  Expt_Minerals_LatTcond[FeAlPhaseD_ExptID] = FeAlPhaseD_Expt_LatTCon;
+  std::vector<double> phaseDFeAl_expt_latTcon = {2.59325, 1.13915, 1.31955, 1.59985, 6.12649};
+  std::vector<double> phaseDFeAl_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  expt_minerals_latTcond[phaseDFeAl_exptID] = phaseDFeAl_expt_latTcon;
+  expt_minerals_latTcond[phaseDFeAl_exptID] = phaseDFeAl_expt_latTcon;
   // Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> Al02PhaseD_Expt_LatTCon = {3.60666, 1.56888, 1.65207, 1.95489, 8.61776};
-  std::vector<double> Al02PhaseD_Expt_RadTCon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  Expt_Minerals_LatTcond[Al02PhaseD_ExptID] = Al02PhaseD_Expt_LatTCon;
-  Expt_Minerals_LatTcond[Al02PhaseD_ExptID] = Al02PhaseD_Expt_LatTCon;
+  std::vector<double> phaseD02Al_expt_latTcon = {3.60666, 1.56888, 1.65207, 1.95489, 8.61776};
+  std::vector<double> phaseD02Al_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
+  expt_minerals_latTcond[phaseD02Al_exptID] = phaseD02Al_expt_latTcon;
+  expt_minerals_latTcond[phaseD02Al_exptID] = phaseD02Al_expt_latTcon;
   // Ferropericlase (Mg92Fe8O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> Ferroper08_Expt_LatTCon = {5.08425, 2.20657, 2.24939, 2.50821, 14.39941};
-  std::vector<double> Ferroper08_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[Ferroper08_ExptID] = Ferroper08_Expt_LatTCon;
-  Expt_Minerals_LatTcond[Ferroper08_ExptID] = Ferroper08_Expt_LatTCon;
+  std::vector<double> ferroper08_expt_latTcon = {5.08425, 2.20657, 2.24939, 2.50821, 14.39941};
+  std::vector<double> ferroper08_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[ferroper08_exptID] = ferroper08_expt_latTcon;
+  expt_minerals_latTcond[ferroper08_exptID] = ferroper08_expt_latTcon;
   // Ferropericlase (Mg90Fe10O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> Ferroper10_Expt_LatTCon = {4.48610, 1.94695, 1.98084, 2.19296, 12.65637};
-  std::vector<double> Ferroper10_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[Ferroper10_ExptID] = Ferroper10_Expt_LatTCon;
-  Expt_Minerals_LatTcond[Ferroper10_ExptID] = Ferroper10_Expt_LatTCon;
+  std::vector<double> ferroper10_expt_latTcon = {4.48610, 1.94695, 1.98084, 2.19296, 12.65637};
+  std::vector<double> ferroper10_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[ferroper10_exptID] = ferroper10_expt_latTcon;
+  expt_minerals_latTcond[ferroper10_exptID] = ferroper10_expt_latTcon;
   // Ferropericlase (Mg80Fe20O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> Ferroper20_Expt_LatTCon = {3.48647, 3.39116, 3.56449, 3.77742, 7.57324};
-  std::vector<double> Ferroper20_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[Ferroper20_ExptID] = Ferroper20_Expt_LatTCon;
-  Expt_Minerals_LatTcond[Ferroper20_ExptID] = Ferroper20_Expt_LatTCon;
+  std::vector<double> ferroper20_expt_latTcon = {3.48647, 3.39116, 3.56449, 3.77742, 7.57324};
+  std::vector<double> ferroper20_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[ferroper20_exptID] = ferroper20_expt_latTcon;
+  expt_minerals_latTcond[ferroper20_exptID] = ferroper20_expt_latTcon;
   // Ferropericlase (Mg56Fe44O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> Ferroper56_Expt_LatTCon = {2.69167, 1.23171, 1.55079, 2.02398, 7.04069};
-  std::vector<double> Ferroper56_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[Ferroper56_ExptID] = Ferroper56_Expt_LatTCon;
-  Expt_Minerals_LatTcond[Ferroper56_ExptID] = Ferroper56_Expt_LatTCon;
-  // Davemaoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> Davemaoite_Expt_LatTCon = {10.86634, 4.77342, 5.15289, 5.86997, 13.48443};
-  std::vector<double> Davemaoite_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[Davemaoite_ExptID] = Davemaoite_Expt_LatTCon;
-  Expt_Minerals_LatTcond[Davemaoite_ExptID] = Davemaoite_Expt_LatTCon;
+  std::vector<double> ferroper56_expt_latTcon = {2.69167, 1.23171, 1.55079, 2.02398, 7.04069};
+  std::vector<double> ferroper56_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[ferroper56_exptID] = ferroper56_expt_latTcon;
+  expt_minerals_latTcond[ferroper56_exptID] = ferroper56_expt_latTcon;
+  // davemaoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> davemaoite_expt_latTcon = {10.86634, 4.77342, 5.15289, 5.86997, 13.48443};
+  std::vector<double> davemaoite_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[davemaoite_exptID] = davemaoite_expt_latTcon;
+  expt_minerals_latTcond[davemaoite_exptID] = davemaoite_expt_latTcon;
   // New-hexagonal-alluminium-phase (FeNAL): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> NewHexAlPh_Expt_LatTCon = {10.59581, 4.58812, 4.45113, 4.32578, 12.15184};
-  std::vector<double> NewHexAlPh_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[NewHexAlPh_ExptID] = NewHexAlPh_Expt_LatTCon;
-  Expt_Minerals_LatTcond[NewHexAlPh_ExptID] = NewHexAlPh_Expt_LatTCon;
-  // Akimotoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> Akimotoite_Expt_LatTCon = {10.69504, 2.03810, 2.21218, 2.47430, 5.69003};
-  std::vector<double> Akimotoite_Expt_RadTCon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  Expt_Minerals_LatTcond[Akimotoite_ExptID] = Akimotoite_Expt_LatTCon;
-  Expt_Minerals_LatTcond[Akimotoite_ExptID] = Akimotoite_Expt_LatTCon;
+  std::vector<double> newhexAlph_expt_latTcon = {10.59581, 4.58812, 4.45113, 4.32578, 12.15184};
+  std::vector<double> newhexAlph_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[newhexAlph_exptID] = newhexAlph_expt_latTcon;
+  expt_minerals_latTcond[newhexAlph_exptID] = newhexAlph_expt_latTcon;
+  // akimotoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> akimotoite_expt_latTcon = {10.69504, 2.03810, 2.21218, 2.47430, 5.69003};
+  std::vector<double> akimotoite_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
+  expt_minerals_latTcond[akimotoite_exptID] = akimotoite_expt_latTcon;
+  expt_minerals_latTcond[akimotoite_exptID] = akimotoite_expt_latTcon;
 
   // Perform element-wise sum
   for (size_t row = 0; row < temperatures.size(); ++row)
   {
-    OlivineDry_Expt_TotTCon[row] = OlivineDry_Expt_LatTCon[row] + OlivineDry_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[OlivineDry_ExptID] = OlivineDry_Expt_TotTCon;
-    WadsleyDry_Expt_TotTCon[row] = WadsleyDry_Expt_LatTCon[row] + WadsleyDry_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[WadsleyDry_ExptID] = WadsleyDry_Expt_TotTCon;
-    RingwooDry_Expt_TotTCon[row] = RingwooDry_Expt_LatTCon[row] + RingwooDry_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[RingwooDry_ExptID] = RingwooDry_Expt_TotTCon;
-    En100Brigm_Expt_TotTCon[row] = En100Brigm_Expt_LatTCon[row] + En100Brigm_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[En100Brigm_ExptID] = En100Brigm_Expt_TotTCon;
-    En97Brigma_Expt_TotTCon[row] = En97Brigma_Expt_LatTCon[row] + En97Brigma_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[En97Brigma_ExptID] = En97Brigma_Expt_TotTCon;
-    En90Brigma_Expt_TotTCon[row] = En90Brigma_Expt_LatTCon[row] + En90Brigma_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[En90Brigma_ExptID] = En90Brigma_Expt_TotTCon;
-    AlMgBrigma_Expt_TotTCon[row] = AlMgBrigma_Expt_LatTCon[row] + AlMgBrigma_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[AlMgBrigma_ExptID] = AlMgBrigma_Expt_TotTCon;
-    FeAlBrigma_Expt_TotTCon[row] = FeAlBrigma_Expt_LatTCon[row] + FeAlBrigma_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[FeAlBrigma_ExptID] = FeAlBrigma_Expt_TotTCon;
-    OpxEnstati_Expt_TotTCon[row] = OpxEnstati_Expt_LatTCon[row] + OpxEnstati_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[OpxEnstati_ExptID] = OpxEnstati_Expt_TotTCon;
-    CpxDiopsid_Expt_TotTCon[row] = CpxDiopsid_Expt_LatTCon[row] + CpxDiopsid_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[CpxDiopsid_ExptID] = CpxDiopsid_Expt_TotTCon;
-    GrtPyropes_Expt_TotTCon[row] = GrtPyropes_Expt_LatTCon[row] + GrtPyropes_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[GrtPyropes_ExptID] = GrtPyropes_Expt_TotTCon;
-    GrtGrossul_Expt_TotTCon[row] = GrtGrossul_Expt_LatTCon[row] + GrtGrossul_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[GrtGrossul_ExptID] = GrtGrossul_Expt_TotTCon;
-    GrtAlmandi_Expt_TotTCon[row] = GrtAlmandi_Expt_LatTCon[row] + GrtAlmandi_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[GrtAlmandi_ExptID] = GrtAlmandi_Expt_TotTCon;
-    GrtMajorit_Expt_TotTCon[row] = GrtMajorit_Expt_LatTCon[row] + GrtMajorit_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[GrtMajorit_ExptID] = GrtMajorit_Expt_TotTCon;
-    QuartzPure_Expt_TotTCon[row] = QuartzPure_Expt_LatTCon[row] + QuartzPure_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[QuartzPure_ExptID] = QuartzPure_Expt_TotTCon;
-    CoesitSiO2_Expt_TotTCon[row] = CoesitSiO2_Expt_LatTCon[row] + CoesitSiO2_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[CoesitSiO2_ExptID] = CoesitSiO2_Expt_TotTCon;
-    Stishovite_Expt_TotTCon[row] = Stishovite_Expt_LatTCon[row] + Stishovite_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[Stishovite_ExptID] = Stishovite_Expt_TotTCon;
-    Al05Stisho_Expt_TotTCon[row] = Al05Stisho_Expt_LatTCon[row] + Al05Stisho_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[Al05Stisho_ExptID] = Al05Stisho_Expt_TotTCon;
-    Antigor010_Expt_TotTCon[row] = Antigor010_Expt_LatTCon[row] + Antigor010_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[Antigor010_ExptID] = Antigor010_Expt_TotTCon;
-    Antigor001_Expt_TotTCon[row] = Antigor001_Expt_LatTCon[row] + Antigor001_Expt_RadTCon[row]; 
-    Expt_Minerals_TotTcond[Antigor001_ExptID] = Antigor001_Expt_TotTCon;   
-    FeAlPhaseD_Expt_TotTCon[row] = FeAlPhaseD_Expt_LatTCon[row] + FeAlPhaseD_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[FeAlPhaseD_ExptID] = FeAlPhaseD_Expt_TotTCon; 
-    Al02PhaseD_Expt_TotTCon[row] = Al02PhaseD_Expt_LatTCon[row] + Al02PhaseD_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[Al02PhaseD_ExptID] = Al02PhaseD_Expt_TotTCon;
-    Ferroper08_Expt_TotTCon[row] = Ferroper08_Expt_LatTCon[row] + Ferroper08_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[Ferroper08_ExptID] = Ferroper08_Expt_TotTCon;
-    Ferroper10_Expt_TotTCon[row] = Ferroper10_Expt_LatTCon[row] + Ferroper10_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[Ferroper10_ExptID] = Ferroper10_Expt_TotTCon;
-    Ferroper20_Expt_TotTCon[row] = Ferroper20_Expt_LatTCon[row] + Ferroper20_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[Ferroper20_ExptID] = Ferroper20_Expt_TotTCon;
-    Ferroper56_Expt_TotTCon[row] = Ferroper56_Expt_LatTCon[row] + Ferroper56_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[Ferroper56_ExptID] = Ferroper56_Expt_TotTCon;
-    Davemaoite_Expt_TotTCon[row] = Davemaoite_Expt_LatTCon[row] + Davemaoite_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[Davemaoite_ExptID] = Davemaoite_Expt_TotTCon;
-    NewHexAlPh_Expt_TotTCon[row] = NewHexAlPh_Expt_LatTCon[row] + NewHexAlPh_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[NewHexAlPh_ExptID] = NewHexAlPh_Expt_TotTCon;
-    Akimotoite_Expt_TotTCon[row] = Akimotoite_Expt_LatTCon[row] + Akimotoite_Expt_RadTCon[row];
-    Expt_Minerals_TotTcond[Akimotoite_ExptID] = Akimotoite_Expt_TotTCon;
+    olivinedry_expt_totTcon[row] = olivinedry_expt_latTcon[row] + olivinedry_expt_radTcon[row];
+    expt_minerals_totTcond[olivinedry_exptID] = olivinedry_expt_totTcon;
+    wadsleydry_expt_totTcon[row] = wadsleydry_expt_latTcon[row] + wadsleydry_expt_radTcon[row];
+    expt_minerals_totTcond[wadsleydry_exptID] = wadsleydry_expt_totTcon;
+    ringwoodry_expt_totTcon[row] = ringwoodry_expt_latTcon[row] + ringwoodry_expt_radTcon[row];
+    expt_minerals_totTcond[ringwoodry_exptID] = ringwoodry_expt_totTcon;
+    brigm100Mg_expt_totTcon[row] = brigm100Mg_expt_latTcon[row] + brigm100Mg_expt_radTcon[row];
+    expt_minerals_totTcond[brigm100Mg_exptID] = brigm100Mg_expt_totTcon;
+    brigma97Mg_expt_totTcon[row] = brigma97Mg_expt_latTcon[row] + brigma97Mg_expt_radTcon[row];
+    expt_minerals_totTcond[brigma97Mg_exptID] = brigma97Mg_expt_totTcon;
+    brigma90Mg_expt_totTcon[row] = brigma90Mg_expt_latTcon[row] + brigma90Mg_expt_radTcon[row];
+    expt_minerals_totTcond[brigma90Mg_exptID] = brigma90Mg_expt_totTcon;
+    brigmaAlMg_expt_totTcon[row] = brigmaAlMg_expt_latTcon[row] + brigmaAlMg_expt_radTcon[row];
+    expt_minerals_totTcond[brigmaAlMg_exptID] = brigmaAlMg_expt_totTcon;
+    brigmaFeAl_expt_totTcon[row] = brigmaFeAl_expt_latTcon[row] + brigmaFeAl_expt_radTcon[row];
+    expt_minerals_totTcond[brigmaFeAl_exptID] = brigmaFeAl_expt_totTcon;
+    opxenstati_expt_totTcon[row] = opxenstati_expt_latTcon[row] + opxenstati_expt_radTcon[row];
+    expt_minerals_totTcond[opxenstati_exptID] = opxenstati_expt_totTcon;
+    cpxdiopsid_expt_totTcon[row] = cpxdiopsid_expt_latTcon[row] + cpxdiopsid_expt_radTcon[row];
+    expt_minerals_totTcond[cpxdiopsid_exptID] = cpxdiopsid_expt_totTcon;
+    grtpyropes_expt_totTcon[row] = grtpyropes_expt_latTcon[row] + grtpyropes_expt_radTcon[row];
+    expt_minerals_totTcond[grtpyropes_exptID] = grtpyropes_expt_totTcon;
+    grtgrossul_expt_totTcon[row] = grtgrossul_expt_latTcon[row] + grtgrossul_expt_radTcon[row];
+    expt_minerals_totTcond[grtgrossul_exptID] = grtgrossul_expt_totTcon;
+    grtalmandi_expt_totTcon[row] = grtalmandi_expt_latTcon[row] + grtalmandi_expt_radTcon[row];
+    expt_minerals_totTcond[grtalmandi_exptID] = grtalmandi_expt_totTcon;
+    grtmajorit_expt_totTcon[row] = grtmajorit_expt_latTcon[row] + grtmajorit_expt_radTcon[row];
+    expt_minerals_totTcond[grtmajorit_exptID] = grtmajorit_expt_totTcon;
+    quartzpure_expt_totTcon[row] = quartzpure_expt_latTcon[row] + quartzpure_expt_radTcon[row];
+    expt_minerals_totTcond[quartzpure_exptID] = quartzpure_expt_totTcon;
+    coesitSiO2_expt_totTcon[row] = coesitSiO2_expt_latTcon[row] + coesitSiO2_expt_radTcon[row];
+    expt_minerals_totTcond[coesitSiO2_exptID] = coesitSiO2_expt_totTcon;
+    stishovite_expt_totTcon[row] = stishovite_expt_latTcon[row] + stishovite_expt_radTcon[row];
+    expt_minerals_totTcond[stishovite_exptID] = stishovite_expt_totTcon;
+    stisho05Al_expt_totTcon[row] = stisho05Al_expt_latTcon[row] + stisho05Al_expt_radTcon[row];
+    expt_minerals_totTcond[stisho05Al_exptID] = stisho05Al_expt_totTcon;
+    antigor010_expt_totTcon[row] = antigor010_expt_latTcon[row] + antigor010_expt_radTcon[row];
+    expt_minerals_totTcond[antigor010_exptID] = antigor010_expt_totTcon;
+    antigor001_expt_totTcon[row] = antigor001_expt_latTcon[row] + antigor001_expt_radTcon[row]; 
+    expt_minerals_totTcond[antigor001_exptID] = antigor001_expt_totTcon;   
+    phaseDFeAl_expt_totTcon[row] = phaseDFeAl_expt_latTcon[row] + phaseDFeAl_expt_radTcon[row];
+    expt_minerals_totTcond[phaseDFeAl_exptID] = phaseDFeAl_expt_totTcon; 
+    phaseD02Al_expt_totTcon[row] = phaseD02Al_expt_latTcon[row] + phaseD02Al_expt_radTcon[row];
+    expt_minerals_totTcond[phaseD02Al_exptID] = phaseD02Al_expt_totTcon;
+    ferroper08_expt_totTcon[row] = ferroper08_expt_latTcon[row] + ferroper08_expt_radTcon[row];
+    expt_minerals_totTcond[ferroper08_exptID] = ferroper08_expt_totTcon;
+    ferroper10_expt_totTcon[row] = ferroper10_expt_latTcon[row] + ferroper10_expt_radTcon[row];
+    expt_minerals_totTcond[ferroper10_exptID] = ferroper10_expt_totTcon;
+    ferroper20_expt_totTcon[row] = ferroper20_expt_latTcon[row] + ferroper20_expt_radTcon[row];
+    expt_minerals_totTcond[ferroper20_exptID] = ferroper20_expt_totTcon;
+    ferroper56_expt_totTcon[row] = ferroper56_expt_latTcon[row] + ferroper56_expt_radTcon[row];
+    expt_minerals_totTcond[ferroper56_exptID] = ferroper56_expt_totTcon;
+    davemaoite_expt_totTcon[row] = davemaoite_expt_latTcon[row] + davemaoite_expt_radTcon[row];
+    expt_minerals_totTcond[davemaoite_exptID] = davemaoite_expt_totTcon;
+    newhexAlph_expt_totTcon[row] = newhexAlph_expt_latTcon[row] + newhexAlph_expt_radTcon[row];
+    expt_minerals_totTcond[newhexAlph_exptID] = newhexAlph_expt_totTcon;
+    akimotoite_expt_totTcon[row] = akimotoite_expt_latTcon[row] + akimotoite_expt_radTcon[row];
+    expt_minerals_totTcond[akimotoite_exptID] = akimotoite_expt_totTcon;
   }
 
  // Loop over all mID values
- for (unsigned int mID = 0; mID < MineralPar_Index; ++mID)
+ for (unsigned int mID = 0; mID < mineralpar_index; ++mID)
  {
    in.Mineral_ID = mID; // Set the current mID
 
@@ -362,7 +362,7 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
    {
      for (size_t col = 0; col < compositions[row].size(); ++col)
      {
-       expected_total_Tcond[row][col] = std::pow(Expt_Minerals_TotTcond[mID][col], compositions[row][col]);
+       expected_total_Tcond[row][col] = std::pow(expt_minerals_totTcond[mID][col], compositions[row][col]);
      }
    }
 
@@ -381,235 +381,235 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
      {
        switch (mID) // Compare the computed thermal conductivity with the expected value
        {
-         case OlivineDry_ExptID: // OlivineDry
+         case olivinedry_exptID: // olivinedry
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("OlivineDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("OlivineDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("olivinedry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("olivinedry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case WadsleyDry_ExptID: // WadsleyDry
+         case wadsleydry_exptID: // wadsleydry
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("WadsleyDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("WadsleyDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("wadsleydry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("wadsleydry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case RingwooDry_ExptID: // RingwooDry
+         case ringwoodry_exptID: // ringwoodry
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("RingwooDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("RingwooDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("ringwoodry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("ringwoodry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case En100Brigm_ExptID: // En100Brigm
+         case brigm100Mg_exptID: // brigm100Mg
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("En100Brigm Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("En100Brigm Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("brigm100Mg expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("brigm100Mg computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case En97Brigma_ExptID: // En97Brigma
+         case brigma97Mg_exptID: // brigma97Mg
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("En97Brigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("En97Brigma Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("brigma97Mg expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("brigma97Mg computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case En90Brigma_ExptID: // En90Brigma
+         case brigma90Mg_exptID: // brigma90Mg
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("En90Brigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("En90Brigma Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("brigma90Mg expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("brigma90Mg computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case AlMgBrigma_ExptID: // AlMgBrigma
+         case brigmaAlMg_exptID: // brigmaAlMg
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("AlMgBrigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("AlMgBrigma Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("brigmaAlMg expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("brigmaAlMg computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case FeAlBrigma_ExptID: // FeAlBrigma
+         case brigmaFeAl_exptID: // brigmaFeAl
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("FeAlBrigma Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("FeAlBrigma Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("brigmaFeAl expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("brigmaFeAl computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case OpxEnstati_ExptID: // OpxEnstati
+         case opxenstati_exptID: // opxenstati
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("OpxEnstati Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("OpxEnstati Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("opxenstati expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("opxenstati computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case CpxDiopsid_ExptID: // CpxDiopsid
+         case cpxdiopsid_exptID: // cpxdiopsid
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("CpxDiopsid Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("CpxDiopsid Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("cpxdiopsid expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("cpxdiopsid computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case GrtPyropes_ExptID: // GrtPyropes
+         case grtpyropes_exptID: // grtpyropes
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("GrtPyropes Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("GrtPyropes Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("grtpyropes expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("grtpyropes computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case GrtGrossul_ExptID: // GrtGrossul
+         case grtgrossul_exptID: // grtgrossul
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("GrtGrossul Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("GrtGrossul Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("grtgrossul expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("grtgrossul computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case GrtAlmandi_ExptID: // GrtAlmandi
+         case grtalmandi_exptID: // grtalmandi
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("GrtAlmandi Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("GrtAlmandi Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("grtalmandi expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("grtalmandi computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case GrtMajorit_ExptID: // GrtMajorit
+         case grtmajorit_exptID: // grtmajorit
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("GrtMajorit Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("GrtMajorit Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("grtmajorit expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("grtmajorit computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case QuartzPure_ExptID: // QuartzPure
+         case quartzpure_exptID: // quartzpure
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("QuartzPure Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("QuartzPure Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("quartzpure expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("quartzpure computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case CoesitSiO2_ExptID: // CoesitSiO2
+         case coesitSiO2_exptID: // coesitSiO2
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("CoesitSiO2 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("CoesitSiO2 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("coesitSiO2 expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("coesitSiO2 computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case Stishovite_ExptID: // Stishovite
+         case stishovite_exptID: // stishovite
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("Stishovite Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("Stishovite Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("stishovite expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("stishovite computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case Al05Stisho_ExptID: // Al05Stisho
+         case stisho05Al_exptID: // stisho05Al
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("Al05Stisho Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("Al05Stisho Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("stisho05Al expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("stisho05Al computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case Antigor010_ExptID: // Antigor010
+         case antigor010_exptID: // antigor010
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("Antigor010 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("Antigor010 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("antigor010 expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("antigor010 computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case Antigor001_ExptID: // Antigor001
+         case antigor001_exptID: // antigor001
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("Antigor001 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("Antigor001 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("antigor001 expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("antigor001 computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case FeAlPhaseD_ExptID: // FeAlPhaseD
+         case phaseDFeAl_exptID: // phaseDFeAl
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("FeAlPhaseD Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("FeAlPhaseD Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("phaseDFeAl expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("phaseDFeAl computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case Al02PhaseD_ExptID: // Al02PhaseD
+         case phaseD02Al_exptID: // phaseD02Al
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("Al02PhaseD Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("Al02PhaseD Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("phaseD02Al expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("phaseD02Al computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case Ferroper08_ExptID: // Ferroper08
+         case ferroper08_exptID: // ferroper08
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("Ferroper08 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("Ferroper08 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("ferroper08 expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("ferroper08 computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case Ferroper10_ExptID: // Ferroper10
+         case ferroper10_exptID: // ferroper10
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("Ferroper10 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("Ferroper10 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("ferroper10 expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("ferroper10 computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case Ferroper20_ExptID: // Ferroper20
+         case ferroper20_exptID: // ferroper20
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("Ferroper20 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("Ferroper20 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("ferroper20 expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("ferroper20 computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case Ferroper56_ExptID: // Ferroper56
+         case ferroper56_exptID: // ferroper56
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("Ferroper56 Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("Ferroper56 Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("ferroper56 expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("ferroper56 computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case Davemaoite_ExptID: // Davemaoite
+         case davemaoite_exptID: // davemaoite
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("Davemaoite Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("Davemaoite Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("davemaoite expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("davemaoite computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case NewHexAlPh_ExptID: // NewHexAlPh
+         case newhexAlph_exptID: // newhexAlph
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("NewHexAlPh Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("NewHexAlPh Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("newhexAlph expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("newhexAlph computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case Akimotoite_ExptID: // Akimotoite
+         case akimotoite_exptID: // akimotoite
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("Akimotoite Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("Akimotoite Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("akimotoite expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("akimotoite computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
@@ -643,67 +643,67 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
   };
     
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
-  constexpr int OlivineDry_Hof99ID = 0;
-  std::vector<double> OlivineDry_Expt_Hof99_TotTCon(temperatures.size());
-  constexpr int WadsleyDry_Hof99ID = 1;
-  std::vector<double> WadsleyDry_Expt_Hof99_TotTCon(temperatures.size());
-  constexpr int RingwooDry_Hof99ID = 2;
-  std::vector<double> RingwooDry_Expt_Hof99_TotTCon(temperatures.size());
+  constexpr int olivinedry_hof99_ID = 0;
+  std::vector<double> olivinedry_expt_hof99_totTcon(temperatures.size());
+  constexpr int wadsleydry_hof99_ID = 1;
+  std::vector<double> wadsleydry_expt_hof99_totTcon(temperatures.size());
+  constexpr int ringwoodry_hof99_ID = 2;
+  std::vector<double> ringwoodry_expt_hof99_totTcon(temperatures.size());
 
-  unsigned int Hofm1999Par_Index = RingwooDry_Hof99ID+1; // Number of minerals
+  unsigned int hof99_index = ringwoodry_hof99_ID+1; // Number of minerals
 
   // Preallocate matrixes for storing thermal conductivities of minerals
-  std::vector<std::vector<double>> Expt_Hofm1999_LatTcond(Hofm1999Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
-  std::vector<std::vector<double>> Expt_Hofm1999_RadTcond(Hofm1999Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
-  std::vector<std::vector<double>> Expt_Hofm1999_TotTcond(Hofm1999Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+  std::vector<std::vector<double>> expt_hof99_latTcond(hof99_index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_hof99_radTcond(hof99_index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
+  std::vector<std::vector<double>> expt_hof99_totTcond(hof99_index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
 
   // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> OlivineDry_Expt_Hof99_LatTCon = {4.69000, 2.41949, 2.66506, 2.97359, 7.19819};
-  std::vector<double> OlivineDry_Expt_Hof99_RadTCon = {0.00572, 0.28688, 0.32277, 0.35967, 0.80725};
-  Expt_Hofm1999_LatTcond[OlivineDry_Hof99ID] = OlivineDry_Expt_Hof99_LatTCon;
-  Expt_Hofm1999_RadTcond[OlivineDry_Hof99ID] = OlivineDry_Expt_Hof99_RadTCon;
+  std::vector<double> olivinedry_expt_hof99_latTcon = {4.69000, 2.41949, 2.66506, 2.97359, 7.19819};
+  std::vector<double> olivinedry_expt_hof99_radTcon = {0.00572, 0.28688, 0.32277, 0.35967, 0.80725};
+  expt_hof99_latTcond[olivinedry_hof99_ID] = olivinedry_expt_hof99_latTcon;
+  expt_hof99_radTcond[olivinedry_hof99_ID] = olivinedry_expt_hof99_radTcon;
   // Dry Wadsleyite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> WadsleyDry_Expt_Hof99_LatTCon = {7.68434, 4.20366, 4.53114, 4.95031, 11.17803};
-  std::vector<double> WadsleyDry_Expt_Hof99_RadTCon = {0.00572, 0.28688, 0.32277, 0.35967, 0.80725};
-  Expt_Hofm1999_LatTcond[WadsleyDry_Hof99ID] = WadsleyDry_Expt_Hof99_LatTCon;
-  Expt_Hofm1999_RadTcond[WadsleyDry_Hof99ID] = WadsleyDry_Expt_Hof99_RadTCon;
+  std::vector<double> wadsleydry_expt_hof99_latTcon = {7.68434, 4.20366, 4.53114, 4.95031, 11.17803};
+  std::vector<double> wadsleydry_expt_hof99_radTcon = {0.00572, 0.28688, 0.32277, 0.35967, 0.80725};
+  expt_hof99_latTcond[wadsleydry_hof99_ID] = wadsleydry_expt_hof99_latTcon;
+  expt_hof99_radTcond[wadsleydry_hof99_ID] = wadsleydry_expt_hof99_radTcon;
   // Dry Ringwoodite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> RingwooDry_Expt_Hof99_LatTCon = {7.68419, 4.14794, 4.47408, 4.89128, 11.00724};
-  std::vector<double> RingwooDry_Expt_Hof99_RadTCon = {0.00572, 0.28688, 0.32277, 0.35967, 0.80725};
-  Expt_Hofm1999_LatTcond[RingwooDry_Hof99ID] = RingwooDry_Expt_Hof99_LatTCon;
-  Expt_Hofm1999_RadTcond[RingwooDry_Hof99ID] = RingwooDry_Expt_Hof99_RadTCon;
+  std::vector<double> ringwoodry_expt_hof99_latTcon = {7.68419, 4.14794, 4.47408, 4.89128, 11.00724};
+  std::vector<double> ringwoodry_expt_hof99_radTcon = {0.00572, 0.28688, 0.32277, 0.35967, 0.80725};
+  expt_hof99_latTcond[ringwoodry_hof99_ID] = ringwoodry_expt_hof99_latTcon;
+  expt_hof99_radTcond[ringwoodry_hof99_ID] = ringwoodry_expt_hof99_radTcon;
 
  // Perform element-wise sum
   for (size_t row = 0; row < temperatures.size(); ++row)
   {
-    OlivineDry_Expt_Hof99_TotTCon[row] = OlivineDry_Expt_Hof99_LatTCon[row] + OlivineDry_Expt_Hof99_RadTCon[row];
-    Expt_Hofm1999_TotTcond[OlivineDry_Hof99ID] = OlivineDry_Expt_Hof99_TotTCon;
-    WadsleyDry_Expt_Hof99_TotTCon[row] = WadsleyDry_Expt_Hof99_LatTCon[row] + WadsleyDry_Expt_Hof99_RadTCon[row];
-    Expt_Hofm1999_TotTcond[WadsleyDry_Hof99ID] = WadsleyDry_Expt_Hof99_TotTCon;
-    RingwooDry_Expt_Hof99_TotTCon[row] = RingwooDry_Expt_Hof99_LatTCon[row] + RingwooDry_Expt_Hof99_RadTCon[row];
-    Expt_Hofm1999_TotTcond[RingwooDry_Hof99ID] = RingwooDry_Expt_Hof99_TotTCon;
+    olivinedry_expt_hof99_totTcon[row] = olivinedry_expt_hof99_latTcon[row] + olivinedry_expt_hof99_radTcon[row];
+    expt_hof99_totTcond[olivinedry_hof99_ID] = olivinedry_expt_hof99_totTcon;
+    wadsleydry_expt_hof99_totTcon[row] = wadsleydry_expt_hof99_latTcon[row] + wadsleydry_expt_hof99_radTcon[row];
+    expt_hof99_totTcond[wadsleydry_hof99_ID] = wadsleydry_expt_hof99_totTcon;
+    ringwoodry_expt_hof99_totTcon[row] = ringwoodry_expt_hof99_latTcon[row] + ringwoodry_expt_hof99_radTcon[row];
+    expt_hof99_totTcond[ringwoodry_hof99_ID] = ringwoodry_expt_hof99_totTcon;
   }
 
   // Loop over all mID values
-  for (unsigned int mID = 0; mID < Hofm1999Par_Index; ++mID)
+  for (unsigned int mID = 0; mID < hof99_index; ++mID)
   {
    in.Mineral_ID = mID; // Set the current mID
 
    // Initialize the expected value matrix with the same dimensions of the composition matrix
-   std::vector<std::vector<double>> expected_Hof1999_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+   std::vector<std::vector<double>> expected_hof99_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
    // Perform element-wise calculation
    for (size_t row = 0; row < compositions.size(); ++row)
     {
       for (size_t col = 0; col < compositions[row].size(); ++col)
       {
-        expected_Hof1999_Tcond[row][col] = std::pow(Expt_Hofm1999_TotTcond[mID][col], compositions[row][col]);
+        expected_hof99_Tcond[row][col] = std::pow(expt_hof99_totTcond[mID][col], compositions[row][col]);
       }
     }
 
-   std::vector<std::vector<double>> expected_conductivities = expected_Hof1999_Tcond;
+   std::vector<std::vector<double>> expected_conductivities = expected_hof99_Tcond;
 
-   INFO("Checking Hof1999 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
+   INFO("Checking hof99 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
 
    // Loop over the different compositions
    for (size_t row = 0; row < expected_conductivities.size(); ++row)
@@ -716,27 +716,27 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
      {
        switch (mID) // Compare the computed thermal conductivity with the expected value
        {
-         case OlivineDry_Hof99ID: // OlivineDry
+         case olivinedry_hof99_ID: // olivinedry
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("OlivineDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("OlivineDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("olivinedry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("olivinedry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case WadsleyDry_Hof99ID: // WadsleyDry
+         case wadsleydry_hof99_ID: // wadsleydry
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("WadsleyDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("WadsleyDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("wadsleydry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("wadsleydry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case RingwooDry_Hof99ID: // RingwooDry
+         case ringwoodry_hof99_ID: // ringwoodry
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("RingwooDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("RingwooDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("ringwoodry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("ringwoodry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
@@ -825,65 +825,65 @@ TEST_CASE("Utilities:: Thermal Conductivity Tosi 2016")
   };
 
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
-  constexpr int UpperMantl_Tos16ID = 0;
-  std::vector<double> UpperMantl_Expt_Tos16_TotTCon(temperatures.size());
-  constexpr int UManTraZon_Tos16ID = 1;
-  std::vector<double> UManTraZon_Expt_Tos16_TotTCon(temperatures.size());
-  constexpr int LManTraZon_Tos16ID = 2;
-  std::vector<double> LManTraZon_Expt_Tos16_TotTCon(temperatures.size());
-  constexpr int LowerMantl_Tos16ID = 3;
-  std::vector<double> LowerMantl_Expt_Tos16_TotTCon(temperatures.size());
+  constexpr int uppermantl_tos16_ID = 0;
+  std::vector<double> uppermantl_expt_tos16_totTcon(temperatures.size());
+  constexpr int umantrazon_tos16_ID = 1;
+  std::vector<double> umantrazon_expt_tos16_totTcon(temperatures.size());
+  constexpr int lmantrazon_tos16_ID = 2;
+  std::vector<double> lmantrazon_expt_tos16_totTcon(temperatures.size());
+  constexpr int lowermantl_tos16_ID = 3;
+  std::vector<double> lowermantl_expt_tos16_totTcon(temperatures.size());
 
-  unsigned int Tosi2016Par_Index = LowerMantl_Tos16ID+1; // Number of minerals
+  unsigned int tos16_index = lowermantl_tos16_ID+1; // Number of minerals
 
   // Preallocate matrixes for storing thermal conductivities of minerals
-  std::vector<std::vector<double>> Expt_Tos16_LatTcond(Tosi2016Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
-  std::vector<std::vector<double>> Expt_Tos16_TotTcond(Tosi2016Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+  std::vector<std::vector<double>> expt_tos16_latTcond(tos16_index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_tos16_totTcond(tos16_index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
 
   // Upper Mantle: expected lattice thermal conductivities (k) in [W/m/K] 
-  std::vector<double> UpperMantl_Expt_Tos16_LatTCon = {2.46271, 1.24999, 1.78653, 2.43429, 11.71039};
-  Expt_Tos16_LatTcond[UpperMantl_Tos16ID] = UpperMantl_Expt_Tos16_LatTCon;
+  std::vector<double> uppermantl_expt_tos16_latTcon = {2.46271, 1.24999, 1.78653, 2.43429, 11.71039};
+  expt_tos16_latTcond[uppermantl_tos16_ID] = uppermantl_expt_tos16_latTcon;
   // Upper Mantle Transition Zone: expected lattice thermal conductivities (k) in [W/m/K]
-  std::vector<double> UManTraZon_Expt_Tos16_LatTCon = {3.79686, 1.61966, 2.07866, 2.63431, 10.37773};
-  Expt_Tos16_LatTcond[UManTraZon_Tos16ID] = UManTraZon_Expt_Tos16_LatTCon;
+  std::vector<double> umantrazon_expt_tos16_latTcon = {3.79686, 1.61966, 2.07866, 2.63431, 10.37773};
+  expt_tos16_latTcond[umantrazon_tos16_ID] = umantrazon_expt_tos16_latTcon;
   // Lower Mantle Transition Zone: expected lattice thermal conductivities (k) in [W/m/K] 
-  std::vector<double> LManTraZon_Expt_Tos16_LatTCon = {3.50678, 1.39227, 1.83968, 2.37777, 9.66447};
-  Expt_Tos16_LatTcond[LManTraZon_Tos16ID] = LManTraZon_Expt_Tos16_LatTCon;
+  std::vector<double> lmantrazon_expt_tos16_latTcon = {3.50678, 1.39227, 1.83968, 2.37777, 9.66447};
+  expt_tos16_latTcond[lmantrazon_tos16_ID] = lmantrazon_expt_tos16_latTcon;
   // Lower Mantle: expected lattice thermal conductivities (k) in [W/m/K] 
-  std::vector<double> LowerMantl_Expt_Tos16_LatTCon = {3.47335, 2.13845, 2.37846, 2.68032, 7.56725};
-  Expt_Tos16_LatTcond[LowerMantl_Tos16ID] = LowerMantl_Expt_Tos16_LatTCon;
+  std::vector<double> lowermantl_expt_tos16_latTcon = {3.47335, 2.13845, 2.37846, 2.68032, 7.56725};
+  expt_tos16_latTcond[lowermantl_tos16_ID] = lowermantl_expt_tos16_latTcon;
 
   // Perform element-wise sum
   for (size_t row = 0; row < temperatures.size(); ++row)
   {
-    UpperMantl_Expt_Tos16_TotTCon[row] = UpperMantl_Expt_Tos16_LatTCon[row];
-    Expt_Tos16_TotTcond[UpperMantl_Tos16ID] = UpperMantl_Expt_Tos16_TotTCon;
-    UManTraZon_Expt_Tos16_TotTCon[row] = UManTraZon_Expt_Tos16_LatTCon[row];
-    Expt_Tos16_TotTcond[UManTraZon_Tos16ID] = UManTraZon_Expt_Tos16_TotTCon;
-    LManTraZon_Expt_Tos16_TotTCon[row] = LManTraZon_Expt_Tos16_LatTCon[row];
-    Expt_Tos16_TotTcond[LManTraZon_Tos16ID] = LManTraZon_Expt_Tos16_TotTCon;
-    LowerMantl_Expt_Tos16_TotTCon[row] = LowerMantl_Expt_Tos16_LatTCon[row];
-    Expt_Tos16_TotTcond[LowerMantl_Tos16ID] = LowerMantl_Expt_Tos16_TotTCon;
+    uppermantl_expt_tos16_totTcon[row] = uppermantl_expt_tos16_latTcon[row];
+    expt_tos16_totTcond[uppermantl_tos16_ID] = uppermantl_expt_tos16_totTcon;
+    umantrazon_expt_tos16_totTcon[row] = umantrazon_expt_tos16_latTcon[row];
+    expt_tos16_totTcond[umantrazon_tos16_ID] = umantrazon_expt_tos16_totTcon;
+    lmantrazon_expt_tos16_totTcon[row] = lmantrazon_expt_tos16_latTcon[row];
+    expt_tos16_totTcond[lmantrazon_tos16_ID] = lmantrazon_expt_tos16_totTcon;
+    lowermantl_expt_tos16_totTcon[row] = lowermantl_expt_tos16_latTcon[row];
+    expt_tos16_totTcond[lowermantl_tos16_ID] = lowermantl_expt_tos16_totTcon;
   }
 
   // Loop over all mID values
-  for (unsigned int mID = 0; mID < Tosi2016Par_Index; ++mID)
+  for (unsigned int mID = 0; mID < tos16_index; ++mID)
   {
    in.Mineral_ID = mID; // Set the current mID
 
    // Initialize the expected value matrix with the same dimensions of the composition matrix
-   std::vector<std::vector<double>> expected_Tos16_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+   std::vector<std::vector<double>> expected_tos16_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
    // Perform element-wise calculation
    for (size_t row = 0; row < compositions.size(); ++row)
     {
       for (size_t col = 0; col < compositions[row].size(); ++col)
       {
-        expected_Tos16_Tcond[row][col] = std::pow(Expt_Tos16_TotTcond[mID][col], compositions[row][col]);
+        expected_tos16_Tcond[row][col] = std::pow(expt_tos16_totTcond[mID][col], compositions[row][col]);
       }
     }
 
-   std::vector<std::vector<double>> expected_conductivities = expected_Tos16_Tcond;
+   std::vector<std::vector<double>> expected_conductivities = expected_tos16_Tcond;
 
    INFO("Checking tosi_2016 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
 
@@ -898,35 +898,35 @@ TEST_CASE("Utilities:: Thermal Conductivity Tosi 2016")
      {
        switch (mID) // Compare the computed thermal conductivity with the expected value
        {
-         case UpperMantl_Tos16ID: // Upper Mantle (UM)
+         case uppermantl_tos16_ID: // Upper Mantle (UM)
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("UpperMantl Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("UpperMantl Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("uppermantl expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("uppermantl computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case UManTraZon_Tos16ID: // Upper Mantle Transition Zone (uMTZ)
+         case umantrazon_tos16_ID: // Upper Mantle Transition Zone (uMTZ)
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("UManTraZon Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("UManTraZon Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("umantrazon expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("umantrazon computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case LManTraZon_Tos16ID: // Lower Mantle Transition Zone (lMTZ)
+         case lmantrazon_tos16_ID: // Lower Mantle Transition Zone (lMTZ)
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("LManTraZon Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("LManTraZon Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("lmantrazon expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("lmantrazon computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case LowerMantl_Tos16ID: // Lower Mantle (LM)
+         case lowermantl_tos16_ID: // Lower Mantle (LM)
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("LowerMantl Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("LowerMantl Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("lowermantl expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("lowermantl computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
@@ -961,58 +961,58 @@ TEST_CASE("Utilities:: Thermal Conductivity Xu 2004")
   };
 
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
-  constexpr int OlivineDry_Xu004ID = 0;
-  std::vector<double> OlivineDry_Expt_Xu004_TotTCon(temperatures.size());
-  constexpr int WadsleyDry_Xu004ID = 1;
-  std::vector<double> WadsleyDry_Expt_Xu004_TotTCon(temperatures.size());
-  constexpr int RingwooDry_Xu004ID = 2;
-  std::vector<double> RingwooDry_Expt_Xu004_TotTCon(temperatures.size());
+  constexpr int olivinedry_xu004_ID = 0;
+  std::vector<double> olivinedry_expt_xu004_totTcon(temperatures.size());
+  constexpr int wadsleydry_xu004_ID = 1;
+  std::vector<double> wadsleydry_expt_xu004_totTcon(temperatures.size());
+  constexpr int ringwoodry_xu004_ID = 2;
+  std::vector<double> ringwoodry_expt_xu004_totTcon(temperatures.size());
 
-  unsigned int Xu2004Par_Index = RingwooDry_Xu004ID+1; // Number of minerals
+  unsigned int xu004_index = ringwoodry_xu004_ID+1; // Number of minerals
 
   // Preallocate matrixes for storing thermal conductivities of minerals
-  std::vector<std::vector<double>> Expt_Xu2004_LatTcond(Xu2004Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
-  std::vector<std::vector<double>> Expt_Xu2004_TotTcond(Xu2004Par_Index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+  std::vector<std::vector<double>> expt_xu004_latTcond(xu004_index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_xu004_totTcond(xu004_index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
 
   // Dry Olivine: expected lattice thermal conductivities (k) in [W/m/K] 
-  std::vector<double> OlivineDry_Expt_Xu004_LatTCon = {4.11726, 1.83987, 2.00632, 2.21873, 5.46835};
-  Expt_Xu2004_LatTcond[OlivineDry_Xu004ID] = OlivineDry_Expt_Xu004_LatTCon;
+  std::vector<double> olivinedry_expt_xu004_latTcon = {4.11726, 1.83987, 2.00632, 2.21873, 5.46835};
+  expt_xu004_latTcond[olivinedry_xu004_ID] = olivinedry_expt_xu004_latTcon;
   // Dry Wadsleyite: expected lattice thermal conductivities (k) in [W/m/K]
-  std::vector<double> WadsleyDry_Expt_Xu004_LatTCon = {8.07501, 3.57699, 3.78227, 4.05482, 8.42667};
-  Expt_Xu2004_LatTcond[WadsleyDry_Xu004ID] = WadsleyDry_Expt_Xu004_LatTCon;
+  std::vector<double> wadsleydry_expt_xu004_latTcon = {8.07501, 3.57699, 3.78227, 4.05482, 8.42667};
+  expt_xu004_latTcond[wadsleydry_xu004_ID] = wadsleydry_expt_xu004_latTcon;
   // Dry Ringwoodite: expected lattice thermal conductivities (k) in [W/m/K] 
-  std::vector<double> RingwooDry_Expt_Xu004_LatTCon = {9.51056, 4.20878, 4.43470, 4.73685, 9.62399};
-  Expt_Xu2004_LatTcond[RingwooDry_Xu004ID] = RingwooDry_Expt_Xu004_LatTCon;
+  std::vector<double> ringwoodry_expt_xu004_latTcon = {9.51056, 4.20878, 4.43470, 4.73685, 9.62399};
+  expt_xu004_latTcond[ringwoodry_xu004_ID] = ringwoodry_expt_xu004_latTcon;
 
   // Perform element-wise sum
   for (size_t row = 0; row < temperatures.size(); ++row)
   {
-    OlivineDry_Expt_Xu004_TotTCon[row] = OlivineDry_Expt_Xu004_LatTCon[row];
-    Expt_Xu2004_TotTcond[OlivineDry_Xu004ID] = OlivineDry_Expt_Xu004_TotTCon;
-    WadsleyDry_Expt_Xu004_TotTCon[row] = WadsleyDry_Expt_Xu004_LatTCon[row];
-    Expt_Xu2004_TotTcond[WadsleyDry_Xu004ID] = WadsleyDry_Expt_Xu004_TotTCon;
-    RingwooDry_Expt_Xu004_TotTCon[row] = RingwooDry_Expt_Xu004_LatTCon[row];
-    Expt_Xu2004_TotTcond[RingwooDry_Xu004ID] = RingwooDry_Expt_Xu004_TotTCon;
+    olivinedry_expt_xu004_totTcon[row] = olivinedry_expt_xu004_latTcon[row];
+    expt_xu004_totTcond[olivinedry_xu004_ID] = olivinedry_expt_xu004_totTcon;
+    wadsleydry_expt_xu004_totTcon[row] = wadsleydry_expt_xu004_latTcon[row];
+    expt_xu004_totTcond[wadsleydry_xu004_ID] = wadsleydry_expt_xu004_totTcon;
+    ringwoodry_expt_xu004_totTcon[row] = ringwoodry_expt_xu004_latTcon[row];
+    expt_xu004_totTcond[ringwoodry_xu004_ID] = ringwoodry_expt_xu004_totTcon;
   }
 
   // Loop over all mID values
-  for (unsigned int mID = 0; mID < Xu2004Par_Index; ++mID)
+  for (unsigned int mID = 0; mID < xu004_index; ++mID)
   {
    in.Mineral_ID = mID; // Set the current mID
 
    // Initialize the expected value matrix with the same dimensions of the composition matrix
-   std::vector<std::vector<double>> expected_Xu2004_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+   std::vector<std::vector<double>> expected_xu004_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
 
    // Perform element-wise calculation
    for (size_t row = 0; row < compositions.size(); ++row)
     {
       for (size_t col = 0; col < compositions[row].size(); ++col)
       {
-        expected_Xu2004_Tcond[row][col] = std::pow(Expt_Xu2004_TotTcond[mID][col], compositions[row][col]);
+        expected_xu004_Tcond[row][col] = std::pow(expt_xu004_totTcond[mID][col], compositions[row][col]);
       }
     }
 
-   std::vector<std::vector<double>> expected_conductivities = expected_Xu2004_Tcond;
+   std::vector<std::vector<double>> expected_conductivities = expected_xu004_Tcond;
 
    INFO("Checking xu_2004 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
 
@@ -1027,27 +1027,27 @@ TEST_CASE("Utilities:: Thermal Conductivity Xu 2004")
      {
        switch (mID) // Compare the computed thermal conductivity with the expected value
        {
-         case OlivineDry_Xu004ID: // OlivineDry
+         case olivinedry_xu004_ID: // olivinedry
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("OlivineDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("OlivineDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("olivinedry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("olivinedry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case WadsleyDry_Xu004ID: // WadsleyDry
+         case wadsleydry_xu004_ID: // wadsleydry
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("WadsleyDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("WadsleyDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("wadsleydry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("wadsleydry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
-         case RingwooDry_Xu004ID: // RingwooDry
+         case ringwoodry_xu004_ID: // ringwoodry
          {
-           INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("RingwooDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("RingwooDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("ringwoodry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("ringwoodry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
@@ -1136,11 +1136,11 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
      {
        switch (mID) // Compare the computed thermal conductivity with the expected value
        {
-         case nondimensional_olivine_ID: // OlivineDry
+         case nondimensional_olivine_ID: // olivinedry
          {
-           INFO("Conditions T= " << in.temperature[i] << "[/] ; P= " << in.pressure[i] << "[/] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("OlivineDry (Nondimensional) Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("OlivineDry (Nondimensional) Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           INFO("Conditions: T= " << in.temperature[i] << "[/] ; P= " << in.pressure[i] << "[/] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("olivinedry (Nondimensional) expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("olivinedry (Nondimensional) computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }
