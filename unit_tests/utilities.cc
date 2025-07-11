@@ -27,7 +27,7 @@
 // #include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
 // #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
 #include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
-// #include <aspect/material_model/thermal_conductivity/nondimensional.h>
+#include <aspect/material_model/thermal_conductivity/nondimensional.h>
 // #include <aspect/material_model/thermal_conductivity/stackhouse_2015.h>
 #include <aspect/material_model/thermal_conductivity/tosi_2016.h>
 #include <aspect/material_model/thermal_conductivity/xu_2004.h>
@@ -47,7 +47,7 @@ TEST_CASE("Utilities::weighted_p_norm_average")
 
 }
 
-TEST_CASE("Utilities::PT dependent thermal conductivity Enrico")
+TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025")
 {
   aspect::MaterialModel::ThermalConductivity::marzotto_2025<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
@@ -1048,6 +1048,99 @@ TEST_CASE("Utilities:: Thermal Conductivity Xu 2004")
            INFO("Conditions T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
            INFO("RingwooDry Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
            INFO("RingwooDry Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+        } 
+      }
+    }
+  }
+}
+
+TEST_CASE("Utilities:: nondimensional thermal conductivity")
+{
+  aspect::MaterialModel::ThermalConductivity::nondimensional<3> model;
+  aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
+  aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+
+  // Assigning an array of values to in.temperature (T) in [K]
+  std::vector<double> temperatures = {300, 1600, 1700, 1800, 3000};
+  in.temperature = temperatures;
+
+  // Assigning an array of values to in.pressure (P) in [GPa]
+  std::vector<double> pressures = {1e5, 1e9, 5e9, 10e9, 100e9};
+  in.pressure = pressures;
+
+  // Assigning a matrix of volume fractions to in.composition (X) in [%]
+  std::vector<std::vector<double>> compositions = 
+  {
+    {1.00, 1.00, 1.00, 1.00, 1.00},
+    {0.75, 0.75, 0.75, 0.75, 0.75},
+    {0.50, 0.50, 0.50, 0.50, 0.50},
+    {0.25, 0.25, 0.25, 0.25, 0.25}
+  };
+
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K]
+  constexpr int nondimensional_olivine_ID = 0;
+  std::vector<double> olivine_expt_nondimensional_totTcond(temperatures.size());
+
+  unsigned int nondimensional_index = nondimensional_olivine_ID+1; // Number of minerals
+
+  // Preallocate matrixes for storing thermal conductivities of minerals
+  std::vector<std::vector<double>> expt_nondimensional_latTcond(nondimensional_index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_nondimensional_radTcond(nondimensional_index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
+  std::vector<std::vector<double>> expt_nondimensional_totTcond(nondimensional_index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+  
+  // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> olivine_expt_nondimensional_latTcond = {3.58888, 1.55432, 1.51642, 1.50279, 2.99729}; 
+  std::vector<double> olivine_expt_nondimensional_radTcond = {0.00138, 2.23156, 2.34983, 2.45491, 3.12276};
+  expt_nondimensional_latTcond[nondimensional_olivine_ID] = olivine_expt_nondimensional_latTcond;
+  expt_nondimensional_radTcond[nondimensional_olivine_ID] = olivine_expt_nondimensional_radTcond;
+
+  // Perform element-wise sum
+  for (size_t row = 0; row < temperatures.size(); ++row)
+  {
+    olivine_expt_nondimensional_totTcond[row] = olivine_expt_nondimensional_latTcond[row]+olivine_expt_nondimensional_radTcond[row];
+    expt_nondimensional_totTcond[nondimensional_olivine_ID] = olivine_expt_nondimensional_totTcond;
+  }
+
+  // Loop over all mID values
+  for (unsigned int mID = 0; mID < nondimensional_index; ++mID)
+  {
+   in.Mineral_ID = mID; // Set the current mID
+
+   // Initialize the expected value matrix with the same dimensions of the composition matrix
+   std::vector<std::vector<double>> expected_nondimensional_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+
+   // Perform element-wise calculation
+   for (size_t row = 0; row < compositions.size(); ++row)
+    {
+      for (size_t col = 0; col < compositions[row].size(); ++col)
+      {
+        expected_nondimensional_Tcond[row][col] = std::pow(expt_nondimensional_totTcond[mID][col], compositions[row][col]);
+      }
+    }
+
+   std::vector<std::vector<double>> expected_conductivities = expected_nondimensional_Tcond;
+
+   INFO("Checking xu_2004 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
+
+   // Loop over the different compositions
+   for (size_t row = 0; row < expected_conductivities.size(); ++row)
+   {
+     in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
+     model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+
+     // Loop over the different combinations of pressures (P) and temperatures (T)
+     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+     {
+       switch (mID) // Compare the computed thermal conductivity with the expected value
+       {
+         case nondimensional_olivine_ID: // OlivineDry
+         {
+           INFO("Conditions T= " << in.temperature[i] << "[/] ; P= " << in.pressure[i] << "[/] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("OlivineDry (Nondimensional) Expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("OlivineDry (Nondimensional) Computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
          }

@@ -25,14 +25,14 @@
 namespace 
 {
   // Compute the lattice thermal conductivity in real (+,-) and simplex (0->1) space considering the boundaries (ymin) and (ymax)
-  double compute_lattice_thermal_conductivity_nondimn(double a0, double b1, double ymin, double ymax, double P_log, double T_mod, double T_room, double n_exp)
+  double compute_lattice_thermal_conductivity_nondimn(double a0, double b1, double ymin, double ymax, double P_log, double T_mod, double T_nondim, double n_exp)
   { 
     double zsimpl = a0 + b1 * P_log;
     double ysimpl = std::exp(zsimpl);
     double yprime = ysimpl / (1 + ysimpl);
     double yreals = ymin + (ymax - ymin) * yprime;
     double lattice_thermal_conductivity = std::exp(yreals);
-    return lattice_thermal_conductivity * std::pow((T_room / T_mod), n_exp);
+    return lattice_thermal_conductivity * std::pow((T_nondim / T_mod), n_exp);
   }
   
   // Compute the radiative thermal conductivity in real (+,-) and simplex (0->1) space considering the boundaries (ymin) and (ymax)
@@ -85,15 +85,22 @@ namespace aspect
         // [Marzotto et al. 2025, Nature Communication, 16, 6058]
         // https://doi.org/10.1038/s41467-025-61148-8
         // mineral composition [Mg1.8 Fe0.2 SiO4]
-        const double nondimoliv_radTC_c0 =   -5.6162;
+        const double nondimoliv_radTC_c0 =    5.6162;
         const double nondimoliv_radTC_d1 =    1.8839;
-        const double nondimoliv_radTC_jmin = -23.02585093;
-        const double nondimoliv_radTC_jmax =  1.289885976;
+        const double nondimoliv_radTC_jmin = -23.0258509299405;
+        const double nondimoliv_radTC_jmax =  1.28988597569074;
 
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
+
+        // Define maximum temperature [K] and pressure temperature [Pa]
+        const double T_max = 4000;
+        const double P_max = 132.0222017e9; 
+
+        // Define nondimensional temperature ratio [/] 
+        const double T_nondim = T_room / T_max;
 
         const unsigned int n_points = in.n_evaluation_points();
 
@@ -106,15 +113,13 @@ namespace aspect
           // Preallocate a matrix for storing thermal conductivities of minerals
           std::vector<std::vector<double>> nondim_all_minerals_Tconds(mineralpar_index, std::vector<double>(3, 0.0));
 
-          // Convert pressure unit from [Pa] to [GPa]
-          double P_GPa = in.pressure[i]/1e9;
+          // Compute pressure and temperature ratios
+          double P_ratio = in.pressure[i]/P_max;
+          double T_ratio = in.temperature[i]/T_max;
 
           // Compute natural logarithm of pressure and temperature 
-          double P_log = std::log(P_GPa);
-          double T_log = std::log(in.temperature[i]);
-
-          // Take the temperature field of the model [K]
-          double T_mod = in.temperature[i];
+          double P_log = std::log(P_ratio);
+          double T_log = std::log(T_ratio);
 
           // Take the mineral fraction of the model
           double min_frac = in.composition[0][i];
@@ -131,8 +136,8 @@ namespace aspect
               nondimoliv_latTC_ymin, 
               nondimoliv_latTC_ymax,
               P_log, 
-              T_mod, 
-              T_room, 
+              T_ratio, 
+              T_nondim, 
               nondimoliv_Tdep_n_exp); 
               double nondimoliv_radTCon = compute_radiative_thermal_conductivity_nondimn(
               nondimoliv_radTC_c0, 
@@ -163,10 +168,9 @@ namespace aspect
 
           // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
           double aggrock_testcase_nondi_Tcond = std::pow(nondim_all_minerals_Tconds[mID][2], min_frac);
-          std::vector<double> nondimensional_Tcond(5, aggrock_testcase_nondi_Tcond);
 
           // Test Case
-          out.thermal_conductivities = nondimensional_Tcond;
+          out.thermal_conductivities[i] = aggrock_testcase_nondi_Tcond;
 
         }
       }
