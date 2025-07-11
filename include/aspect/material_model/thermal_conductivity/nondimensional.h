@@ -19,11 +19,10 @@
 
 */
 
-#ifndef _aspect_material_model_thermal_conductivity_nondimensonal_h
-#define _aspect_material_model_thermal_conductivity_nondimensonal_h
+#ifndef _aspect_material_model_thermal_conductivity_nondimensional_h
+#define _aspect_material_model_thermal_conductivity_nondimensional_h
 
 #include <aspect/material_model/thermal_conductivity/interface.h>
-
 
 namespace aspect
 {
