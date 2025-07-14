@@ -20,7 +20,7 @@
 
 #include "common.h"
 #include <aspect/utilities.h>
-// #include <aspect/material_model/thermal_conductivity/anderson_1987.h>
+#include <aspect/material_model/thermal_conductivity/anderson_1987.h>
 // #include <aspect/material_model/thermal_conductivity/gerya_2021.h>
 // #include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
 #include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
@@ -746,14 +746,122 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
   }
 }
 
-/*
+
 TEST_CASE("Utilities:: Thermal Conductivity Anderson 1987")
 {
   aspect::MaterialModel::ThermalConductivity::anderson_1987<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+
+  // Assigning an array of values to in.densities in [Kg m^-3]
+  std::vector<double> density = {3000, 3300, 3600, 3900, 4200};
+  in.density = density;
+
+  // Assigning a matrix of volume fractions to in.composition (X) in [%]
+  std::vector<std::vector<double>> compositions = 
+  {
+      {1.00, 1.00, 1.00, 1.00, 1.00},
+      {0.75, 0.75, 0.75, 0.75, 0.75},
+      {0.50, 0.50, 0.50, 0.50, 0.50},
+      {0.25, 0.25, 0.25, 0.25, 0.25}
+  };
+    
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K]
+  constexpr int olivinedry_and87_ID = 0;
+  std::vector<double> olivinedry_expt_and87_totTcon(density.size());
+  constexpr int wadsleydry_and87_ID = 1;
+  std::vector<double> wadsleydry_expt_and87_totTcon(density.size());
+  constexpr int ringwoodry_and87_ID = 2;
+  std::vector<double> ringwoodry_expt_and87_totTcon(density.size());
+
+  unsigned int and87_index = ringwoodry_and87_ID+1; // Number of minerals
+
+  // Preallocate matrixes for storing thermal conductivities of minerals
+  std::vector<std::vector<double>> expt_and87_latTcond(and87_index, std::vector<double>(density.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_and87_totTcond(and87_index, std::vector<double>(density.size(), 0.0)); // Total thermal conductivity
+
+  // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> olivinedry_expt_and87_latTcon = {3.24422, 3.56864, 3.89306, 4.21748, 4.54190};
+  expt_and87_latTcond[olivinedry_and87_ID] = olivinedry_expt_and87_latTcon;
+  // Dry Wadsleyite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
+  std::vector<double> wadsleydry_expt_and87_latTcon = {4.88141, 5.36955, 5.85769, 6.34584, 6.83398};
+  expt_and87_latTcond[wadsleydry_and87_ID] = wadsleydry_expt_and87_latTcon;
+  // Dry Ringwoodite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> ringwoodry_expt_and87_latTcon = {3.82613,	4.20875, 4.59136,	4.97397, 5.35659};
+  expt_and87_latTcond[ringwoodry_and87_ID] = ringwoodry_expt_and87_latTcon;
+
+ // Perform element-wise sum
+  for (size_t row = 0; row < density.size(); ++row)
+  {
+    olivinedry_expt_and87_totTcon[row] = olivinedry_expt_and87_latTcon[row];
+    expt_and87_totTcond[olivinedry_and87_ID] = olivinedry_expt_and87_totTcon;
+    wadsleydry_expt_and87_totTcon[row] = wadsleydry_expt_and87_latTcon[row];
+    expt_and87_totTcond[wadsleydry_and87_ID] = wadsleydry_expt_and87_totTcon;
+    ringwoodry_expt_and87_totTcon[row] = ringwoodry_expt_and87_latTcon[row];
+    expt_and87_totTcond[ringwoodry_and87_ID] = ringwoodry_expt_and87_totTcon;
+  }
+
+  // Loop over all mID values
+  for (unsigned int mID = 0; mID < and87_index; ++mID)
+  {
+   in.Mineral_ID = mID; // Set the current mID
+
+   // Initialize the expected value matrix with the same dimensions of the composition matrix
+   std::vector<std::vector<double>> expected_and87_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+
+   // Perform element-wise calculation
+   for (size_t row = 0; row < compositions.size(); ++row)
+    {
+      for (size_t col = 0; col < compositions[row].size(); ++col)
+      {
+        expected_and87_Tcond[row][col] = std::pow(expt_and87_totTcond[mID][col], compositions[row][col]);
+      }
+    }
+
+   std::vector<std::vector<double>> expected_conductivities = expected_and87_Tcond;
+
+   INFO("Checking and87 thermal conductivity (k) for different densities (rho) and compositions (X)");
+
+   // Loop over the different compositions
+   for (size_t row = 0; row < expected_conductivities.size(); ++row)
+   {
+     in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
+     model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+
+     // Loop over the different combinations of pressures (P) and temperatures (T)
+     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+     {
+       switch (mID) // Compare the computed thermal conductivity with the expected value
+       {
+         case olivinedry_and87_ID: // olivinedry
+         {
+           INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("olivinedry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("olivinedry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case wadsleydry_and87_ID: // wadsleydry
+         {
+           INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("wadsleydry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("wadsleydry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case ringwoodry_and87_ID: // ringwoodry
+         {
+           INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("ringwoodry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("ringwoodry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+        } 
+      }
+    }
+  }
 }
-*/
 
 /*
 TEST_CASE("Utilities:: Thermal Conductivity Gerya 2021")

@@ -398,6 +398,13 @@ namespace aspect
         std::vector<std::vector<double>> composition;
 
         /**
+        * Values of the density fields at the points given in the
+        * #position vector: density[i][c] is the compositional field c at
+        * point i.
+        */
+        std::vector<double> density;
+
+        /**
          * Strain rate at the points given in the #position vector. Only the
          * viscosity may depend on these values. This std::vector can be set to
          * size 0 if the viscosity is not needed.

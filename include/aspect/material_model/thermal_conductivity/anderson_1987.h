@@ -38,7 +38,9 @@ namespace aspect
      * [Anderson, 1987, Phys. Earth Planet, vol. 45(4), p. 307-323]
      * https://doi.org/10.1016/0031-9201(87)90039-2
      * Lambda_Lat(P,T) [W m^-1 K^-1] = Lambda_Room(rho_room/rho_model)^K_exp
+     * 
      * @ingroup ThermalConductivity
+     * 
      */
 
       template <int dim>
