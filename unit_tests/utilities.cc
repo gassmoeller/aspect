@@ -184,107 +184,107 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
   std::vector<double> opxenstati_expt_latTcon = {5.79950, 2.55142, 3.15043, 3.26008, 2.56641};
   std::vector<double> opxenstati_expt_radTcon = {5.45056e-5, 2.93307, 3.08161, 3.20925, 3.90772};
   expt_minerals_latTcond[opxenstati_exptID] = opxenstati_expt_latTcon;
-  expt_minerals_latTcond[opxenstati_exptID] = opxenstati_expt_latTcon;
+  expt_minerals_radTcond[opxenstati_exptID] = opxenstati_expt_radTcon;
   // Clinopyroxene (Diopside): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> cpxdiopsid_expt_latTcon = {5.99273, 2.65322, 3.13819, 3.61301, 3.41681};
   std::vector<double> cpxdiopsid_expt_radTcon = {2.64987e-5, 2.99817, 3.14622, 3.27243, 3.94085};
   expt_minerals_latTcond[cpxdiopsid_exptID] = cpxdiopsid_expt_latTcon;
-  expt_minerals_latTcond[cpxdiopsid_exptID] = cpxdiopsid_expt_latTcon;
+  expt_minerals_radTcond[cpxdiopsid_exptID] = cpxdiopsid_expt_radTcon;
   // Garnet (Pyrope): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> grtpyropes_expt_latTcon = {4.38827, 2.15733, 2.64684, 3.54118, 4.22405};
   std::vector<double> grtpyropes_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
   expt_minerals_latTcond[grtpyropes_exptID] = grtpyropes_expt_latTcon;
-  expt_minerals_latTcond[grtpyropes_exptID] = grtpyropes_expt_latTcon;
+  expt_minerals_radTcond[grtpyropes_exptID] = grtpyropes_expt_radTcon;
   // Garnet (Grossular): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> grtgrossul_expt_latTcon = {4.08838, 1.91337, 2.26557, 3.05964, 4.01413};
   std::vector<double> grtgrossul_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
   expt_minerals_latTcond[grtgrossul_exptID] = grtgrossul_expt_latTcon;
-  expt_minerals_latTcond[grtgrossul_exptID] = grtgrossul_expt_latTcon;
+  expt_minerals_radTcond[grtgrossul_exptID] = grtgrossul_expt_radTcon;
   // Garnet (Almandine): expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> grtalmandi_expt_latTcon = {3.39124, 1.70813, 2.17978, 3.13522, 4.07543};
   std::vector<double> grtalmandi_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
   expt_minerals_latTcond[grtalmandi_exptID] = grtalmandi_expt_latTcon;
-  expt_minerals_latTcond[grtalmandi_exptID] = grtalmandi_expt_latTcon;
+  expt_minerals_radTcond[grtalmandi_exptID] = grtalmandi_expt_radTcon;
   // Garnet (Majorite): expected lattice and radiative thermal conductivities (k) in [W/m/K]  
   std::vector<double> grtmajorit_expt_latTcon = {9.73983, 4.24079, 4.57076, 5.13035, 4.76249};
   std::vector<double> grtmajorit_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
   expt_minerals_latTcond[grtmajorit_exptID] = grtmajorit_expt_latTcon;
-  expt_minerals_latTcond[grtmajorit_exptID] = grtmajorit_expt_latTcon;
+  expt_minerals_radTcond[grtmajorit_exptID] = grtmajorit_expt_radTcon;
   // Quartz: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> quartzpure_expt_latTcon = {9.53243, 1.84339, 2.49820, 2.47676, 1.49323};
   std::vector<double> quartzpure_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   expt_minerals_latTcond[quartzpure_exptID] = quartzpure_expt_latTcon;
-  expt_minerals_latTcond[quartzpure_exptID] = quartzpure_expt_latTcon;
+  expt_minerals_radTcond[quartzpure_exptID] = quartzpure_expt_radTcon;
   // Coesite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> coesitSiO2_expt_latTcon = {7.21196, 1.31776, 1.23920, 1.17013, 0.84983};
   std::vector<double> coesitSiO2_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   expt_minerals_latTcond[coesitSiO2_exptID] = coesitSiO2_expt_latTcon;
-  expt_minerals_latTcond[coesitSiO2_exptID] = coesitSiO2_expt_latTcon;
+  expt_minerals_radTcond[coesitSiO2_exptID] = coesitSiO2_expt_radTcon;
   // stishovite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> stishovite_expt_latTcon = {67.68617, 29.30897, 28.43361, 27.62648, 29.60473};
   std::vector<double> stishovite_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   expt_minerals_latTcond[stishovite_exptID] = stishovite_expt_latTcon;
-  expt_minerals_latTcond[stishovite_exptID] = stishovite_expt_latTcon;
+  expt_minerals_radTcond[stishovite_exptID] = stishovite_expt_radTcon;
   // Al-stishovite (5 vol%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> stisho05Al_expt_latTcon = {24.18571, 10.48883, 10.35956, 10.44473, 15.11569};
   std::vector<double> stisho05Al_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   expt_minerals_latTcond[stisho05Al_exptID] = stisho05Al_expt_latTcon;
-  expt_minerals_latTcond[stisho05Al_exptID] = stisho05Al_expt_latTcon;
+  expt_minerals_radTcond[stisho05Al_exptID] = stisho05Al_expt_radTcon;
   // Antigorite (010): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> antigor010_expt_latTcon = {4.55589, 1.99618, 2.41198, 3.15852, 3.57446};
   std::vector<double> antigor010_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   expt_minerals_latTcond[antigor010_exptID] = antigor010_expt_latTcon;
-  expt_minerals_latTcond[antigor010_exptID] = antigor010_expt_latTcon;
+  expt_minerals_radTcond[antigor010_exptID] = antigor010_expt_radTcon;
   // Antigorite (001): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> antigor001_expt_latTcon = {1.06669, 0.49210, 1.01828, 1.51143, 1.48578};
   std::vector<double> antigor001_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   expt_minerals_latTcond[antigor001_exptID] = antigor001_expt_latTcon;
-  expt_minerals_latTcond[antigor001_exptID] = antigor001_expt_latTcon;
+  expt_minerals_radTcond[antigor001_exptID] = antigor001_expt_radTcon;
   // Fe,Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> phaseDFeAl_expt_latTcon = {2.59325, 1.13915, 1.31955, 1.59985, 6.12649};
   std::vector<double> phaseDFeAl_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   expt_minerals_latTcond[phaseDFeAl_exptID] = phaseDFeAl_expt_latTcon;
-  expt_minerals_latTcond[phaseDFeAl_exptID] = phaseDFeAl_expt_latTcon;
+  expt_minerals_radTcond[phaseDFeAl_exptID] = phaseDFeAl_expt_radTcon;
   // Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> phaseD02Al_expt_latTcon = {3.60666, 1.56888, 1.65207, 1.95489, 8.61776};
   std::vector<double> phaseD02Al_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   expt_minerals_latTcond[phaseD02Al_exptID] = phaseD02Al_expt_latTcon;
-  expt_minerals_latTcond[phaseD02Al_exptID] = phaseD02Al_expt_latTcon;
+  expt_minerals_radTcond[phaseD02Al_exptID] = phaseD02Al_expt_radTcon;
   // Ferropericlase (Mg92Fe8O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> ferroper08_expt_latTcon = {5.08425, 2.20657, 2.24939, 2.50821, 14.39941};
   std::vector<double> ferroper08_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   expt_minerals_latTcond[ferroper08_exptID] = ferroper08_expt_latTcon;
-  expt_minerals_latTcond[ferroper08_exptID] = ferroper08_expt_latTcon;
+  expt_minerals_radTcond[ferroper08_exptID] = ferroper08_expt_radTcon;
   // Ferropericlase (Mg90Fe10O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> ferroper10_expt_latTcon = {4.48610, 1.94695, 1.98084, 2.19296, 12.65637};
   std::vector<double> ferroper10_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   expt_minerals_latTcond[ferroper10_exptID] = ferroper10_expt_latTcon;
-  expt_minerals_latTcond[ferroper10_exptID] = ferroper10_expt_latTcon;
+  expt_minerals_radTcond[ferroper10_exptID] = ferroper10_expt_radTcon;
   // Ferropericlase (Mg80Fe20O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> ferroper20_expt_latTcon = {3.48647, 3.39116, 3.56449, 3.77742, 7.57324};
   std::vector<double> ferroper20_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   expt_minerals_latTcond[ferroper20_exptID] = ferroper20_expt_latTcon;
-  expt_minerals_latTcond[ferroper20_exptID] = ferroper20_expt_latTcon;
+  expt_minerals_radTcond[ferroper20_exptID] = ferroper20_expt_radTcon;
   // Ferropericlase (Mg56Fe44O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> ferroper56_expt_latTcon = {2.69167, 1.23171, 1.55079, 2.02398, 7.04069};
   std::vector<double> ferroper56_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   expt_minerals_latTcond[ferroper56_exptID] = ferroper56_expt_latTcon;
-  expt_minerals_latTcond[ferroper56_exptID] = ferroper56_expt_latTcon;
+  expt_minerals_radTcond[ferroper56_exptID] = ferroper56_expt_radTcon;
   // davemaoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> davemaoite_expt_latTcon = {10.86634, 4.77342, 5.15289, 5.86997, 13.48443};
   std::vector<double> davemaoite_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   expt_minerals_latTcond[davemaoite_exptID] = davemaoite_expt_latTcon;
-  expt_minerals_latTcond[davemaoite_exptID] = davemaoite_expt_latTcon;
+  expt_minerals_radTcond[davemaoite_exptID] = davemaoite_expt_radTcon;
   // New-hexagonal-alluminium-phase (FeNAL): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> newhexAlph_expt_latTcon = {10.59581, 4.58812, 4.45113, 4.32578, 12.15184};
   std::vector<double> newhexAlph_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   expt_minerals_latTcond[newhexAlph_exptID] = newhexAlph_expt_latTcon;
-  expt_minerals_latTcond[newhexAlph_exptID] = newhexAlph_expt_latTcon;
+  expt_minerals_radTcond[newhexAlph_exptID] = newhexAlph_expt_radTcon;
   // akimotoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> akimotoite_expt_latTcon = {10.69504, 2.03810, 2.21218, 2.47430, 5.69003};
   std::vector<double> akimotoite_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   expt_minerals_latTcond[akimotoite_exptID] = akimotoite_expt_latTcon;
-  expt_minerals_latTcond[akimotoite_exptID] = akimotoite_expt_latTcon;
+  expt_minerals_radTcond[akimotoite_exptID] = akimotoite_expt_radTcon;
 
   // Perform element-wise sum
   for (size_t row = 0; row < temperatures.size(); ++row)
@@ -773,8 +773,22 @@ TEST_CASE("Utilities:: Thermal Conductivity Anderson 1987")
   std::vector<double> wadsleydry_expt_and87_totTcon(density.size());
   constexpr int ringwoodry_and87_ID = 2;
   std::vector<double> ringwoodry_expt_and87_totTcon(density.size());
+  constexpr int brigma90Mg_and87_ID = 3;
+  std::vector<double> brigma90Mg_expt_and87_totTcon(density.size());
+  constexpr int opxenstati_and87_ID = 4;
+  std::vector<double> opxenstati_expt_and87_totTcon(density.size());
+  constexpr int cpxdiopsid_and87_ID = 5;
+  std::vector<double> cpxdiopsid_expt_and87_totTcon(density.size());
+  constexpr int grtpyropes_and87_ID = 6;
+  std::vector<double> grtpyropes_expt_and87_totTcon(density.size());
+  constexpr int grtmajorit_and87_ID = 7;
+  std::vector<double> grtmajorit_expt_and87_totTcon(density.size());
+  constexpr int ferroper10_and87_ID = 8;
+  std::vector<double> ferroper10_expt_and87_totTcon(density.size());
+  constexpr int davemaoite_and87_ID = 9;
+  std::vector<double> davemaoite_expt_and87_totTcon(density.size());
 
-  unsigned int and87_index = ringwoodry_and87_ID+1; // Number of minerals
+  unsigned int and87_index = davemaoite_and87_ID+1; // Number of minerals
 
   // Preallocate matrixes for storing thermal conductivities of minerals
   std::vector<std::vector<double>> expt_and87_latTcond(and87_index, std::vector<double>(density.size(), 0.0)); // Lattice thermal conductivity
@@ -789,6 +803,27 @@ TEST_CASE("Utilities:: Thermal Conductivity Anderson 1987")
   // Dry Ringwoodite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> ringwoodry_expt_and87_latTcon = {3.82613,	4.20875, 4.59136,	4.97397, 5.35659};
   expt_and87_latTcond[ringwoodry_and87_ID] = ringwoodry_expt_and87_latTcon;
+  // Fe-Bridgmanite (10%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
+  std::vector<double> brigma90Mg_expt_and87_latTcon = {2.67480,	2.94228, 3.20976,	3.47724, 3.74472};
+  expt_and87_latTcond[brigma90Mg_and87_ID] = brigma90Mg_expt_and87_latTcon;
+  // Orthopyroxene (Enstatite): expected lattice and radiative thermal conductivities (k) in [W/m/K]
+  std::vector<double> opxenstati_expt_and87_latTcon = {5.26634,	5.79298, 6.31961,	6.84625, 7.37288};
+  expt_and87_latTcond[opxenstati_and87_ID] = opxenstati_expt_and87_latTcon;
+  // Clinopyroxene (Diopside): expected lattice and radiative thermal conductivities (k) in [W/m/K]
+  std::vector<double> cpxdiopsid_expt_and87_latTcon = {5.47445,	6.02190, 6.56934,	7.11679, 7.66423};
+  expt_and87_latTcond[cpxdiopsid_and87_ID] = cpxdiopsid_expt_and87_latTcon;
+  // Garnet (Pyrope): expected lattice and radiative thermal conductivities (k) in [W/m/K]
+  std::vector<double> grtpyropes_expt_and87_latTcon = {3.69955,	4.06951, 4.43946,	4.80942, 5.17937};
+  expt_and87_latTcond[grtpyropes_and87_ID] = grtpyropes_expt_and87_latTcon;
+  // Garnet (Majorite): expected lattice and radiative thermal conductivities (k) in [W/m/K]  
+  std::vector<double> grtmajorit_expt_and87_latTcon = {8.36928,	9.20621, 10.04314, 10.88007, 11.71700};
+  expt_and87_latTcond[grtmajorit_and87_ID] = grtmajorit_expt_and87_latTcon;
+  // Ferropericlase (Mg90Fe10O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
+  std::vector<double> ferroper10_expt_and87_latTcon = {7.81549,	8.59704, 9.37859,	10.16013,	10.94168};
+  expt_and87_latTcond[ferroper10_and87_ID] = ferroper10_expt_and87_latTcon;
+  // Davemaoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> davemaoite_expt_and87_latTcon = {2.62107,	2.88318, 3.14528,	3.40739, 3.66950}; 
+  expt_and87_latTcond[davemaoite_and87_ID] = davemaoite_expt_and87_latTcon;
 
  // Perform element-wise sum
   for (size_t row = 0; row < density.size(); ++row)
@@ -799,6 +834,20 @@ TEST_CASE("Utilities:: Thermal Conductivity Anderson 1987")
     expt_and87_totTcond[wadsleydry_and87_ID] = wadsleydry_expt_and87_totTcon;
     ringwoodry_expt_and87_totTcon[row] = ringwoodry_expt_and87_latTcon[row];
     expt_and87_totTcond[ringwoodry_and87_ID] = ringwoodry_expt_and87_totTcon;
+    brigma90Mg_expt_and87_totTcon[row] = brigma90Mg_expt_and87_latTcon[row];
+    expt_and87_totTcond[brigma90Mg_and87_ID] = brigma90Mg_expt_and87_totTcon;
+    opxenstati_expt_and87_totTcon[row] = opxenstati_expt_and87_latTcon[row];
+    expt_and87_totTcond[opxenstati_and87_ID] = opxenstati_expt_and87_totTcon;
+    cpxdiopsid_expt_and87_totTcon[row] = cpxdiopsid_expt_and87_latTcon[row];
+    expt_and87_totTcond[cpxdiopsid_and87_ID] = cpxdiopsid_expt_and87_totTcon;
+    grtpyropes_expt_and87_totTcon[row] = grtpyropes_expt_and87_latTcon[row];
+    expt_and87_totTcond[grtpyropes_and87_ID] = grtpyropes_expt_and87_totTcon;
+    grtmajorit_expt_and87_totTcon[row] = grtmajorit_expt_and87_latTcon[row];
+    expt_and87_totTcond[grtmajorit_and87_ID] = grtmajorit_expt_and87_totTcon;
+    ferroper10_expt_and87_totTcon[row] = ferroper10_expt_and87_latTcon[row];
+    expt_and87_totTcond[ferroper10_and87_ID] = ferroper10_expt_and87_totTcon;
+    davemaoite_expt_and87_totTcon[row] = davemaoite_expt_and87_latTcon[row];
+    expt_and87_totTcond[davemaoite_and87_ID] = davemaoite_expt_and87_totTcon;
   }
 
   // Loop over all mID values
@@ -840,7 +889,7 @@ TEST_CASE("Utilities:: Thermal Conductivity Anderson 1987")
            INFO("olivinedry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
-         }
+          }
          case wadsleydry_and87_ID: // wadsleydry
          {
            INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
@@ -848,7 +897,7 @@ TEST_CASE("Utilities:: Thermal Conductivity Anderson 1987")
            INFO("wadsleydry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
-         }
+          }
          case ringwoodry_and87_ID: // ringwoodry
          {
            INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
@@ -856,7 +905,63 @@ TEST_CASE("Utilities:: Thermal Conductivity Anderson 1987")
            INFO("ringwoodry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
            break;
-         }
+          }
+         case brigma90Mg_and87_ID: // brigmanite (10% Fe)
+         {
+           INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("brigma90Mg expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("brigma90Mg computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+          }
+         case opxenstati_and87_ID: // orthopyroxene (Enstatite)
+         {
+           INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("opxenstati expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("opxenstati computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+          }
+         case cpxdiopsid_and87_ID: // clinopyroxene (Diopside)
+         {
+           INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("cpxdiopsid expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("cpxdiopsid computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+          }
+         case grtpyropes_and87_ID: // garnet (Pyrope)
+         {
+           INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("grtpyropes expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("grtpyropes computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+          }
+         case grtmajorit_and87_ID: // garnet (Majorite)
+         {
+           INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("grtmajorit expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("grtmajorit computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+          }
+         case ferroper10_and87_ID: // ferropericlase (Mg90Fe10O)
+         {
+           INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("ferroper10 expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("ferroper10 computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+          }
+          case davemaoite_and87_ID: // davemaoite
+          {
+            INFO("Conditions: rho= " << in.density[i] << "[kg m^-3] ; X= " << (in.composition[0][i])*100 << "[%]");
+            INFO("davemaoite expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+            INFO("davemaoite computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+            REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+            break;
+          }
         } 
       }
     }
