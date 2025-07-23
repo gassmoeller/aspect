@@ -21,7 +21,7 @@
 #include "common.h"
 #include <aspect/utilities.h>
 #include <aspect/material_model/thermal_conductivity/anderson_1987.h>
-// #include <aspect/material_model/thermal_conductivity/gerya_2021.h>
+#include <aspect/material_model/thermal_conductivity/gerya_2021.h>
 // #include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
 #include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
 // #include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
@@ -968,14 +968,126 @@ TEST_CASE("Utilities:: Thermal Conductivity Anderson 1987")
   }
 }
 
-/*
+
 TEST_CASE("Utilities:: Thermal Conductivity Gerya 2021")
 {
   aspect::MaterialModel::ThermalConductivity::gerya_2021<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+
+  // Assigning an array of values to in.temperature (T) in [K]
+  std::vector<double> temperatures = {300, 600, 900, 1200, 1500};
+  in.temperature = temperatures;
+
+  // Assigning an array of values to in.pressure (P) in [Pa]
+  std::vector<double> pressures = {1e5, 1e6, 5e6, 10e6, 100e6};
+  in.pressure = pressures;
+
+  // Assigning a matrix of volume fractions to in.composition (X) in [%]
+  std::vector<std::vector<double>> compositions = 
+  {
+      {1.00, 1.00, 1.00, 1.00, 1.00},
+      {0.75, 0.75, 0.75, 0.75, 0.75},
+      {0.50, 0.50, 0.50, 0.50, 0.50},
+      {0.25, 0.25, 0.25, 0.25, 0.25}
+  };
+    
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K]
+  constexpr int oceanicrus_ger21_ID = 0;
+  std::vector<double> oceanicrus_expt_ger21_totTcon(temperatures.size());
+  constexpr int lithomantl_ger21_ID = 1;
+  std::vector<double> lithomantl_expt_ger21_totTcon(temperatures.size());
+  constexpr int asthemantl_ger21_ID = 2;
+  std::vector<double> asthemantl_expt_ger21_totTcon(temperatures.size());
+
+  unsigned int ger21_index = asthemantl_ger21_ID+1; // Number of minerals
+
+  // Preallocate matrixes for storing thermal conductivities of minerals
+  std::vector<std::vector<double>> expt_ger21_latTcond(ger21_index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_ger21_totTcond(ger21_index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+
+  // Oceanic Crust: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> oceanicrus_expt_ger21_latTcon = {2.43729, 1.88018, 1.66526, 1.55133, 1.48178};
+  expt_ger21_latTcond[oceanicrus_ger21_ID] = oceanicrus_expt_ger21_latTcon;
+  // Lithospheric Mantle: expected lattice and radiative thermal conductivities (k) in [W/m/K]
+  std::vector<double> lithomantl_expt_ger21_latTcon = {4.15972, 2.63997, 2.05370, 1.74293, 1.55319};
+  expt_ger21_latTcond[lithomantl_ger21_ID] = lithomantl_expt_ger21_latTcon;
+  // Asthenospheric Mantle: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> asthemantl_expt_ger21_latTcon = {4.15972, 2.63997, 2.05370, 1.74293, 1.55319};  
+  expt_ger21_latTcond[asthemantl_ger21_ID] = asthemantl_expt_ger21_latTcon;
+
+ // Perform element-wise sum
+  for (size_t row = 0; row < temperatures.size(); ++row)
+  {
+    oceanicrus_expt_ger21_totTcon[row] = oceanicrus_expt_ger21_latTcon[row];
+    expt_ger21_totTcond[oceanicrus_ger21_ID] = oceanicrus_expt_ger21_totTcon;
+    lithomantl_expt_ger21_totTcon[row] = lithomantl_expt_ger21_latTcon[row];
+    expt_ger21_totTcond[lithomantl_ger21_ID] = lithomantl_expt_ger21_totTcon;
+    asthemantl_expt_ger21_totTcon[row] = asthemantl_expt_ger21_latTcon[row];
+    expt_ger21_totTcond[asthemantl_ger21_ID] = asthemantl_expt_ger21_totTcon;
+  }
+
+  // Loop over all mID values
+  for (unsigned int mID = 0; mID < ger21_index; ++mID)
+  {
+   in.Mineral_ID = mID; // Set the current mID
+
+   // Initialize the expected value matrix with the same dimensions of the composition matrix
+   std::vector<std::vector<double>> expected_ger21_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+
+   // Perform element-wise calculation
+   for (size_t row = 0; row < compositions.size(); ++row)
+    {
+      for (size_t col = 0; col < compositions[row].size(); ++col)
+      {
+        expected_ger21_Tcond[row][col] = std::pow(expt_ger21_totTcond[mID][col], compositions[row][col]);
+      }
+    }
+
+   std::vector<std::vector<double>> expected_conductivities = expected_ger21_Tcond;
+
+   INFO("Checking ger21 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
+
+   // Loop over the different compositions
+   for (size_t row = 0; row < expected_conductivities.size(); ++row)
+   {
+     in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
+     model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+
+     // Loop over the different combinations of pressures (P) and temperatures (T)
+     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+     {
+       switch (mID) // Compare the computed thermal conductivity with the expected value
+       {
+         case oceanicrus_ger21_ID: // Oceanic Crust
+         {
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("oceanicrus expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("oceanicrus computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case lithomantl_ger21_ID: // Lithospheric Mantle
+         {
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("lithomantl expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("lithomantl computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case asthemantl_ger21_ID: // Asthenospheric Mantle
+         {
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("asthemantl expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("asthemantl computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+        } 
+      }
+    }
+  }
 }
-*/
 
 /*
 TEST_CASE("Utilities:: Thermal Conductivity Grose & Afonso 2019")
