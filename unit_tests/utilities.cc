@@ -28,7 +28,7 @@
 #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
 #include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
 #include <aspect/material_model/thermal_conductivity/nondimensional.h>
-// #include <aspect/material_model/thermal_conductivity/stackhouse_2015.h>
+#include <aspect/material_model/thermal_conductivity/stackhouse_2015.h>
 #include <aspect/material_model/thermal_conductivity/tosi_2016.h>
 #include <aspect/material_model/thermal_conductivity/xu_2004.h>
 
@@ -1301,15 +1301,95 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister & Branlund 2015")
 }
 
 
-/*
 TEST_CASE("Utilities:: Thermal Conductivity Stackhouse 2015")
 {
   aspect::MaterialModel::ThermalConductivity::stackhouse_2015<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
-}
-*/
 
+  // Assigning an array of values to in.temperature (T) in [K]
+  std::vector<double> temperatures = {300, 1600, 1800, 2000, 3000};
+  in.temperature = temperatures;
+
+  // Assigning an array of values to in.pressure (P) in [Pa]
+  std::vector<double> pressures = {1e5, 30e9, 60e9, 90e9, 120e9};
+  in.pressure = pressures;
+
+  // Assigning a matrix of volume fractions to in.composition (X) in [%]
+  std::vector<std::vector<double>> compositions = 
+  {
+      {1.00, 1.00, 1.00, 1.00, 1.00},
+      {0.75, 0.75, 0.75, 0.75, 0.75},
+      {0.50, 0.50, 0.50, 0.50, 0.50},
+      {0.25, 0.25, 0.25, 0.25, 0.25}
+  };
+    
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K]
+  constexpr int lowermantl_sta15_ID = 0;
+  std::vector<double> lowermantl_expt_sta15_totTcon(temperatures.size());
+
+  unsigned int sta15_index = lowermantl_sta15_ID+1; // Number of minerals
+
+  // Preallocate matrixes for storing thermal conductivities of minerals
+  std::vector<std::vector<double>> expt_sta15_latTcond(sta15_index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_sta15_totTcond(sta15_index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+
+  // Lower Mantle Assemblage: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> lowermantl_expt_sta15_latTcon = {1.08579, 3.38751, 4.95177, 6.63374, 9.63497};
+  expt_sta15_latTcond[lowermantl_sta15_ID] = lowermantl_expt_sta15_latTcon;
+
+ // Perform element-wise sum
+  for (size_t row = 0; row < temperatures.size(); ++row)
+  {
+    lowermantl_expt_sta15_totTcon[row] = lowermantl_expt_sta15_latTcon[row];
+    expt_sta15_totTcond[lowermantl_sta15_ID] = lowermantl_expt_sta15_totTcon;
+  }
+
+  // Loop over all mID values
+  for (unsigned int mID = 0; mID < sta15_index; ++mID)
+  {
+   in.Mineral_ID = mID; // Set the current mID
+
+   // Initialize the expected value matrix with the same dimensions of the composition matrix
+   std::vector<std::vector<double>> expected_sta15_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+
+   // Perform element-wise calculation
+   for (size_t row = 0; row < compositions.size(); ++row)
+    {
+      for (size_t col = 0; col < compositions[row].size(); ++col)
+      {
+        expected_sta15_Tcond[row][col] = std::pow(expt_sta15_totTcond[mID][col], compositions[row][col]);
+      }
+    }
+
+   std::vector<std::vector<double>> expected_conductivities = expected_sta15_Tcond;
+
+   INFO("Checking sta15 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
+
+   // Loop over the different compositions
+   for (size_t row = 0; row < expected_conductivities.size(); ++row)
+   {
+     in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
+     model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+
+     // Loop over the different combinations of pressures (P) and temperatures (T)
+     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+     {
+       switch (mID) // Compare the computed thermal conductivity with the expected value
+       {
+         case lowermantl_sta15_ID: // Lower Mantle Assemblage
+         {
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; P= " << in.pressure[i] << "[Pa] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("lowermantl expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("lowermantl computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+        } 
+      }
+    }
+  }
+}
 
 TEST_CASE("Utilities:: Thermal Conductivity Tosi 2016")
 {
