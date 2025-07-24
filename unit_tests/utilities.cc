@@ -22,7 +22,7 @@
 #include <aspect/utilities.h>
 #include <aspect/material_model/thermal_conductivity/anderson_1987.h>
 #include <aspect/material_model/thermal_conductivity/gerya_2021.h>
-// #include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
+#include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
 #include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
 // #include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
 // #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
@@ -1089,14 +1089,120 @@ TEST_CASE("Utilities:: Thermal Conductivity Gerya 2021")
   }
 }
 
-/*
+
 TEST_CASE("Utilities:: Thermal Conductivity Grose & Afonso 2019")
 {
   aspect::MaterialModel::ThermalConductivity::grose_afonso_2019<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+
+  // Assigning an array of values to in.temperature (T) in [K]
+  std::vector<double> temperatures = {300, 600, 900, 1200, 1500};
+  in.temperature = temperatures;
+
+  // Assigning a matrix of volume fractions to in.composition (X) in [%]
+  std::vector<std::vector<double>> compositions = 
+  {
+    {1.00, 1.00, 1.00, 1.00, 1.00},
+    {0.75, 0.75, 0.75, 0.75, 0.75},
+    {0.50, 0.50, 0.50, 0.50, 0.50},
+    {0.25, 0.25, 0.25, 0.25, 0.25}
+  };
+
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K]
+  constexpr int olivinedry_gra19_ID = 0;
+  constexpr int opxenstati_gra19_ID = 1;
+  constexpr int cpxdiopsid_gra19_ID = 2;
+  constexpr int grtpyropes_gra19_ID = 3;
+
+  unsigned int gra19_index = grtpyropes_gra19_ID+1; // Number of minerals
+
+  // Preallocate matrixes for storing thermal conductivities of minerals
+  std::vector<std::vector<double>> expt_gra19_radTcond(gra19_index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
+  
+  // Dry Olivine: expected lattice thermal conductivities (k) in [W/m/K] 
+  std::vector<double> olivinedry_expt_gra19_radTcon = {0.133625, 0.46500, 2.18212, 2.97168, 2.63066};
+  expt_gra19_radTcond[olivinedry_gra19_ID] = olivinedry_expt_gra19_radTcon;
+  // Orthopyroxene: expected lattice thermal conductivities (k) in [W/m/K]
+  std::vector<double> opxenstati_expt_gra19_radTcon = {0.00653284, 0.173187, 0.84408, 2.11347, 4.08815};
+  expt_gra19_radTcond[opxenstati_gra19_ID] = opxenstati_expt_gra19_radTcon;
+  // Clinopyroxene: expected lattice thermal conductivities (k) in [W/m/K] 
+  std::vector<double> cpxdiopsid_expt_gra19_radTcon = {0.00270542, 0.146555, 0.823236, 2.28996, 4.61226};
+  expt_gra19_radTcond[cpxdiopsid_gra19_ID] = cpxdiopsid_expt_gra19_radTcon;
+  // Garnet: expected lattice thermal conductivities (k) in [W/m/K] 
+  std::vector<double> grtpyropes_expt_gra19_radTcon = {0.0247772, 0.0746832, 0.31400, 0.74358, 1.93803};
+  expt_gra19_radTcond[grtpyropes_gra19_ID] = grtpyropes_expt_gra19_radTcon;
+
+  // Loop over all mID values
+  for (unsigned int mID = 0; mID < gra19_index; ++mID)
+  {
+   in.Mineral_ID = mID; // Set the current mID
+
+   // Initialize the expected value matrix with the same dimensions of the composition matrix
+   std::vector<std::vector<double>> expected_gra19_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+
+   // Perform element-wise calculation
+   for (size_t row = 0; row < compositions.size(); ++row)
+    {
+      for (size_t col = 0; col < compositions[row].size(); ++col)
+      {
+        expected_gra19_Tcond[row][col] = std::pow(expt_gra19_radTcond[mID][col], compositions[row][col]);
+      }
+    }
+
+   std::vector<std::vector<double>> expected_conductivities = expected_gra19_Tcond;
+
+   INFO("Checking grose_afonso_2019 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
+
+   // Loop over the different compositions
+   for (size_t row = 0; row < expected_conductivities.size(); ++row)
+   {
+     in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
+     model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+
+     // Loop over the different combinations of pressures (P) and temperatures (T)
+     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+     {
+       switch (mID) // Compare the computed thermal conductivity with the expected value
+       {
+         case olivinedry_gra19_ID: // Dry Olivine
+         {
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("olivinedry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("olivinedry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case opxenstati_gra19_ID: // Orthopyroxene
+         {
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("opxenstati expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("opxenstati computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case cpxdiopsid_gra19_ID: // Clinopyroxene
+         {
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ;  X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("cpxdiopsid expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("cpxdiopsid computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+         case grtpyropes_gra19_ID: // Garnet
+         {
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("grtpyropes expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("grtpyropes computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+        } 
+      }
+    }
+  }
 }
-*/
+
 
 /*
 TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 2005")
