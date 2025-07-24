@@ -25,7 +25,7 @@
 #include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
 #include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
 // #include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
-// #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
+#include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
 #include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
 #include <aspect/material_model/thermal_conductivity/nondimensional.h>
 // #include <aspect/material_model/thermal_conductivity/stackhouse_2015.h>
@@ -1213,14 +1213,93 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 2005")
 }
 */
 
-/*
+
 TEST_CASE("Utilities:: Thermal Conductivity Hofmeister & Branlund 2015")
 {
   aspect::MaterialModel::ThermalConductivity::hofmeister_branlund_2015<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
+
+  // Assigning an array of values to in.temperature (T) in [K]
+  std::vector<double> temperatures = {300, 600, 900, 1200, 1500};
+  in.temperature = temperatures;
+
+  // Assigning a matrix of volume fractions to in.composition (X) in [%]
+  std::vector<std::vector<double>> compositions = 
+  {
+      {1.00, 1.00, 1.00, 1.00, 1.00},
+      {0.75, 0.75, 0.75, 0.75, 0.75},
+      {0.50, 0.50, 0.50, 0.50, 0.50},
+      {0.25, 0.25, 0.25, 0.25, 0.25}
+  };
+    
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K]
+  constexpr int oceanicrus_hbr15_ID = 0;
+  std::vector<double> oceanicrus_expt_hbr15_totTcon(temperatures.size());
+
+  unsigned int hbr15_index = oceanicrus_hbr15_ID+1; // Number of minerals
+
+  // Preallocate matrixes for storing thermal conductivities of minerals
+  std::vector<std::vector<double>> expt_hbr15_latTcond(hbr15_index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_hbr15_totTcond(hbr15_index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+
+  // Oceanic Crust: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> oceanicrus_expt_hbr15_latTcon = {2.57469, 1.89585, 1.66956, 1.55642, 1.48854}; 
+  expt_hbr15_latTcond[oceanicrus_hbr15_ID] = oceanicrus_expt_hbr15_latTcon;
+
+ // Perform element-wise sum
+  for (size_t row = 0; row < temperatures.size(); ++row)
+  {
+    oceanicrus_expt_hbr15_totTcon[row] = oceanicrus_expt_hbr15_latTcon[row];
+    expt_hbr15_totTcond[oceanicrus_hbr15_ID] = oceanicrus_expt_hbr15_totTcon;
+  }
+
+  // Loop over all mID values
+  for (unsigned int mID = 0; mID < hbr15_index; ++mID)
+  {
+   in.Mineral_ID = mID; // Set the current mID
+
+   // Initialize the expected value matrix with the same dimensions of the composition matrix
+   std::vector<std::vector<double>> expected_hbr15_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+
+   // Perform element-wise calculation
+   for (size_t row = 0; row < compositions.size(); ++row)
+    {
+      for (size_t col = 0; col < compositions[row].size(); ++col)
+      {
+        expected_hbr15_Tcond[row][col] = std::pow(expt_hbr15_totTcond[mID][col], compositions[row][col]);
+      }
+    }
+
+   std::vector<std::vector<double>> expected_conductivities = expected_hbr15_Tcond;
+
+   INFO("Checking hbr15 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
+
+   // Loop over the different compositions
+   for (size_t row = 0; row < expected_conductivities.size(); ++row)
+   {
+     in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
+     model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+
+     // Loop over the different combinations of pressures (P) and temperatures (T)
+     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+     {
+       switch (mID) // Compare the computed thermal conductivity with the expected value
+       {
+         case oceanicrus_hbr15_ID: // Oceanic Crust
+         {
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("oceanicrus expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("oceanicrus computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+        } 
+      }
+    }
+  }
 }
-*/
+
 
 /*
 TEST_CASE("Utilities:: Thermal Conductivity Stackhouse 2015")
