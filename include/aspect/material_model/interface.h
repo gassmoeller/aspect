@@ -405,6 +405,11 @@ namespace aspect
         std::vector<double> density;
 
         /**
+        * Grain size of the mineral assemblage. Used for Thermal Conductivity calulations
+        */
+        std::vector<double> grainsize; 
+
+        /**
          * Strain rate at the points given in the #position vector. Only the
          * viscosity may depend on these values. This std::vector can be set to
          * size 0 if the viscosity is not needed.
@@ -421,7 +426,7 @@ namespace aspect
          /**
          * Index of the current mineral ID. Used for Thermal Conductivity calulations
          */
-        unsigned int Mineral_ID; // Add this line to include mID
+        unsigned int Mineral_ID; 
 
         /**
          * Optional cell object that contains these quadrature

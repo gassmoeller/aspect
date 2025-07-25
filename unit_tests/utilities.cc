@@ -24,7 +24,7 @@
 #include <aspect/material_model/thermal_conductivity/gerya_2021.h>
 #include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
 #include <aspect/material_model/thermal_conductivity/hofmeister_1999.h>
-// #include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
+#include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
 #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
 #include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
 #include <aspect/material_model/thermal_conductivity/nondimensional.h>
@@ -1204,15 +1204,86 @@ TEST_CASE("Utilities:: Thermal Conductivity Grose & Afonso 2019")
 }
 
 
-/*
 TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 2005")
 {
   aspect::MaterialModel::ThermalConductivity::hofmeister_2005<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
-}
-*/
 
+  // Assigning an array of values to in.temperature (T) in [K]
+  std::vector<double> temperatures = {300, 600, 900, 1200, 1500};
+  in.temperature = temperatures;
+
+  // Assigning an array of values to in.grainsize (d) in [cm]
+  std::vector<double> grainsize = {0.1, 0.5, 1.0, 2.0, 50};
+  in.grainsize = grainsize;
+
+  // Assigning a matrix of volume fractions to in.composition (X) in [%]
+  std::vector<std::vector<double>> compositions = 
+  {
+    {1.00, 1.00, 1.00, 1.00, 1.00},
+    {0.75, 0.75, 0.75, 0.75, 0.75},
+    {0.50, 0.50, 0.50, 0.50, 0.50},
+    {0.25, 0.25, 0.25, 0.25, 0.25}
+  };
+
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K]
+  constexpr int olivinedry_hof05_ID = 0;
+
+  unsigned int hof05_index = olivinedry_hof05_ID+1; // Number of minerals
+
+  // Preallocate matrixes for storing thermal conductivities of minerals
+  std::vector<std::vector<double>> expt_hof05_radTcond(hof05_index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
+  
+  // Dry Olivine: expected lattice thermal conductivities (k) in [W/m/K] 
+  std::vector<double> olivinedry_expt_hof05_radTcon = {0.0500328, 0.131068809, 0.625395051, 1.504829428, 1.534699e-4};
+  expt_hof05_radTcond[olivinedry_hof05_ID] = olivinedry_expt_hof05_radTcon;
+
+  // Loop over all mID values
+  for (unsigned int mID = 0; mID < hof05_index; ++mID)
+  {
+   in.Mineral_ID = mID; // Set the current mID
+
+   // Initialize the expected value matrix with the same dimensions of the composition matrix
+   std::vector<std::vector<double>> expected_hof05_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+
+   // Perform element-wise calculation
+   for (size_t row = 0; row < compositions.size(); ++row)
+    {
+      for (size_t col = 0; col < compositions[row].size(); ++col)
+      {
+        expected_hof05_Tcond[row][col] = std::pow(expt_hof05_radTcond[mID][col], compositions[row][col]);
+      }
+    }
+
+   std::vector<std::vector<double>> expected_conductivities = expected_hof05_Tcond;
+
+   INFO("Checking hofmeister_2005 thermal conductivity (k) for different temperatures (T), grain size (d) and compositions (X)");
+
+   // Loop over the different compositions
+   for (size_t row = 0; row < expected_conductivities.size(); ++row)
+   {
+     in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
+     model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+
+     // Loop over the different combinations of pressures (P) and temperatures (T)
+     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+     {
+       switch (mID) // Compare the computed thermal conductivity with the expected value
+       {
+         case olivinedry_hof05_ID: // Dry Olivine
+         {
+           INFO("Conditions: T= " << in.temperature[i] << "[K] ; d= " << in.grainsize[i] << "[cm] ; X= " << (in.composition[0][i])*100 << "[%]");
+           INFO("olivinedry expected k= " << expected_conductivities[row][i] << "[W/m/K]");
+           INFO("olivinedry computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           break;
+         }
+        }        
+      }
+    }
+  }
+}
 
 TEST_CASE("Utilities:: Thermal Conductivity Hofmeister & Branlund 2015")
 {
