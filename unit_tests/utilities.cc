@@ -27,7 +27,7 @@
 #include <aspect/material_model/thermal_conductivity/hofmeister_2005.h>
 #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
 #include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
-#include <aspect/material_model/thermal_conductivity/nondimensional.h>
+#include <aspect/material_model/thermal_conductivity/nondimensional_Tcond.h>
 #include <aspect/material_model/thermal_conductivity/stackhouse_2015.h>
 #include <aspect/material_model/thermal_conductivity/tosi_2016.h>
 #include <aspect/material_model/thermal_conductivity/xu_2004.h>
@@ -1720,7 +1720,7 @@ TEST_CASE("Utilities:: Thermal Conductivity Xu 2004")
 
 TEST_CASE("Utilities:: nondimensional thermal conductivity")
 {
-  aspect::MaterialModel::ThermalConductivity::nondimensional<3> model;
+  aspect::MaterialModel::ThermalConductivity::nondimensional_Tcond<3> model;
   aspect::MaterialModel::MaterialModelInputs<3> in(5,1);    // Adjust the size of inputs as needed
   aspect::MaterialModel::MaterialModelOutputs<3> out(5,1);  // Adjust the size of outputs as needed
 

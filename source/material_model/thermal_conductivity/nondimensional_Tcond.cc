@@ -19,7 +19,7 @@
 
 */
 
-#include <aspect/material_model/thermal_conductivity/nondimensional.h>
+#include <aspect/material_model/thermal_conductivity/nondimensional_Tcond.h>
 
 // Helper functions in anonymous namespace to compute thermal conductivities using the Marzotto et al. (2025) formulations
 namespace 
@@ -61,7 +61,7 @@ namespace aspect
       // Main function: 
       template <int dim>
       void
-      nondimensional<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+      nondimensional_Tcond<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         // Define coefficients for lattice thermal conductivity of the mantle
@@ -186,7 +186,7 @@ namespace aspect
     namespace ThermalConductivity
     {
       #define INSTANTIATE(dim) \
-      template class nondimensional<dim>;
+      template class nondimensional_Tcond<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

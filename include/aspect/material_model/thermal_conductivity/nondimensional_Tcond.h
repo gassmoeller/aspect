@@ -19,8 +19,8 @@
 
 */
 
-#ifndef _aspect_material_model_thermal_conductivity_nondimensional_h
-#define _aspect_material_model_thermal_conductivity_nondimensional_h
+#ifndef _aspect_material_model_thermal_conductivity_nondimensional_Tcond_h
+#define _aspect_material_model_thermal_conductivity_nondimensional_Tcond_h
 
 #include <aspect/material_model/thermal_conductivity/interface.h>
 
@@ -41,7 +41,7 @@ namespace aspect
       */
 
       template <int dim>
-      class nondimensional : public Interface<dim>
+      class nondimensional_Tcond : public Interface<dim>
       {
       public:
         void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
