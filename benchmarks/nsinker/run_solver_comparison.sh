@@ -1,10 +1,10 @@
 #!/bin/bash
 
-for averaging in "harmonic average"; do # arithmetic/geometric/harmonic average
-  for nsinkers in 4 16; do
-    for viscosity in 1e6; do
-      for refinement in 3 4; do # 3
-        for solver in "nsinker_bfbt" "nsinker_gmg_gc" ; do # "nsinker" "nsinker_gmg" "nsinker_direct"
+for refinement in 7; do # 3
+  for averaging in "harmonic average"; do # arithmetic/geometric/harmonic average
+    for nsinkers in 16; do
+      for viscosity in 1e6; do
+        for solver in "nsinker_gmg" "nsinker_gmg_gc" ; do # "nsinker" "nsinker_bfbt" "nsinker_direct"
           echo "subsection Material model" > current.prm
           echo "  set Material averaging = $averaging" >> current.prm
           echo "  subsection NSinker" >> current.prm
