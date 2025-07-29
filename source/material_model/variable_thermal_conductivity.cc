@@ -21,6 +21,7 @@
 
 #include <aspect/material_model/variable_thermal_conductivity.h>
 #include <aspect/material_model/equation_of_state/interface.h>
+#include <aspect/material_model/thermal_conductivity/nondimensional_Tcond.h>
 
 
 namespace aspect
@@ -64,10 +65,11 @@ namespace aspect
 
           equation_of_state.evaluate(in, i, eos_outputs);
 
-          // except for the density, all material properties are constant across compositions
+          out.thermal_conductivities[i] = k_value; // ThermalConductivity::nondimensional_Tcond(in.temperature[i], in.pressure[i], in.composition[0][i], in.Mineral_ID); 
+
+          // except for the density and thermal conductivity, all material properties are constant across compositions
           out.thermal_expansion_coefficients[i] = eos_outputs.thermal_expansion_coefficients[0];
           out.specific_heat[i] = eos_outputs.specific_heat_capacities[0];
-          out.thermal_conductivities[i] = k_value;
           out.compressibilities[i] = eos_outputs.compressibilities[0];
           out.entropy_derivative_pressure[i] = eos_outputs.entropy_derivative_pressure[0];
           out.entropy_derivative_temperature[i] = eos_outputs.entropy_derivative_temperature[0];
@@ -203,11 +205,11 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(Variable_Thermal_Conductivity,
                                    "variable_thermal_conductivity",
-                                   "A material model that has constant values "
-                                   "for all coefficients but the density and viscosity. The defaults for all "
-                                   "coefficients are chosen to be similar to what is believed to be correct "
+                                   "A material model that has constant values for all coefficients but"
+                                   "the density, viscosity and thermal conductivity. " 
+                                   "The defaults for all coefficients are chosen to be similar to what is believed to be correct "
                                    "for Earth's mantle. All of the values that define this model are read "
-                                   "from a section ``Material model/Simple model'' in the input file, see "
+                                   "from a section ``Material model/Variable_Thermal_Conductivity model'' in the input file, see "
                                    "Section~\\ref{parameters:Material_20model/Simple_20model}."
                                    "\n\n"
                                    "This model uses the following set of equations for the two coefficients that "
@@ -252,14 +254,6 @@ namespace aspect
                                    "Note that this model uses the formulation that assumes an incompressible "
                                    "medium despite the fact that the density follows the law "
                                    "$\\rho(T)=\\rho_0(1-\\alpha(T-T_{\\text{ref}}))$. "
-                                   "\n\n"
-                                   ":::{note}\n"
-                                   "Despite its name, this material model is not exactly ``simple'', "
-                                   "as indicated by the formulas above. While it was originally intended "
-                                   "to be simple, it has over time acquired all sorts of temperature "
-                                   "and compositional dependencies that weren't initially intended. "
-                                   "Consequently, there is now a ``simpler'' material model that now fills "
-                                   "the role the current model was originally intended to fill.\n"
-                                   ":::")
+                                   "\n\n")
   }
 }
