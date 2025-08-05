@@ -682,42 +682,59 @@ namespace aspect
         const double akimotoite_radTC_jmin = -7.2568958208;         
         const double akimotoite_radTC_jmax = -0.3403920329;  
 
-        // Preallocate a vector for mineral fractions of different rocks
+        // Preallocate a vector for mineral fractions of different rocks and a vector for mineral indices
+
         // pyrolite Upper Mantle (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
         std::vector<double> minfract_pyrolite_UM = {0.58,0.13,0.18,0.11}; 
+        std::vector<unsigned int> minindex_pyrolite_UM = {olivinedry_index, grtpyropes_index, opxenstati_index, cpxdiopsid_index}; 
         // pyrolite Upper Mantle Transition Zone (58% wadsleyite, 28% majorite, 14% diopside)
         std::vector<double> minfract_pyrolite_UMTZ = {0.58,0.28,0.14}; 
+        std::vector<unsigned int> minindex_pyrolite_UMTZ = {wadsleydry_index, grtmajorit_index, cpxdiopsid_index}; 
         // pyrolite Lower Mantle Transition Zone (58% ringwoodite, 42% majorite)
         std::vector<double> minfract_pyrolite_LMTZ = {0.58,0.42}; 
+        std::vector<unsigned int> minindex_pyrolite_LMTZ = {ringwoodry_index, grtmajorit_index}; 
         // pyrolite Lower Mantle (80% bridgmanite, 14% ferropericlase, 6% davemaoite)
         std::vector<double> minfract_pyrolite_LM = {0.80,0.14,0.06}; 
+        std::vector<unsigned int> minindex_pyrolite_LM = {brigmaAlMg_index, ferroper10_index, davemaoite_index}; 
 
         // harzburgite Upper Mantle (80% olivine, 20% ensatite)
         std::vector<double> minfract_harzburg_UM = {0.80,0.20}; 
+        std::vector<unsigned int> minindex_harzburg_UM = {olivinedry_index, opxenstati_index};
         // harzburgite Upper Mantle Transition Zone (80% wadsleyite, 13% diopside, 7% majorite)
         std::vector<double> minfract_harzburg_UMTZ = {0.80,0.13,0.07}; 
-        // harzburgite Lower Mantle Transition Zone (80% olivine, 20% majorite)
+        std::vector<unsigned int> minindex_harzburg_UMTZ = {wadsleydry_index, cpxdiopsid_index, grtmajorit_index};
+        // harzburgite Lower Mantle Transition Zone (80% ringwoodite, 20% majorite)
         std::vector<double> minfract_harzburg_LMTZ = {0.80,0.20}; 
+        std::vector<unsigned int> minindex_harzburg_LMTZ = {ringwoodry_index, grtmajorit_index};
         // harzburgite Lower Mantle (76% bridgmanite, 24% ferropericlase)
         std::vector<double> minfract_harzburg_LM = {0.76,0.24}; 
+        std::vector<unsigned int> minindex_harzburg_LM = {brigmaAlMg_index, ferroper10_index};
 
         // Meta-basaltic crust MORB Upper Mantle (80% diopside, 20% pyrope)
         std::vector<double> minfract_metaMORB_UM = {0.80,0.20}; 
+        std::vector<unsigned int> minindex_metaMORB_UM = {cpxdiopsid_index, grtpyropes_index};
         // Meta-basaltic crust MORB Upper Mantle Transition Zone (50% majorite, 4% stishovite, 46% diopside)
         std::vector<double> minfract_metaMORB_UMTZ = {0.50,0.04,0.46}; 
+        std::vector<unsigned int> minindex_metaMORB_UMTZ = {grtmajorit_index, stisho05Al_index, cpxdiopsid_index};
         // Meta-basaltic crust MORB Lower Mantle Transition Zone (92% majorite, 8% stishovite)
         std::vector<double> minfract_metaMORB_LMTZ = {0.92,0.08}; 
+        std::vector<unsigned int> minindex_metaMORB_LMTZ = {grtmajorit_index, stisho05Al_index};
         // Meta-basaltic crust MORB Lower Mantle (35% bridgmanite, 28% davemaoite, 19% Fe-NAL, 18% stishovite)
         std::vector<double> minfract_metaMORB_LM = {0.35,0.28,0.19,0.18}; 
+        std::vector<unsigned int> minindex_metaMORB_LM = {brigmaFeAl_index, davemaoite_index, newhexAlph_index, stisho05Al_index};
 
         // Dunite Upper Mantle (100% olivine)
         std::vector<double> minfract_duniteOl_UM = {1.00}; 
+        std::vector<unsigned int> minindex_duniteOl_UM = {olivinedry_index};
         // Dunite Upper Mantle Transition Zone (100% wadsleyite)
         std::vector<double> minfract_duniteOl_UMTZ = {1.00};
+        std::vector<unsigned int> minindex_duniteOl_UMTZ = {wadsleydry_index};
         // Dunite Lower Mantle Transition Zone (100% ringwoodite)
         std::vector<double> minfract_duniteOl_LMTZ = {1.00};
+        std::vector<unsigned int> minindex_duniteOl_LMTZ = {ringwoodry_index};
         // Dunite Lower Mantle (100% bridgmanite)
         std::vector<double> minfract_duniteOl_LM = {1.00};
+        std::vector<unsigned int> minindex_duniteOl_LM = {brigma90Mg_index};
 
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
