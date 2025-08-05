@@ -808,13 +808,6 @@ namespace aspect
         for (unsigned int i = 0; i < n_points; ++i) 
         {
 
-          // Preallocate a vector for storing thermal conductivities of minerals
-          std::vector<double> mar25_minerals_latTcond(mineralpar_index, 0.0); // Lattice thermal conductivity
-          std::vector<double> mar25_minerals_radTcond(mineralpar_index, 0.0); // Radiative thermal conductivity
-          std::vector<double> mar25_minerals_totTcond(mineralpar_index, 0.0); // Total thermal conductivity
-          // Preallocate a matrix for storing thermal conductivities of minerals
-          std::vector<std::vector<double>> mar25_all_minerals_Tconds(mineralpar_index, std::vector<double>(3, 0.0));
-
           // Convert pressure unit from [Pa] to [GPa]
           double P_GPa = in.pressure[i]/1e9;
 
@@ -828,32 +821,35 @@ namespace aspect
           // Take lithology of the model
           double lithology = in.composition[0][i];
 
+          std::vector<double> mineral_fraction;
+          std::vector<unsigned int> mineral_index;
+
           if (P_GPa < 13.59280101) // upper mantle
           {
             if (lithology == 0) // pyrolite
             {
-              std::vector<double> mineral_fraction = minfract_pyrolite_UM; 
-              std::vector<unsigned int> mineral_index = minindex_pyrolite_UM;
+              mineral_fraction = minfract_pyrolite_UM; 
+              mineral_index = minindex_pyrolite_UM;
             }
             if (lithology == 1) // harzburgite
             {
-              std::vector<double> mineral_fraction = minfract_harzburg_UM; 
-              std::vector<unsigned int> mineral_index = minindex_harzburg_UM;
+              mineral_fraction = minfract_harzburg_UM; 
+              mineral_index = minindex_harzburg_UM;
             }
             if (lithology == 2) // meta-MORB
             {
-              std::vector<double> mineral_fraction = minfract_metaMORB_UM; 
-              std::vector<unsigned int> mineral_index = minindex_metaMORB_UM;
+              mineral_fraction = minfract_metaMORB_UM; 
+              mineral_index = minindex_metaMORB_UM;
             }
             if (lithology == 3) // dunite
             {
-              std::vector<double> mineral_fraction = minfract_duniteOl_UM; 
-              std::vector<unsigned int> mineral_index = minindex_duniteOl_UM;
+              mineral_fraction = minfract_duniteOl_UM; 
+              mineral_index = minindex_duniteOl_UM;
             }
             if (lithology == 99) // test (all minerals)
             {
-              std::vector<double> mineral_fraction = minfract_allminerals_test; 
-              std::vector<unsigned int> mineral_index = minindex_allminerals_test;
+              mineral_fraction = minfract_allminerals_test; 
+              mineral_index = minindex_allminerals_test;
             }
             else
             {
@@ -864,28 +860,28 @@ namespace aspect
           {
             if (lithology == 0) // pyrolite
             {
-              std::vector<double> mineral_fraction = minfract_pyrolite_UMTZ; 
-              std::vector<unsigned int> mineral_index = minindex_pyrolite_UMTZ;
+              mineral_fraction = minfract_pyrolite_UMTZ; 
+              mineral_index = minindex_pyrolite_UMTZ;
             }
             if (lithology == 1) // harzburgite
             {
-              std::vector<double> mineral_fraction = minfract_harzburg_UMTZ; 
-              std::vector<unsigned int> mineral_index = minindex_harzburg_UMTZ;
+              mineral_fraction = minfract_harzburg_UMTZ; 
+              mineral_index = minindex_harzburg_UMTZ;
             }
             if (lithology == 2) // meta-MORB
             {
-              std::vector<double> mineral_fraction = minfract_metaMORB_UMTZ; 
-              std::vector<unsigned int> mineral_index = minindex_metaMORB_UMTZ;
+              mineral_fraction = minfract_metaMORB_UMTZ; 
+              mineral_index = minindex_metaMORB_UMTZ;
             }
             if (lithology == 3) // dunite
             {
-              std::vector<double> mineral_fraction = minfract_duniteOl_UMTZ; 
-              std::vector<unsigned int> mineral_index = minindex_duniteOl_UMTZ;
+              mineral_fraction = minfract_duniteOl_UMTZ; 
+              mineral_index = minindex_duniteOl_UMTZ;
             }
             if (lithology == 99) // test (all minerals)
             {
-              std::vector<double> mineral_fraction = minfract_allminerals_test; 
-              std::vector<unsigned int> mineral_index = minindex_allminerals_test;
+              mineral_fraction = minfract_allminerals_test; 
+              mineral_index = minindex_allminerals_test;
             }
             else
             {
@@ -896,28 +892,28 @@ namespace aspect
           {
             if (lithology == 0) // pyrolite
             {
-              std::vector<double> mineral_fraction = minfract_pyrolite_LMTZ; 
-              std::vector<unsigned int> mineral_index = minindex_pyrolite_LMTZ;
+              mineral_fraction = minfract_pyrolite_LMTZ; 
+              mineral_index = minindex_pyrolite_LMTZ;
             }
             if (lithology == 1) // harzburgite
             {
-              std::vector<double> mineral_fraction = minfract_harzburg_LMTZ; 
-              std::vector<unsigned int> mineral_index = minindex_harzburg_LMTZ;
+              mineral_fraction = minfract_harzburg_LMTZ; 
+              mineral_index = minindex_harzburg_LMTZ;
             }
             if (lithology == 2) // meta-MORB
             {
-              std::vector<double> mineral_fraction = minfract_metaMORB_LMTZ; 
-              std::vector<unsigned int> mineral_index = minindex_metaMORB_LMTZ;
+              mineral_fraction = minfract_metaMORB_LMTZ; 
+              mineral_index = minindex_metaMORB_LMTZ;
             }
             if (lithology == 3) // dunite
             {
-              std::vector<double> mineral_fraction = minfract_duniteOl_LMTZ; 
-              std::vector<unsigned int> mineral_index = minindex_duniteOl_LMTZ;
+              mineral_fraction = minfract_duniteOl_LMTZ; 
+              mineral_index = minindex_duniteOl_LMTZ;
             }
             if (lithology == 99) // test (all minerals)
             {
-              std::vector<double> mineral_fraction = minfract_allminerals_test; 
-              std::vector<unsigned int> mineral_index = minindex_allminerals_test;
+              mineral_fraction = minfract_allminerals_test; 
+              mineral_index = minindex_allminerals_test;
             }
             else
             {
@@ -928,28 +924,28 @@ namespace aspect
           {
             if (lithology == 0) // pyrolite
             {
-              std::vector<double> mineral_fraction = minfract_pyrolite_LM; 
-              std::vector<unsigned int> mineral_index = minindex_pyrolite_LM;
+              mineral_fraction = minfract_pyrolite_LM; 
+              mineral_index = minindex_pyrolite_LM;
             }
             if (lithology == 1) // harzburgite
             {
-              std::vector<double> mineral_fraction = minfract_harzburg_LM; 
-              std::vector<unsigned int> mineral_index = minindex_harzburg_LM;
+              mineral_fraction = minfract_harzburg_LM; 
+              mineral_index = minindex_harzburg_LM;
             }
             if (lithology == 2) // meta-MORB
             {
-              std::vector<double> mineral_fraction = minfract_metaMORB_LM; 
-              std::vector<unsigned int> mineral_index = minindex_metaMORB_LM;
+              mineral_fraction = minfract_metaMORB_LM; 
+              mineral_index = minindex_metaMORB_LM;
             }
             if (lithology == 3) // dunite
             {
-              std::vector<double> mineral_fraction = minfract_duniteOl_LM; 
-              std::vector<unsigned int> mineral_index = minindex_duniteOl_LM;
+              mineral_fraction = minfract_duniteOl_LM; 
+              mineral_index = minindex_duniteOl_LM;
             }
             if (lithology == 99) // test (all minerals)
             {
-              std::vector<double> mineral_fraction = minfract_allminerals_test; 
-              std::vector<unsigned int> mineral_index = minindex_allminerals_test;
+              mineral_fraction = minfract_allminerals_test; 
+              mineral_index = minindex_allminerals_test;
             }
             else
             {
@@ -963,498 +959,514 @@ namespace aspect
 
           unsigned int mID = in.Mineral_ID;
 
-          switch (mID) // Compute the lattice, radiative and total thermal conductivities of the given mineral
+          // Preallocate a vector for storing thermal conductivities of minerals
+          std::vector<double> mar25_minerals_latTcond(mineral_fraction.size(), 0.0); // Lattice thermal conductivity
+          std::vector<double> mar25_minerals_radTcond(mineral_fraction.size(), 0.0); // Radiative thermal conductivity
+          std::vector<double> mar25_minerals_totTcond(mineral_fraction.size(), 0.0); // Total thermal conductivity
+          // Preallocate a matrix for storing thermal conductivities of minerals
+          std::vector<std::vector<double>> mar25_all_minerals_Tconds(mineral_fraction.size(), std::vector<double>(3, 0.0));
+
+          for (size_t col = 0; col < mineral_fraction.size(); ++col)
           {
-           case olivinedry_index: // Dry Olivine
-            {      
-             double olivinedry_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             olivinedry_latTC_a0, olivinedry_latTC_b1, olivinedry_latTC_ymin, olivinedry_latTC_ymax,
-             P_log, T_mod, T_room, olivinedry_Tdep_n_exp); 
-             double olivinedry_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             olivinedry_radTC_c0, olivinedry_radTC_d1, olivinedry_radTC_jmin, olivinedry_radTC_jmax, T_log); 
-             double olivinedry_TotTCon = compute_total_thermal_conductivity_mar2025(
-             olivinedry_latTCon, olivinedry_radTCon); 
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[olivinedry_index] = olivinedry_latTCon;
-             mar25_minerals_radTcond[olivinedry_index] = olivinedry_radTCon;
-             mar25_minerals_totTcond[olivinedry_index] = olivinedry_TotTCon;
-             break;
-            }
-            case wadsleydry_index: // Dry Wadsleyite 
-            { 
-             double wadsleydry_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             wadsleydry_latTC_a0, wadsleydry_latTC_b1, wadsleydry_latTC_ymin, wadsleydry_latTC_ymax,
-             P_log, T_mod, T_room, wadsleydry_Tdep_n_exp);
-             double wadsleydry_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             wadsleydry_radTC_c0, wadsleydry_radTC_d1, wadsleydry_radTC_jmin, wadsleydry_radTC_jmax, T_log);
-             double wadsleydry_TotTCon = compute_total_thermal_conductivity_mar2025(
-             wadsleydry_latTCon, wadsleydry_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[wadsleydry_index] = wadsleydry_latTCon;
-             mar25_minerals_radTcond[wadsleydry_index] = wadsleydry_radTCon;       
-             mar25_minerals_totTcond[wadsleydry_index] = wadsleydry_TotTCon;
-             break;
-            }
-            case ringwoodry_index: // Dry Ringwoodite
-            { 
-             double ringwoodry_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             ringwoodry_latTC_a0, ringwoodry_latTC_b1, ringwoodry_latTC_ymin, ringwoodry_latTC_ymax,
-             P_log, T_mod, T_room, ringwoodry_Tdep_n_exp);
-             double ringwoodry_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             ringwoodry_radTC_c0, ringwoodry_radTC_d1, ringwoodry_radTC_jmin, ringwoodry_radTC_jmax, T_log);    
-             double ringwoodry_TotTCon = compute_total_thermal_conductivity_mar2025(
-             ringwoodry_latTCon, ringwoodry_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[ringwoodry_index] = ringwoodry_latTCon;
-             mar25_minerals_radTcond[ringwoodry_index] = ringwoodry_radTCon;
-             mar25_minerals_totTcond[ringwoodry_index] = ringwoodry_TotTCon;
-             break;
-            }
-            case brigm100Mg_index: // Mg-Bridgmanite
-            { 
-             double brigm100Mg_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             brigm100Mg_latTC_a0, brigm100Mg_latTC_b1, brigm100Mg_latTC_ymin, brigm100Mg_latTC_ymax,
-             P_log, T_mod, T_room, brigm100Mg_Tdep_n_exp);
-             double brigm100Mg_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             brigm100Mg_radTC_c0, brigm100Mg_radTC_d1, brigm100Mg_radTC_jmin, brigm100Mg_radTC_jmax, T_log);
-             double brigm100Mg_TotTCon = compute_total_thermal_conductivity_mar2025(
-             brigm100Mg_latTCon, brigm100Mg_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[brigm100Mg_index] = brigm100Mg_latTCon;
-             mar25_minerals_totTcond[brigm100Mg_index] = brigm100Mg_TotTCon;
-             mar25_minerals_radTcond[brigm100Mg_index] = brigm100Mg_radTCon;
-             break;
-            }
-            case brigma97Mg_index: // Fe-Bridgmanite (3%)
-            { 
-             double brigma97Mg_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             brigma97Mg_latTC_a0, brigma97Mg_latTC_b1, brigma97Mg_latTC_ymin, brigma97Mg_latTC_ymax,
-             P_log, T_mod, T_room, brigma97Mg_Tdep_n_exp);
-             double brigma97Mg_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             brigma97Mg_radTC_c0, brigma97Mg_radTC_d1, brigma97Mg_radTC_jmin, brigma97Mg_radTC_jmax, T_log);
-             double brigma97Mg_TotTCon = compute_total_thermal_conductivity_mar2025(
-             brigma97Mg_latTCon, brigma97Mg_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[brigma97Mg_index] = brigma97Mg_latTCon;
-             mar25_minerals_radTcond[brigma97Mg_index] = brigma97Mg_radTCon;
-             mar25_minerals_totTcond[brigma97Mg_index] = brigma97Mg_TotTCon;
-             break;
-            }
-            case brigma90Mg_index: // Fe-Bridgmanite (10%)
-            { 
-             double brigma90Mg_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             brigma90Mg_latTC_a0, brigma90Mg_latTC_b1, brigma90Mg_latTC_ymin, brigma90Mg_latTC_ymax,
-             P_log, T_mod, T_room, brigma90Mg_Tdep_n_exp);
-             double brigma90Mg_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             brigma90Mg_radTC_c0, brigma90Mg_radTC_d1, brigma90Mg_radTC_jmin, brigma90Mg_radTC_jmax, T_log);
-             double brigma90Mg_TotTCon = compute_total_thermal_conductivity_mar2025(
-             brigma90Mg_latTCon, brigma90Mg_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[brigma90Mg_index] = brigma90Mg_latTCon;
-             mar25_minerals_radTcond[brigma90Mg_index] = brigma90Mg_radTCon;
-             mar25_minerals_totTcond[brigma90Mg_index] = brigma90Mg_TotTCon;
-             break;
-            }
-            case brigmaAlMg_index: // Al-Bridgmanite
-            { 
-             double brigmaAlMg_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             brigmaAlMg_latTC_a0, brigmaAlMg_latTC_b1, brigmaAlMg_latTC_ymin, brigmaAlMg_latTC_ymax,
-             P_log, T_mod, T_room, brigmaAlMg_Tdep_n_exp);
-             double brigmaAlMg_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             brigmaAlMg_radTC_c0, brigmaAlMg_radTC_d1, brigmaAlMg_radTC_jmin, brigmaAlMg_radTC_jmax, T_log);
-             double brigmaAlMg_TotTCon = compute_total_thermal_conductivity_mar2025(
-             brigmaAlMg_latTCon, brigmaAlMg_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[brigmaAlMg_index] = brigmaAlMg_latTCon;
-             mar25_minerals_radTcond[brigmaAlMg_index] = brigmaAlMg_radTCon;
-             mar25_minerals_totTcond[brigmaAlMg_index] = brigmaAlMg_TotTCon;
-             break;
-            }
-            case brigmaFeAl_index: // Fe,Al-Bridgmanite
-            { 
-             double brigmaFeAl_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             brigmaFeAl_latTC_a0, brigmaFeAl_latTC_b1, brigmaFeAl_latTC_ymin, brigmaFeAl_latTC_ymax,
-             P_log, T_mod, T_room, brigmaFeAl_Tdep_n_exp);
-             double brigmaFeAl_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             brigmaFeAl_radTC_c0, brigmaFeAl_radTC_d1, brigmaFeAl_radTC_jmin, brigmaFeAl_radTC_jmax, T_log);
-             double brigmaFeAl_TotTCon = compute_total_thermal_conductivity_mar2025(
-             brigmaFeAl_latTCon, brigmaFeAl_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[brigmaFeAl_index] = brigmaFeAl_latTCon;
-             mar25_minerals_radTcond[brigmaFeAl_index] = brigmaFeAl_radTCon;
-             mar25_minerals_totTcond[brigmaFeAl_index] = brigmaFeAl_TotTCon;
-             break;
-            }
-            case opxenstati_index: // Orthopyroxene (Enstatite)
-            { 
-             double opxenstati_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             opxenstati_latTC_a0, opxenstati_latTC_b1, opxenstati_latTC_ymin, opxenstati_latTC_ymax,
-             P_log, T_mod, T_room, opxenstati_Tdep_n_exp);  
-             double opxenstati_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             opxenstati_radTC_c0, opxenstati_radTC_d1, opxenstati_radTC_jmin, opxenstati_radTC_jmax, T_log);
-             double opxenstati_TotTCon = compute_total_thermal_conductivity_mar2025(
-             opxenstati_latTCon, opxenstati_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[opxenstati_index] = opxenstati_latTCon;
-             mar25_minerals_radTcond[opxenstati_index] = opxenstati_radTCon;
-             mar25_minerals_totTcond[opxenstati_index] = opxenstati_TotTCon;
-             break;
-            }
-            case cpxdiopsid_index: // Clinopyroxene (Diopside)
-            { 
-             double cpxdiopsid_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             cpxdiopsid_latTC_a0, cpxdiopsid_latTC_b1, cpxdiopsid_latTC_ymin, cpxdiopsid_latTC_ymax,
-             P_log, T_mod, T_room, cpxdiopsid_Tdep_n_exp);      
-             double cpxdiopsid_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             cpxdiopsid_radTC_c0, cpxdiopsid_radTC_d1, cpxdiopsid_radTC_jmin, cpxdiopsid_radTC_jmax, T_log);
-             double cpxdiopsid_TotTCon = compute_total_thermal_conductivity_mar2025(
-             cpxdiopsid_latTCon, cpxdiopsid_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[cpxdiopsid_index] = cpxdiopsid_latTCon;
-             mar25_minerals_radTcond[cpxdiopsid_index] = cpxdiopsid_radTCon;
-             mar25_minerals_totTcond[cpxdiopsid_index] = cpxdiopsid_TotTCon;
-             break;
-            }
-            case grtpyropes_index: // Garnet (Pyrope)
-            { 
-             double grtpyropes_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             grtpyropes_latTC_a0, grtpyropes_latTC_b1, grtpyropes_latTC_ymin, grtpyropes_latTC_ymax,
-             P_log, T_mod, T_room, grtpyropes_Tdep_n_exp);
-             double grtpyropes_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             grtpyropes_radTC_c0, grtpyropes_radTC_d1, grtpyropes_radTC_jmin, grtpyropes_radTC_jmax, T_log);
-             double grtpyropes_TotTCon = compute_total_thermal_conductivity_mar2025(
-             grtpyropes_latTCon, grtpyropes_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[grtpyropes_index] = grtpyropes_latTCon;
-             mar25_minerals_radTcond[grtpyropes_index] = grtpyropes_radTCon;
-             mar25_minerals_totTcond[grtpyropes_index] = grtpyropes_TotTCon;
-             break;
-            }
-            case grtgrossul_index: // Garnet (Grossular)
-            { 
-             double grtgrossul_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             grtgrossul_latTC_a0, grtgrossul_latTC_b1, grtgrossul_latTC_ymin, grtgrossul_latTC_ymax,
-             P_log, T_mod, T_room, grtgrossul_Tdep_n_exp);
-             double grtgrossul_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             grtgrossul_radTC_c0, grtgrossul_radTC_d1, grtgrossul_radTC_jmin, grtgrossul_radTC_jmax, T_log);
-             double grtgrossul_TotTCon = compute_total_thermal_conductivity_mar2025(
-             grtgrossul_latTCon, grtgrossul_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[grtgrossul_index] = grtgrossul_latTCon;
-             mar25_minerals_radTcond[grtgrossul_index] = grtgrossul_radTCon;
-             mar25_minerals_totTcond[grtgrossul_index] = grtgrossul_TotTCon;
-             break;
-            }
-            case grtalmandi_index: // Garnet (Almandine)
-            { 
-             double grtalmandi_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             grtalmandi_latTC_a0, grtalmandi_latTC_b1, grtalmandi_latTC_ymin, grtalmandi_latTC_ymax,
-             P_log, T_mod, T_room, grtalmandi_Tdep_n_exp);
-             double grtalmandi_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             grtalmandi_radTC_c0, grtalmandi_radTC_d1, grtalmandi_radTC_jmin, grtalmandi_radTC_jmax, T_log);  
-             double grtalmandi_TotTCon = compute_total_thermal_conductivity_mar2025(
-             grtalmandi_latTCon, grtalmandi_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[grtalmandi_index] = grtalmandi_latTCon;
-             mar25_minerals_radTcond[grtalmandi_index] = grtalmandi_radTCon;
-             mar25_minerals_totTcond[grtalmandi_index] = grtalmandi_TotTCon;
-             break;
-            }
-            case grtmajorit_index: // Garnet (Majorite)
-            { 
-             double grtmajorit_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             grtmajorit_latTC_a0, grtmajorit_latTC_b1, grtmajorit_latTC_ymin, grtmajorit_latTC_ymax,
-             P_log, T_mod, T_room, grtmajorit_Tdep_n_exp);
-             double grtmajorit_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             grtmajorit_radTC_c0, grtmajorit_radTC_d1, grtmajorit_radTC_jmin, grtmajorit_radTC_jmax, T_log);
-             double grtmajorit_TotTCon = compute_total_thermal_conductivity_mar2025(
-             grtmajorit_latTCon, grtmajorit_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[grtmajorit_index] = grtmajorit_latTCon;
-             mar25_minerals_radTcond[grtmajorit_index] = grtmajorit_radTCon;
-             mar25_minerals_totTcond[grtmajorit_index] = grtmajorit_TotTCon;
-             break;
-            }
-            case quartzpure_index: // Quartz
-            { 
-             double quartzpure_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             quartzpure_latTC_a0, quartzpure_latTC_b1, quartzpure_latTC_ymin, quartzpure_latTC_ymax,
-             P_log, T_mod, T_room, quartzpure_Tdep_n_exp);
-             double quartzpure_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             quartzpure_radTC_c0, quartzpure_radTC_d1, quartzpure_radTC_jmin, quartzpure_radTC_jmax, T_log);
-             double quartzpure_TotTCon = compute_total_thermal_conductivity_mar2025(
-             quartzpure_latTCon, quartzpure_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[quartzpure_index] = quartzpure_latTCon;
-             mar25_minerals_radTcond[quartzpure_index] = quartzpure_radTCon;
-             mar25_minerals_totTcond[quartzpure_index] = quartzpure_TotTCon;
-             break;
-            }
-            case coesitSiO2_index: // Coesite
-            { 
-             double coesitSiO2_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             coesitSiO2_latTC_a0, coesitSiO2_latTC_b1, coesitSiO2_latTC_ymin, coesitSiO2_latTC_ymax,
-             P_log, T_mod, T_room, coesitSiO2_Tdep_n_exp);
-             double coesitSiO2_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             coesitSiO2_radTC_c0, coesitSiO2_radTC_d1, coesitSiO2_radTC_jmin, coesitSiO2_radTC_jmax, T_log);
-             double coesitSiO2_TotTCon = compute_total_thermal_conductivity_mar2025(
-             coesitSiO2_latTCon, coesitSiO2_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[coesitSiO2_index] = coesitSiO2_latTCon;
-             mar25_minerals_radTcond[coesitSiO2_index] = coesitSiO2_radTCon;
-             mar25_minerals_totTcond[coesitSiO2_index] = coesitSiO2_TotTCon;
-             break;
-            }
-            case stishovite_index: // stishovite
-            { 
-              double stishovite_latTCon; // Declare the variable
-              if (P_GPa < 52) // Pressure < 52 [GPa]
-              {
-               stishovite_latTCon = compute_lattice_thermal_conductivity_mar2025(
-               stishovite_latTC_1_a0, stishovite_latTC_1_b1, stishovite_latTC_1_ymin, stishovite_latTC_1_ymax,
-               P_log, T_mod, T_room, stishovite_Tdep_n_exp);
+
+           unsigned int mID = mineral_index[col];
+
+           switch (mID) // Compute the lattice, radiative and total thermal conductivities of the given mineral
+           {
+             case olivinedry_index: // Dry Olivine
+             {      
+               double olivinedry_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               olivinedry_latTC_a0, olivinedry_latTC_b1, olivinedry_latTC_ymin, olivinedry_latTC_ymax,
+               P_log, T_mod, T_room, olivinedry_Tdep_n_exp); 
+               double olivinedry_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               olivinedry_radTC_c0, olivinedry_radTC_d1, olivinedry_radTC_jmin, olivinedry_radTC_jmax, T_log); 
+               double olivinedry_TotTCon = compute_total_thermal_conductivity_mar2025(
+               olivinedry_latTCon, olivinedry_radTCon); 
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = olivinedry_latTCon;
+               mar25_minerals_radTcond[col] = olivinedry_radTCon;
+               mar25_minerals_totTcond[col] = olivinedry_TotTCon;
+               break;
               }
-              else if (P_GPa >= 52 && P_GPa <= 56) // Pressure between 52 and 56 [GPa]
-              {
-               stishovite_latTCon = compute_lattice_thermal_conductivity_mar2025(
-               stishovite_latTC_2_a0, stishovite_latTC_2_b1, stishovite_latTC_2_ymin, stishovite_latTC_2_ymax,
-               P_log, T_mod, T_room, stishovite_Tdep_n_exp);
+             case wadsleydry_index: // Dry Wadsleyite 
+             { 
+               double wadsleydry_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               wadsleydry_latTC_a0, wadsleydry_latTC_b1, wadsleydry_latTC_ymin, wadsleydry_latTC_ymax,
+               P_log, T_mod, T_room, wadsleydry_Tdep_n_exp);
+               double wadsleydry_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               wadsleydry_radTC_c0, wadsleydry_radTC_d1, wadsleydry_radTC_jmin, wadsleydry_radTC_jmax, T_log);
+               double wadsleydry_TotTCon = compute_total_thermal_conductivity_mar2025(
+               wadsleydry_latTCon, wadsleydry_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = wadsleydry_latTCon;
+               mar25_minerals_radTcond[col] = wadsleydry_radTCon;       
+               mar25_minerals_totTcond[col] = wadsleydry_TotTCon;
+               break;
               }
-              else if (P_GPa > 56) // Pressure > 56 [GPa]
-              {
-               stishovite_latTCon = compute_lattice_thermal_conductivity_mar2025(
-               stishovite_latTC_3_a0, stishovite_latTC_3_b1, stishovite_latTC_3_ymin, stishovite_latTC_3_ymax,
-               P_log, T_mod, T_room, stishovite_Tdep_n_exp);
+             case ringwoodry_index: // Dry Ringwoodite
+             { 
+               double ringwoodry_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               ringwoodry_latTC_a0, ringwoodry_latTC_b1, ringwoodry_latTC_ymin, ringwoodry_latTC_ymax,
+               P_log, T_mod, T_room, ringwoodry_Tdep_n_exp);
+               double ringwoodry_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               ringwoodry_radTC_c0, ringwoodry_radTC_d1, ringwoodry_radTC_jmin, ringwoodry_radTC_jmax, T_log);    
+               double ringwoodry_TotTCon = compute_total_thermal_conductivity_mar2025(
+               ringwoodry_latTCon, ringwoodry_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = ringwoodry_latTCon;
+               mar25_minerals_radTcond[col] = ringwoodry_radTCon;
+               mar25_minerals_totTcond[col] = ringwoodry_TotTCon;
+               break;
               }
-              else
-              {
-               AssertThrow(false, dealii::ExcMessage("Invalid pressure value for stishovite_latTC coefficients."));
-              } 
-             double stishovite_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             stishovite_radTC_c0, stishovite_radTC_d1, stishovite_radTC_jmin, stishovite_radTC_jmax, T_log);
-             double stishovite_TotTCon = compute_total_thermal_conductivity_mar2025(
-             stishovite_latTCon, stishovite_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[stishovite_index] = stishovite_latTCon;
-             mar25_minerals_radTcond[stishovite_index] = stishovite_radTCon;
-             mar25_minerals_totTcond[stishovite_index] = stishovite_TotTCon;
-             break;
-            }
-            case stisho05Al_index: // Al-stishovite (5 vol%)
-            { 
-             double stisho05Al_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             stisho05Al_latTC_a0, stisho05Al_latTC_b1, stisho05Al_latTC_ymin, stisho05Al_latTC_ymax,
-             P_log, T_mod, T_room, stisho05Al_Tdep_n_exp); 
-             double stisho05Al_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             stisho05Al_radTC_c0, stisho05Al_radTC_d1, stisho05Al_radTC_jmin, stisho05Al_radTC_jmax, T_log);
-             double stisho05Al_TotTCon = compute_total_thermal_conductivity_mar2025(
-             stisho05Al_latTCon, stisho05Al_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[stisho05Al_index] = stisho05Al_latTCon;
-             mar25_minerals_radTcond[stisho05Al_index] = stisho05Al_radTCon;
-             mar25_minerals_totTcond[stisho05Al_index] = stisho05Al_TotTCon;
-             break;
-            }
-            case antigor010_index: // Antigorite (010)
-            { 
-             double antigor010_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             antigor010_latTC_a0, antigor010_latTC_b1, antigor010_latTC_ymin, antigor010_latTC_ymax,
-             P_log, T_mod, T_room, antigor010_Tdep_n_exp);
-             double antigor010_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             antigor010_radTC_c0, antigor010_radTC_d1, antigor010_radTC_jmin, antigor010_radTC_jmax, T_log);
-             double antigor010_TotTCon = compute_total_thermal_conductivity_mar2025(
-             antigor010_latTCon, antigor010_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[antigor010_index] = antigor010_latTCon;
-             mar25_minerals_radTcond[antigor010_index] = antigor010_radTCon;
-             mar25_minerals_totTcond[antigor010_index] = antigor010_TotTCon;
-             break;
-            }
-            case antigor001_index: // Antigorite (001)
-            { 
-             double antigor001_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             antigor001_latTC_a0, antigor001_latTC_b1, antigor001_latTC_ymin, antigor001_latTC_ymax,
-             P_log, T_mod, T_room, antigor001_Tdep_n_exp);
-             double antigor001_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             antigor001_radTC_c0, antigor001_radTC_d1, antigor001_radTC_jmin, antigor001_radTC_jmax, T_log);
-             double antigor001_TotTCon = compute_total_thermal_conductivity_mar2025(
-             antigor001_latTCon, antigor001_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[antigor001_index] = antigor001_latTCon;
-             mar25_minerals_radTcond[antigor001_index] = antigor001_radTCon;
-             mar25_minerals_totTcond[antigor001_index] = antigor001_TotTCon;
-             break;
-            }
-            case phaseDFeAl_index: // Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
-            { 
-             double phaseDFeAl_latTCon; // Declare the variable
-             if (P_GPa < 24) // Pressure < 24 [GPa]
-             {
-              phaseDFeAl_latTCon = compute_lattice_thermal_conductivity_mar2025(
-              phaseDFeAl_latTC_1_a0, phaseDFeAl_latTC_1_b1, phaseDFeAl_latTC_1_ymin, phaseDFeAl_latTC_1_ymax,
-              P_log, T_mod, T_room, phaseDFeAl_Tdep_n_exp);
+             case brigm100Mg_index: // Mg-Bridgmanite
+             { 
+               double brigm100Mg_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               brigm100Mg_latTC_a0, brigm100Mg_latTC_b1, brigm100Mg_latTC_ymin, brigm100Mg_latTC_ymax,
+               P_log, T_mod, T_room, brigm100Mg_Tdep_n_exp);
+               double brigm100Mg_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               brigm100Mg_radTC_c0, brigm100Mg_radTC_d1, brigm100Mg_radTC_jmin, brigm100Mg_radTC_jmax, T_log);
+               double brigm100Mg_TotTCon = compute_total_thermal_conductivity_mar2025(
+               brigm100Mg_latTCon, brigm100Mg_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = brigm100Mg_latTCon;
+               mar25_minerals_totTcond[col] = brigm100Mg_TotTCon;
+               mar25_minerals_radTcond[col] = brigm100Mg_radTCon;
+               break;
+              }
+             case brigma97Mg_index: // Fe-Bridgmanite (3%)
+             { 
+               double brigma97Mg_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               brigma97Mg_latTC_a0, brigma97Mg_latTC_b1, brigma97Mg_latTC_ymin, brigma97Mg_latTC_ymax,
+               P_log, T_mod, T_room, brigma97Mg_Tdep_n_exp);
+               double brigma97Mg_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               brigma97Mg_radTC_c0, brigma97Mg_radTC_d1, brigma97Mg_radTC_jmin, brigma97Mg_radTC_jmax, T_log);
+               double brigma97Mg_TotTCon = compute_total_thermal_conductivity_mar2025(
+               brigma97Mg_latTCon, brigma97Mg_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = brigma97Mg_latTCon;
+               mar25_minerals_radTcond[col] = brigma97Mg_radTCon;
+               mar25_minerals_totTcond[col] = brigma97Mg_TotTCon;
+               break;
+              }
+             case brigma90Mg_index: // Fe-Bridgmanite (10%)
+             { 
+               double brigma90Mg_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               brigma90Mg_latTC_a0, brigma90Mg_latTC_b1, brigma90Mg_latTC_ymin, brigma90Mg_latTC_ymax,
+               P_log, T_mod, T_room, brigma90Mg_Tdep_n_exp);
+               double brigma90Mg_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               brigma90Mg_radTC_c0, brigma90Mg_radTC_d1, brigma90Mg_radTC_jmin, brigma90Mg_radTC_jmax, T_log);
+               double brigma90Mg_TotTCon = compute_total_thermal_conductivity_mar2025(
+               brigma90Mg_latTCon, brigma90Mg_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = brigma90Mg_latTCon;
+               mar25_minerals_radTcond[col] = brigma90Mg_radTCon;
+               mar25_minerals_totTcond[col] = brigma90Mg_TotTCon;
+               break;
+              }
+             case brigmaAlMg_index: // Al-Bridgmanite
+             { 
+               double brigmaAlMg_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               brigmaAlMg_latTC_a0, brigmaAlMg_latTC_b1, brigmaAlMg_latTC_ymin, brigmaAlMg_latTC_ymax,
+               P_log, T_mod, T_room, brigmaAlMg_Tdep_n_exp);
+               double brigmaAlMg_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               brigmaAlMg_radTC_c0, brigmaAlMg_radTC_d1, brigmaAlMg_radTC_jmin, brigmaAlMg_radTC_jmax, T_log);
+               double brigmaAlMg_TotTCon = compute_total_thermal_conductivity_mar2025(
+               brigmaAlMg_latTCon, brigmaAlMg_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = brigmaAlMg_latTCon;
+               mar25_minerals_radTcond[col] = brigmaAlMg_radTCon;
+               mar25_minerals_totTcond[col] = brigmaAlMg_TotTCon;
+               break;
+              }
+             case brigmaFeAl_index: // Fe,Al-Bridgmanite
+             { 
+               double brigmaFeAl_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               brigmaFeAl_latTC_a0, brigmaFeAl_latTC_b1, brigmaFeAl_latTC_ymin, brigmaFeAl_latTC_ymax,
+               P_log, T_mod, T_room, brigmaFeAl_Tdep_n_exp);
+               double brigmaFeAl_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               brigmaFeAl_radTC_c0, brigmaFeAl_radTC_d1, brigmaFeAl_radTC_jmin, brigmaFeAl_radTC_jmax, T_log);
+               double brigmaFeAl_TotTCon = compute_total_thermal_conductivity_mar2025(
+               brigmaFeAl_latTCon, brigmaFeAl_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = brigmaFeAl_latTCon;
+               mar25_minerals_radTcond[col] = brigmaFeAl_radTCon;
+               mar25_minerals_totTcond[col] = brigmaFeAl_TotTCon;
+               break;
+              }
+             case opxenstati_index: // Orthopyroxene (Enstatite)
+             { 
+               double opxenstati_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               opxenstati_latTC_a0, opxenstati_latTC_b1, opxenstati_latTC_ymin, opxenstati_latTC_ymax,
+               P_log, T_mod, T_room, opxenstati_Tdep_n_exp);  
+               double opxenstati_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               opxenstati_radTC_c0, opxenstati_radTC_d1, opxenstati_radTC_jmin, opxenstati_radTC_jmax, T_log);
+               double opxenstati_TotTCon = compute_total_thermal_conductivity_mar2025(
+               opxenstati_latTCon, opxenstati_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = opxenstati_latTCon;
+               mar25_minerals_radTcond[col] = opxenstati_radTCon;
+               mar25_minerals_totTcond[col] = opxenstati_TotTCon;
+               break;
+              }
+             case cpxdiopsid_index: // Clinopyroxene (Diopside)
+             { 
+               double cpxdiopsid_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               cpxdiopsid_latTC_a0, cpxdiopsid_latTC_b1, cpxdiopsid_latTC_ymin, cpxdiopsid_latTC_ymax,
+               P_log, T_mod, T_room, cpxdiopsid_Tdep_n_exp);      
+               double cpxdiopsid_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               cpxdiopsid_radTC_c0, cpxdiopsid_radTC_d1, cpxdiopsid_radTC_jmin, cpxdiopsid_radTC_jmax, T_log);
+               double cpxdiopsid_TotTCon = compute_total_thermal_conductivity_mar2025(
+               cpxdiopsid_latTCon, cpxdiopsid_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = cpxdiopsid_latTCon;
+               mar25_minerals_radTcond[col] = cpxdiopsid_radTCon;
+               mar25_minerals_totTcond[col] = cpxdiopsid_TotTCon;
+               break;
+              }
+             case grtpyropes_index: // Garnet (Pyrope)
+             { 
+               double grtpyropes_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               grtpyropes_latTC_a0, grtpyropes_latTC_b1, grtpyropes_latTC_ymin, grtpyropes_latTC_ymax,
+               P_log, T_mod, T_room, grtpyropes_Tdep_n_exp);
+               double grtpyropes_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               grtpyropes_radTC_c0, grtpyropes_radTC_d1, grtpyropes_radTC_jmin, grtpyropes_radTC_jmax, T_log);
+               double grtpyropes_TotTCon = compute_total_thermal_conductivity_mar2025(
+               grtpyropes_latTCon, grtpyropes_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = grtpyropes_latTCon;
+               mar25_minerals_radTcond[col] = grtpyropes_radTCon;
+               mar25_minerals_totTcond[col] = grtpyropes_TotTCon;
+               break;
              }
-             else if (P_GPa >= 24 && P_GPa <= 38) // Pressure between 24 and 38 [GPa]
-             {
-              phaseDFeAl_latTCon = compute_lattice_thermal_conductivity_mar2025(
-              phaseDFeAl_latTC_2_a0, phaseDFeAl_latTC_2_b1, phaseDFeAl_latTC_2_ymin, phaseDFeAl_latTC_2_ymax,
-              P_log, T_mod, T_room, phaseDFeAl_Tdep_n_exp);
+             case grtgrossul_index: // Garnet (Grossular)
+             { 
+               double grtgrossul_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               grtgrossul_latTC_a0, grtgrossul_latTC_b1, grtgrossul_latTC_ymin, grtgrossul_latTC_ymax,
+               P_log, T_mod, T_room, grtgrossul_Tdep_n_exp);
+               double grtgrossul_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               grtgrossul_radTC_c0, grtgrossul_radTC_d1, grtgrossul_radTC_jmin, grtgrossul_radTC_jmax, T_log);
+               double grtgrossul_TotTCon = compute_total_thermal_conductivity_mar2025(
+               grtgrossul_latTCon, grtgrossul_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = grtgrossul_latTCon;
+               mar25_minerals_radTcond[col] = grtgrossul_radTCon;
+               mar25_minerals_totTcond[col] = grtgrossul_TotTCon;
+               break;
+              }
+             case grtalmandi_index: // Garnet (Almandine)
+             { 
+               double grtalmandi_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               grtalmandi_latTC_a0, grtalmandi_latTC_b1, grtalmandi_latTC_ymin, grtalmandi_latTC_ymax,
+               P_log, T_mod, T_room, grtalmandi_Tdep_n_exp);
+               double grtalmandi_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               grtalmandi_radTC_c0, grtalmandi_radTC_d1, grtalmandi_radTC_jmin, grtalmandi_radTC_jmax, T_log);  
+               double grtalmandi_TotTCon = compute_total_thermal_conductivity_mar2025(
+               grtalmandi_latTCon, grtalmandi_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = grtalmandi_latTCon;
+               mar25_minerals_radTcond[col] = grtalmandi_radTCon;
+               mar25_minerals_totTcond[col] = grtalmandi_TotTCon;
+               break;
+              }
+             case grtmajorit_index: // Garnet (Majorite)
+             { 
+               double grtmajorit_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               grtmajorit_latTC_a0, grtmajorit_latTC_b1, grtmajorit_latTC_ymin, grtmajorit_latTC_ymax,
+               P_log, T_mod, T_room, grtmajorit_Tdep_n_exp);
+               double grtmajorit_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               grtmajorit_radTC_c0, grtmajorit_radTC_d1, grtmajorit_radTC_jmin, grtmajorit_radTC_jmax, T_log);
+               double grtmajorit_TotTCon = compute_total_thermal_conductivity_mar2025(
+               grtmajorit_latTCon, grtmajorit_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = grtmajorit_latTCon;
+               mar25_minerals_radTcond[col] = grtmajorit_radTCon;
+               mar25_minerals_totTcond[col] = grtmajorit_TotTCon;
+               break;
+              }
+             case quartzpure_index: // Quartz
+             { 
+               double quartzpure_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               quartzpure_latTC_a0, quartzpure_latTC_b1, quartzpure_latTC_ymin, quartzpure_latTC_ymax,
+               P_log, T_mod, T_room, quartzpure_Tdep_n_exp);
+               double quartzpure_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               quartzpure_radTC_c0, quartzpure_radTC_d1, quartzpure_radTC_jmin, quartzpure_radTC_jmax, T_log);
+               double quartzpure_TotTCon = compute_total_thermal_conductivity_mar2025(
+               quartzpure_latTCon, quartzpure_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = quartzpure_latTCon;
+               mar25_minerals_radTcond[col] = quartzpure_radTCon;
+               mar25_minerals_totTcond[col] = quartzpure_TotTCon;
+               break;
+              }
+             case coesitSiO2_index: // Coesite
+             { 
+               double coesitSiO2_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               coesitSiO2_latTC_a0, coesitSiO2_latTC_b1, coesitSiO2_latTC_ymin, coesitSiO2_latTC_ymax,
+               P_log, T_mod, T_room, coesitSiO2_Tdep_n_exp);
+               double coesitSiO2_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               coesitSiO2_radTC_c0, coesitSiO2_radTC_d1, coesitSiO2_radTC_jmin, coesitSiO2_radTC_jmax, T_log);
+               double coesitSiO2_TotTCon = compute_total_thermal_conductivity_mar2025(
+               coesitSiO2_latTCon, coesitSiO2_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = coesitSiO2_latTCon;
+               mar25_minerals_radTcond[col] = coesitSiO2_radTCon;
+               mar25_minerals_totTcond[col] = coesitSiO2_TotTCon;
+               break;
+              }
+             case stishovite_index: // stishovite
+             { 
+               double stishovite_latTCon; // Declare the variable
+               if (P_GPa < 52) // Pressure < 52 [GPa]
+               {
+                 stishovite_latTCon = compute_lattice_thermal_conductivity_mar2025(
+                 stishovite_latTC_1_a0, stishovite_latTC_1_b1, stishovite_latTC_1_ymin, stishovite_latTC_1_ymax,
+                 P_log, T_mod, T_room, stishovite_Tdep_n_exp);
+               }
+               else if (P_GPa >= 52 && P_GPa <= 56) // Pressure between 52 and 56 [GPa]
+               {
+                 stishovite_latTCon = compute_lattice_thermal_conductivity_mar2025(
+                 stishovite_latTC_2_a0, stishovite_latTC_2_b1, stishovite_latTC_2_ymin, stishovite_latTC_2_ymax,
+                 P_log, T_mod, T_room, stishovite_Tdep_n_exp);
+               }
+               else if (P_GPa > 56) // Pressure > 56 [GPa]
+               {
+                 stishovite_latTCon = compute_lattice_thermal_conductivity_mar2025(
+                 stishovite_latTC_3_a0, stishovite_latTC_3_b1, stishovite_latTC_3_ymin, stishovite_latTC_3_ymax,
+                 P_log, T_mod, T_room, stishovite_Tdep_n_exp);
+               }
+               else
+               {
+                 AssertThrow(false, dealii::ExcMessage("Invalid pressure value for stishovite_latTC coefficients."));
+               } 
+               double stishovite_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               stishovite_radTC_c0, stishovite_radTC_d1, stishovite_radTC_jmin, stishovite_radTC_jmax, T_log);
+               double stishovite_TotTCon = compute_total_thermal_conductivity_mar2025(
+               stishovite_latTCon, stishovite_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = stishovite_latTCon;
+               mar25_minerals_radTcond[col] = stishovite_radTCon;
+               mar25_minerals_totTcond[col] = stishovite_TotTCon;
+               break;
              }
-             else if (P_GPa >= 38 && P_GPa <= 48) // Pressure between 38 and 48 [GPa]
-             {
-              phaseDFeAl_latTCon = compute_lattice_thermal_conductivity_mar2025(
-              phaseDFeAl_latTC_3_a0, phaseDFeAl_latTC_3_b1, phaseDFeAl_latTC_3_ymin, phaseDFeAl_latTC_3_ymax,
-              P_log, T_mod, T_room, phaseDFeAl_Tdep_n_exp);
+             case stisho05Al_index: // Al-stishovite (5 vol%)
+             { 
+               double stisho05Al_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               stisho05Al_latTC_a0, stisho05Al_latTC_b1, stisho05Al_latTC_ymin, stisho05Al_latTC_ymax,
+               P_log, T_mod, T_room, stisho05Al_Tdep_n_exp); 
+               double stisho05Al_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               stisho05Al_radTC_c0, stisho05Al_radTC_d1, stisho05Al_radTC_jmin, stisho05Al_radTC_jmax, T_log);
+               double stisho05Al_TotTCon = compute_total_thermal_conductivity_mar2025(
+               stisho05Al_latTCon, stisho05Al_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = stisho05Al_latTCon;
+               mar25_minerals_radTcond[col] = stisho05Al_radTCon;
+               mar25_minerals_totTcond[col] = stisho05Al_TotTCon;
+               break;
              }
-             else if (P_GPa > 48) // Pressure > 48 [GPa]
-             {
-              phaseDFeAl_latTCon = compute_lattice_thermal_conductivity_mar2025(
-              phaseDFeAl_latTC_4_a0, phaseDFeAl_latTC_4_b1, phaseDFeAl_latTC_4_ymin, phaseDFeAl_latTC_4_ymax,
-              P_log, T_mod, T_room, phaseDFeAl_Tdep_n_exp);
+             case antigor010_index: // Antigorite (010)
+             { 
+               double antigor010_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               antigor010_latTC_a0, antigor010_latTC_b1, antigor010_latTC_ymin, antigor010_latTC_ymax,
+               P_log, T_mod, T_room, antigor010_Tdep_n_exp);
+               double antigor010_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               antigor010_radTC_c0, antigor010_radTC_d1, antigor010_radTC_jmin, antigor010_radTC_jmax, T_log);
+               double antigor010_TotTCon = compute_total_thermal_conductivity_mar2025(
+               antigor010_latTCon, antigor010_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = antigor010_latTCon;
+               mar25_minerals_radTcond[col] = antigor010_radTCon;
+               mar25_minerals_totTcond[col] = antigor010_TotTCon;
+               break;
              }
-             else
-             {
-              AssertThrow(false, dealii::ExcMessage("Invalid pressure value for phaseDFeAl_latTC coefficients."));
-             } 
-             double phaseDFeAl_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             phaseDFeAl_radTC_c0, phaseDFeAl_radTC_d1, phaseDFeAl_radTC_jmin, phaseDFeAl_radTC_jmax, T_log);
-             double phaseDFeAl_TotTCon = compute_total_thermal_conductivity_mar2025(
-             phaseDFeAl_latTCon, phaseDFeAl_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[phaseDFeAl_index] = phaseDFeAl_latTCon;
-             mar25_minerals_radTcond[phaseDFeAl_index] = phaseDFeAl_radTCon;
-             mar25_minerals_totTcond[phaseDFeAl_index] = phaseDFeAl_TotTCon;
-             break;
-            }
-            case phaseD02Al_index: // Al-phase D (Dense Hydrous Magnesium Silicate)
-            { 
-             double phaseD02Al_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             phaseD02Al_latTC_a0, phaseD02Al_latTC_b1, phaseD02Al_latTC_ymin, phaseD02Al_latTC_ymax,
-             P_log, T_mod, T_room, phaseD02Al_Tdep_n_exp);
-             double phaseD02Al_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             phaseD02Al_radTC_c0, phaseD02Al_radTC_d1, phaseD02Al_radTC_jmin, phaseD02Al_radTC_jmax, T_log);
-             double phaseD02Al_TotTCon = compute_total_thermal_conductivity_mar2025(
-             phaseD02Al_latTCon, phaseD02Al_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[phaseD02Al_index] = phaseD02Al_latTCon;
-             mar25_minerals_radTcond[phaseD02Al_index] = phaseD02Al_radTCon;
-             mar25_minerals_totTcond[phaseD02Al_index] = phaseD02Al_TotTCon;
-             break;
-            }
-            case ferroper08_index: // Ferropericlase (Mg92Fe8O)
-            { 
-             double ferroper08_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             ferroper08_latTC_a0, ferroper08_latTC_b1, ferroper08_latTC_ymin, ferroper08_latTC_ymax,
-             P_log, T_mod, T_room, ferroper08_Tdep_n_exp);
-             double ferroper08_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             ferroper08_radTC_c0, ferroper08_radTC_d1, ferroper08_radTC_jmin, ferroper08_radTC_jmax, T_log);
-             double ferroper08_TotTCon = compute_total_thermal_conductivity_mar2025(
-             ferroper08_latTCon, ferroper08_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[ferroper08_index] = ferroper08_latTCon;
-             mar25_minerals_radTcond[ferroper08_index] = ferroper08_radTCon;
-             mar25_minerals_totTcond[ferroper08_index] = ferroper08_TotTCon;
-             break;
-            }
-            case ferroper10_index: // Ferropericlase (Mg90Fe10O)
-            { 
-             double ferroper10_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             ferroper10_latTC_a0, ferroper10_latTC_b1, ferroper10_latTC_ymin, ferroper10_latTC_ymax,
-             P_log, T_mod, T_room, ferroper10_Tdep_n_exp);
-             double ferroper10_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             ferroper10_radTC_c0, ferroper10_radTC_d1, ferroper10_radTC_jmin, ferroper10_radTC_jmax, T_log);        
-             double ferroper10_TotTCon = compute_total_thermal_conductivity_mar2025(
-             ferroper10_latTCon, ferroper10_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[ferroper10_index] = ferroper10_latTCon;
-             mar25_minerals_radTcond[ferroper10_index] = ferroper10_radTCon;
-             mar25_minerals_totTcond[ferroper10_index] = ferroper10_TotTCon;
-             break;
-            }
-            case ferroper20_index: // Ferropericlase (Mg80Fe20O)
-            { 
-             double ferroper20_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             ferroper20_latTC_a0, ferroper20_latTC_b1, ferroper20_latTC_ymin, ferroper20_latTC_ymax,
-             P_log, T_mod, T_room, ferroper20_Tdep_n_exp);
-             double ferroper20_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             ferroper20_radTC_c0, ferroper20_radTC_d1, ferroper20_radTC_jmin, ferroper20_radTC_jmax, T_log);
-             double ferroper20_TotTCon = compute_total_thermal_conductivity_mar2025(
-             ferroper20_latTCon, ferroper20_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[ferroper20_index] = ferroper20_latTCon;
-             mar25_minerals_radTcond[ferroper20_index] = ferroper20_radTCon;
-             mar25_minerals_totTcond[ferroper20_index] = ferroper20_TotTCon;
-             break;
-            }
-            case ferroper56_index: // Ferropericlase (Mg56Fe44O)
-            { 
-             double ferroper56_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             ferroper56_latTC_a0, ferroper56_latTC_b1, ferroper56_latTC_ymin, ferroper56_latTC_ymax,
-             P_log, T_mod, T_room, ferroper56_Tdep_n_exp);
-             double ferroper56_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             ferroper56_radTC_c0, ferroper56_radTC_d1, ferroper56_radTC_jmin, ferroper56_radTC_jmax, T_log);
-             double ferroper56_TotTCon = compute_total_thermal_conductivity_mar2025(
-             ferroper56_latTCon, ferroper56_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[ferroper56_index] = ferroper56_latTCon;
-             mar25_minerals_radTcond[ferroper56_index] = ferroper56_radTCon;
-             mar25_minerals_totTcond[ferroper56_index] = ferroper56_TotTCon;
-             break;
-            }
-            case davemaoite_index: // davemaoite
-            { 
-             double davemaoite_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             davemaoite_latTC_a0, davemaoite_latTC_b1, davemaoite_latTC_ymin, davemaoite_latTC_ymax,
-             P_log, T_mod, T_room, davemaoite_Tdep_n_exp);
-             double davemaoite_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             davemaoite_radTC_c0, davemaoite_radTC_d1, davemaoite_radTC_jmin, davemaoite_radTC_jmax, T_log);
-             double davemaoite_TotTCon = compute_total_thermal_conductivity_mar2025(
-             davemaoite_latTCon, davemaoite_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[davemaoite_index] = davemaoite_latTCon;
-             mar25_minerals_radTcond[davemaoite_index] = davemaoite_radTCon;
-             mar25_minerals_totTcond[davemaoite_index] = davemaoite_TotTCon;
-             break;
-            }
-            case newhexAlph_index: // New-hexagonal-alluminium-phase (FeNAL)
-            { 
-             double newhexAlph_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             newhexAlph_latTC_a0, newhexAlph_latTC_b1, newhexAlph_latTC_ymin, newhexAlph_latTC_ymax,
-             P_log, T_mod, T_room, newhexAlph_Tdep_n_exp);
-             double newhexAlph_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             newhexAlph_radTC_c0, newhexAlph_radTC_d1, newhexAlph_radTC_jmin, newhexAlph_radTC_jmax, T_log);   
-             double newhexAlph_TotTCon = compute_total_thermal_conductivity_mar2025(
-             newhexAlph_latTCon, newhexAlph_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[newhexAlph_index] = newhexAlph_latTCon;
-             mar25_minerals_radTcond[newhexAlph_index] = newhexAlph_radTCon; 
-             mar25_minerals_totTcond[newhexAlph_index] = newhexAlph_TotTCon;
-             break;
-            }
-            case akimotoite_index: // akimotoite
-            { 
-             double akimotoite_latTCon = compute_lattice_thermal_conductivity_mar2025(
-             akimotoite_latTC_a0, akimotoite_latTC_b1, akimotoite_latTC_ymin, akimotoite_latTC_ymax,
-             P_log, T_mod, T_room, akimotoite_Tdep_n_exp);
-             double akimotoite_radTCon = compute_radiative_thermal_conductivity_mar2025(
-             akimotoite_radTC_c0, akimotoite_radTC_d1, akimotoite_radTC_jmin, akimotoite_radTC_jmax, T_log);   
-             double akimotoite_TotTCon = compute_total_thermal_conductivity_mar2025(
-             akimotoite_latTCon, akimotoite_radTCon);
-             // Store the thermal conductivities in the vector
-             mar25_minerals_latTcond[akimotoite_index] = akimotoite_latTCon;
-             mar25_minerals_radTcond[akimotoite_index] = akimotoite_radTCon;
-             mar25_minerals_totTcond[akimotoite_index] = akimotoite_TotTCon;
-             break;
-            }
+             case antigor001_index: // Antigorite (001)
+             { 
+               double antigor001_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               antigor001_latTC_a0, antigor001_latTC_b1, antigor001_latTC_ymin, antigor001_latTC_ymax,
+               P_log, T_mod, T_room, antigor001_Tdep_n_exp);
+               double antigor001_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               antigor001_radTC_c0, antigor001_radTC_d1, antigor001_radTC_jmin, antigor001_radTC_jmax, T_log);
+               double antigor001_TotTCon = compute_total_thermal_conductivity_mar2025(
+               antigor001_latTCon, antigor001_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = antigor001_latTCon;
+               mar25_minerals_radTcond[col] = antigor001_radTCon;
+               mar25_minerals_totTcond[col] = antigor001_TotTCon;
+               break;
+              }
+             case phaseDFeAl_index: // Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
+             { 
+               double phaseDFeAl_latTCon; // Declare the variable
+               if (P_GPa < 24) // Pressure < 24 [GPa]
+               {
+                 phaseDFeAl_latTCon = compute_lattice_thermal_conductivity_mar2025(
+                 phaseDFeAl_latTC_1_a0, phaseDFeAl_latTC_1_b1, phaseDFeAl_latTC_1_ymin, phaseDFeAl_latTC_1_ymax,
+                 P_log, T_mod, T_room, phaseDFeAl_Tdep_n_exp);
+               }
+               else if (P_GPa >= 24 && P_GPa <= 38) // Pressure between 24 and 38 [GPa]
+               {
+                 phaseDFeAl_latTCon = compute_lattice_thermal_conductivity_mar2025(
+                 phaseDFeAl_latTC_2_a0, phaseDFeAl_latTC_2_b1, phaseDFeAl_latTC_2_ymin, phaseDFeAl_latTC_2_ymax,
+                 P_log, T_mod, T_room, phaseDFeAl_Tdep_n_exp);
+               }
+               else if (P_GPa >= 38 && P_GPa <= 48) // Pressure between 38 and 48 [GPa]
+               {
+                 phaseDFeAl_latTCon = compute_lattice_thermal_conductivity_mar2025(
+                 phaseDFeAl_latTC_3_a0, phaseDFeAl_latTC_3_b1, phaseDFeAl_latTC_3_ymin, phaseDFeAl_latTC_3_ymax,
+                 P_log, T_mod, T_room, phaseDFeAl_Tdep_n_exp);
+               }
+               else if (P_GPa > 48) // Pressure > 48 [GPa]
+               {
+                 phaseDFeAl_latTCon = compute_lattice_thermal_conductivity_mar2025(
+                 phaseDFeAl_latTC_4_a0, phaseDFeAl_latTC_4_b1, phaseDFeAl_latTC_4_ymin, phaseDFeAl_latTC_4_ymax,
+                 P_log, T_mod, T_room, phaseDFeAl_Tdep_n_exp);
+               }
+               else
+               {
+                 AssertThrow(false, dealii::ExcMessage("Invalid pressure value for phaseDFeAl_latTC coefficients."));
+               } 
+               double phaseDFeAl_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               phaseDFeAl_radTC_c0, phaseDFeAl_radTC_d1, phaseDFeAl_radTC_jmin, phaseDFeAl_radTC_jmax, T_log);
+               double phaseDFeAl_TotTCon = compute_total_thermal_conductivity_mar2025(
+               phaseDFeAl_latTCon, phaseDFeAl_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = phaseDFeAl_latTCon;
+               mar25_minerals_radTcond[col] = phaseDFeAl_radTCon;
+               mar25_minerals_totTcond[col] = phaseDFeAl_TotTCon;
+               break;
+              }
+             case phaseD02Al_index: // Al-phase D (Dense Hydrous Magnesium Silicate)
+             { 
+               double phaseD02Al_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               phaseD02Al_latTC_a0, phaseD02Al_latTC_b1, phaseD02Al_latTC_ymin, phaseD02Al_latTC_ymax,
+               P_log, T_mod, T_room, phaseD02Al_Tdep_n_exp);
+               double phaseD02Al_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               phaseD02Al_radTC_c0, phaseD02Al_radTC_d1, phaseD02Al_radTC_jmin, phaseD02Al_radTC_jmax, T_log);
+               double phaseD02Al_TotTCon = compute_total_thermal_conductivity_mar2025(
+               phaseD02Al_latTCon, phaseD02Al_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = phaseD02Al_latTCon;
+               mar25_minerals_radTcond[col] = phaseD02Al_radTCon;
+               mar25_minerals_totTcond[col] = phaseD02Al_TotTCon;
+               break;
+              }
+             case ferroper08_index: // Ferropericlase (Mg92Fe8O)
+             { 
+               double ferroper08_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               ferroper08_latTC_a0, ferroper08_latTC_b1, ferroper08_latTC_ymin, ferroper08_latTC_ymax,
+               P_log, T_mod, T_room, ferroper08_Tdep_n_exp);
+               double ferroper08_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               ferroper08_radTC_c0, ferroper08_radTC_d1, ferroper08_radTC_jmin, ferroper08_radTC_jmax, T_log);
+               double ferroper08_TotTCon = compute_total_thermal_conductivity_mar2025(
+               ferroper08_latTCon, ferroper08_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = ferroper08_latTCon;
+               mar25_minerals_radTcond[col] = ferroper08_radTCon;
+               mar25_minerals_totTcond[col] = ferroper08_TotTCon;
+               break;
+              }
+             case ferroper10_index: // Ferropericlase (Mg90Fe10O)
+             { 
+               double ferroper10_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               ferroper10_latTC_a0, ferroper10_latTC_b1, ferroper10_latTC_ymin, ferroper10_latTC_ymax,
+               P_log, T_mod, T_room, ferroper10_Tdep_n_exp);
+               double ferroper10_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               ferroper10_radTC_c0, ferroper10_radTC_d1, ferroper10_radTC_jmin, ferroper10_radTC_jmax, T_log);        
+               double ferroper10_TotTCon = compute_total_thermal_conductivity_mar2025(
+               ferroper10_latTCon, ferroper10_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = ferroper10_latTCon;
+               mar25_minerals_radTcond[col] = ferroper10_radTCon;
+               mar25_minerals_totTcond[col] = ferroper10_TotTCon;
+               break;
+             }
+             case ferroper20_index: // Ferropericlase (Mg80Fe20O)
+             { 
+               double ferroper20_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               ferroper20_latTC_a0, ferroper20_latTC_b1, ferroper20_latTC_ymin, ferroper20_latTC_ymax,
+               P_log, T_mod, T_room, ferroper20_Tdep_n_exp);
+               double ferroper20_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               ferroper20_radTC_c0, ferroper20_radTC_d1, ferroper20_radTC_jmin, ferroper20_radTC_jmax, T_log);
+               double ferroper20_TotTCon = compute_total_thermal_conductivity_mar2025(
+               ferroper20_latTCon, ferroper20_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = ferroper20_latTCon;
+               mar25_minerals_radTcond[col] = ferroper20_radTCon;
+               mar25_minerals_totTcond[col] = ferroper20_TotTCon;
+               break;
+             }
+             case ferroper56_index: // Ferropericlase (Mg56Fe44O)
+             { 
+               double ferroper56_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               ferroper56_latTC_a0, ferroper56_latTC_b1, ferroper56_latTC_ymin, ferroper56_latTC_ymax,
+               P_log, T_mod, T_room, ferroper56_Tdep_n_exp);
+               double ferroper56_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               ferroper56_radTC_c0, ferroper56_radTC_d1, ferroper56_radTC_jmin, ferroper56_radTC_jmax, T_log);
+               double ferroper56_TotTCon = compute_total_thermal_conductivity_mar2025(
+               ferroper56_latTCon, ferroper56_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = ferroper56_latTCon;
+               mar25_minerals_radTcond[col] = ferroper56_radTCon;
+               mar25_minerals_totTcond[col] = ferroper56_TotTCon;
+               break;
+             }
+             case davemaoite_index: // davemaoite
+             { 
+               double davemaoite_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               davemaoite_latTC_a0, davemaoite_latTC_b1, davemaoite_latTC_ymin, davemaoite_latTC_ymax,
+               P_log, T_mod, T_room, davemaoite_Tdep_n_exp);
+               double davemaoite_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               davemaoite_radTC_c0, davemaoite_radTC_d1, davemaoite_radTC_jmin, davemaoite_radTC_jmax, T_log);
+               double davemaoite_TotTCon = compute_total_thermal_conductivity_mar2025(
+               davemaoite_latTCon, davemaoite_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = davemaoite_latTCon;
+               mar25_minerals_radTcond[col] = davemaoite_radTCon;
+               mar25_minerals_totTcond[col] = davemaoite_TotTCon;
+               break;
+             }
+             case newhexAlph_index: // New-hexagonal-alluminium-phase (FeNAL)
+             { 
+               double newhexAlph_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               newhexAlph_latTC_a0, newhexAlph_latTC_b1, newhexAlph_latTC_ymin, newhexAlph_latTC_ymax,
+               P_log, T_mod, T_room, newhexAlph_Tdep_n_exp);
+               double newhexAlph_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               newhexAlph_radTC_c0, newhexAlph_radTC_d1, newhexAlph_radTC_jmin, newhexAlph_radTC_jmax, T_log);   
+               double newhexAlph_TotTCon = compute_total_thermal_conductivity_mar2025(
+               newhexAlph_latTCon, newhexAlph_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = newhexAlph_latTCon;
+               mar25_minerals_radTcond[col] = newhexAlph_radTCon; 
+               mar25_minerals_totTcond[col] = newhexAlph_TotTCon;
+               break;
+             }
+             case akimotoite_index: // akimotoite
+             { 
+               double akimotoite_latTCon = compute_lattice_thermal_conductivity_mar2025(
+               akimotoite_latTC_a0, akimotoite_latTC_b1, akimotoite_latTC_ymin, akimotoite_latTC_ymax,
+               P_log, T_mod, T_room, akimotoite_Tdep_n_exp);
+               double akimotoite_radTCon = compute_radiative_thermal_conductivity_mar2025(
+               akimotoite_radTC_c0, akimotoite_radTC_d1, akimotoite_radTC_jmin, akimotoite_radTC_jmax, T_log);   
+               double akimotoite_TotTCon = compute_total_thermal_conductivity_mar2025(
+               akimotoite_latTCon, akimotoite_radTCon);
+               // Store the thermal conductivities in the vector
+               mar25_minerals_latTcond[col] = akimotoite_latTCon;
+               mar25_minerals_radTcond[col] = akimotoite_radTCon;
+               mar25_minerals_totTcond[col] = akimotoite_TotTCon;
+               break;
+             }
+           }
           }
 
           // Fill the matrix column by column
+          /*
           for (unsigned int row = 0; row < mineralpar_index; ++row)
           {
             mar25_all_minerals_Tconds[row][0] = mar25_minerals_latTcond[row]; // Column 0: Lattice conductivities
             mar25_all_minerals_Tconds[row][1] = mar25_minerals_radTcond[row]; // Column 1: Radiative conductivities
             mar25_all_minerals_Tconds[row][2] = mar25_minerals_totTcond[row]; // Column 2: Total conductivities
           }
+         */
+          
 
           // Compute P,T-dependent thermal conductivities of aggregate rocks 
 

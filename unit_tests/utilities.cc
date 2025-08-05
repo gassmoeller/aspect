@@ -636,10 +636,7 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
   // Assigning a matrix of volume fractions to in.composition (X) in [%]
   std::vector<std::vector<double>> compositions = 
   {
-      {1.00, 1.00, 1.00, 1.00, 1.00},
-      {0.75, 0.75, 0.75, 0.75, 0.75},
-      {0.50, 0.50, 0.50, 0.50, 0.50},
-      {0.25, 0.25, 0.25, 0.25, 0.25}
+      {1, 1, 1, 1, 1},
   };
     
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
