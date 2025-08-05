@@ -736,6 +736,15 @@ namespace aspect
         std::vector<double> minfract_duniteOl_LM = {1.00};
         std::vector<unsigned int> minindex_duniteOl_LM = {brigma90Mg_index};
 
+        // All Minerals (test)
+        std::vector<double> minfract_allminerals_test(mineralpar_index);
+        std::vector<unsigned int> minindex_allminerals_test(mineralpar_index);
+        for (unsigned int i = 0; i < mineralpar_index; ++i)
+        {
+          minindex_allminerals_test[i] = i;
+          minfract_allminerals_test[i] = 1.00;
+        }
+
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
         // Check if the sum of Rock Mineral Fraction is equal to 1
@@ -816,8 +825,141 @@ namespace aspect
           // Take the temperature field of the model [K]
           double T_mod = in.temperature[i];
 
-          // Take the mineral fraction of the model
-          double min_frac = in.composition[0][i];
+          // Take lithology of the model
+          double lithology = in.composition[0][i];
+
+          if (P_GPa < 13.59280101) // upper mantle
+          {
+            if (lithology == 0) // pyrolite
+            {
+              std::vector<double> mineral_fraction = minfract_pyrolite_UM; 
+              std::vector<unsigned int> mineral_index = minindex_pyrolite_UM;
+            }
+            if (lithology == 1) // harzburgite
+            {
+              std::vector<double> mineral_fraction = minfract_harzburg_UM; 
+              std::vector<unsigned int> mineral_index = minindex_harzburg_UM;
+            }
+            if (lithology == 2) // meta-MORB
+            {
+              std::vector<double> mineral_fraction = minfract_metaMORB_UM; 
+              std::vector<unsigned int> mineral_index = minindex_metaMORB_UM;
+            }
+            if (lithology == 3) // dunite
+            {
+              std::vector<double> mineral_fraction = minfract_duniteOl_UM; 
+              std::vector<unsigned int> mineral_index = minindex_duniteOl_UM;
+            }
+            if (lithology == 99) // test (all minerals)
+            {
+              std::vector<double> mineral_fraction = minfract_allminerals_test; 
+              std::vector<unsigned int> mineral_index = minindex_allminerals_test;
+            }
+            else
+            {
+              AssertThrow(false, dealii::ExcMessage("Invalid lithology for the upper mantle."));
+            }
+          }
+          else if (P_GPa >= 13.59280101 && P_GPa <= 17.69264984) // upper transition zone
+          {
+            if (lithology == 0) // pyrolite
+            {
+              std::vector<double> mineral_fraction = minfract_pyrolite_UMTZ; 
+              std::vector<unsigned int> mineral_index = minindex_pyrolite_UMTZ;
+            }
+            if (lithology == 1) // harzburgite
+            {
+              std::vector<double> mineral_fraction = minfract_harzburg_UMTZ; 
+              std::vector<unsigned int> mineral_index = minindex_harzburg_UMTZ;
+            }
+            if (lithology == 2) // meta-MORB
+            {
+              std::vector<double> mineral_fraction = minfract_metaMORB_UMTZ; 
+              std::vector<unsigned int> mineral_index = minindex_metaMORB_UMTZ;
+            }
+            if (lithology == 3) // dunite
+            {
+              std::vector<double> mineral_fraction = minfract_duniteOl_UMTZ; 
+              std::vector<unsigned int> mineral_index = minindex_duniteOl_UMTZ;
+            }
+            if (lithology == 99) // test (all minerals)
+            {
+              std::vector<double> mineral_fraction = minfract_allminerals_test; 
+              std::vector<unsigned int> mineral_index = minindex_allminerals_test;
+            }
+            else
+            {
+              AssertThrow(false, dealii::ExcMessage("Invalid lithology for the upper mantle transition zone."));
+            }
+          }
+          else if (P_GPa > 17.6926498400000 && P_GPa <= 23.1122152) // lower transition zone
+          {
+            if (lithology == 0) // pyrolite
+            {
+              std::vector<double> mineral_fraction = minfract_pyrolite_LMTZ; 
+              std::vector<unsigned int> mineral_index = minindex_pyrolite_LMTZ;
+            }
+            if (lithology == 1) // harzburgite
+            {
+              std::vector<double> mineral_fraction = minfract_harzburg_LMTZ; 
+              std::vector<unsigned int> mineral_index = minindex_harzburg_LMTZ;
+            }
+            if (lithology == 2) // meta-MORB
+            {
+              std::vector<double> mineral_fraction = minfract_metaMORB_LMTZ; 
+              std::vector<unsigned int> mineral_index = minindex_metaMORB_LMTZ;
+            }
+            if (lithology == 3) // dunite
+            {
+              std::vector<double> mineral_fraction = minfract_duniteOl_LMTZ; 
+              std::vector<unsigned int> mineral_index = minindex_duniteOl_LMTZ;
+            }
+            if (lithology == 99) // test (all minerals)
+            {
+              std::vector<double> mineral_fraction = minfract_allminerals_test; 
+              std::vector<unsigned int> mineral_index = minindex_allminerals_test;
+            }
+            else
+            {
+              AssertThrow(false, dealii::ExcMessage("Invalid lithology for the lower mantle transition zone."));
+            }
+          }
+          else if (P_GPa > 23.1122152) // lower mantle
+          {
+            if (lithology == 0) // pyrolite
+            {
+              std::vector<double> mineral_fraction = minfract_pyrolite_LM; 
+              std::vector<unsigned int> mineral_index = minindex_pyrolite_LM;
+            }
+            if (lithology == 1) // harzburgite
+            {
+              std::vector<double> mineral_fraction = minfract_harzburg_LM; 
+              std::vector<unsigned int> mineral_index = minindex_harzburg_LM;
+            }
+            if (lithology == 2) // meta-MORB
+            {
+              std::vector<double> mineral_fraction = minfract_metaMORB_LM; 
+              std::vector<unsigned int> mineral_index = minindex_metaMORB_LM;
+            }
+            if (lithology == 3) // dunite
+            {
+              std::vector<double> mineral_fraction = minfract_duniteOl_LM; 
+              std::vector<unsigned int> mineral_index = minindex_duniteOl_LM;
+            }
+            if (lithology == 99) // test (all minerals)
+            {
+              std::vector<double> mineral_fraction = minfract_allminerals_test; 
+              std::vector<unsigned int> mineral_index = minindex_allminerals_test;
+            }
+            else
+            {
+              AssertThrow(false, dealii::ExcMessage("Invalid lithology for the lower mantle."));
+            }
+          }
+          else
+          {
+           AssertThrow(false, dealii::ExcMessage("Invalid pressure range for the mantle."));
+          }
 
           unsigned int mID = in.Mineral_ID;
 
@@ -1351,6 +1493,8 @@ namespace aspect
           // double aggrock_duniteOl_TCond = std::pow(ringwoodry_TotTCon,minfract_duniteOl_LMTZ[0]);
           // Dunite Lower Mantle (100% bridgmanite)
           // double aggrock_duniteOl_TCond = std::pow(brigmaFeAl_TotTCon,minfract_duniteOl_LM[0]);
+           
+          double min_frac = 1.00; // Mineral fraction for the geometric mean calculation
 
           // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
           double aggrock_testcase_mar25_Tcond = std::pow(mar25_all_minerals_Tconds[mID][2], min_frac);
