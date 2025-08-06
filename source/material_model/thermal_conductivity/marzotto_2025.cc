@@ -811,7 +811,9 @@ namespace aspect
           // Convert pressure unit from [Pa] to [GPa]
           double P_GPa = in.pressure[i]/1e9;
 
-          // Compute natural logarithm of pressure and temperature 
+          // Compute natural logarithm of pressure and temperature
+          AssertThrow(P_GPa > 0, dealii::ExcMessage("Pressure must be > 0 for log.")); 
+          AssertThrow(in.temperature[i] > 0, dealii::ExcMessage("Temperature must be > 0 for log."));
           double P_log = std::log(P_GPa);
           double T_log = std::log(in.temperature[i]);
 
@@ -831,22 +833,22 @@ namespace aspect
               mineral_fraction = minfract_pyrolite_UM; 
               mineral_index = minindex_pyrolite_UM;
             }
-            if (lithology == 1) // harzburgite
+            else if (lithology == 1) // harzburgite
             {
               mineral_fraction = minfract_harzburg_UM; 
               mineral_index = minindex_harzburg_UM;
             }
-            if (lithology == 2) // meta-MORB
+            else if (lithology == 2) // meta-MORB
             {
               mineral_fraction = minfract_metaMORB_UM; 
               mineral_index = minindex_metaMORB_UM;
             }
-            if (lithology == 3) // dunite
+            else if (lithology == 3) // dunite
             {
               mineral_fraction = minfract_duniteOl_UM; 
               mineral_index = minindex_duniteOl_UM;
             }
-            if (lithology == 99) // test (all minerals)
+            else if (lithology == 99) // test (all minerals)
             {
               mineral_fraction = minfract_allminerals_test; 
               mineral_index = minindex_allminerals_test;
@@ -863,22 +865,22 @@ namespace aspect
               mineral_fraction = minfract_pyrolite_UMTZ; 
               mineral_index = minindex_pyrolite_UMTZ;
             }
-            if (lithology == 1) // harzburgite
+            else if (lithology == 1) // harzburgite
             {
               mineral_fraction = minfract_harzburg_UMTZ; 
               mineral_index = minindex_harzburg_UMTZ;
             }
-            if (lithology == 2) // meta-MORB
+            else if (lithology == 2) // meta-MORB
             {
               mineral_fraction = minfract_metaMORB_UMTZ; 
               mineral_index = minindex_metaMORB_UMTZ;
             }
-            if (lithology == 3) // dunite
+            else if (lithology == 3) // dunite
             {
               mineral_fraction = minfract_duniteOl_UMTZ; 
               mineral_index = minindex_duniteOl_UMTZ;
             }
-            if (lithology == 99) // test (all minerals)
+            else if (lithology == 99) // test (all minerals)
             {
               mineral_fraction = minfract_allminerals_test; 
               mineral_index = minindex_allminerals_test;
@@ -895,22 +897,22 @@ namespace aspect
               mineral_fraction = minfract_pyrolite_LMTZ; 
               mineral_index = minindex_pyrolite_LMTZ;
             }
-            if (lithology == 1) // harzburgite
+            else if (lithology == 1) // harzburgite
             {
               mineral_fraction = minfract_harzburg_LMTZ; 
               mineral_index = minindex_harzburg_LMTZ;
             }
-            if (lithology == 2) // meta-MORB
+            else if (lithology == 2) // meta-MORB
             {
               mineral_fraction = minfract_metaMORB_LMTZ; 
               mineral_index = minindex_metaMORB_LMTZ;
             }
-            if (lithology == 3) // dunite
+            else if (lithology == 3) // dunite
             {
               mineral_fraction = minfract_duniteOl_LMTZ; 
               mineral_index = minindex_duniteOl_LMTZ;
             }
-            if (lithology == 99) // test (all minerals)
+            else if (lithology == 99) // test (all minerals)
             {
               mineral_fraction = minfract_allminerals_test; 
               mineral_index = minindex_allminerals_test;
@@ -927,22 +929,22 @@ namespace aspect
               mineral_fraction = minfract_pyrolite_LM; 
               mineral_index = minindex_pyrolite_LM;
             }
-            if (lithology == 1) // harzburgite
+            else if (lithology == 1) // harzburgite
             {
               mineral_fraction = minfract_harzburg_LM; 
               mineral_index = minindex_harzburg_LM;
             }
-            if (lithology == 2) // meta-MORB
+            else if (lithology == 2) // meta-MORB
             {
               mineral_fraction = minfract_metaMORB_LM; 
               mineral_index = minindex_metaMORB_LM;
             }
-            if (lithology == 3) // dunite
+            else if (lithology == 3) // dunite
             {
               mineral_fraction = minfract_duniteOl_LM; 
               mineral_index = minindex_duniteOl_LM;
             }
-            if (lithology == 99) // test (all minerals)
+            else if (lithology == 99) // test (all minerals)
             {
               mineral_fraction = minfract_allminerals_test; 
               mineral_index = minindex_allminerals_test;
@@ -1459,8 +1461,8 @@ namespace aspect
 
            // Thermal conductivity of the aggregate rock is computed as the
            // geometric mean of the total thermal conductivities of the minerals weighted by their fraction
-           mar25_aggregate_rock_totTcond = mar25_aggregate_rock_totTcond * std::pow(mar25_minerals_totTcond[col], mineral_fraction[col]);
-
+           // mar25_aggregate_rock_totTcond = mar25_aggregate_rock_totTcond * std::pow(mar25_minerals_totTcond[col], mineral_fraction[col]);
+          
           }
 
           // Test Case

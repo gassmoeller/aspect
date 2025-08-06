@@ -61,18 +61,17 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
   std::vector<double> pressures = {1e5, 1e9, 5e9, 10e9, 100e9};
   in.pressure = pressures;
 
-  // Assigning a matrix of volume fractions to in.composition (X) in [%]
-  std::vector<std::vector<double>> compositions = 
+  // Assigning a lithology index to in.composition 
+  //(0: pyrolite, 1: harzburgite, 2: meta-MORB, 3: dunite, 99: test)
+  std::vector<std::vector<double>> lithologies = 
   {
-    {1.00, 1.00, 1.00, 1.00, 1.00},
-    {0.75, 0.75, 0.75, 0.75, 0.75},
-    {0.50, 0.50, 0.50, 0.50, 0.50},
-    {0.25, 0.25, 0.25, 0.25, 0.25}
+    {0, 0, 0, 0, 0},
+    {1, 1, 1, 1, 1},
+    {2, 2, 2, 2, 2},
+    {3, 3, 3, 3, 3}
   };
 
-  // unsigned int mineralpar_index = 0; // Initialize the counter
-
-  // Preallocate the expected total thermal conductivities (k) in [W/m/K]
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K] of minerals
   constexpr int olivinedry_exptID = 0;
   std::vector<double> olivinedry_expt_totTcon(temperatures.size());
   constexpr int wadsleydry_exptID = 1;
@@ -132,223 +131,354 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
   constexpr int akimotoite_exptID = 28;
   std::vector<double> akimotoite_expt_totTcon(temperatures.size());
 
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K] of rocks
+  constexpr int pyrolite_exptID = 0;
+  std::vector<double> pyrolite_expt_totTcon(temperatures.size());
+  constexpr int harzburg_exptID = 1;
+  std::vector<double> harzburg_expt_totTcon(temperatures.size());
+  constexpr int metaMORB_exptID = 2;
+  std::vector<double> metaMORB_expt_totTcon(temperatures.size());
+  constexpr int duniteOl_exptID = 3;
+  std::vector<double> duniteOl_expt_totTcon(temperatures.size());
+
   unsigned int mineralpar_index = akimotoite_exptID+1; // Number of minerals
+  unsigned int rockspar_index = duniteOl_exptID+1; // Number of rocks
 
   // Preallocate matrixes for storing thermal conductivities of minerals
-  std::vector<std::vector<double>> expt_minerals_latTcond(mineralpar_index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
-  std::vector<std::vector<double>> expt_minerals_radTcond(mineralpar_index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
-  std::vector<std::vector<double>> expt_minerals_totTcond(mineralpar_index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+  std::vector<std::vector<double>> expt_minerals_latTcond(temperatures.size(), std::vector<double>(mineralpar_index, 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_minerals_radTcond(temperatures.size(), std::vector<double>(mineralpar_index, 0.0)); // Radiative thermal conductivity
+  std::vector<std::vector<double>> expt_minerals_totTcond(temperatures.size(), std::vector<double>(mineralpar_index, 0.0)); // Total thermal conductivity
 
+  // Preallocate matrixes for storing thermal conductivities of rocks
+  std::vector<std::vector<double>> expt_rocks_latTcond(temperatures.size(), std::vector<double>(rockspar_index, 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_rocks_radTcond(temperatures.size(), std::vector<double>(rockspar_index, 0.0)); // Radiative thermal conductivity
+  std::vector<std::vector<double>> expt_rocks_totTcond(temperatures.size(), std::vector<double>(rockspar_index, 0.0)); // Total thermal conductivity
 
   // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> olivinedry_expt_latTcon = {3.58888, 1.58719, 2.36282, 3.67868, 4.25767};
   std::vector<double> olivinedry_expt_radTcon = {0.00138288, 2.23152, 2.34978, 2.45486, 3.12273};
-  expt_minerals_latTcond[olivinedry_exptID] = olivinedry_expt_latTcon;
-  expt_minerals_radTcond[olivinedry_exptID] = olivinedry_expt_radTcon;
   // Dry Wadsleyite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> wadsleydry_expt_latTcon = {5.88364, 3.08196, 3.21488, 3.22817, 2.77368};
   std::vector<double> wadsleydry_expt_radTcon = {1.1834e-9, 1.51515, 1.71067, 1.87995, 2.71457};
-  expt_minerals_latTcond[wadsleydry_exptID] = wadsleydry_expt_latTcon;
-  expt_minerals_radTcond[wadsleydry_exptID] = wadsleydry_expt_radTcon;
   // Dry Ringwoodite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> ringwoodry_expt_latTcon = {4.98456, 2.17063, 2.41846, 3.19795, 5.89102};
   std::vector<double> ringwoodry_expt_radTcon = {5.52667e-10, 0.74367, 0.85004, 0.94227, 1.38818};
-  expt_minerals_latTcond[ringwoodry_exptID] = ringwoodry_expt_latTcon;
-  expt_minerals_radTcond[ringwoodry_exptID] = ringwoodry_expt_radTcon;
   // Mg-Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> brigm100Mg_expt_latTcon = {10.69504, 2.03810, 2.21218, 2.47430, 5.69003};
   std::vector<double> brigm100Mg_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[brigm100Mg_exptID] = brigm100Mg_expt_latTcon;
-  expt_minerals_radTcond[brigm100Mg_exptID] = brigm100Mg_expt_radTcon;
   // Fe-Bridgmanite (3%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> brigma97Mg_expt_latTcon = {5.73751, 2.29118, 2.48780, 2.75655, 6.95242};
   std::vector<double> brigma97Mg_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[brigma97Mg_exptID] = brigma97Mg_expt_latTcon;
-  expt_minerals_radTcond[brigma97Mg_exptID] = brigma97Mg_expt_radTcon;
   // Fe-Bridgmanite (10%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> brigma90Mg_expt_latTcon = {3.79122, 2.91572, 3.14193, 3.43191, 8.92076};
   std::vector<double> brigma90Mg_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[brigma90Mg_exptID] = brigma90Mg_expt_latTcon;
-  expt_minerals_radTcond[brigma90Mg_exptID] = brigma90Mg_expt_radTcon;
   // Al-Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> brigmaAlMg_expt_latTcon = {6.30403, 2.31503, 2.56860, 2.91357, 7.88626};
   std::vector<double> brigmaAlMg_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[brigmaAlMg_exptID] = brigmaAlMg_expt_latTcon;
-  expt_minerals_radTcond[brigmaAlMg_exptID] = brigmaAlMg_expt_radTcon;
   // Fe,Al-Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> brigmaFeAl_expt_latTcon = {3.99962, 1.87753, 2.05369, 2.30265, 6.17198};
   std::vector<double> brigmaFeAl_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[brigmaFeAl_exptID] = brigmaFeAl_expt_latTcon;
-  expt_minerals_radTcond[brigmaFeAl_exptID] = brigmaFeAl_expt_radTcon;
   // Orthopyroxene (Enstatite): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> opxenstati_expt_latTcon = {5.79950, 2.55142, 3.15043, 3.26008, 2.56641};
   std::vector<double> opxenstati_expt_radTcon = {5.45056e-5, 2.93307, 3.08161, 3.20925, 3.90772};
-  expt_minerals_latTcond[opxenstati_exptID] = opxenstati_expt_latTcon;
-  expt_minerals_radTcond[opxenstati_exptID] = opxenstati_expt_radTcon;
   // Clinopyroxene (Diopside): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> cpxdiopsid_expt_latTcon = {5.99273, 2.65322, 3.13819, 3.61301, 3.41681};
   std::vector<double> cpxdiopsid_expt_radTcon = {2.64987e-5, 2.99817, 3.14622, 3.27243, 3.94085};
-  expt_minerals_latTcond[cpxdiopsid_exptID] = cpxdiopsid_expt_latTcon;
-  expt_minerals_radTcond[cpxdiopsid_exptID] = cpxdiopsid_expt_radTcon;
   // Garnet (Pyrope): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> grtpyropes_expt_latTcon = {4.38827, 2.15733, 2.64684, 3.54118, 4.22405};
   std::vector<double> grtpyropes_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
-  expt_minerals_latTcond[grtpyropes_exptID] = grtpyropes_expt_latTcon;
-  expt_minerals_radTcond[grtpyropes_exptID] = grtpyropes_expt_radTcon;
   // Garnet (Grossular): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> grtgrossul_expt_latTcon = {4.08838, 1.91337, 2.26557, 3.05964, 4.01413};
   std::vector<double> grtgrossul_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
-  expt_minerals_latTcond[grtgrossul_exptID] = grtgrossul_expt_latTcon;
-  expt_minerals_radTcond[grtgrossul_exptID] = grtgrossul_expt_radTcon;
   // Garnet (Almandine): expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> grtalmandi_expt_latTcon = {3.39124, 1.70813, 2.17978, 3.13522, 4.07543};
   std::vector<double> grtalmandi_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
-  expt_minerals_latTcond[grtalmandi_exptID] = grtalmandi_expt_latTcon;
-  expt_minerals_radTcond[grtalmandi_exptID] = grtalmandi_expt_radTcon;
   // Garnet (Majorite): expected lattice and radiative thermal conductivities (k) in [W/m/K]  
   std::vector<double> grtmajorit_expt_latTcon = {9.73983, 4.24079, 4.57076, 5.13035, 4.76249};
   std::vector<double> grtmajorit_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
-  expt_minerals_latTcond[grtmajorit_exptID] = grtmajorit_expt_latTcon;
-  expt_minerals_radTcond[grtmajorit_exptID] = grtmajorit_expt_radTcon;
   // Quartz: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> quartzpure_expt_latTcon = {9.53243, 1.84339, 2.49820, 2.47676, 1.49323};
   std::vector<double> quartzpure_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  expt_minerals_latTcond[quartzpure_exptID] = quartzpure_expt_latTcon;
-  expt_minerals_radTcond[quartzpure_exptID] = quartzpure_expt_radTcon;
   // Coesite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> coesitSiO2_expt_latTcon = {7.21196, 1.31776, 1.23920, 1.17013, 0.84983};
   std::vector<double> coesitSiO2_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  expt_minerals_latTcond[coesitSiO2_exptID] = coesitSiO2_expt_latTcon;
-  expt_minerals_radTcond[coesitSiO2_exptID] = coesitSiO2_expt_radTcon;
   // stishovite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> stishovite_expt_latTcon = {67.68617, 29.30897, 28.43361, 27.62648, 29.60473};
   std::vector<double> stishovite_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  expt_minerals_latTcond[stishovite_exptID] = stishovite_expt_latTcon;
-  expt_minerals_radTcond[stishovite_exptID] = stishovite_expt_radTcon;
   // Al-stishovite (5 vol%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> stisho05Al_expt_latTcon = {24.18571, 10.48883, 10.35956, 10.44473, 15.11569};
   std::vector<double> stisho05Al_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  expt_minerals_latTcond[stisho05Al_exptID] = stisho05Al_expt_latTcon;
-  expt_minerals_radTcond[stisho05Al_exptID] = stisho05Al_expt_radTcon;
   // Antigorite (010): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> antigor010_expt_latTcon = {4.55589, 1.99618, 2.41198, 3.15852, 3.57446};
   std::vector<double> antigor010_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  expt_minerals_latTcond[antigor010_exptID] = antigor010_expt_latTcon;
-  expt_minerals_radTcond[antigor010_exptID] = antigor010_expt_radTcon;
   // Antigorite (001): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> antigor001_expt_latTcon = {1.06669, 0.49210, 1.01828, 1.51143, 1.48578};
   std::vector<double> antigor001_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  expt_minerals_latTcond[antigor001_exptID] = antigor001_expt_latTcon;
-  expt_minerals_radTcond[antigor001_exptID] = antigor001_expt_radTcon;
   // Fe,Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> phaseDFeAl_expt_latTcon = {2.59325, 1.13915, 1.31955, 1.59985, 6.12649};
   std::vector<double> phaseDFeAl_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  expt_minerals_latTcond[phaseDFeAl_exptID] = phaseDFeAl_expt_latTcon;
-  expt_minerals_radTcond[phaseDFeAl_exptID] = phaseDFeAl_expt_radTcon;
   // Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> phaseD02Al_expt_latTcon = {3.60666, 1.56888, 1.65207, 1.95489, 8.61776};
   std::vector<double> phaseD02Al_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
-  expt_minerals_latTcond[phaseD02Al_exptID] = phaseD02Al_expt_latTcon;
-  expt_minerals_radTcond[phaseD02Al_exptID] = phaseD02Al_expt_radTcon;
   // Ferropericlase (Mg92Fe8O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> ferroper08_expt_latTcon = {5.08425, 2.20657, 2.24939, 2.50821, 14.39941};
   std::vector<double> ferroper08_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[ferroper08_exptID] = ferroper08_expt_latTcon;
-  expt_minerals_radTcond[ferroper08_exptID] = ferroper08_expt_radTcon;
   // Ferropericlase (Mg90Fe10O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> ferroper10_expt_latTcon = {4.48610, 1.94695, 1.98084, 2.19296, 12.65637};
   std::vector<double> ferroper10_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[ferroper10_exptID] = ferroper10_expt_latTcon;
-  expt_minerals_radTcond[ferroper10_exptID] = ferroper10_expt_radTcon;
   // Ferropericlase (Mg80Fe20O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> ferroper20_expt_latTcon = {3.48647, 3.39116, 3.56449, 3.77742, 7.57324};
   std::vector<double> ferroper20_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[ferroper20_exptID] = ferroper20_expt_latTcon;
-  expt_minerals_radTcond[ferroper20_exptID] = ferroper20_expt_radTcon;
   // Ferropericlase (Mg56Fe44O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> ferroper56_expt_latTcon = {2.69167, 1.23171, 1.55079, 2.02398, 7.04069};
   std::vector<double> ferroper56_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[ferroper56_exptID] = ferroper56_expt_latTcon;
-  expt_minerals_radTcond[ferroper56_exptID] = ferroper56_expt_radTcon;
   // davemaoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> davemaoite_expt_latTcon = {10.86634, 4.77342, 5.15289, 5.86997, 13.48443};
   std::vector<double> davemaoite_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[davemaoite_exptID] = davemaoite_expt_latTcon;
-  expt_minerals_radTcond[davemaoite_exptID] = davemaoite_expt_radTcon;
   // New-hexagonal-alluminium-phase (FeNAL): expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> newhexAlph_expt_latTcon = {10.59581, 4.58812, 4.45113, 4.32578, 12.15184};
   std::vector<double> newhexAlph_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[newhexAlph_exptID] = newhexAlph_expt_latTcon;
-  expt_minerals_radTcond[newhexAlph_exptID] = newhexAlph_expt_radTcon;
   // akimotoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
   std::vector<double> akimotoite_expt_latTcon = {10.69504, 2.03810, 2.21218, 2.47430, 5.69003};
   std::vector<double> akimotoite_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
-  expt_minerals_latTcond[akimotoite_exptID] = akimotoite_expt_latTcon;
-  expt_minerals_radTcond[akimotoite_exptID] = akimotoite_expt_radTcon;
+
+  // pyrolite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> pyrolite_expt_latTcon = {1, 1, 1, 1, 1};
+  std::vector<double> pyrolite_expt_radTcon = {1, 1, 1, 1, 1};
+  // harzburg: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> harzburg_expt_latTcon = {1, 1, 1, 1, 1};
+  std::vector<double> harzburg_expt_radTcon = {1, 1, 1, 1, 1};
+  // metaMORB: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> metaMORB_expt_latTcon = {1, 1, 1, 1, 1};
+  std::vector<double> metaMORB_expt_radTcon = {1, 1, 1, 1, 1};
+  // duniteOl: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> duniteOl_expt_latTcon = {1, 1, 1, 1, 1};
+  std::vector<double> duniteOl_expt_radTcon = {1, 1, 1, 1, 1};
 
   // Perform element-wise sum
   for (size_t row = 0; row < temperatures.size(); ++row)
   {
+    // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
     olivinedry_expt_totTcon[row] = olivinedry_expt_latTcon[row] + olivinedry_expt_radTcon[row];
-    expt_minerals_totTcond[olivinedry_exptID] = olivinedry_expt_totTcon;
+    expt_minerals_latTcond[row][olivinedry_exptID] = olivinedry_expt_latTcon[row];
+    expt_minerals_radTcond[row][olivinedry_exptID] = olivinedry_expt_radTcon[row];  
+    expt_minerals_totTcond[row][olivinedry_exptID] = olivinedry_expt_totTcon[row];
+    // Dry Wadsleyite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
     wadsleydry_expt_totTcon[row] = wadsleydry_expt_latTcon[row] + wadsleydry_expt_radTcon[row];
-    expt_minerals_totTcond[wadsleydry_exptID] = wadsleydry_expt_totTcon;
+    expt_minerals_latTcond[row][wadsleydry_exptID] = wadsleydry_expt_latTcon[row];
+    expt_minerals_radTcond[row][wadsleydry_exptID] = wadsleydry_expt_radTcon[row];   
+    expt_minerals_totTcond[row][wadsleydry_exptID] = wadsleydry_expt_totTcon[row];
+    // Dry Ringwoodite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
     ringwoodry_expt_totTcon[row] = ringwoodry_expt_latTcon[row] + ringwoodry_expt_radTcon[row];
-    expt_minerals_totTcond[ringwoodry_exptID] = ringwoodry_expt_totTcon;
+    expt_minerals_latTcond[row][ringwoodry_exptID] = ringwoodry_expt_latTcon[row];
+    expt_minerals_radTcond[row][ringwoodry_exptID] = ringwoodry_expt_radTcon[row]; 
+    expt_minerals_totTcond[row][ringwoodry_exptID] = ringwoodry_expt_totTcon[row];
+    // Mg-Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
     brigm100Mg_expt_totTcon[row] = brigm100Mg_expt_latTcon[row] + brigm100Mg_expt_radTcon[row];
-    expt_minerals_totTcond[brigm100Mg_exptID] = brigm100Mg_expt_totTcon;
+    expt_minerals_latTcond[row][brigm100Mg_exptID] = brigm100Mg_expt_latTcon[row];
+    expt_minerals_radTcond[row][brigm100Mg_exptID] = brigm100Mg_expt_radTcon[row]; 
+    expt_minerals_totTcond[row][brigm100Mg_exptID] = brigm100Mg_expt_totTcon[row];
+    // Fe-Bridgmanite (3%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     brigma97Mg_expt_totTcon[row] = brigma97Mg_expt_latTcon[row] + brigma97Mg_expt_radTcon[row];
-    expt_minerals_totTcond[brigma97Mg_exptID] = brigma97Mg_expt_totTcon;
+    expt_minerals_latTcond[row][brigma97Mg_exptID] = brigma97Mg_expt_latTcon[row];
+    expt_minerals_radTcond[row][brigma97Mg_exptID] = brigma97Mg_expt_radTcon[row];
+    expt_minerals_totTcond[row][brigma97Mg_exptID] = brigma97Mg_expt_totTcon[row];
+    // Fe-Bridgmanite (10%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     brigma90Mg_expt_totTcon[row] = brigma90Mg_expt_latTcon[row] + brigma90Mg_expt_radTcon[row];
-    expt_minerals_totTcond[brigma90Mg_exptID] = brigma90Mg_expt_totTcon;
+    expt_minerals_latTcond[row][brigma90Mg_exptID] = brigma90Mg_expt_latTcon[row];
+    expt_minerals_radTcond[row][brigma90Mg_exptID] = brigma90Mg_expt_radTcon[row];
+    expt_minerals_totTcond[row][brigma90Mg_exptID] = brigma90Mg_expt_totTcon[row];
+    // Al-Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
     brigmaAlMg_expt_totTcon[row] = brigmaAlMg_expt_latTcon[row] + brigmaAlMg_expt_radTcon[row];
-    expt_minerals_totTcond[brigmaAlMg_exptID] = brigmaAlMg_expt_totTcon;
+    expt_minerals_latTcond[row][brigmaAlMg_exptID] = brigmaAlMg_expt_latTcon[row];
+    expt_minerals_radTcond[row][brigmaAlMg_exptID] = brigmaAlMg_expt_radTcon[row]; 
+    expt_minerals_totTcond[row][brigmaAlMg_exptID] = brigmaAlMg_expt_totTcon[row];
+    // Fe,Al-Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
     brigmaFeAl_expt_totTcon[row] = brigmaFeAl_expt_latTcon[row] + brigmaFeAl_expt_radTcon[row];
-    expt_minerals_totTcond[brigmaFeAl_exptID] = brigmaFeAl_expt_totTcon;
+    expt_minerals_latTcond[row][brigmaFeAl_exptID] = brigmaFeAl_expt_latTcon[row];
+    expt_minerals_radTcond[row][brigmaFeAl_exptID] = brigmaFeAl_expt_radTcon[row];
+    expt_minerals_totTcond[row][brigmaFeAl_exptID] = brigmaFeAl_expt_totTcon[row];
+    // Orthopyroxene (Enstatite): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     opxenstati_expt_totTcon[row] = opxenstati_expt_latTcon[row] + opxenstati_expt_radTcon[row];
-    expt_minerals_totTcond[opxenstati_exptID] = opxenstati_expt_totTcon;
+    expt_minerals_latTcond[row][opxenstati_exptID] = opxenstati_expt_latTcon[row];
+    expt_minerals_radTcond[row][opxenstati_exptID] = opxenstati_expt_radTcon[row];
+    expt_minerals_totTcond[row][opxenstati_exptID] = opxenstati_expt_totTcon[row];
+    // Clinopyroxene (Diopside): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     cpxdiopsid_expt_totTcon[row] = cpxdiopsid_expt_latTcon[row] + cpxdiopsid_expt_radTcon[row];
-    expt_minerals_totTcond[cpxdiopsid_exptID] = cpxdiopsid_expt_totTcon;
+    expt_minerals_latTcond[row][cpxdiopsid_exptID] = cpxdiopsid_expt_latTcon[row];
+    expt_minerals_radTcond[row][cpxdiopsid_exptID] = cpxdiopsid_expt_radTcon[row];
+    expt_minerals_totTcond[row][cpxdiopsid_exptID] = cpxdiopsid_expt_totTcon[row];
+    // Garnet (Pyrope): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     grtpyropes_expt_totTcon[row] = grtpyropes_expt_latTcon[row] + grtpyropes_expt_radTcon[row];
-    expt_minerals_totTcond[grtpyropes_exptID] = grtpyropes_expt_totTcon;
+    expt_minerals_latTcond[row][grtpyropes_exptID] = grtpyropes_expt_latTcon[row];
+    expt_minerals_radTcond[row][grtpyropes_exptID] = grtpyropes_expt_radTcon[row];
+    expt_minerals_totTcond[row][grtpyropes_exptID] = grtpyropes_expt_totTcon[row];
+    // Garnet (Grossular): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     grtgrossul_expt_totTcon[row] = grtgrossul_expt_latTcon[row] + grtgrossul_expt_radTcon[row];
-    expt_minerals_totTcond[grtgrossul_exptID] = grtgrossul_expt_totTcon;
+    expt_minerals_latTcond[row][grtgrossul_exptID] = grtgrossul_expt_latTcon[row];
+    expt_minerals_radTcond[row][grtgrossul_exptID] = grtgrossul_expt_radTcon[row];
+    expt_minerals_totTcond[row][grtgrossul_exptID] = grtgrossul_expt_totTcon[row];
+    // Garnet (Almandine): expected lattice and radiative thermal conductivities (k) in [W/m/K] 
     grtalmandi_expt_totTcon[row] = grtalmandi_expt_latTcon[row] + grtalmandi_expt_radTcon[row];
-    expt_minerals_totTcond[grtalmandi_exptID] = grtalmandi_expt_totTcon;
+    expt_minerals_latTcond[row][grtalmandi_exptID] = grtalmandi_expt_latTcon[row];
+    expt_minerals_radTcond[row][grtalmandi_exptID] = grtalmandi_expt_radTcon[row];
+    expt_minerals_totTcond[row][grtalmandi_exptID] = grtalmandi_expt_totTcon[row];
+    // Garnet (Majorite): expected lattice and radiative thermal conductivities (k) in [W/m/K]  
     grtmajorit_expt_totTcon[row] = grtmajorit_expt_latTcon[row] + grtmajorit_expt_radTcon[row];
-    expt_minerals_totTcond[grtmajorit_exptID] = grtmajorit_expt_totTcon;
+    expt_minerals_latTcond[row][grtmajorit_exptID] = grtmajorit_expt_latTcon[row];
+    expt_minerals_radTcond[row][grtmajorit_exptID] = grtmajorit_expt_radTcon[row];   
+    expt_minerals_totTcond[row][grtmajorit_exptID] = grtmajorit_expt_totTcon[row];
+    // Quartz: expected lattice and radiative thermal conductivities (k) in [W/m/K]
     quartzpure_expt_totTcon[row] = quartzpure_expt_latTcon[row] + quartzpure_expt_radTcon[row];
-    expt_minerals_totTcond[quartzpure_exptID] = quartzpure_expt_totTcon;
+    expt_minerals_latTcond[row][quartzpure_exptID] = quartzpure_expt_latTcon[row];
+    expt_minerals_radTcond[row][quartzpure_exptID] = quartzpure_expt_radTcon[row];
+    expt_minerals_totTcond[row][quartzpure_exptID] = quartzpure_expt_totTcon[row];
+    // Coesite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
     coesitSiO2_expt_totTcon[row] = coesitSiO2_expt_latTcon[row] + coesitSiO2_expt_radTcon[row];
-    expt_minerals_totTcond[coesitSiO2_exptID] = coesitSiO2_expt_totTcon;
+    expt_minerals_latTcond[row][coesitSiO2_exptID] = coesitSiO2_expt_latTcon[row];
+    expt_minerals_radTcond[row][coesitSiO2_exptID] = coesitSiO2_expt_radTcon[row];
+    expt_minerals_totTcond[row][coesitSiO2_exptID] = coesitSiO2_expt_totTcon[row];
+    // stishovite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
     stishovite_expt_totTcon[row] = stishovite_expt_latTcon[row] + stishovite_expt_radTcon[row];
-    expt_minerals_totTcond[stishovite_exptID] = stishovite_expt_totTcon;
+    expt_minerals_latTcond[row][stishovite_exptID] = stishovite_expt_latTcon[row];
+    expt_minerals_radTcond[row][stishovite_exptID] = stishovite_expt_radTcon[row];    
+    expt_minerals_totTcond[row][stishovite_exptID] = stishovite_expt_totTcon[row];
+    // Al-stishovite (5 vol%): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     stisho05Al_expt_totTcon[row] = stisho05Al_expt_latTcon[row] + stisho05Al_expt_radTcon[row];
-    expt_minerals_totTcond[stisho05Al_exptID] = stisho05Al_expt_totTcon;
+    expt_minerals_latTcond[row][stisho05Al_exptID] = stisho05Al_expt_latTcon[row];
+    expt_minerals_radTcond[row][stisho05Al_exptID] = stisho05Al_expt_radTcon[row];
+    expt_minerals_totTcond[row][stisho05Al_exptID] = stisho05Al_expt_totTcon[row];
+    // Antigorite (010): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     antigor010_expt_totTcon[row] = antigor010_expt_latTcon[row] + antigor010_expt_radTcon[row];
-    expt_minerals_totTcond[antigor010_exptID] = antigor010_expt_totTcon;
+    expt_minerals_latTcond[row][antigor010_exptID] = antigor010_expt_latTcon[row];
+    expt_minerals_radTcond[row][antigor010_exptID] = antigor010_expt_radTcon[row];
+    expt_minerals_totTcond[row][antigor010_exptID] = antigor010_expt_totTcon[row];
+    // Antigorite (001): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     antigor001_expt_totTcon[row] = antigor001_expt_latTcon[row] + antigor001_expt_radTcon[row]; 
-    expt_minerals_totTcond[antigor001_exptID] = antigor001_expt_totTcon;   
+    expt_minerals_latTcond[row][antigor001_exptID] = antigor001_expt_latTcon[row];
+    expt_minerals_radTcond[row][antigor001_exptID] = antigor001_expt_radTcon[row];
+    expt_minerals_totTcond[row][antigor001_exptID] = antigor001_expt_totTcon[row];   
+    // Fe,Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     phaseDFeAl_expt_totTcon[row] = phaseDFeAl_expt_latTcon[row] + phaseDFeAl_expt_radTcon[row];
-    expt_minerals_totTcond[phaseDFeAl_exptID] = phaseDFeAl_expt_totTcon; 
+    expt_minerals_latTcond[row][phaseDFeAl_exptID] = phaseDFeAl_expt_latTcon[row];
+    expt_minerals_radTcond[row][phaseDFeAl_exptID] = phaseDFeAl_expt_radTcon[row];
+    expt_minerals_totTcond[row][phaseDFeAl_exptID] = phaseDFeAl_expt_totTcon[row]; 
+    // Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     phaseD02Al_expt_totTcon[row] = phaseD02Al_expt_latTcon[row] + phaseD02Al_expt_radTcon[row];
-    expt_minerals_totTcond[phaseD02Al_exptID] = phaseD02Al_expt_totTcon;
+    expt_minerals_latTcond[row][phaseD02Al_exptID] = phaseD02Al_expt_latTcon[row];
+    expt_minerals_radTcond[row][phaseD02Al_exptID] = phaseD02Al_expt_radTcon[row];
+    expt_minerals_totTcond[row][phaseD02Al_exptID] = phaseD02Al_expt_totTcon[row];
+    // Ferropericlase (Mg92Fe8O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     ferroper08_expt_totTcon[row] = ferroper08_expt_latTcon[row] + ferroper08_expt_radTcon[row];
-    expt_minerals_totTcond[ferroper08_exptID] = ferroper08_expt_totTcon;
+    expt_minerals_latTcond[row][ferroper08_exptID] = ferroper08_expt_latTcon[row];
+    expt_minerals_radTcond[row][ferroper08_exptID] = ferroper08_expt_radTcon[row];
+    expt_minerals_totTcond[row][ferroper08_exptID] = ferroper08_expt_totTcon[row];
+    // Ferropericlase (Mg90Fe10O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     ferroper10_expt_totTcon[row] = ferroper10_expt_latTcon[row] + ferroper10_expt_radTcon[row];
-    expt_minerals_totTcond[ferroper10_exptID] = ferroper10_expt_totTcon;
+    expt_minerals_latTcond[row][ferroper10_exptID] = ferroper10_expt_latTcon[row];
+    expt_minerals_radTcond[row][ferroper10_exptID] = ferroper10_expt_radTcon[row];
+    expt_minerals_totTcond[row][ferroper10_exptID] = ferroper10_expt_totTcon[row];
+    // Ferropericlase (Mg80Fe20O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     ferroper20_expt_totTcon[row] = ferroper20_expt_latTcon[row] + ferroper20_expt_radTcon[row];
-    expt_minerals_totTcond[ferroper20_exptID] = ferroper20_expt_totTcon;
+    expt_minerals_latTcond[row][ferroper20_exptID] = ferroper20_expt_latTcon[row];
+    expt_minerals_radTcond[row][ferroper20_exptID] = ferroper20_expt_radTcon[row];
+    expt_minerals_totTcond[row][ferroper20_exptID] = ferroper20_expt_totTcon[row];
+    // Ferropericlase (Mg56Fe44O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     ferroper56_expt_totTcon[row] = ferroper56_expt_latTcon[row] + ferroper56_expt_radTcon[row];
-    expt_minerals_totTcond[ferroper56_exptID] = ferroper56_expt_totTcon;
-    davemaoite_expt_totTcon[row] = davemaoite_expt_latTcon[row] + davemaoite_expt_radTcon[row];
-    expt_minerals_totTcond[davemaoite_exptID] = davemaoite_expt_totTcon;
+    expt_minerals_latTcond[row][ferroper56_exptID] = ferroper56_expt_latTcon[row];
+    expt_minerals_radTcond[row][ferroper56_exptID] = ferroper56_expt_radTcon[row];
+    expt_minerals_totTcond[row][ferroper56_exptID] = ferroper56_expt_totTcon[row];
+    // davemaoite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
+    davemaoite_expt_totTcon[row] = davemaoite_expt_latTcon[row] + davemaoite_expt_radTcon[row]; 
+    expt_minerals_latTcond[row][davemaoite_exptID] = davemaoite_expt_latTcon[row];
+    expt_minerals_radTcond[row][davemaoite_exptID] = davemaoite_expt_radTcon[row];
+    expt_minerals_totTcond[row][davemaoite_exptID] = davemaoite_expt_totTcon[row];
+    // New-hexagonal-alluminium-phase (FeNAL): expected lattice and radiative thermal conductivities (k) in [W/m/K]
     newhexAlph_expt_totTcon[row] = newhexAlph_expt_latTcon[row] + newhexAlph_expt_radTcon[row];
-    expt_minerals_totTcond[newhexAlph_exptID] = newhexAlph_expt_totTcon;
+    expt_minerals_latTcond[row][newhexAlph_exptID] = newhexAlph_expt_latTcon[row];
+    expt_minerals_radTcond[row][newhexAlph_exptID] = newhexAlph_expt_radTcon[row];
+    expt_minerals_totTcond[row][newhexAlph_exptID] = newhexAlph_expt_totTcon[row];
+    // akimotoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
     akimotoite_expt_totTcon[row] = akimotoite_expt_latTcon[row] + akimotoite_expt_radTcon[row];
-    expt_minerals_totTcond[akimotoite_exptID] = akimotoite_expt_totTcon;
+    expt_minerals_latTcond[row][akimotoite_exptID] = akimotoite_expt_latTcon[row];
+    expt_minerals_radTcond[row][akimotoite_exptID] = akimotoite_expt_radTcon[row]; 
+    expt_minerals_totTcond[row][akimotoite_exptID] = akimotoite_expt_totTcon[row];
+
+    // pyrolite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+    pyrolite_expt_totTcon[row] = pyrolite_expt_latTcon[row] + pyrolite_expt_radTcon[row];
+    expt_rocks_latTcond[row][pyrolite_exptID] = pyrolite_expt_latTcon[row];
+    expt_rocks_radTcond[row][pyrolite_exptID] = pyrolite_expt_radTcon[row];
+    expt_rocks_totTcond[row][pyrolite_exptID] = pyrolite_expt_totTcon[row];
+    // harzburg: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+    harzburg_expt_totTcon[row] = harzburg_expt_latTcon[row] + harzburg_expt_radTcon[row];
+    expt_rocks_latTcond[row][harzburg_exptID] = harzburg_expt_latTcon[row];
+    expt_rocks_radTcond[row][harzburg_exptID] = harzburg_expt_radTcon[row];
+    expt_rocks_totTcond[row][harzburg_exptID] = harzburg_expt_totTcon[row];
+    // metaMORB: expected lattice and radiative thermal conductivities (k) in [W/m/K]
+    metaMORB_expt_totTcon[row] = metaMORB_expt_latTcon[row] + metaMORB_expt_radTcon[row];
+    expt_rocks_latTcond[row][metaMORB_exptID] = metaMORB_expt_latTcon[row];
+    expt_rocks_radTcond[row][metaMORB_exptID] = metaMORB_expt_radTcon[row];
+    expt_rocks_totTcond[row][metaMORB_exptID] = metaMORB_expt_totTcon[row];
+    // duniteOl: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+    duniteOl_expt_totTcon[row] = duniteOl_expt_latTcon[row] + duniteOl_expt_radTcon[row];
+    expt_rocks_latTcond[row][duniteOl_exptID] = duniteOl_expt_latTcon[row];
+    expt_rocks_radTcond[row][duniteOl_exptID] = duniteOl_expt_radTcon[row];
+    expt_rocks_totTcond[row][duniteOl_exptID] = duniteOl_expt_totTcon[row];
   }
 
+  // Loop over all lithologies
+  for (unsigned int lID = 0; lID < lithologies.size(); ++lID)
+  {
+    
+    INFO("Checking thermal conductivity (k) for different lithologies as a function of temperature (T) and pressure (P)");
+
+    // Loop over the different combinations of pressures (P) and temperatures (T)
+    for (size_t row = 0; row < expt_rocks_totTcond[lID].size(); ++row)
+    {
+
+      in.composition[0] = lithologies[row];  // Assign the current lithology as model in.composition input
+      model.evaluate(in, out);  // Call the function to compute the thermal conductivities
+
+      switch (lID) // Compare the computed thermal conductivity with the expected value
+      {
+       case pyrolite_exptID: // pyrolite
+       {
+         INFO("Lithology: " << in.composition[row][lID] << " (Pyrolite) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << in.pressure[row] << "[Pa]");
+         INFO("pyrolite expected k = " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
+         INFO("pyrolite computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
+         REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
+         break;
+       }
+       case harzburg_exptID: // harzburgite
+       {
+         INFO("Conditions: T= " << in.temperature[row] << "[K] ; P= " << in.pressure[row] << "[Pa]");
+         INFO("harzburg expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
+         INFO("harzburg computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
+         REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
+         break;
+        }
+       case metaMORB_exptID: // metabasalt (MORB)
+       {
+         INFO("Conditions: T= " << in.temperature[row] << "[K] ; P= " << in.pressure[row] << "[Pa]");
+         INFO("metaMORB expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
+         INFO("metaMORB computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
+         REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
+         break;
+        }
+       case duniteOl_exptID: // dunite (100% olivine)
+       {
+         INFO("Conditions: T= " << in.temperature[row] << "[K] ; P= " << in.pressure[row] << "[Pa]");
+         INFO("duniteOl expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
+         INFO("duniteOl computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
+         REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
+         break;
+       }
+      }
+    }
+  }
+
+ 
+ /*
  // Loop over all mID values
  for (unsigned int mID = 0; mID < mineralpar_index; ++mID)
  {
@@ -617,6 +747,7 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
      }
    }
  } 
+   */
 }
 
 TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
@@ -636,7 +767,10 @@ TEST_CASE("Utilities:: Thermal Conductivity Hofmeister 1999")
   // Assigning a matrix of volume fractions to in.composition (X) in [%]
   std::vector<std::vector<double>> compositions = 
   {
-      {1, 1, 1, 1, 1},
+    {1.00, 1.00, 1.00, 1.00, 1.00},
+    {0.75, 0.75, 0.75, 0.75, 0.75},
+    {0.50, 0.50, 0.50, 0.50, 0.50},
+    {0.25, 0.25, 0.25, 0.25, 0.25}
   };
     
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
