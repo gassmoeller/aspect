@@ -821,8 +821,8 @@ namespace aspect
           // Take lithology of the model
           double lithology = in.composition[0][i];
 
-          std::vector<double> mineral_fraction;
-          std::vector<unsigned int> mineral_index;
+          std::vector<double> mineral_fraction;    // Mineral fractions for the current lithology
+          std::vector<unsigned int> mineral_index; // Mineral indexes for the current lithology
 
           if (P_GPa < 13.59280101) // upper mantle
           {
@@ -957,14 +957,15 @@ namespace aspect
            AssertThrow(false, dealii::ExcMessage("Invalid pressure range for the mantle."));
           }
 
-          unsigned int mID = in.Mineral_ID;
+          // unsigned int mineral_ID_nonused = in.Mineral_ID;
 
           // Preallocate a vector for storing thermal conductivities of minerals
           std::vector<double> mar25_minerals_latTcond(mineral_fraction.size(), 0.0); // Lattice thermal conductivity
           std::vector<double> mar25_minerals_radTcond(mineral_fraction.size(), 0.0); // Radiative thermal conductivity
           std::vector<double> mar25_minerals_totTcond(mineral_fraction.size(), 0.0); // Total thermal conductivity
-          // Preallocate a matrix for storing thermal conductivities of minerals
-          std::vector<std::vector<double>> mar25_all_minerals_Tconds(mineral_fraction.size(), std::vector<double>(3, 0.0));
+
+          // Preallocate total thermal conductivity of the aggregate rock
+          double mar25_aggregate_rock_totTcond = 1;
 
           for (size_t col = 0; col < mineral_fraction.size(); ++col)
           {
@@ -1455,64 +1456,16 @@ namespace aspect
                break;
              }
            }
+
+           // Thermal conductivity of the aggregate rock is computed as the
+           // geometric mean of the total thermal conductivities of the minerals weighted by their fraction
+           mar25_aggregate_rock_totTcond = mar25_aggregate_rock_totTcond * std::pow(mar25_minerals_totTcond[col], mineral_fraction[col]);
+
           }
-
-          // Fill the matrix column by column
-          /*
-          for (unsigned int row = 0; row < mineralpar_index; ++row)
-          {
-            mar25_all_minerals_Tconds[row][0] = mar25_minerals_latTcond[row]; // Column 0: Lattice conductivities
-            mar25_all_minerals_Tconds[row][1] = mar25_minerals_radTcond[row]; // Column 1: Radiative conductivities
-            mar25_all_minerals_Tconds[row][2] = mar25_minerals_totTcond[row]; // Column 2: Total conductivities
-          }
-         */
-          
-
-          // Compute P,T-dependent thermal conductivities of aggregate rocks 
-
-          // pyrolite (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
-          // double aggrock_pyrolite_TCond = std::pow(olivinedry_TotTCon,minfract_pyrolite_UM[0])*std::pow(grtpyropes_TotTCon,minfract_pyrolite_UM[1])*std::pow(opxenstati_TotTCon,minfract_pyrolite_UM[2])*std::pow(cpxdiopsid_TotTCon,minfract_pyrolite_UM[3]);   
-          // pyrolite Upper Mantle Transition Zone (58% wadsleyite, 28% majorite, 14% diopside)
-          // double aggrock_pyrolite_TCond = std::pow(wadsleydry_TotTCon,minfract_pyrolite_UMTZ[0])*std::pow(grtmajorit_TotTCon,minfract_pyrolite_UMTZ[1])*std::pow(cpxdiopsid_TotTCon,minfract_pyrolite_UMTZ[2]); 
-          // pyrolite Lower Mantle Transition Zone (58% ringwoodite, 42% majorite)
-          // double aggrock_pyrolite_TCond = std::pow(ringwoodry_TotTCon,minfract_pyrolite_LMTZ[0])*std::pow(grtmajorit_TotTCon,minfract_pyrolite_LMTZ[1]); 
-          // pyrolite Lower Mantle (80% bridgmanite, 14% ferropericlase, 6% davemaoite)
-          // double aggrock_pyrolite_TCond = std::pow(brigmaFeAl_TotTCon,minfract_pyrolite_LM[0])*std::pow(ferroper10_TotTCon,minfract_pyrolite_LM[1])*std::pow(davemaoite_TotTCon,minfract_pyrolite_LM[2]); 
-
-          // harzburgite (80% olivine, 20% ensatite)
-          // double aggrock_harzburg_TCond = std::pow(olivinedry_TotTCon,minfract_harzburg_UM[0])*std::pow(opxenstati_TotTCon,minfract_harzburg_UM[1]);
-          // harzburgite Upper Mantle Transition Zone (80% wadsleyite, 13% diopside, 7% majorite)
-          // double aggrock_harzburg_TCond = std::pow(wadsleydry_TotTCon,minfract_harzburg_UMTZ[0])*std::pow(cpxdiopsid_TotTCon,minfract_harzburg_UMTZ[1])*std::pow(grtmajorit_TotTCon,minfract_harzburg_UMTZ[2]);
-          // harzburgite Lower Mantle Transition Zone (80% olivine, 20% majorite)
-          // double aggrock_harzburg_TCond = std::pow(ringwoodry_TotTCon,minfract_harzburg_LMTZ[0])*std::pow(grtmajorit_TotTCon,minfract_harzburg_LMTZ[1]);
-          // harzburgite Lower Mantle (76% bridgmanite, 24% ferropericlase)
-          // double aggrock_harzburg_TCond = std::pow(brigmaFeAl_TotTCon,minfract_harzburg_LM[0])*std::pow(ferroper10_TotTCon,minfract_harzburg_LM[1]);
-
-          // Meta-basaltic crust MORB (80% diopside, 20% pyrope)
-          // double aggrock_metaMORB_TCond = std::pow(cpxdiopsid_TotTCon,minfract_metaMORB_UM[0])*std::pow(grtpyropes_TotTCon,minfract_metaMORB_UM[1]);
-          // Meta-basaltic crust MORB Upper Mantle Transition Zone (50% majorite, 4% stishovite, 46% diopside)
-          // double aggrock_metaMORB_TCond = std::pow(grtmajorit_TotTCon,minfract_metaMORB_UMTZ[0])*std::pow(stisho05Al_TotTCon,minfract_metaMORB_UMTZ[1])*std::pow(cpxdiopsid_TotTCon,minfract_metaMORB_UMTZ[2]);
-          // Meta-basaltic crust MORB Lower Mantle Transition Zone (92% majorite, 8% stishovite)
-          // double aggrock_metaMORB_TCond = std::pow(grtmajorit_TotTCon,minfract_metaMORB_LMTZ[0])*std::pow(stisho05Al_TotTCon,minfract_metaMORB_LMTZ[1]);
-          // Meta-basaltic crust MORB Lower Mantle (35% bridgmanite, 28% davemaoite, 19% Fe-NAL, 18% stishovite) 
-          // double aggrock_metaMORB_TCond = std::pow(brigmaFeAl_TotTCon,minfract_metaMORB_LM[0])*std::pow(davemaoite_TotTCon,minfract_metaMORB_LM[1])*std::pow(newhexAlph_TotTCon,minfract_metaMORB_LM[2])*std::pow(stisho05Al_TotTCon,minfract_metaMORB_LM[3]);
-
-          // Dunite (100% olivine)
-          // double aggrock_duniteOl_TCond = std::pow(olivinedry_TotTCon,minfract_duniteOl_UM[0]);
-          // Dunite Upper Mantle Transition Zone (100% wadsleyite)
-          // double aggrock_duniteOl_TCond = std::pow(wadsleydry_TotTCon,minfract_duniteOl_UMTZ[0]);
-          // Dunite Lower Mantle Transition Zone (100% ringwoodite)
-          // double aggrock_duniteOl_TCond = std::pow(ringwoodry_TotTCon,minfract_duniteOl_LMTZ[0]);
-          // Dunite Lower Mantle (100% bridgmanite)
-          // double aggrock_duniteOl_TCond = std::pow(brigmaFeAl_TotTCon,minfract_duniteOl_LM[0]);
-           
-          double min_frac = 1.00; // Mineral fraction for the geometric mean calculation
-
-          // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
-          double aggrock_testcase_mar25_Tcond = std::pow(mar25_all_minerals_Tconds[mID][2], min_frac);
 
           // Test Case
-          out.thermal_conductivities[i] = aggrock_testcase_mar25_Tcond;
+          out.thermal_conductivities[i] = mar25_aggregate_rock_totTcond;
+
         }
       } 
     }
