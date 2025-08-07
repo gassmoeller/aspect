@@ -441,35 +441,35 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
 
       switch (lID) // Compare the computed thermal conductivity with the expected value
       {
-       case pyrolite_exptID: // pyrolite
+       case pyrolite_exptID: // Pyrolite
        {
-         INFO("Lithology: " << in.composition[row][lID] << " (Pyrolite) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << in.pressure[row] << "[Pa]");
-         INFO("pyrolite expected k = " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
-         INFO("pyrolite computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
+         INFO("Lithology: " << in.composition[row][lID] << " (Pyrolite) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
+         INFO("Pyrolite expected k = " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
+         INFO("Pyrolite computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
          REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
          break;
        }
-       case harzburg_exptID: // harzburgite
+       case harzburg_exptID: // Harzburgite
        {
-         INFO("Conditions: T= " << in.temperature[row] << "[K] ; P= " << in.pressure[row] << "[Pa]");
-         INFO("harzburg expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
-         INFO("harzburg computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
+         INFO("Lithology: " << in.composition[row][lID] << " (Harzburgite) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
+         INFO("Harzburgite expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
+         INFO("Harzburgite computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
          REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
          break;
         }
-       case metaMORB_exptID: // metabasalt (MORB)
+       case metaMORB_exptID: // Metabasalt (MORB)
        {
-         INFO("Conditions: T= " << in.temperature[row] << "[K] ; P= " << in.pressure[row] << "[Pa]");
-         INFO("metaMORB expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
-         INFO("metaMORB computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
+         INFO("Lithology: " << in.composition[row][lID] << " (Metabasalt) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
+         INFO("Metabasalt expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
+         INFO("Metabasalt computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
          REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
          break;
         }
-       case duniteOl_exptID: // dunite (100% olivine)
+       case duniteOl_exptID: // Dunite (100% olivine)
        {
-         INFO("Conditions: T= " << in.temperature[row] << "[K] ; P= " << in.pressure[row] << "[Pa]");
-         INFO("duniteOl expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
-         INFO("duniteOl computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
+         INFO("Lithology: " << in.composition[row][lID] << " (Dunite) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
+         INFO("Dunite expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
+         INFO("Dunite computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
          REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
          break;
        }
