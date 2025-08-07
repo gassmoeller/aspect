@@ -684,8 +684,8 @@ namespace aspect
 
         // Preallocate a vector for mineral fractions of different rocks and a vector for mineral indices
 
-        // pyrolite Upper Mantle (58% olivine, 13% pyrope, 18% ensatite, 11% diopside)
-        std::vector<double> minfract_pyrolite_UM = {0.58,0.13,0.18,0.11}; 
+        // pyrolite Upper Mantle (58% olivine, 13% pyrope, 17% ensatite, 12% diopside)
+        std::vector<double> minfract_pyrolite_UM = {0.58,0.13,0.17,0.12}; 
         std::vector<unsigned int> minindex_pyrolite_UM = {olivinedry_index, grtpyropes_index, opxenstati_index, cpxdiopsid_index}; 
         // pyrolite Upper Mantle Transition Zone (58% wadsleyite, 28% majorite, 14% diopside)
         std::vector<double> minfract_pyrolite_UMTZ = {0.58,0.28,0.14}; 
@@ -1461,7 +1461,7 @@ namespace aspect
 
            // Thermal conductivity of the aggregate rock is computed as the
            // geometric mean of the total thermal conductivities of the minerals weighted by their fraction
-           // mar25_aggregate_rock_totTcond = mar25_aggregate_rock_totTcond * std::pow(mar25_minerals_totTcond[col], mineral_fraction[col]);
+           mar25_aggregate_rock_totTcond = mar25_aggregate_rock_totTcond * std::pow(mar25_minerals_totTcond[col], mineral_fraction[col]);
           
           }
 
