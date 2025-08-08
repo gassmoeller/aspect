@@ -850,8 +850,8 @@ namespace aspect
             }
             else if (lithology == 99) // test (all minerals)
             {
-              mineral_fraction = minfract_allminerals_test; 
-              mineral_index = minindex_allminerals_test;
+              mineral_fraction = {1.00}; 
+              mineral_index = {in.Mineral_ID};
             }
             else
             {
@@ -882,8 +882,8 @@ namespace aspect
             }
             else if (lithology == 99) // test (all minerals)
             {
-              mineral_fraction = minfract_allminerals_test; 
-              mineral_index = minindex_allminerals_test;
+              mineral_fraction = {1.00};  
+              mineral_index = {in.Mineral_ID};
             }
             else
             {
@@ -914,8 +914,8 @@ namespace aspect
             }
             else if (lithology == 99) // test (all minerals)
             {
-              mineral_fraction = minfract_allminerals_test; 
-              mineral_index = minindex_allminerals_test;
+              mineral_fraction = {1.00}; 
+              mineral_index = {in.Mineral_ID};
             }
             else
             {
@@ -946,8 +946,8 @@ namespace aspect
             }
             else if (lithology == 99) // test (all minerals)
             {
-              mineral_fraction = minfract_allminerals_test; 
-              mineral_index = minindex_allminerals_test;
+              mineral_fraction = {1.00}; 
+              mineral_index = {in.Mineral_ID};
             }
             else
             {
@@ -1465,9 +1465,16 @@ namespace aspect
           
           }
 
-          // Test Case
-          out.thermal_conductivities[i] = mar25_aggregate_rock_totTcond;
-
+          if (lithology != 99)
+          {
+             out.thermal_conductivities[i] = mar25_aggregate_rock_totTcond;
+          }
+          else if (lithology == 99)
+             out.thermal_conductivities[i] = mar25_minerals_totTcond[0];
+          else
+          {
+             AssertThrow(false, dealii::ExcMessage("Invalid lithology for the mantle."));
+          }
         }
       } 
     }
