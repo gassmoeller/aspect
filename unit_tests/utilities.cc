@@ -565,37 +565,43 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
     AssertThrow(aggrock_duniteOl_LoMa_TCond[row] > 0, dealii::ExcMessage("aggrock_duniteOl_LoMa_TCond is <= 0"));
   }
   
+  double pressure_UpMa_top = 1e5;             // Upper Mantle top pressure in Pa
   double pressure_UpMa_bot = 13.59280101*1e9; // Upper Mantle bottom pressure in Pa
+  double pressure_UMTZ_top = 13.59280101*1e9; // Upper Transition Zone top pressure in Pa
   double pressure_UMTZ_bot = 17.69264984*1e9; // Upper Transition Zone bottom pressure in Pa
+  double pressure_LMTZ_top = 17.69264984*1e9; // Lower Transition Zone top pressure in Pa
   double pressure_LMTZ_bot = 23.1122152*1e9;  // Lower Transition Zone bottom pressure in Pa
+  double pressure_LoMa_top = 23.1122152*1e9;  // Lower Mantle top pressure in Pa
+  double pressure_LoMa_bot = 136*1e9;         // Lower Mantle bottom pressure in Pa
+
 
   // expected thermal conductivities (k) in [W/m/K] 
   for (size_t row = 0; row < temperatures.size(); ++row)
   {
     double current_pressure = in.pressure[row];
 
-    if (current_pressure < pressure_UpMa_bot) // Upper Mantle
+    if (current_pressure >= pressure_UpMa_top && current_pressure <= pressure_UpMa_bot) // Upper Mantle
     {     
        expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_UpMa_TCond[row]; // Pyrolite
        expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_UpMa_TCond[row]; // Harzburgite
        expt_rocks_totTcond[row][metaMORB_exptID] = aggrock_metaMORB_UpMa_TCond[row]; // Meta-basalts (MORB)
        expt_rocks_totTcond[row][duniteOl_exptID] = aggrock_duniteOl_UpMa_TCond[row]; // Dunite (> 90% olivine)
     }
-    else if (current_pressure >= pressure_UpMa_bot && current_pressure <= pressure_UMTZ_bot) // Upper Transition Zone
+    else if (current_pressure > pressure_UMTZ_top && current_pressure <= pressure_UMTZ_bot) // Upper Transition Zone
     {
        expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_UMTZ_TCond[row]; // Pyrolite
        expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_UMTZ_TCond[row]; // Harzburgite
        expt_rocks_totTcond[row][metaMORB_exptID] = aggrock_metaMORB_UMTZ_TCond[row]; // Meta-basalts (MORB)
        expt_rocks_totTcond[row][duniteOl_exptID] = aggrock_duniteOl_UMTZ_TCond[row]; // Dunite (> 90% olivine)
     }
-    else if (current_pressure > pressure_UMTZ_bot && current_pressure <= pressure_LMTZ_bot) // Lower Transition Zone
+    else if (current_pressure > pressure_LMTZ_top && current_pressure <= pressure_LMTZ_bot) // Lower Transition Zone
     {
        expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_LMTZ_TCond[row]; // Pyrolite
        expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_LMTZ_TCond[row]; // Harzburgite
        expt_rocks_totTcond[row][metaMORB_exptID] = aggrock_metaMORB_LMTZ_TCond[row]; // Meta-basalts (MORB)
        expt_rocks_totTcond[row][duniteOl_exptID] = aggrock_duniteOl_LMTZ_TCond[row]; // Dunite (> 90% olivine)
     }
-    else if (current_pressure > pressure_LMTZ_bot) // lower mantle
+    else if (current_pressure > pressure_LoMa_top && current_pressure <= pressure_LoMa_bot) // lower mantle
     {    
        expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_LoMa_TCond[row]; // Pyrolite
        expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_LoMa_TCond[row]; // Harzburgite
