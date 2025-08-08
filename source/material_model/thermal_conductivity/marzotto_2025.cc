@@ -96,11 +96,11 @@ namespace aspect
         // https://doi.org/10.1029/2020GL087607
         // mineral composition [(Mg1.79Fe0.17)Si1.02O4]
         constexpr int ringwoodry_index = 2;
-        const double ringwoodry_latTC_a0 =  -5.4624;
-        const double ringwoodry_latTC_b1 =   2.0791;
-        const double ringwoodry_latTC_ymin = 1.60943791241410;
-        const double ringwoodry_latTC_ymax = 2.94939766245070; 
-        const double ringwoodry_Tdep_n_exp = 0.5; 
+        const double ringwoodry_latTC_a0 =  -4.5433218986644; 
+        const double ringwoodry_latTC_b1 =   0.95165619669065;
+        const double ringwoodry_latTC_ymin = 2.1632750590560;
+        const double ringwoodry_latTC_ymax = 5.7037824746562; 
+        const double ringwoodry_Tdep_n_exp = 0.508; 
 
         // Coefficients for Mg-bridgmanite
         // retreived from fitting dataset of
