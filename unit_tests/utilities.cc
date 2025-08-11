@@ -191,19 +191,19 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
   std::vector<double> grtpyropes_expt_latTcon = {4.388274092, 2.716973203, 4.408565964, 4.691962737, 4.224051220};
   std::vector<double> grtpyropes_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
   // Garnet (Grossular): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> grtgrossul_expt_latTcon = {4.08838, 1.91337, 2.26557, 3.05964, 4.01413};
+  std::vector<double> grtgrossul_expt_latTcon = {4.088378059, 2.329479982, 3.974765217, 4.338634179, 4.014125491};
   std::vector<double> grtgrossul_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
   // Garnet (Almandine): expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> grtalmandi_expt_latTcon = {3.39124, 1.70813, 2.17978, 3.13522, 4.07543};
+  std::vector<double> grtalmandi_expt_latTcon = {3.391236937, 2.235613596, 4.074648592, 4.416571698, 4.075429705};
   std::vector<double> grtalmandi_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
   // Garnet (Majorite): expected lattice and radiative thermal conductivities (k) in [W/m/K]  
   std::vector<double> grtmajorit_expt_latTcon = {9.739829248, 4.711434237, 5.768834705, 5.833221258, 4.762499667};
   std::vector<double> grtmajorit_expt_radTcon = {2.55667e-5, 2.08101, 2.25936, 2.42089, 3.48797};
   // Quartz: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> quartzpure_expt_latTcon = {9.53243, 1.84339, 2.49820, 2.47676, 1.49323};
+  std::vector<double> quartzpure_expt_latTcon = {9.532431770, 2.656822576, 2.647526672, 2.503780368, 1.493230149};
   std::vector<double> quartzpure_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   // Coesite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> coesitSiO2_expt_latTcon = {7.21196, 1.31776, 1.23920, 1.17013, 0.84983};
+  std::vector<double> coesitSiO2_expt_latTcon = {7.211963110, 1.317885657, 1.243056895, 1.178804741, 0.849825723};
   std::vector<double> coesitSiO2_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   // stishovite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> stishovite_expt_latTcon = {67.686173356, 29.308701033, 28.378068245, 27.409461557, 29.604731196};
@@ -212,37 +212,37 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
   std::vector<double> stisho05Al_expt_latTcon = {24.185714678, 10.678393756,11.357373198, 11.723480486, 15.115699610};
   std::vector<double> stisho05Al_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   // Antigorite (010): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> antigor010_expt_latTcon = {4.55589, 1.99618, 2.41198, 3.15852, 3.57446};
+  std::vector<double> antigor010_expt_latTcon = {4.555887376, 2.486216120, 3.908524818, 4.127554249, 3.574463165};
   std::vector<double> antigor010_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   // Antigorite (001): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> antigor001_expt_latTcon = {1.06669, 0.49210, 1.01828, 1.51143, 1.48578};
+  std::vector<double> antigor001_expt_latTcon = {1.066695732, 1.049619491, 1.787724820, 1.821134848, 1.485778351};
   std::vector<double> antigor001_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   // Fe,Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> phaseDFeAl_expt_latTcon = {2.59325, 1.13915, 1.31955, 1.59985, 6.12649};
+  std::vector<double> phaseDFeAl_expt_latTcon = {2.593251373, 1.360157872, 1.918148669, 2.017880533, 6.126485225};
   std::vector<double> phaseDFeAl_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   // Al-phase D (Dense Hydrous Magnesium Silicate): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> phaseD02Al_expt_latTcon = {3.60666, 1.56888, 1.65207, 1.95489, 8.61776};
+  std::vector<double> phaseD02Al_expt_latTcon = {3.606657774, 1.702912781, 2.691714734, 3.471527545, 8.617758947};
   std::vector<double> phaseD02Al_expt_radTcon = {9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11, 9.87998e-11};
   // Ferropericlase (Mg92Fe8O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> ferroper08_expt_latTcon = {5.08425, 2.20657, 2.24939, 2.50821, 14.39941};
+  std::vector<double> ferroper08_expt_latTcon = {5.084250682, 2.31862542, 3.26811261, 4.140228226, 14.39940943};
   std::vector<double> ferroper08_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   // Ferropericlase (Mg90Fe10O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> ferroper10_expt_latTcon = {4.48610, 1.94695, 1.98084, 2.19296, 12.65637};
+  std::vector<double> ferroper10_expt_latTcon = {4.486103543, 2.041799599, 2.822614132, 3.535729625, 12.65637458};
   std::vector<double> ferroper10_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   // Ferropericlase (Mg80Fe20O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> ferroper20_expt_latTcon = {3.48647, 3.39116, 3.56449, 3.77742, 7.57324};
+  std::vector<double> ferroper20_expt_latTcon = {3.486472241, 3.569902514, 4.043245052, 4.297325425, 7.573244781};
   std::vector<double> ferroper20_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   // Ferropericlase (Mg56Fe44O): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> ferroper56_expt_latTcon = {2.69167, 1.23171, 1.55079, 2.02398, 7.04069};
+  std::vector<double> ferroper56_expt_latTcon = {2.691665917, 1.59851609, 2.774573165, 3.378749002, 7.040686707};
   std::vector<double> ferroper56_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   // davemaoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> davemaoite_expt_latTcon = {10.86634, 4.77342, 5.15289, 5.86997, 13.48443};
+  std::vector<double> davemaoite_expt_latTcon = {10.86634023, 5.311473757, 7.244743745, 8.242377128, 13.48442897};
   std::vector<double> davemaoite_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   // New-hexagonal-alluminium-phase (FeNAL): expected lattice and radiative thermal conductivities (k) in [W/m/K]
-  std::vector<double> newhexAlph_expt_latTcon = {10.59581, 4.58812, 4.45113, 4.32578, 12.15184};
+  std::vector<double> newhexAlph_expt_latTcon = {10.59581461, 4.588122584, 4.45336532, 4.351526862, 12.15183764};
   std::vector<double> newhexAlph_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
   // akimotoite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> akimotoite_expt_latTcon = {10.69504, 2.03810, 2.21218, 2.47430, 5.69003};
+  std::vector<double> akimotoite_expt_latTcon = {10.695037531, 2.351863333, 3.145064580, 3.482255641, 5.690029119};
   std::vector<double> akimotoite_expt_radTcon = {0.71149, 0.68558, 0.66935, 0.64541, 0.02321};
 
   // Perform element-wise sum
