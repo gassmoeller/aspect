@@ -158,7 +158,7 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
   std::vector<std::vector<double>> expt_rocks_totTcond(temperatures.size(), std::vector<double>(rockspar_index, 0.0)); // Total thermal conductivity
 
   // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> olivinedry_expt_latTcon = {3.588882835, 2.435539710, 4.726870069, 4.996780305, 4.257676002};
+  std::vector<double> olivinedry_expt_latTcon = {3.588882835, 2.435539710, 4.726870069, 4.996780305, 4.257676002};  
   std::vector<double> olivinedry_expt_radTcon = {0.00138288, 2.23152, 2.34978, 2.45486, 3.12273};
   // Dry Wadsleyite: expected lattice and radiative thermal conductivities (k) in [W/m/K]
   std::vector<double> wadsleydry_expt_latTcon = {5.883641867, 3.313822545, 3.396102843, 3.349763783, 2.773684075};

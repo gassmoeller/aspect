@@ -21,7 +21,8 @@
 
 #include <aspect/material_model/variable_thermal_conductivity.h>
 #include <aspect/material_model/equation_of_state/interface.h>
-#include <aspect/material_model/thermal_conductivity/nondimensional_Tcond.h>
+// #include <aspect/material_model/thermal_conductivity/nondimensional_Tcond.h>
+#include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
 
 
 namespace aspect
@@ -65,14 +66,16 @@ namespace aspect
 
           equation_of_state.evaluate(in, i, eos_outputs);
 
-          out.thermal_conductivities[i] = k_value; // ThermalConductivity::nondimensional_Tcond(in.temperature[i], in.pressure[i], in.composition[0][i], in.Mineral_ID); 
-
           // except for the density and thermal conductivity, all material properties are constant across compositions
           out.thermal_expansion_coefficients[i] = eos_outputs.thermal_expansion_coefficients[0];
           out.specific_heat[i] = eos_outputs.specific_heat_capacities[0];
           out.compressibilities[i] = eos_outputs.compressibilities[0];
           out.entropy_derivative_pressure[i] = eos_outputs.entropy_derivative_pressure[0];
           out.entropy_derivative_temperature[i] = eos_outputs.entropy_derivative_temperature[0];
+ 
+          aspect::MaterialModel::ThermalConductivity::marzotto_2025<dim> thermal_conductivity;
+          thermal_conductivity.evaluate(in, out);
+          out.thermal_conductivities[i] = out.thermal_conductivities[0]; // k_value; 
 
           // Change in composition due to chemical reactions at the
           // given positions. The term reaction_terms[i][c] is the
