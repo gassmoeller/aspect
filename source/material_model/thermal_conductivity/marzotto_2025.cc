@@ -808,17 +808,29 @@ namespace aspect
         for (unsigned int i = 0; i < n_points; ++i) 
         {
 
+          double current_temperature = in.temperature[i];
+          if (in.temperature[i] <= 0.0) // Avoid log(0) or negative temperature
+          {
+            current_temperature = 1e-10; 
+            // AssertThrow(in.temperature[i] > 0, dealii::ExcMessage("Temperature must be > 0 for log."));
+          }
+
+          double current_pressure = in.pressure[i];
+          if (in.pressure[i] <= 0.0) // Avoid log(0) or negative pressure
+          {
+            current_pressure = 1e-10; 
+            // AssertThrow(P_GPa > 0, dealii::ExcMessage("Pressure must be > 0 for log."));
+          }
+
           // Convert pressure unit from [Pa] to [GPa]
-          double P_GPa = in.pressure[i]/1e9;
+          double P_GPa =current_pressure/1e9;
 
           // Compute natural logarithm of pressure and temperature
-          AssertThrow(P_GPa > 0, dealii::ExcMessage("Pressure must be > 0 for log.")); 
-          AssertThrow(in.temperature[i] > 0, dealii::ExcMessage("Temperature must be > 0 for log."));
           double P_log = std::log(P_GPa);
-          double T_log = std::log(in.temperature[i]);
+          double T_log = std::log(current_temperature);
 
           // Take the temperature field of the model [K]
-          double T_mod = in.temperature[i];
+          double T_mod = current_temperature;
 
           // Take lithology of the model
           double lithology = in.composition[0][i];

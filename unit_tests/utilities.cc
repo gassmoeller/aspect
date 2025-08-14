@@ -63,14 +63,16 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
 
   // Assigning a lithology index to in.composition 
   //(0: pyrolite, 1: harzburgite, 2: meta-MORB, 3: dunite, 99: test)
-  std::vector<std::vector<double>> lithologies = 
-  {
+  std::vector<double> lithologies = {0, 1, 2, 3, 99};
+  /*
+    std::vector<std::vector<double>> lithologies = {
     {0, 0, 0, 0, 0},
     {1, 1, 1, 1, 1},
     {2, 2, 2, 2, 2},
     {3, 3, 3, 3, 3},
     {99, 99, 99, 99, 99}
   };
+  */
 
   // Preallocate the expected total thermal conductivities (k) in [W/m/K] of minerals
   constexpr int olivinedry_exptID = 0;
@@ -618,7 +620,8 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
   for (unsigned int lID = 0; lID < lithologies.size(); ++lID)
   {
 
-    std::vector<double> current_lithology = lithologies[lID]; // Set the current lithology
+    // std::vector<double> current_lithology = lithologies[lID]; // Set the current lithology
+    std::vector<double> current_lithology(temperatures.size(), lithologies[lID]);
 
     if (current_lithology[0] == 99)
     {
@@ -634,6 +637,7 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
         for (size_t row = 0; row < temperatures.size(); ++row)
         {
 
+         // in.composition[row] = current_lithology;  // Assign the current lithology as model in.composition input
          in.composition[row] = current_lithology;  // Assign the current lithology as model in.composition input
 
          model.evaluate(in, out);  // Call the function to compute the thermal conductivities
