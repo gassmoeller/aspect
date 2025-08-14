@@ -622,8 +622,8 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
 
     // std::vector<double> current_lithology = lithologies[lID]; // Set the current lithology
     std::vector<double> current_lithology(temperatures.size(), lithologies[lID]);
-
-    if (current_lithology[0] == 99)
+    
+    if (lithologies[lID] == 99)
     {
 
       INFO("Checking thermal conductivity (k) for different minerals as a function of temperature (T) and pressure (P)");
@@ -880,7 +880,7 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
         }
       }
     }
-    else if (current_lithology[0] != 99) // To test the thermal conductivity of a all minerals
+    else if (lithologies[lID] != 99) // To test the thermal conductivity of a all minerals
     {
 
      INFO("Checking thermal conductivity (k) for different lithologies as a function of temperature (T) and pressure (P)");
