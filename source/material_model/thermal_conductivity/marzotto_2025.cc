@@ -16,6 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
+
 */
 
 #include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
@@ -970,8 +971,6 @@ namespace aspect
           {
            AssertThrow(false, dealii::ExcMessage("Invalid pressure range for the mantle."));
           }
-
-          // unsigned int mineral_ID_nonused = in.Mineral_ID;
 
           // Preallocate a vector for storing thermal conductivities of minerals
           std::vector<double> mar25_minerals_latTcond(mineral_fraction.size(), 0.0); // Lattice thermal conductivity
