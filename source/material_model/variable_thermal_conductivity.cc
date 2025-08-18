@@ -21,8 +21,8 @@
 
 #include <aspect/material_model/variable_thermal_conductivity.h>
 #include <aspect/material_model/equation_of_state/interface.h>
-// #include <aspect/material_model/thermal_conductivity/nondimensional_Tcond.h>
-#include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
+#include <aspect/material_model/thermal_conductivity/nondimensional_Tcond.h>
+// #include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
 
 
 namespace aspect
@@ -73,7 +73,7 @@ namespace aspect
           out.entropy_derivative_pressure[i] = eos_outputs.entropy_derivative_pressure[0];
           out.entropy_derivative_temperature[i] = eos_outputs.entropy_derivative_temperature[0];
  
-          aspect::MaterialModel::ThermalConductivity::marzotto_2025<dim> thermal_conductivity;
+          aspect::MaterialModel::ThermalConductivity::nondimensional_Tcond<dim> thermal_conductivity;
           thermal_conductivity.evaluate(in, out);
           out.thermal_conductivities[i] = out.thermal_conductivities[0]; // k_value; 
 
