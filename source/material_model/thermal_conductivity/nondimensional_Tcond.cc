@@ -78,6 +78,29 @@ namespace aspect
         const double nondimoliv_latTC_ymax =  2.60726381956037;  
         const double nondimoliv_Tdep_n_exp =  0.5;  
 
+        // Coefficients for NON-DIMENSIONAL dry ringwoodite 
+        // retreived from fitting dataset of
+        // [Marzotto et al., 2020, GRL, vol 47, issue 13]
+        // https://doi.org/10.1029/2020GL087607
+        // mineral composition [(Mg1.79Fe0.17)Si1.02O4]
+        constexpr int nondimring_index = 1;
+        const double nondimring_latTC_a0 =    1.6023;
+        const double nondimring_latTC_b1 =    2.1469;
+        const double nondimring_latTC_ymin =  1.28093384543429;
+        const double nondimring_latTC_ymax =  2.60726381956037;  
+        const double nondimring_Tdep_n_exp =  0.5;  
+
+        // Coefficients for NON-DIMENSIONAL Mg-bridgmanite
+        // retreived from fitting dataset of
+        // [Zhang & Marzotto 2025, in preparation]
+        // mineral composition [MgSiO3]
+        constexpr int nondimbrig_index = 2;
+        const double nondimbrig_latTC_a0 =    1.6023;
+        const double nondimbrig_latTC_b1 =    2.1469;
+        const double nondimbrig_latTC_ymin =  1.28093384543429;
+        const double nondimbrig_latTC_ymax =  2.60726381956037;  
+        const double nondimbrig_Tdep_n_exp =  0.5;  
+
         unsigned int mineralpar_index = nondimoliv_index+1; // Number of minerals
 
         // Define coefficients for radiative thermal conductivity of different minerals
@@ -92,20 +115,66 @@ namespace aspect
         const double nondimoliv_radTC_jmin = -23.0258509299405;
         const double nondimoliv_radTC_jmax =  1.28988597569074;
 
+        // Coefficients for NON-DIMENSIONAL dry ringwoodite
+        // retreived from fitting dataset of
+        // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
+        // https://doi.org/10.1016/j.epsl.2012.09.035
+        // mineral composition [Mg1.8 Fe0.2 SiO4]
+        const double nondimring_radTC_c0 =    5.6162;
+        const double nondimring_radTC_d1 =    1.8839;
+        const double nondimring_radTC_jmin = -23.0258509299405;
+        const double nondimring_radTC_jmax =  1.28988597569074;
+
+        // Coefficients for NON-DIMENSIONAL Mg-bridgmanite
+        // retreived from fitting dataset of
+        // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
+        // https://doi.org/10.1016/j.epsl.2020.116176
+        // mineral composition [MgSiO3]
+        const double nondimbrig_radTC_c0 =    5.6162;
+        const double nondimbrig_radTC_d1 =    1.8839;
+        const double nondimbrig_radTC_jmin = -23.0258509299405;
+        const double nondimbrig_radTC_jmax =  1.28988597569074;
+
         // Preallocate a vector for mineral fractions of different rocks and a vector for mineral indices
 
-        // Uniform Lithology - Upper Mantle  (100% olivine) 
-        std::vector<double> minfract_unifolit_UpMa = {1.00};
-        std::vector<unsigned int> minindex_unifolit_UpMa = {nondimoliv_index};
-        // Uniform Lithology - Upper Mantle Transition Zone (100% olivine)
-        std::vector<double> minfract_unifolit_UMTZ = {1.00};
-        std::vector<unsigned int> minindex_unifolit_UMTZ = {nondimoliv_index};
-        // Uniform Lithology - Lower Mantle Transition Zone (100% olivine)
-        std::vector<double> minfract_unifolit_LMTZ = {1.00};
-        std::vector<unsigned int> minindex_unifolit_LMTZ = {nondimoliv_index};
-        // Uniform Lithology - Lower Mantle (100% olivine)
-        std::vector<double> minfract_unifolit_LoMa = {1.00};
-        std::vector<unsigned int> minindex_unifolit_LoMa = {nondimoliv_index};
+        // One Layer Convection - Upper Mantle  (100% olivine) 
+        std::vector<double> minfract_onelayer_UpMa = {1.00};
+        std::vector<unsigned int> minindex_onelayer_UpMa = {nondimoliv_index};
+        // One Layer Convection - Upper Mantle Transition Zone (100% olivine)
+        std::vector<double> minfract_onelayer_UMTZ = {1.00};
+        std::vector<unsigned int> minindex_onelayer_UMTZ = {nondimoliv_index};
+        // One Layer Convection - Lower Mantle Transition Zone (100% olivine)
+        std::vector<double> minfract_onelayer_LMTZ = {1.00};
+        std::vector<unsigned int> minindex_onelayer_LMTZ = {nondimoliv_index};
+        // One Layer Convection - Lower Mantle (100% olivine)
+        std::vector<double> minfract_onelayer_LoMa = {1.00};
+        std::vector<unsigned int> minindex_onelayer_LoMa = {nondimoliv_index};
+    
+        // Two Layer Convection - Upper Mantle  (100% olivine) 
+        std::vector<double> minfract_twolayer_UpMa = {1.00};
+        std::vector<unsigned int> minindex_twolayer_UpMa = {nondimoliv_index};
+        // Two Layer Convection - Upper Mantle Transition Zone (100% olivine)
+        std::vector<double> minfract_twolayer_UMTZ = {1.00};
+        std::vector<unsigned int> minindex_twolayer_UMTZ = {nondimoliv_index};
+        // Two Layer Convection - Lower Mantle Transition Zone (100% olivine)
+        std::vector<double> minfract_twolayer_LMTZ = {1.00};
+        std::vector<unsigned int> minindex_twolayer_LMTZ = {nondimoliv_index};
+        // Two Layer Convection - Lower Mantle (100% Mg-bridgmanite)
+        std::vector<double> minfract_twolayer_LoMa = {1.00};
+        std::vector<unsigned int> minindex_twolayer_LoMa = {nondimbrig_index};
+
+        // Three Layer Convection - Upper Mantle  (100% olivine) 
+        std::vector<double> minfract_trelayer_UpMa = {1.00};
+        std::vector<unsigned int> minindex_trelayer_UpMa = {nondimoliv_index};
+        // Three Layer Convection - Upper Mantle Transition Zone (100% ringwoodite)
+        std::vector<double> minfract_trelayer_UMTZ = {1.00};
+        std::vector<unsigned int> minindex_trelayer_UMTZ = {nondimring_index};
+        // Three Layer Convection - Lower Mantle Transition Zone (100% ringwoodite)
+        std::vector<double> minfract_trelayer_LMTZ = {1.00};
+        std::vector<unsigned int> minindex_trelayer_LMTZ = {nondimring_index};
+        // Three Layer Convection - Lower Mantle (100% Mg-bridgmanite)
+        std::vector<double> minfract_trelayer_LoMa = {1.00};
+        std::vector<unsigned int> minindex_trelayer_LoMa = {nondimbrig_index};
 
         // All Minerals (test)
         std::vector<double> minfract_allminerals_test(mineralpar_index);
@@ -119,18 +188,18 @@ namespace aspect
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
         // Check if the sum of Rock Mineral Fraction is equal to 1
-        double sum_min_fract_unifolit_UpMa = std::accumulate(minfract_unifolit_UpMa.begin(), minfract_unifolit_UpMa.end(), 0.0);
-        AssertThrow(std::abs(sum_min_fract_unifolit_UpMa - 1.0) < 1e-6,
-                    dealii::ExcMessage("Error: The sum of minfract_unifolit_UM must be equal to 1."));
-        double sum_min_fract_unifolit_UMTZ = std::accumulate(minfract_unifolit_UMTZ.begin(), minfract_unifolit_UMTZ.end(), 0.0);
-        AssertThrow(std::abs(sum_min_fract_unifolit_UMTZ - 1.0) < 1e-6,
-                    dealii::ExcMessage("Error: The sum of minfract_unifolit_UMTZ must be equal to 1."));
-        double sum_min_fract_unifolit_LMTZ = std::accumulate(minfract_unifolit_LMTZ.begin(), minfract_unifolit_LMTZ.end(), 0.0);
-        AssertThrow(std::abs(sum_min_fract_unifolit_LMTZ - 1.0) < 1e-6,
-                    dealii::ExcMessage("Error: The sum of minfract_unifolit_LMTZ must be equal to 1."));
-        double sum_min_fract_unifolit_LoMa = std::accumulate(minfract_unifolit_LoMa.begin(), minfract_unifolit_LoMa.end(), 0.0);
-        AssertThrow(std::abs(sum_min_fract_unifolit_LoMa - 1.0) < 1e-6,
-                    dealii::ExcMessage("Error: The sum of minfract_unifolit_LoMa must be equal to 1."));
+        double sum_min_fract_onelayer_UpMa = std::accumulate(minfract_onelayer_UpMa.begin(), minfract_onelayer_UpMa.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_onelayer_UpMa - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_onelayer_UM must be equal to 1."));
+        double sum_min_fract_onelayer_UMTZ = std::accumulate(minfract_onelayer_UMTZ.begin(), minfract_onelayer_UMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_onelayer_UMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_onelayer_UMTZ must be equal to 1."));
+        double sum_min_fract_onelayer_LMTZ = std::accumulate(minfract_onelayer_LMTZ.begin(), minfract_onelayer_LMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_onelayer_LMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_onelayer_LMTZ must be equal to 1."));
+        double sum_min_fract_onelayer_LoMa = std::accumulate(minfract_onelayer_LoMa.begin(), minfract_onelayer_LoMa.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_onelayer_LoMa - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_onelayer_LoMa must be equal to 1."));
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
@@ -198,10 +267,10 @@ namespace aspect
 
           if (P_ratio >= P_ratio_UpMa_top && P_ratio <= P_ratio_UpMa_bot) // Upper Mantle
           {
-            if (lithology == 0) // Uniform Lithology
+            if (lithology == 0) // One Layer Convection
             {
-              mineral_fraction = minfract_unifolit_UpMa; 
-              mineral_index = minindex_unifolit_UpMa;
+              mineral_fraction = minfract_onelayer_UpMa; 
+              mineral_index = minindex_onelayer_UpMa;
             }
             else if (lithology == 99) // test (all minerals)
             {
@@ -215,10 +284,10 @@ namespace aspect
           }
           else if (P_ratio > P_ratio_UMTZ_top && P_ratio <= P_ratio_UMTZ_bot) // Upper Transition Zone
           {
-            if (lithology == 0) // Uniform Lithology
+            if (lithology == 0) // One Layer Convection
             {
-              mineral_fraction = minfract_unifolit_UMTZ; 
-              mineral_index = minindex_unifolit_UMTZ;
+              mineral_fraction = minfract_onelayer_UMTZ; 
+              mineral_index = minindex_onelayer_UMTZ;
             }
             else if (lithology == 99) // test (all minerals)
             {
@@ -232,10 +301,10 @@ namespace aspect
           }
           else if (P_ratio > P_ratio_LMTZ_top && P_ratio <= P_ratio_LMTZ_bot) // Lower Transition Zone
           {
-            if (lithology == 0) // Uniform Lithology
+            if (lithology == 0) // One Layer Convection
             {
-              mineral_fraction = minfract_unifolit_LMTZ; 
-              mineral_index = minindex_unifolit_LMTZ;
+              mineral_fraction = minfract_onelayer_LMTZ; 
+              mineral_index = minindex_onelayer_LMTZ;
             }
             else if (lithology == 99) // test (all minerals)
             {
@@ -249,10 +318,10 @@ namespace aspect
           }
           else if (P_ratio > P_ratio_LoMa_top && P_ratio <= P_ratio_LoMa_bot) // Lower Mantle
           {
-            if (lithology == 0) // Uniform Lithology
+            if (lithology == 0) // One Layer Convection
             {
-              mineral_fraction = minfract_unifolit_LoMa; 
-              mineral_index = minindex_unifolit_LoMa;
+              mineral_fraction = minfract_onelayer_LoMa; 
+              mineral_index = minindex_onelayer_LoMa;
             }
             else if (lithology == 99) // test (all minerals)
             {
