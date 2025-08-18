@@ -80,6 +80,8 @@ namespace aspect
 
         unsigned int mineralpar_index = nondimoliv_index+1; // Number of minerals
 
+        // Define coefficients for radiative thermal conductivity of different minerals
+
         // Coefficients for NON-DIMENSIONAL dry olivine
         // retreived from fitting dataset of
         // [Marzotto et al. 2025, Nature Communication, 16, 6058]
@@ -104,6 +106,15 @@ namespace aspect
         // Uniform Lithology - Lower Mantle (100% olivine)
         std::vector<double> minfract_unifolit_LoMa = {1.00};
         std::vector<unsigned int> minindex_unifolit_LoMa = {nondimoliv_index};
+
+        // All Minerals (test)
+        std::vector<double> minfract_allminerals_test(mineralpar_index);
+        std::vector<unsigned int> minindex_allminerals_test(mineralpar_index);
+        for (unsigned int i = 0; i < mineralpar_index; ++i)
+        {
+          minindex_allminerals_test[i] = i;
+          minfract_allminerals_test[i] = 1.00;
+        }
 
         #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
@@ -140,7 +151,7 @@ namespace aspect
         const double P_LMTZ_top = 17.69264984e9; // Lower Mantle Transition Zone top pressure in [Pa]
         const double P_LMTZ_bot = 23.11221520e9; // Lower Mantle Transition Zone bottom pressure in [Pa]
         const double P_LoMa_top = 23.11221520e9; // Lower Mantle top pressure in [Pa]
-        const double P_LoMa_bot = P_max ;        // Lower Mantle bottom pressure in [Pa]
+        const double P_LoMa_bot = P_max;         // Lower Mantle bottom pressure in [Pa]
 
         // Define pressure ratio [/]
         const double P_ratio_UpMa_top = P_UpMa_top / P_max;
@@ -172,26 +183,30 @@ namespace aspect
           }
 
           // Compute pressure and temperature ratios
-          double P_ratio = current_pressure/P_max;
-          double T_ratio = current_temperature/T_max;
+          double P_ratio = current_pressure / P_max;
+          double T_ratio = current_temperature / T_max;
 
           // Compute natural logarithm of pressure and temperature 
           double P_log = std::log(P_ratio);
           double T_log = std::log(T_ratio);
 
           // Take lithology of the model
-          double lithology = 0;
-          double min_frac = in.composition[0][i];
+          double lithology = in.composition[0][i];
 
           std::vector<double> mineral_fraction;    // Mineral fractions for the current lithology
           std::vector<unsigned int> mineral_index; // Mineral indexes for the current lithology
 
-           if (P_ratio >= P_ratio_UpMa_top && P_ratio <= P_ratio_UpMa_bot) // Upper Mantle
+          if (P_ratio >= P_ratio_UpMa_top && P_ratio <= P_ratio_UpMa_bot) // Upper Mantle
           {
             if (lithology == 0) // Uniform Lithology
             {
               mineral_fraction = minfract_unifolit_UpMa; 
               mineral_index = minindex_unifolit_UpMa;
+            }
+            else if (lithology == 99) // test (all minerals)
+            {
+              mineral_fraction = {1.00}; 
+              mineral_index = {in.Mineral_ID};
             }
             else
             {
@@ -205,6 +220,11 @@ namespace aspect
               mineral_fraction = minfract_unifolit_UMTZ; 
               mineral_index = minindex_unifolit_UMTZ;
             }
+            else if (lithology == 99) // test (all minerals)
+            {
+              mineral_fraction = {1.00}; 
+              mineral_index = {in.Mineral_ID};
+            }
             else
             {
               AssertThrow(false, dealii::ExcMessage("Invalid lithology for the upper mantle transition zone."));
@@ -217,17 +237,27 @@ namespace aspect
               mineral_fraction = minfract_unifolit_LMTZ; 
               mineral_index = minindex_unifolit_LMTZ;
             }
+            else if (lithology == 99) // test (all minerals)
+            {
+              mineral_fraction = {1.00}; 
+              mineral_index = {in.Mineral_ID};
+            }
             else
             {
               AssertThrow(false, dealii::ExcMessage("Invalid lithology for the lower mantle transition zone."));
             }
           }
-          else if (P_ratio > P_ratio_LoMa_top && P_ratio <= P_ratio_LoMa_bot) // lower mantle
+          else if (P_ratio > P_ratio_LoMa_top && P_ratio <= P_ratio_LoMa_bot) // Lower Mantle
           {
             if (lithology == 0) // Uniform Lithology
             {
               mineral_fraction = minfract_unifolit_LoMa; 
               mineral_index = minindex_unifolit_LoMa;
+            }
+            else if (lithology == 99) // test (all minerals)
+            {
+              mineral_fraction = {1.00}; 
+              mineral_index = {in.Mineral_ID};
             }
             else
             {
@@ -240,13 +270,9 @@ namespace aspect
           }
 
           // Preallocate a vector for storing thermal conductivities of minerals
-          std::vector<double> nondim_minerals_latTcond(mineralpar_index, 0.0); // Lattice thermal conductivity
-          std::vector<double> nondim_minerals_radTcond(mineralpar_index, 0.0); // Radiative thermal conductivity
-          std::vector<double> nondim_minerals_totTcond(mineralpar_index, 0.0); // Total thermal conductivity
-          // Preallocate a matrix for storing thermal conductivities of minerals
-          std::vector<std::vector<double>> nondim_all_minerals_Tconds(mineralpar_index, std::vector<double>(3, 0.0));
-
-          // unsigned int mID = in.Mineral_ID;
+          std::vector<double> nondim_minerals_latTcond(mineral_fraction.size(), 0.0); // Lattice thermal conductivity
+          std::vector<double> nondim_minerals_radTcond(mineral_fraction.size(), 0.0); // Radiative thermal conductivity
+          std::vector<double> nondim_minerals_totTcond(mineral_fraction.size(), 0.0); // Total thermal conductivity
 
           // Preallocate total thermal conductivity of the aggregate rock
           double nondim_aggregate_rock_totTcond = 1;
@@ -260,7 +286,7 @@ namespace aspect
            {
              case nondimoliv_index: // Dry Olivine
              {  
-               double nondimoliv_latTCon = compute_lattice_thermal_conductivity_nondimn(
+               double nondimoliv_latTcond = compute_lattice_thermal_conductivity_nondimn(
                nondimoliv_latTC_a0, 
                nondimoliv_latTC_b1, 
                nondimoliv_latTC_ymin, 
@@ -269,19 +295,19 @@ namespace aspect
                T_ratio, 
                T_nondim, 
                nondimoliv_Tdep_n_exp); 
-               double nondimoliv_radTCon = compute_radiative_thermal_conductivity_nondimn(
+               double nondimoliv_radTcond = compute_radiative_thermal_conductivity_nondimn(
                nondimoliv_radTC_c0, 
                nondimoliv_radTC_d1, 
                nondimoliv_radTC_jmin, 
                nondimoliv_radTC_jmax, 
                T_log); 
-               double nondimoliv_TotTCon = compute_total_thermal_conductivity_nondimn(
-               nondimoliv_latTCon, 
-               nondimoliv_radTCon); 
+               double nondimoliv_totTcond = compute_total_thermal_conductivity_nondimn(
+               nondimoliv_latTcond, 
+               nondimoliv_radTcond); 
                // Store the thermal conductivities in the vector
-               nondim_minerals_latTcond[col] = nondimoliv_latTCon;
-               nondim_minerals_radTcond[col] = nondimoliv_radTCon;
-               nondim_minerals_totTcond[col] = nondimoliv_TotTCon;
+               nondim_minerals_latTcond[col] = nondimoliv_latTcond;
+               nondim_minerals_radTcond[col] = nondimoliv_radTcond;
+               nondim_minerals_totTcond[col] = nondimoliv_totTcond;
                break;
               }
             }
@@ -302,7 +328,6 @@ namespace aspect
           {
              AssertThrow(false, dealii::ExcMessage("Invalid lithology for the mantle."));
           }
-
         }
       }
     }

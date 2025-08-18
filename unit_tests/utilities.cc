@@ -486,85 +486,85 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
   AssertThrow(std::abs(sum_expt_fract_duniteOl_LoMa - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_duniteOl_LoMa must be equal to 1."));
 
   // Pyrolite
-  std::vector<double> aggrock_pyrolite_UpMa_TCond(temperatures.size());
-  std::vector<double> aggrock_pyrolite_UMTZ_TCond(temperatures.size());
-  std::vector<double> aggrock_pyrolite_LMTZ_TCond(temperatures.size());
-  std::vector<double> aggrock_pyrolite_LoMa_TCond(temperatures.size());
+  std::vector<double> aggrock_pyrolite_UpMa_Tcond(temperatures.size());
+  std::vector<double> aggrock_pyrolite_UMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_pyrolite_LMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_pyrolite_LoMa_Tcond(temperatures.size());
   // Harzburgite
-  std::vector<double> aggrock_harzburg_UpMa_TCond(temperatures.size());
-  std::vector<double> aggrock_harzburg_UMTZ_TCond(temperatures.size());
-  std::vector<double> aggrock_harzburg_LMTZ_TCond(temperatures.size());
-  std::vector<double> aggrock_harzburg_LoMa_TCond(temperatures.size());
+  std::vector<double> aggrock_harzburg_UpMa_Tcond(temperatures.size());
+  std::vector<double> aggrock_harzburg_UMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_harzburg_LMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_harzburg_LoMa_Tcond(temperatures.size());
   // Meta-basalts (MORB)
-  std::vector<double> aggrock_metaMORB_UpMa_TCond(temperatures.size());
-  std::vector<double> aggrock_metaMORB_UMTZ_TCond(temperatures.size());
-  std::vector<double> aggrock_metaMORB_LMTZ_TCond(temperatures.size());
-  std::vector<double> aggrock_metaMORB_LoMa_TCond(temperatures.size());
+  std::vector<double> aggrock_metaMORB_UpMa_Tcond(temperatures.size());
+  std::vector<double> aggrock_metaMORB_UMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_metaMORB_LMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_metaMORB_LoMa_Tcond(temperatures.size());
   // Dunite (> 90% olivine)
-  std::vector<double> aggrock_duniteOl_UpMa_TCond(temperatures.size());
-  std::vector<double> aggrock_duniteOl_UMTZ_TCond(temperatures.size());
-  std::vector<double> aggrock_duniteOl_LMTZ_TCond(temperatures.size());
-  std::vector<double> aggrock_duniteOl_LoMa_TCond(temperatures.size());
+  std::vector<double> aggrock_duniteOl_UpMa_Tcond(temperatures.size());
+  std::vector<double> aggrock_duniteOl_UMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_duniteOl_LMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_duniteOl_LoMa_Tcond(temperatures.size());
 
   // Compute P,T-dependent thermal conductivities of aggregate rocks 
   for (size_t row = 0; row < temperatures.size(); ++row)
   {
     // Pyrolite
-    aggrock_pyrolite_UpMa_TCond[row] = std::pow(olivinedry_expt_totTcon[row], minfract_expt_pyrolite_UpMa[0])*
+    aggrock_pyrolite_UpMa_Tcond[row] = std::pow(olivinedry_expt_totTcon[row], minfract_expt_pyrolite_UpMa[0])*
                                        std::pow(grtpyropes_expt_totTcon[row], minfract_expt_pyrolite_UpMa[1])*
                                        std::pow(opxenstati_expt_totTcon[row], minfract_expt_pyrolite_UpMa[2])*
                                        std::pow(cpxdiopsid_expt_totTcon[row], minfract_expt_pyrolite_UpMa[3]);  
-    aggrock_pyrolite_UMTZ_TCond[row] = std::pow(wadsleydry_expt_totTcon[row], minfract_expt_pyrolite_UMTZ[0])*
+    aggrock_pyrolite_UMTZ_Tcond[row] = std::pow(wadsleydry_expt_totTcon[row], minfract_expt_pyrolite_UMTZ[0])*
                                        std::pow(grtmajorit_expt_totTcon[row], minfract_expt_pyrolite_UMTZ[1])*
                                        std::pow(cpxdiopsid_expt_totTcon[row], minfract_expt_pyrolite_UMTZ[2]);  
-    aggrock_pyrolite_LMTZ_TCond[row] = std::pow(ringwoodry_expt_totTcon[row], minfract_expt_pyrolite_LMTZ[0])*
+    aggrock_pyrolite_LMTZ_Tcond[row] = std::pow(ringwoodry_expt_totTcon[row], minfract_expt_pyrolite_LMTZ[0])*
                                        std::pow(grtmajorit_expt_totTcon[row], minfract_expt_pyrolite_LMTZ[1]); 
-    aggrock_pyrolite_LoMa_TCond[row] = std::pow(brigmaAlMg_expt_totTcon[row], minfract_expt_pyrolite_LoMa[0])*
+    aggrock_pyrolite_LoMa_Tcond[row] = std::pow(brigmaAlMg_expt_totTcon[row], minfract_expt_pyrolite_LoMa[0])*
                                        std::pow(ferroper10_expt_totTcon[row], minfract_expt_pyrolite_LoMa[1])*
                                        std::pow(davemaoite_expt_totTcon[row], minfract_expt_pyrolite_LoMa[2]);
-    AssertThrow(aggrock_pyrolite_UpMa_TCond[row] > 0, dealii::ExcMessage("aggrock_pyrolite_UpMa_TCond is <= 0")); 
-    AssertThrow(aggrock_pyrolite_UMTZ_TCond[row] > 0, dealii::ExcMessage("aggrock_pyrolite_UMTZ_TCond is <= 0"));
-    AssertThrow(aggrock_pyrolite_LMTZ_TCond[row] > 0, dealii::ExcMessage("aggrock_pyrolite_LMTZ_TCond is <= 0"));
-    AssertThrow(aggrock_pyrolite_LoMa_TCond[row] > 0, dealii::ExcMessage("aggrock_pyrolite_LoMa_TCond is <= 0"));
+    AssertThrow(aggrock_pyrolite_UpMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_pyrolite_UpMa_Tcond is <= 0")); 
+    AssertThrow(aggrock_pyrolite_UMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_pyrolite_UMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_pyrolite_LMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_pyrolite_LMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_pyrolite_LoMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_pyrolite_LoMa_Tcond is <= 0"));
     // Harzburgite
-    aggrock_harzburg_UpMa_TCond[row] = std::pow(olivinedry_expt_totTcon[row], minfract_expt_harzburg_UpMa[0])*
+    aggrock_harzburg_UpMa_Tcond[row] = std::pow(olivinedry_expt_totTcon[row], minfract_expt_harzburg_UpMa[0])*
                                        std::pow(opxenstati_expt_totTcon[row], minfract_expt_harzburg_UpMa[1]);
-    aggrock_harzburg_UMTZ_TCond[row] = std::pow(wadsleydry_expt_totTcon[row], minfract_expt_harzburg_UMTZ[0])*
+    aggrock_harzburg_UMTZ_Tcond[row] = std::pow(wadsleydry_expt_totTcon[row], minfract_expt_harzburg_UMTZ[0])*
                                        std::pow(cpxdiopsid_expt_totTcon[row], minfract_expt_harzburg_UMTZ[1])*
                                        std::pow(grtmajorit_expt_totTcon[row], minfract_expt_harzburg_UMTZ[2]);
-    aggrock_harzburg_LMTZ_TCond[row] = std::pow(ringwoodry_expt_totTcon[row], minfract_expt_harzburg_LMTZ[0])*
+    aggrock_harzburg_LMTZ_Tcond[row] = std::pow(ringwoodry_expt_totTcon[row], minfract_expt_harzburg_LMTZ[0])*
                                        std::pow(grtmajorit_expt_totTcon[row], minfract_expt_harzburg_LMTZ[1]);
-    aggrock_harzburg_LoMa_TCond[row] = std::pow(brigmaAlMg_expt_totTcon[row], minfract_expt_harzburg_LoMa[0])*
+    aggrock_harzburg_LoMa_Tcond[row] = std::pow(brigmaAlMg_expt_totTcon[row], minfract_expt_harzburg_LoMa[0])*
                                        std::pow(ferroper10_expt_totTcon[row], minfract_expt_harzburg_LoMa[1]);
-    AssertThrow(aggrock_harzburg_UpMa_TCond[row] > 0, dealii::ExcMessage("aggrock_harzburg_UpMa_TCond is <= 0")); 
-    AssertThrow(aggrock_harzburg_UMTZ_TCond[row] > 0, dealii::ExcMessage("aggrock_harzburg_UMTZ_TCond is <= 0"));
-    AssertThrow(aggrock_harzburg_LMTZ_TCond[row] > 0, dealii::ExcMessage("aggrock_harzburg_LMTZ_TCond is <= 0"));
-    AssertThrow(aggrock_harzburg_LoMa_TCond[row] > 0, dealii::ExcMessage("aggrock_harzburg_LoMa_TCond is <= 0"));
+    AssertThrow(aggrock_harzburg_UpMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_harzburg_UpMa_Tcond is <= 0")); 
+    AssertThrow(aggrock_harzburg_UMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_harzburg_UMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_harzburg_LMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_harzburg_LMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_harzburg_LoMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_harzburg_LoMa_Tcond is <= 0"));
     // Meta-basalts (MORB)
-    aggrock_metaMORB_UpMa_TCond[row] = std::pow(cpxdiopsid_expt_totTcon[row], minfract_expt_metaMORB_UpMa[0])*
+    aggrock_metaMORB_UpMa_Tcond[row] = std::pow(cpxdiopsid_expt_totTcon[row], minfract_expt_metaMORB_UpMa[0])*
                                        std::pow(grtpyropes_expt_totTcon[row], minfract_expt_metaMORB_UpMa[1]);
-    aggrock_metaMORB_UMTZ_TCond[row] = std::pow(grtmajorit_expt_totTcon[row], minfract_expt_metaMORB_UMTZ[0])*
+    aggrock_metaMORB_UMTZ_Tcond[row] = std::pow(grtmajorit_expt_totTcon[row], minfract_expt_metaMORB_UMTZ[0])*
                                        std::pow(stisho05Al_expt_totTcon[row], minfract_expt_metaMORB_UMTZ[1])*
                                        std::pow(cpxdiopsid_expt_totTcon[row], minfract_expt_metaMORB_UMTZ[2]);
-    aggrock_metaMORB_LMTZ_TCond[row] = std::pow(grtmajorit_expt_totTcon[row], minfract_expt_metaMORB_LMTZ[0])*
+    aggrock_metaMORB_LMTZ_Tcond[row] = std::pow(grtmajorit_expt_totTcon[row], minfract_expt_metaMORB_LMTZ[0])*
                                        std::pow(stisho05Al_expt_totTcon[row], minfract_expt_metaMORB_LMTZ[1]);
-    aggrock_metaMORB_LoMa_TCond[row] = std::pow(brigmaFeAl_expt_totTcon[row], minfract_expt_metaMORB_LoMa[0])*
+    aggrock_metaMORB_LoMa_Tcond[row] = std::pow(brigmaFeAl_expt_totTcon[row], minfract_expt_metaMORB_LoMa[0])*
                                        std::pow(davemaoite_expt_totTcon[row], minfract_expt_metaMORB_LoMa[1])*
                                        std::pow(newhexAlph_expt_totTcon[row], minfract_expt_metaMORB_LoMa[2])*
                                        std::pow(stisho05Al_expt_totTcon[row], minfract_expt_metaMORB_LoMa[3]);
-    AssertThrow(aggrock_metaMORB_UpMa_TCond[row] > 0, dealii::ExcMessage("aggrock_metaMORB_UpMa_TCond is <= 0")); 
-    AssertThrow(aggrock_metaMORB_UMTZ_TCond[row] > 0, dealii::ExcMessage("aggrock_metaMORB_UMTZ_TCond is <= 0"));
-    AssertThrow(aggrock_metaMORB_LMTZ_TCond[row] > 0, dealii::ExcMessage("aggrock_metaMORB_LMTZ_TCond is <= 0"));
-    AssertThrow(aggrock_metaMORB_LoMa_TCond[row] > 0, dealii::ExcMessage("aggrock_metaMORB_LoMa_TCond is <= 0"));
+    AssertThrow(aggrock_metaMORB_UpMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_metaMORB_UpMa_Tcond is <= 0")); 
+    AssertThrow(aggrock_metaMORB_UMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_metaMORB_UMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_metaMORB_LMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_metaMORB_LMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_metaMORB_LoMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_metaMORB_LoMa_Tcond is <= 0"));
     // Dunite (> 90% olivine)
-    aggrock_duniteOl_UpMa_TCond[row] = std::pow(olivinedry_expt_totTcon[row], minfract_expt_duniteOl_UpMa[0]);
-    aggrock_duniteOl_UMTZ_TCond[row] = std::pow(wadsleydry_expt_totTcon[row], minfract_expt_duniteOl_UMTZ[0]);
-    aggrock_duniteOl_LMTZ_TCond[row] = std::pow(ringwoodry_expt_totTcon[row], minfract_expt_duniteOl_LMTZ[0]);
-    aggrock_duniteOl_LoMa_TCond[row] = std::pow(brigma90Mg_expt_totTcon[row], minfract_expt_duniteOl_LoMa[0]);
-    AssertThrow(aggrock_duniteOl_UpMa_TCond[row] > 0, dealii::ExcMessage("aggrock_duniteOl_UpMa_TCond is <= 0")); 
-    AssertThrow(aggrock_duniteOl_UMTZ_TCond[row] > 0, dealii::ExcMessage("aggrock_duniteOl_UMTZ_TCond is <= 0"));
-    AssertThrow(aggrock_duniteOl_LMTZ_TCond[row] > 0, dealii::ExcMessage("aggrock_duniteOl_LMTZ_TCond is <= 0"));
-    AssertThrow(aggrock_duniteOl_LoMa_TCond[row] > 0, dealii::ExcMessage("aggrock_duniteOl_LoMa_TCond is <= 0"));
+    aggrock_duniteOl_UpMa_Tcond[row] = std::pow(olivinedry_expt_totTcon[row], minfract_expt_duniteOl_UpMa[0]);
+    aggrock_duniteOl_UMTZ_Tcond[row] = std::pow(wadsleydry_expt_totTcon[row], minfract_expt_duniteOl_UMTZ[0]);
+    aggrock_duniteOl_LMTZ_Tcond[row] = std::pow(ringwoodry_expt_totTcon[row], minfract_expt_duniteOl_LMTZ[0]);
+    aggrock_duniteOl_LoMa_Tcond[row] = std::pow(brigma90Mg_expt_totTcon[row], minfract_expt_duniteOl_LoMa[0]);
+    AssertThrow(aggrock_duniteOl_UpMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_duniteOl_UpMa_Tcond is <= 0")); 
+    AssertThrow(aggrock_duniteOl_UMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_duniteOl_UMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_duniteOl_LMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_duniteOl_LMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_duniteOl_LoMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_duniteOl_LoMa_Tcond is <= 0"));
   }
   
   double pressure_UpMa_top = 1e5;             // Upper Mantle top pressure in Pa
@@ -584,31 +584,31 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
 
     if (current_pressure >= pressure_UpMa_top && current_pressure <= pressure_UpMa_bot) // Upper Mantle
     {     
-       expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_UpMa_TCond[row]; // Pyrolite
-       expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_UpMa_TCond[row]; // Harzburgite
-       expt_rocks_totTcond[row][metaMORB_exptID] = aggrock_metaMORB_UpMa_TCond[row]; // Meta-basalts (MORB)
-       expt_rocks_totTcond[row][duniteOl_exptID] = aggrock_duniteOl_UpMa_TCond[row]; // Dunite (> 90% olivine)
+       expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_UpMa_Tcond[row]; // Pyrolite
+       expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_UpMa_Tcond[row]; // Harzburgite
+       expt_rocks_totTcond[row][metaMORB_exptID] = aggrock_metaMORB_UpMa_Tcond[row]; // Meta-basalts (MORB)
+       expt_rocks_totTcond[row][duniteOl_exptID] = aggrock_duniteOl_UpMa_Tcond[row]; // Dunite (> 90% olivine)
     }
     else if (current_pressure > pressure_UMTZ_top && current_pressure <= pressure_UMTZ_bot) // Upper Transition Zone
     {
-       expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_UMTZ_TCond[row]; // Pyrolite
-       expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_UMTZ_TCond[row]; // Harzburgite
-       expt_rocks_totTcond[row][metaMORB_exptID] = aggrock_metaMORB_UMTZ_TCond[row]; // Meta-basalts (MORB)
-       expt_rocks_totTcond[row][duniteOl_exptID] = aggrock_duniteOl_UMTZ_TCond[row]; // Dunite (> 90% olivine)
+       expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_UMTZ_Tcond[row]; // Pyrolite
+       expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_UMTZ_Tcond[row]; // Harzburgite
+       expt_rocks_totTcond[row][metaMORB_exptID] = aggrock_metaMORB_UMTZ_Tcond[row]; // Meta-basalts (MORB)
+       expt_rocks_totTcond[row][duniteOl_exptID] = aggrock_duniteOl_UMTZ_Tcond[row]; // Dunite (> 90% olivine)
     }
     else if (current_pressure > pressure_LMTZ_top && current_pressure <= pressure_LMTZ_bot) // Lower Transition Zone
     {
-       expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_LMTZ_TCond[row]; // Pyrolite
-       expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_LMTZ_TCond[row]; // Harzburgite
-       expt_rocks_totTcond[row][metaMORB_exptID] = aggrock_metaMORB_LMTZ_TCond[row]; // Meta-basalts (MORB)
-       expt_rocks_totTcond[row][duniteOl_exptID] = aggrock_duniteOl_LMTZ_TCond[row]; // Dunite (> 90% olivine)
+       expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_LMTZ_Tcond[row]; // Pyrolite
+       expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_LMTZ_Tcond[row]; // Harzburgite
+       expt_rocks_totTcond[row][metaMORB_exptID] = aggrock_metaMORB_LMTZ_Tcond[row]; // Meta-basalts (MORB)
+       expt_rocks_totTcond[row][duniteOl_exptID] = aggrock_duniteOl_LMTZ_Tcond[row]; // Dunite (> 90% olivine)
     }
     else if (current_pressure > pressure_LoMa_top && current_pressure <= pressure_LoMa_bot) // lower mantle
     {    
-       expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_LoMa_TCond[row]; // Pyrolite
-       expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_LoMa_TCond[row]; // Harzburgite
-       expt_rocks_totTcond[row][metaMORB_exptID] = aggrock_metaMORB_LoMa_TCond[row]; // Meta-basalts (MORB)
-       expt_rocks_totTcond[row][duniteOl_exptID] = aggrock_duniteOl_LoMa_TCond[row]; // Dunite (> 90% olivine)
+       expt_rocks_totTcond[row][pyrolite_exptID] = aggrock_pyrolite_LoMa_Tcond[row]; // Pyrolite
+       expt_rocks_totTcond[row][harzburg_exptID] = aggrock_harzburg_LoMa_Tcond[row]; // Harzburgite
+       expt_rocks_totTcond[row][metaMORB_exptID] = aggrock_metaMORB_LoMa_Tcond[row]; // Meta-basalts (MORB)
+       expt_rocks_totTcond[row][duniteOl_exptID] = aggrock_duniteOl_LoMa_Tcond[row]; // Dunite (> 90% olivine)
     }
     else
     {
@@ -2045,85 +2045,215 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
   std::vector<double> temperatures = {300, 1600, 1700, 1800, 3000};
   in.temperature = temperatures;
 
-  // Assigning an array of values to in.pressure (P) in [GPa]
-  std::vector<double> pressures = {1e5, 1e9, 5e9, 10e9, 100e9};
+  // Assigning an array of values to in.pressure (P) in [Pa]
+  std::vector<double> pressures = {1e5, 5e9, 16e9, 22e9, 100e9};
   in.pressure = pressures;
 
-  // Assigning a matrix of volume fractions to in.composition (X) in [%]
-  std::vector<std::vector<double>> compositions = 
-  {
-    {1.00, 1.00, 1.00, 1.00, 1.00},
-    {0.75, 0.75, 0.75, 0.75, 0.75},
-    {0.50, 0.50, 0.50, 0.50, 0.50},
-    {0.25, 0.25, 0.25, 0.25, 0.25}
-  };
+  // Assigning a lithology index to in.composition 
+  //(0: uniform lithology, 99: test)
+  std::vector<double> lithologies = {0, 99};
 
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
-  constexpr int nondimensional_olivine_ID = 0;
-  std::vector<double> olivine_expt_nondimensional_totTcond(temperatures.size());
+  constexpr int nondimoliv_exptID = 0;
+  std::vector<double> nondimoliv_expt_totTcond(temperatures.size());
 
-  unsigned int nondimensional_index = nondimensional_olivine_ID+1; // Number of minerals
+  // Preallocate the expected total thermal conductivities (k) in [W/m/K] of rocks
+  constexpr int unifolit_exptID = 0;
+  std::vector<double> unifolit_expt_totTcon(temperatures.size());
+
+  unsigned int nondim_mine_index = nondimoliv_exptID+1; // Number of minerals
+  unsigned int nondim_rock_index = unifolit_exptID+1;   // Number of rocks
 
   // Preallocate matrixes for storing thermal conductivities of minerals
-  std::vector<std::vector<double>> expt_nondimensional_latTcond(nondimensional_index, std::vector<double>(temperatures.size(), 0.0)); // Lattice thermal conductivity
-  std::vector<std::vector<double>> expt_nondimensional_radTcond(nondimensional_index, std::vector<double>(temperatures.size(), 0.0)); // Radiative thermal conductivity
-  std::vector<std::vector<double>> expt_nondimensional_totTcond(nondimensional_index, std::vector<double>(temperatures.size(), 0.0)); // Total thermal conductivity
+  std::vector<std::vector<double>> expt_nondim_mine_latTcond(temperatures.size(), std::vector<double>(nondim_mine_index, 0.0)); // Lattice thermal conductivity
+  std::vector<std::vector<double>> expt_nondim_mine_radTcond(temperatures.size(), std::vector<double>(nondim_mine_index, 0.0)); // Radiative thermal conductivity
+  std::vector<std::vector<double>> expt_nondim_mine_totTcond(temperatures.size(), std::vector<double>(nondim_mine_index, 0.0)); // Total thermal conductivity
   
+  // Preallocate matrixes for storing thermal conductivities of rocks
+  std::vector<std::vector<double>> expt_nondim_rock_totTcond(temperatures.size(), std::vector<double>(nondim_rock_index, 0.0)); // Total thermal conductivity
+
   // Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
-  std::vector<double> olivine_expt_nondimensional_latTcond = {3.58888, 1.55432, 1.51642, 1.50279, 2.99729}; 
-  std::vector<double> olivine_expt_nondimensional_radTcond = {0.00138, 2.23156, 2.34983, 2.45491, 3.12276};
-  expt_nondimensional_latTcond[nondimensional_olivine_ID] = olivine_expt_nondimensional_latTcond;
-  expt_nondimensional_radTcond[nondimensional_olivine_ID] = olivine_expt_nondimensional_radTcond;
+  std::vector<double> nondimoliv_expt_latTcond = {3.588882834, 1.563092069, 1.612635433, 1.663665767, 2.997286966}; 
+  std::vector<double> nondimoliv_expt_radTcond = {0.00138, 2.23156, 2.34983, 2.45491, 3.12276};
+  expt_nondim_mine_latTcond[nondimoliv_exptID] = nondimoliv_expt_latTcond;
+  expt_nondim_mine_radTcond[nondimoliv_exptID] = nondimoliv_expt_radTcond;
 
   // Perform element-wise sum
   for (size_t row = 0; row < temperatures.size(); ++row)
   {
-    olivine_expt_nondimensional_totTcond[row] = olivine_expt_nondimensional_latTcond[row]+olivine_expt_nondimensional_radTcond[row];
-    expt_nondimensional_totTcond[nondimensional_olivine_ID] = olivine_expt_nondimensional_totTcond;
+    // Nondimensional Olivine: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+    nondimoliv_expt_totTcond[row] = nondimoliv_expt_latTcond[row] + nondimoliv_expt_radTcond[row];
+    expt_nondim_mine_latTcond[row][nondimoliv_exptID] = nondimoliv_expt_latTcond[row];
+    expt_nondim_mine_radTcond[row][nondimoliv_exptID] = nondimoliv_expt_radTcond[row];  
+    expt_nondim_mine_totTcond[row][nondimoliv_exptID] = nondimoliv_expt_totTcond[row];
+    AssertThrow(nondimoliv_expt_totTcond[row] > 0, dealii::ExcMessage("nondimoliv is < 0 ; Base for pow must be > 0"));
   }
 
-  // Loop over all mID values
-  for (unsigned int mID = 0; mID < nondimensional_index; ++mID)
+  // Uniform Lithology
+  std::vector<double> minfract_expt_unifolit_UpMa = {1.00}; // Upper Mantle (100% olivine)
+  std::vector<double> minfract_expt_unifolit_UMTZ = {1.00}; // Upper Mantle Transition Zone (100% olivine)
+  std::vector<double> minfract_expt_unifolit_LMTZ = {1.00}; // Lower Mantle Transition Zone (100% olivine)
+  std::vector<double> minfract_expt_unifolit_LoMa = {1.00}; // Lower Mantle (100% olivine)
+
+    // Check if the sum of Rock Mineral Fraction is equal to 1
+  double sum_expt_fract_unifolit_UpMa = std::accumulate(minfract_expt_unifolit_UpMa.begin(), minfract_expt_unifolit_UpMa.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_unifolit_UpMa - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_unifolit_UpMa must be equal to 1."));
+  double sum_expt_fract_unifolit_UMTZ = std::accumulate(minfract_expt_unifolit_UMTZ.begin(), minfract_expt_unifolit_UMTZ.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_unifolit_UMTZ - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_unifolit_UMTZ must be equal to 1."));
+  double sum_expt_fract_unifolit_LMTZ = std::accumulate(minfract_expt_unifolit_LMTZ.begin(), minfract_expt_unifolit_LMTZ.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_unifolit_LMTZ - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_unifolit_LMTZ must be equal to 1."));
+  double sum_expt_fract_unifolit_LoMa = std::accumulate(minfract_expt_unifolit_LoMa.begin(), minfract_expt_unifolit_LoMa.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_unifolit_LoMa - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_unifolit_LoMa must be equal to 1."));
+
+  // Uniform Lithology
+  std::vector<double> aggrock_unifolit_UpMa_Tcond(temperatures.size());
+  std::vector<double> aggrock_unifolit_UMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_unifolit_LMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_unifolit_LoMa_Tcond(temperatures.size());
+
+  // Compute P,T-dependent thermal conductivities of aggregate rocks 
+  for (size_t row = 0; row < temperatures.size(); ++row)
   {
-   in.Mineral_ID = mID; // Set the current mID
+    // Uniform Lithology
+    aggrock_unifolit_UpMa_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_unifolit_UpMa[0]);
+    aggrock_unifolit_UMTZ_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_unifolit_UMTZ[0]);
+    aggrock_unifolit_LMTZ_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_unifolit_LMTZ[0]);
+    aggrock_unifolit_LoMa_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_unifolit_LoMa[0]);
+    AssertThrow(aggrock_unifolit_UpMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_unifolit_UpMa_Tcond is <= 0")); 
+    AssertThrow(aggrock_unifolit_UMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_unifolit_UMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_unifolit_LMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_unifolit_LMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_unifolit_LoMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_unifolit_LoMa_Tcond is <= 0"));
+  }
+  
+  // Define room temperature [K] 
+  // const double T_room = 298.15; 
 
-   // Initialize the expected value matrix with the same dimensions of the composition matrix
-   std::vector<std::vector<double>> expected_nondimensional_Tcond(compositions.size(), std::vector<double>(compositions[0].size()));
+  // Define maximum temperature [K] and pressure temperature [Pa]
+  // const double T_max = 4000;
+  const double P_max = 132.0222017e9; 
 
-   // Perform element-wise calculation
-   for (size_t row = 0; row < compositions.size(); ++row)
+  // Define minimum temperature [K] and pressure temperature [Pa]
+  // const double T_min = 273.15;
+  const double P_min = 1e-10; 
+
+  // Define pressure at the top and at the bottom of each mantle layer [Pa]
+  double P_UpMa_top = P_min;         // Upper Mantle top pressure in Pa
+  double P_UpMa_bot = 13.59280101e9; // Upper Mantle bottom pressure in Pa
+  double P_UMTZ_top = 13.59280101e9; // Upper Transition Zone top pressure in Pa
+  double P_UMTZ_bot = 17.69264984e9; // Upper Transition Zone bottom pressure in Pa
+  double P_LMTZ_top = 17.69264984e9; // Lower Transition Zone top pressure in Pa
+  double P_LMTZ_bot = 23.11221520e9; // Lower Transition Zone bottom pressure in Pa
+  double P_LoMa_top = 23.11221520e9; // Lower Mantle top pressure in Pa
+  double P_LoMa_bot = P_max;         // Lower Mantle bottom pressure in Pa
+
+  // Define pressure ratio [/]
+  const double P_ratio_UpMa_top = P_UpMa_top / P_max;
+  const double P_ratio_UpMa_bot = P_UpMa_bot / P_max;
+  const double P_ratio_UMTZ_top = P_UMTZ_top / P_max;
+  const double P_ratio_UMTZ_bot = P_UMTZ_bot / P_max;
+  const double P_ratio_LMTZ_top = P_LMTZ_top / P_max;
+  const double P_ratio_LMTZ_bot = P_LMTZ_bot / P_max;
+  const double P_ratio_LoMa_top = P_LoMa_top / P_max;
+  const double P_ratio_LoMa_bot = P_LoMa_bot / P_max;
+
+  // expected thermal conductivities (k) in [W/m/K] 
+  for (size_t row = 0; row < temperatures.size(); ++row)
+  {
+    double current_pressure = in.pressure[row];
+    if (in.pressure[row] <= 0.0) // Avoid log(0) or negative pressure
     {
-      for (size_t col = 0; col < compositions[row].size(); ++col)
-      {
-        expected_nondimensional_Tcond[row][col] = std::pow(expt_nondimensional_totTcond[mID][col], compositions[row][col]);
-      }
+       current_pressure = P_min; 
     }
 
-   std::vector<std::vector<double>> expected_conductivities = expected_nondimensional_Tcond;
+    // Compute pressure and temperature ratios
+    double P_ratio = current_pressure / P_max;
 
-   INFO("Checking xu_2004 thermal conductivity (k) for different temperatures (T), pressures (P) and compositions (X)");
+    if (P_ratio >= P_ratio_UpMa_top && P_ratio <= P_ratio_UpMa_bot) // Upper Mantle
+    {     
+       expt_nondim_rock_totTcond[row][unifolit_exptID] = aggrock_unifolit_UpMa_Tcond[row]; // Uniform Lithology
+    }
+    else if (P_ratio > P_ratio_UMTZ_top && P_ratio <= P_ratio_UMTZ_bot) // Upper Transition Zone
+    {
+       expt_nondim_rock_totTcond[row][unifolit_exptID] = aggrock_unifolit_UMTZ_Tcond[row]; // Uniform Lithology
+    }
+    else if (P_ratio > P_ratio_LMTZ_top && P_ratio <= P_ratio_LMTZ_bot) // Lower Transition Zone
+    {
+       expt_nondim_rock_totTcond[row][unifolit_exptID] = aggrock_unifolit_LMTZ_Tcond[row]; // Uniform Lithology
+    }
+    else if (P_ratio > P_ratio_LoMa_top && P_ratio <= P_ratio_LoMa_bot) // Lower mantle
+    {    
+       expt_nondim_rock_totTcond[row][unifolit_exptID] = aggrock_unifolit_LoMa_Tcond[row]; // Uniform Lithology
+    }
+    else
+    {
+       AssertThrow(false, dealii::ExcMessage("Invalid pressure range for the mantle."));
+    }
+  }
 
-   // Loop over the different compositions
-   for (size_t row = 0; row < expected_conductivities.size(); ++row)
-   {
-     in.composition[0] = compositions[row];  // Assign the current row of composition as model inputs
-     model.evaluate(in, out);                // Call the function to compute the thermal conductivities
+  // Loop over all lithologies
+  for (unsigned int lID = 0; lID < lithologies.size(); ++lID)
+  {
+
+    std::vector<double> current_lithology(temperatures.size(), lithologies[lID]);
+    
+    if (lithologies[lID] == 99)
+    {
+
+      INFO("Checking nondimensional thermal conductivity (k) for different minerals as a function of temperature (T) and pressure (P)");
+
+      // Loop over all mID values
+      for (unsigned int mID = 0; mID < nondim_mine_index; ++mID)
+      {
+        in.Mineral_ID = mID; // Set the current mID
+
+        for (size_t row = 0; row < temperatures.size(); ++row)
+        {
+
+         in.composition[row] = current_lithology;  // Assign the current lithology as model in.composition input
+
+         model.evaluate(in, out);  // Call the function to compute the thermal conductivities
+
+         switch (mID) // Compare the computed thermal conductivity with the expected value
+         {
+           case nondimoliv_exptID: // nondimoliv
+           {
+              INFO("Mineral: " << in.Mineral_ID << " (Nondimensional Olivine) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
+              INFO("Nondimensional Olivine expected k= " << expt_nondim_mine_totTcond[row][mID] << "[W/m/K]");
+              INFO("Nondimensional Olivine computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
+              REQUIRE(out.thermal_conductivities[row] == Approx(expt_nondim_mine_totTcond[row][mID]));
+              break;
+            }
+          } 
+        }
+      }
+    }
+    else if (lithologies[lID] != 99) // To test the thermal conductivity of each lithology
+    {
+     INFO("Checking nondimensional thermal conductivity (k) for different lithologies as a function of temperature (T) and pressure (P)");
 
      // Loop over the different combinations of pressures (P) and temperatures (T)
-     for (size_t i = 0; i < expected_conductivities[row].size(); ++i)
+     for (size_t row = 0; row < temperatures.size(); ++row)
      {
-       switch (mID) // Compare the computed thermal conductivity with the expected value
+       in.composition[row] = current_lithology;  // Assign the current lithology as model in.composition input
+
+       model.evaluate(in, out);  // Call the function to compute the thermal conductivities
+
+       switch (lID) // Compare the computed thermal conductivity with the expected value
        {
-         case nondimensional_olivine_ID: // olivinedry
+         case unifolit_exptID: // Uniform Lithology
          {
-           INFO("Conditions: T= " << in.temperature[i] << "[/] ; P= " << in.pressure[i] << "[/] ; X= " << (in.composition[0][i])*100 << "[%]");
-           INFO("olivinedry (Nondimensional) expected k= " << expected_conductivities[row][i] << "[W/m/K]");
-           INFO("olivinedry (Nondimensional) computed k= " << out.thermal_conductivities[i] << "[W/m/K]");
-           REQUIRE(out.thermal_conductivities[i] == Approx(expected_conductivities[row][i]));
+           INFO("Lithology: " << in.composition[row][lID] << " (Uniform Lithology) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
+           INFO("Uniform Lithology expected k = " << expt_nondim_rock_totTcond[row][lID] << "[W/m/K]");
+           INFO("Uniform Lithology computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[row] == Approx(expt_nondim_rock_totTcond[row][lID]));
            break;
-         }
-        } 
+          }
+        }
       }
+    }
+    else
+    {
+       AssertThrow(false, dealii::ExcMessage("Invalid lithology for the mantle."));
     }
   }
 }
