@@ -2051,18 +2051,26 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
 
   // Assigning a lithology index to in.composition 
   //(0: uniform lithology, 99: test)
-  std::vector<double> lithologies = {0, 99};
+  std::vector<double> lithologies = {0, 1, 2, 99};
 
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
   constexpr int nondimoliv_exptID = 0;
   std::vector<double> nondimoliv_expt_totTcond(temperatures.size());
+  constexpr int nondimring_exptID = 1;
+  std::vector<double> nondimring_expt_totTcond(temperatures.size());
+  constexpr int nondimbrig_exptID = 2;
+  std::vector<double> nondimbrig_expt_totTcond(temperatures.size());
 
   // Preallocate the expected total thermal conductivities (k) in [W/m/K] of rocks
-  constexpr int unifolit_exptID = 0;
-  std::vector<double> unifolit_expt_totTcon(temperatures.size());
+  constexpr int onelayer_exptID = 0;
+  std::vector<double> onelayer_expt_totTcon(temperatures.size());
+  constexpr int twolayer_exptID = 1;
+  std::vector<double> twolayer_expt_totTcon(temperatures.size());
+  constexpr int trelayer_exptID = 2;
+  std::vector<double> trelayer_expt_totTcon(temperatures.size());
 
-  unsigned int nondim_mine_index = nondimoliv_exptID+1; // Number of minerals
-  unsigned int nondim_rock_index = unifolit_exptID+1;   // Number of rocks
+  unsigned int nondim_mine_index = nondimbrig_exptID+1; // Number of minerals
+  unsigned int nondim_rock_index = trelayer_exptID+1;   // Number of rocks
 
   // Preallocate matrixes for storing thermal conductivities of minerals
   std::vector<std::vector<double>> expt_nondim_mine_latTcond(temperatures.size(), std::vector<double>(nondim_mine_index, 0.0)); // Lattice thermal conductivity
@@ -2077,6 +2085,16 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
   std::vector<double> nondimoliv_expt_radTcond = {0.00138, 2.23156, 2.34983, 2.45491, 3.12276};
   expt_nondim_mine_latTcond[nondimoliv_exptID] = nondimoliv_expt_latTcond;
   expt_nondim_mine_radTcond[nondimoliv_exptID] = nondimoliv_expt_radTcond;
+  // Ringwoodite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> nondimring_expt_latTcond = {3.588882834, 1.563092069, 1.612635433, 1.663665767, 2.997286966}; 
+  std::vector<double> nondimring_expt_radTcond = {0.00138, 2.23156, 2.34983, 2.45491, 3.12276};
+  expt_nondim_mine_latTcond[nondimring_exptID] = nondimring_expt_latTcond;
+  expt_nondim_mine_radTcond[nondimring_exptID] = nondimring_expt_radTcond;
+  // Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+  std::vector<double> nondimbrig_expt_latTcond = {3.588882834, 1.563092069, 1.612635433, 1.663665767, 2.997286966}; 
+  std::vector<double> nondimbrig_expt_radTcond = {0.00138, 2.23156, 2.34983, 2.45491, 3.12276};
+  expt_nondim_mine_latTcond[nondimbrig_exptID] = nondimbrig_expt_latTcond;
+  expt_nondim_mine_radTcond[nondimbrig_exptID] = nondimbrig_expt_radTcond;
 
   // Perform element-wise sum
   for (size_t row = 0; row < temperatures.size(); ++row)
@@ -2087,42 +2105,110 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
     expt_nondim_mine_radTcond[row][nondimoliv_exptID] = nondimoliv_expt_radTcond[row];  
     expt_nondim_mine_totTcond[row][nondimoliv_exptID] = nondimoliv_expt_totTcond[row];
     AssertThrow(nondimoliv_expt_totTcond[row] > 0, dealii::ExcMessage("nondimoliv is < 0 ; Base for pow must be > 0"));
+    // Nondimensional Ringwoodite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+    nondimring_expt_totTcond[row] = nondimring_expt_latTcond[row] + nondimring_expt_radTcond[row];
+    expt_nondim_mine_latTcond[row][nondimring_exptID] = nondimring_expt_latTcond[row];
+    expt_nondim_mine_radTcond[row][nondimring_exptID] = nondimring_expt_radTcond[row];  
+    expt_nondim_mine_totTcond[row][nondimring_exptID] = nondimring_expt_totTcond[row];
+    AssertThrow(nondimring_expt_totTcond[row] > 0, dealii::ExcMessage("nondimring is < 0 ; Base for pow must be > 0"));
+    // Nondimensional Bridgmanite: expected lattice and radiative thermal conductivities (k) in [W/m/K] 
+    nondimbrig_expt_totTcond[row] = nondimbrig_expt_latTcond[row] + nondimbrig_expt_radTcond[row];
+    expt_nondim_mine_latTcond[row][nondimbrig_exptID] = nondimbrig_expt_latTcond[row];
+    expt_nondim_mine_radTcond[row][nondimbrig_exptID] = nondimbrig_expt_radTcond[row];  
+    expt_nondim_mine_totTcond[row][nondimbrig_exptID] = nondimbrig_expt_totTcond[row];
+    AssertThrow(nondimbrig_expt_totTcond[row] > 0, dealii::ExcMessage("nondimbrig is < 0 ; Base for pow must be > 0"));
   }
 
-  // Uniform Lithology
-  std::vector<double> minfract_expt_unifolit_UpMa = {1.00}; // Upper Mantle (100% olivine)
-  std::vector<double> minfract_expt_unifolit_UMTZ = {1.00}; // Upper Mantle Transition Zone (100% olivine)
-  std::vector<double> minfract_expt_unifolit_LMTZ = {1.00}; // Lower Mantle Transition Zone (100% olivine)
-  std::vector<double> minfract_expt_unifolit_LoMa = {1.00}; // Lower Mantle (100% olivine)
+  // One Layer Convection Lithology
+  std::vector<double> minfract_expt_onelayer_UpMa = {1.00}; // Upper Mantle (100% olivine)
+  std::vector<double> minfract_expt_onelayer_UMTZ = {1.00}; // Upper Mantle Transition Zone (100% olivine)
+  std::vector<double> minfract_expt_onelayer_LMTZ = {1.00}; // Lower Mantle Transition Zone (100% olivine)
+  std::vector<double> minfract_expt_onelayer_LoMa = {1.00}; // Lower Mantle (100% olivine)
+  // Two Layer Convection Lithology
+  std::vector<double> minfract_expt_twolayer_UpMa = {1.00}; // Upper Mantle (100% olivine)
+  std::vector<double> minfract_expt_twolayer_UMTZ = {1.00}; // Upper Mantle Transition Zone (100% olivine)
+  std::vector<double> minfract_expt_twolayer_LMTZ = {1.00}; // Lower Mantle Transition Zone (100% olivine)
+  std::vector<double> minfract_expt_twolayer_LoMa = {1.00}; // Lower Mantle (100% bridgmanite)
+  // Three Layer Convection Lithology
+  std::vector<double> minfract_expt_trelayer_UpMa = {1.00}; // Upper Mantle (100% olivine)
+  std::vector<double> minfract_expt_trelayer_UMTZ = {1.00}; // Upper Mantle Transition Zone (100% ringwoodite)
+  std::vector<double> minfract_expt_trelayer_LMTZ = {1.00}; // Lower Mantle Transition Zone (100% ringwoodite)
+  std::vector<double> minfract_expt_trelayer_LoMa = {1.00}; // Lower Mantle (100% bridgmanite)
 
-    // Check if the sum of Rock Mineral Fraction is equal to 1
-  double sum_expt_fract_unifolit_UpMa = std::accumulate(minfract_expt_unifolit_UpMa.begin(), minfract_expt_unifolit_UpMa.end(), 0.0);
-  AssertThrow(std::abs(sum_expt_fract_unifolit_UpMa - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_unifolit_UpMa must be equal to 1."));
-  double sum_expt_fract_unifolit_UMTZ = std::accumulate(minfract_expt_unifolit_UMTZ.begin(), minfract_expt_unifolit_UMTZ.end(), 0.0);
-  AssertThrow(std::abs(sum_expt_fract_unifolit_UMTZ - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_unifolit_UMTZ must be equal to 1."));
-  double sum_expt_fract_unifolit_LMTZ = std::accumulate(minfract_expt_unifolit_LMTZ.begin(), minfract_expt_unifolit_LMTZ.end(), 0.0);
-  AssertThrow(std::abs(sum_expt_fract_unifolit_LMTZ - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_unifolit_LMTZ must be equal to 1."));
-  double sum_expt_fract_unifolit_LoMa = std::accumulate(minfract_expt_unifolit_LoMa.begin(), minfract_expt_unifolit_LoMa.end(), 0.0);
-  AssertThrow(std::abs(sum_expt_fract_unifolit_LoMa - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_unifolit_LoMa must be equal to 1."));
+  // Check if the sum of Rock Mineral Fraction is equal to 1
+  double sum_expt_fract_onelayer_UpMa = std::accumulate(minfract_expt_onelayer_UpMa.begin(), minfract_expt_onelayer_UpMa.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_onelayer_UpMa - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_onelayer_UpMa must be equal to 1."));
+  double sum_expt_fract_onelayer_UMTZ = std::accumulate(minfract_expt_onelayer_UMTZ.begin(), minfract_expt_onelayer_UMTZ.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_onelayer_UMTZ - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_onelayer_UMTZ must be equal to 1."));
+  double sum_expt_fract_onelayer_LMTZ = std::accumulate(minfract_expt_onelayer_LMTZ.begin(), minfract_expt_onelayer_LMTZ.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_onelayer_LMTZ - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_onelayer_LMTZ must be equal to 1."));
+  double sum_expt_fract_onelayer_LoMa = std::accumulate(minfract_expt_onelayer_LoMa.begin(), minfract_expt_onelayer_LoMa.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_onelayer_LoMa - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_onelayer_LoMa must be equal to 1."));
+  // Check if the sum of Rock Mineral Fraction is equal to 1
+  double sum_expt_fract_twolayer_UpMa = std::accumulate(minfract_expt_twolayer_UpMa.begin(), minfract_expt_twolayer_UpMa.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_twolayer_UpMa - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_twolayer_UpMa must be equal to 1."));
+  double sum_expt_fract_twolayer_UMTZ = std::accumulate(minfract_expt_twolayer_UMTZ.begin(), minfract_expt_twolayer_UMTZ.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_twolayer_UMTZ - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_twolayer_UMTZ must be equal to 1."));
+  double sum_expt_fract_twolayer_LMTZ = std::accumulate(minfract_expt_twolayer_LMTZ.begin(), minfract_expt_twolayer_LMTZ.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_twolayer_LMTZ - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_twolayer_LMTZ must be equal to 1."));
+  double sum_expt_fract_twolayer_LoMa = std::accumulate(minfract_expt_twolayer_LoMa.begin(), minfract_expt_twolayer_LoMa.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_twolayer_LoMa - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_twolayer_LoMa must be equal to 1."));
+  // Check if the sum of Rock Mineral Fraction is equal to 1
+  double sum_expt_fract_trelayer_UpMa = std::accumulate(minfract_expt_trelayer_UpMa.begin(), minfract_expt_trelayer_UpMa.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_trelayer_UpMa - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_trelayer_UpMa must be equal to 1."));
+  double sum_expt_fract_trelayer_UMTZ = std::accumulate(minfract_expt_trelayer_UMTZ.begin(), minfract_expt_trelayer_UMTZ.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_trelayer_UMTZ - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_trelayer_UMTZ must be equal to 1."));
+  double sum_expt_fract_trelayer_LMTZ = std::accumulate(minfract_expt_trelayer_LMTZ.begin(), minfract_expt_trelayer_LMTZ.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_trelayer_LMTZ - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_trelayer_LMTZ must be equal to 1."));
+  double sum_expt_fract_trelayer_LoMa = std::accumulate(minfract_expt_trelayer_LoMa.begin(), minfract_expt_trelayer_LoMa.end(), 0.0);
+  AssertThrow(std::abs(sum_expt_fract_trelayer_LoMa - 1.0) < 1e-6, dealii::ExcMessage("Error: The sum of minfract_expt_trelayer_LoMa must be equal to 1."));
 
-  // Uniform Lithology
-  std::vector<double> aggrock_unifolit_UpMa_Tcond(temperatures.size());
-  std::vector<double> aggrock_unifolit_UMTZ_Tcond(temperatures.size());
-  std::vector<double> aggrock_unifolit_LMTZ_Tcond(temperatures.size());
-  std::vector<double> aggrock_unifolit_LoMa_Tcond(temperatures.size());
+  // One Layer Convection 
+  std::vector<double> aggrock_onelayer_UpMa_Tcond(temperatures.size());
+  std::vector<double> aggrock_onelayer_UMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_onelayer_LMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_onelayer_LoMa_Tcond(temperatures.size());
+  // Two Layer Convection 
+  std::vector<double> aggrock_twolayer_UpMa_Tcond(temperatures.size());
+  std::vector<double> aggrock_twolayer_UMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_twolayer_LMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_twolayer_LoMa_Tcond(temperatures.size());
+  // Three Layer Convection 
+  std::vector<double> aggrock_trelayer_UpMa_Tcond(temperatures.size());
+  std::vector<double> aggrock_trelayer_UMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_trelayer_LMTZ_Tcond(temperatures.size());
+  std::vector<double> aggrock_trelayer_LoMa_Tcond(temperatures.size());
 
   // Compute P,T-dependent thermal conductivities of aggregate rocks 
   for (size_t row = 0; row < temperatures.size(); ++row)
   {
-    // Uniform Lithology
-    aggrock_unifolit_UpMa_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_unifolit_UpMa[0]);
-    aggrock_unifolit_UMTZ_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_unifolit_UMTZ[0]);
-    aggrock_unifolit_LMTZ_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_unifolit_LMTZ[0]);
-    aggrock_unifolit_LoMa_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_unifolit_LoMa[0]);
-    AssertThrow(aggrock_unifolit_UpMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_unifolit_UpMa_Tcond is <= 0")); 
-    AssertThrow(aggrock_unifolit_UMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_unifolit_UMTZ_Tcond is <= 0"));
-    AssertThrow(aggrock_unifolit_LMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_unifolit_LMTZ_Tcond is <= 0"));
-    AssertThrow(aggrock_unifolit_LoMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_unifolit_LoMa_Tcond is <= 0"));
+    // One Layer Convection 
+    aggrock_onelayer_UpMa_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_onelayer_UpMa[0]);
+    aggrock_onelayer_UMTZ_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_onelayer_UMTZ[0]);
+    aggrock_onelayer_LMTZ_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_onelayer_LMTZ[0]);
+    aggrock_onelayer_LoMa_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_onelayer_LoMa[0]);
+    AssertThrow(aggrock_onelayer_UpMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_onelayer_UpMa_Tcond is <= 0")); 
+    AssertThrow(aggrock_onelayer_UMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_onelayer_UMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_onelayer_LMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_onelayer_LMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_onelayer_LoMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_onelayer_LoMa_Tcond is <= 0"));
+    // Two Layer Convection 
+    aggrock_twolayer_UpMa_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_twolayer_UpMa[0]);
+    aggrock_twolayer_UMTZ_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_twolayer_UMTZ[0]);
+    aggrock_twolayer_LMTZ_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_twolayer_LMTZ[0]);
+    aggrock_twolayer_LoMa_Tcond[row] = std::pow(nondimbrig_expt_totTcond[row], minfract_expt_twolayer_LoMa[0]);
+    AssertThrow(aggrock_twolayer_UpMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_twolayer_UpMa_Tcond is <= 0")); 
+    AssertThrow(aggrock_twolayer_UMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_twolayer_UMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_twolayer_LMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_twolayer_LMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_twolayer_LoMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_twolayer_LoMa_Tcond is <= 0"));
+    // Three Layer Convection 
+    aggrock_trelayer_UpMa_Tcond[row] = std::pow(nondimoliv_expt_totTcond[row], minfract_expt_trelayer_UpMa[0]);
+    aggrock_trelayer_UMTZ_Tcond[row] = std::pow(nondimring_expt_totTcond[row], minfract_expt_trelayer_UMTZ[0]);
+    aggrock_trelayer_LMTZ_Tcond[row] = std::pow(nondimring_expt_totTcond[row], minfract_expt_trelayer_LMTZ[0]);
+    aggrock_trelayer_LoMa_Tcond[row] = std::pow(nondimbrig_expt_totTcond[row], minfract_expt_trelayer_LoMa[0]);
+    AssertThrow(aggrock_trelayer_UpMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_trelayer_UpMa_Tcond is <= 0")); 
+    AssertThrow(aggrock_trelayer_UMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_trelayer_UMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_trelayer_LMTZ_Tcond[row] > 0, dealii::ExcMessage("aggrock_trelayer_LMTZ_Tcond is <= 0"));
+    AssertThrow(aggrock_trelayer_LoMa_Tcond[row] > 0, dealii::ExcMessage("aggrock_trelayer_LoMa_Tcond is <= 0"));
   }
   
   // Define room temperature [K] 
@@ -2170,19 +2256,27 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
 
     if (P_ratio >= P_ratio_UpMa_top && P_ratio <= P_ratio_UpMa_bot) // Upper Mantle
     {     
-       expt_nondim_rock_totTcond[row][unifolit_exptID] = aggrock_unifolit_UpMa_Tcond[row]; // Uniform Lithology
+       expt_nondim_rock_totTcond[row][onelayer_exptID] = aggrock_onelayer_UpMa_Tcond[row]; // One Layer Convection 
+       expt_nondim_rock_totTcond[row][twolayer_exptID] = aggrock_twolayer_UpMa_Tcond[row]; // Two Layer Convection
+       expt_nondim_rock_totTcond[row][trelayer_exptID] = aggrock_trelayer_UpMa_Tcond[row]; // Three Layer Convection
     }
     else if (P_ratio > P_ratio_UMTZ_top && P_ratio <= P_ratio_UMTZ_bot) // Upper Transition Zone
     {
-       expt_nondim_rock_totTcond[row][unifolit_exptID] = aggrock_unifolit_UMTZ_Tcond[row]; // Uniform Lithology
+       expt_nondim_rock_totTcond[row][onelayer_exptID] = aggrock_onelayer_UMTZ_Tcond[row]; // One Layer Convection 
+       expt_nondim_rock_totTcond[row][twolayer_exptID] = aggrock_twolayer_UMTZ_Tcond[row]; // Two Layer Convection 
+       expt_nondim_rock_totTcond[row][trelayer_exptID] = aggrock_trelayer_UMTZ_Tcond[row]; // Three Layer Convection 
     }
     else if (P_ratio > P_ratio_LMTZ_top && P_ratio <= P_ratio_LMTZ_bot) // Lower Transition Zone
     {
-       expt_nondim_rock_totTcond[row][unifolit_exptID] = aggrock_unifolit_LMTZ_Tcond[row]; // Uniform Lithology
+       expt_nondim_rock_totTcond[row][onelayer_exptID] = aggrock_onelayer_LMTZ_Tcond[row]; // One Layer Convection
+       expt_nondim_rock_totTcond[row][twolayer_exptID] = aggrock_twolayer_LMTZ_Tcond[row]; // Two Layer Convection
+       expt_nondim_rock_totTcond[row][trelayer_exptID] = aggrock_trelayer_LMTZ_Tcond[row]; // Three Layer Convection 
     }
     else if (P_ratio > P_ratio_LoMa_top && P_ratio <= P_ratio_LoMa_bot) // Lower mantle
     {    
-       expt_nondim_rock_totTcond[row][unifolit_exptID] = aggrock_unifolit_LoMa_Tcond[row]; // Uniform Lithology
+       expt_nondim_rock_totTcond[row][onelayer_exptID] = aggrock_onelayer_LoMa_Tcond[row]; // One Layer Convection 
+       expt_nondim_rock_totTcond[row][twolayer_exptID] = aggrock_twolayer_LoMa_Tcond[row]; // Two Layer Convection 
+       expt_nondim_rock_totTcond[row][trelayer_exptID] = aggrock_trelayer_LoMa_Tcond[row]; // Three Layer Convection 
     }
     else
     {
@@ -2223,6 +2317,22 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
               REQUIRE(out.thermal_conductivities[row] == Approx(expt_nondim_mine_totTcond[row][mID]));
               break;
             }
+           case nondimring_exptID: // nondimring
+           {
+              INFO("Mineral: " << in.Mineral_ID << " (Nondimensional Ringwoodite) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
+              INFO("Nondimensional Ringwoodite expected k= " << expt_nondim_mine_totTcond[row][mID] << "[W/m/K]");
+              INFO("Nondimensional Ringwoodite computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
+              REQUIRE(out.thermal_conductivities[row] == Approx(expt_nondim_mine_totTcond[row][mID]));
+              break;
+            }
+           case nondimbrig_exptID: // nondimbrig
+           {
+              INFO("Mineral: " << in.Mineral_ID << " (Nondimensional Bridgmanite) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
+              INFO("Nondimensional Bridgmanite expected k= " << expt_nondim_mine_totTcond[row][mID] << "[W/m/K]");
+              INFO("Nondimensional Bridgmanite computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
+              REQUIRE(out.thermal_conductivities[row] == Approx(expt_nondim_mine_totTcond[row][mID]));
+              break;
+            }
           } 
         }
       }
@@ -2240,11 +2350,27 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
 
        switch (lID) // Compare the computed thermal conductivity with the expected value
        {
-         case unifolit_exptID: // Uniform Lithology
+         case onelayer_exptID: // One Layer Convection
          {
-           INFO("Lithology: " << in.composition[row][lID] << " (Uniform Lithology) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
-           INFO("Uniform Lithology expected k = " << expt_nondim_rock_totTcond[row][lID] << "[W/m/K]");
-           INFO("Uniform Lithology computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
+           INFO("Lithology: " << in.composition[row][lID] << " (One Layer Convection) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
+           INFO("One Layer Convection expected k = " << expt_nondim_rock_totTcond[row][lID] << "[W/m/K]");
+           INFO("One Layer Convection computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[row] == Approx(expt_nondim_rock_totTcond[row][lID]));
+           break;
+          }
+         case twolayer_exptID: // Two Layer Convection
+         {
+           INFO("Lithology: " << in.composition[row][lID] << " (Two Layer Convection) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
+           INFO("Two Layer Convection expected k = " << expt_nondim_rock_totTcond[row][lID] << "[W/m/K]");
+           INFO("Two Layer Convection computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
+           REQUIRE(out.thermal_conductivities[row] == Approx(expt_nondim_rock_totTcond[row][lID]));
+           break;
+          }
+         case trelayer_exptID: // Three Layer Convection
+         {
+           INFO("Lithology: " << in.composition[row][lID] << " (Three Layer Convection) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
+           INFO("Three Layer Convection expected k = " << expt_nondim_rock_totTcond[row][lID] << "[W/m/K]");
+           INFO("Three Layer Convection computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[row] == Approx(expt_nondim_rock_totTcond[row][lID]));
            break;
           }

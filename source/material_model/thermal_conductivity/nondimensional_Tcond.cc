@@ -101,7 +101,7 @@ namespace aspect
         const double nondimbrig_latTC_ymax =  2.60726381956037;  
         const double nondimbrig_Tdep_n_exp =  0.5;  
 
-        unsigned int mineralpar_index = nondimoliv_index+1; // Number of minerals
+        unsigned int mineralpar_index = nondimbrig_index+1; // Number of minerals
 
         // Define coefficients for radiative thermal conductivity of different minerals
 
