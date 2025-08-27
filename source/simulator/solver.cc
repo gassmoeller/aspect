@@ -455,7 +455,7 @@ namespace aspect
           TrilinosWrappers::MPI::Vector wtmp;
           wtmp.reinit(inverse_lumped_mass_matrix);
           {
-            SolverControl solver_control(5000, 1e-6 * src.l2_norm(), false, true);
+            SolverControl solver_control(10000, 1e-6 * src.l2_norm(), false, true);
             SolverCG<TrilinosWrappers::MPI::Vector> solver(solver_control);
             //Solve with Schur Complement approximation
             solver.solve(mp_matrix,
@@ -557,7 +557,7 @@ namespace aspect
       // convergence without iterating. We simply skip solving in this case.
       if (src.l2_norm() > 1e-50)
         {
-          SolverControl solver_control(5000, src.l2_norm() * solver_tolerance);
+          SolverControl solver_control(10000, src.l2_norm() * solver_tolerance);
           PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
           SolverCG<LinearAlgebra::Vector> solver(solver_control, mem);
           try
