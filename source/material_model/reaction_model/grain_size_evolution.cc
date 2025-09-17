@@ -191,7 +191,7 @@ namespace aspect
         {
           for (unsigned int i=0; i<n_evaluation_points; ++i)
             {
-              const double grain_size = std::max(minimum_grain_size, y[i]);
+              const double grain_size = std::max(1e-9, y[i]);
 
               // Precompute the partitioning_fraction since it is constant during the evolution.
               // This is only used for the pinned_grain_damage formulation.
@@ -302,7 +302,8 @@ namespace aspect
 
                 // To make sure we actually reset the grain size of all the material passing through
                 // the transition, we take 110% of the distance a grain has moved for the check.
-                if (std::abs(distance_moved) * 1.1 > std::abs(distance_from_transition)
+                if ((std::abs(distance_moved) * 1.1 > std::abs(distance_from_transition) ||
+                     (distance_from_transition >= 0. && distance_from_transition < 30000.))
                     &&
                     distance_moved * distance_from_transition >= 0)
                   crossed_transition = phase;
