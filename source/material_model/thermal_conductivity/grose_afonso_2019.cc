@@ -19,6 +19,9 @@
 
 */
 
+#include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
+#include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
+
 // Helper functions in anonymous namespace to compute thermal conductivities using the Grose & Afonso (2019) formulations
 namespace 
 {
@@ -29,9 +32,6 @@ namespace
    return radiative_thermal_conductivity;
   }
 }
-
-
-#include <aspect/material_model/thermal_conductivity/grose_afonso_2019.h>
 
 namespace aspect
 {
@@ -45,7 +45,6 @@ namespace aspect
      grose_afonso_2019<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                      MaterialModel::MaterialModelOutputs<dim> &out) const
      {
-       #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
        // Coefficients for dry olivine 
        // mineral composition [(Mg1.8Fe0.2)SiO4]    
