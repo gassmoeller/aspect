@@ -20,6 +20,7 @@
 */
 
 #include <aspect/material_model/thermal_conductivity/xu_2004.h>
+#include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
 // Helper functions in anonymous namespace to compute thermal conductivities using the Xu et al. (2004) formulations
 namespace
@@ -46,8 +47,7 @@ namespace aspect
       xu_2004<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
-
+        
         // Coefficients for dry olivine 
         // mineral composition [(Mg1.8Fe0.2)SiO4]    
         constexpr int olivinedry_index = 0;
