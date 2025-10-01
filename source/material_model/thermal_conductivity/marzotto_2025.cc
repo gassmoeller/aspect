@@ -72,7 +72,7 @@ namespace aspect
         // retreived from fitting TDTR dataset of
         // [Chang et al., 2017, PNAS, vol 114, p. 4078-4081]
         // https://doi.org/10.1073/pnas.1616216114
-        // mineral composition [Mg1.8 Fe0.2 SiO4]    
+        // mineral chemical formula [Mg1.8 Fe0.2 SiO4]    
         constexpr int olivinedry_index = 0;
         const double olivinedry_latTC_a0 =   -4.1241;
         const double olivinedry_latTC_b1 =    2.1469;
@@ -84,7 +84,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Xu et al., 2004, PEPI, vol 143, pp. 321-336]
         // https://doi.org/10.1016/j.pepi.2004.03.005
-        // mineral composition [(Mg1.8Fe0.2)SiO4]
+        // mineral chemical formula [(Mg1.8Fe0.2)SiO4]
         constexpr int wadsleydry_index = 1;
         const double wadsleydry_latTC_a0 =  -0.6656;
         const double wadsleydry_latTC_b1 =   0.3082;
@@ -96,7 +96,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Marzotto et al., 2020, GRL, vol 47, issue 13]
         // https://doi.org/10.1029/2020GL087607
-        // mineral composition [(Mg1.79Fe0.17)Si1.02O4]
+        // mineral chemical formula [(Mg1.79Fe0.17)Si1.02O4]
         constexpr int ringwoodry_index = 2;
         const double ringwoodry_latTC_a0 =  -4.5433218986644; 
         const double ringwoodry_latTC_b1 =   0.95165619669065;
@@ -107,7 +107,7 @@ namespace aspect
         // Coefficients for Mg-bridgmanite
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
-        // mineral composition [MgSiO3]
+        // mineral chemical formula [MgSiO3]
         constexpr int brigm100Mg_index = 3;
         const double brigm100Mg_latTC_a0 =  -4.3687;
         const double brigm100Mg_latTC_b1 =   1.0766; 
@@ -118,7 +118,7 @@ namespace aspect
         // Coefficients for Fe-bridgmanite (3%)
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
-        // mineral composition [Fe0.03Mg0.97SiO3]
+        // mineral chemical formula [Fe0.03Mg0.97SiO3]
         constexpr int brigma97Mg_index = 4;
         const double brigma97Mg_latTC_a0 =  -4.520600000;
         const double brigma97Mg_latTC_b1 =   1.019900000; 
@@ -129,7 +129,7 @@ namespace aspect
         // Coefficients for Fe-bridgmanite (10%)
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
-        // mineral composition [Fe0.1Mg0.9SiO3]
+        // mineral chemical formula [Fe0.1Mg0.9SiO3]
         constexpr int brigma90Mg_index = 5;
         const double brigma90Mg_latTC_a0 =  -4.883100000;
         const double brigma90Mg_latTC_b1 =   0.980900000; 
@@ -140,7 +140,7 @@ namespace aspect
         // Coefficients for Al-bridgmanite
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
-        // mineral composition [(Al,Mg)SiO3]
+        // mineral chemical formula [(Al,Mg)SiO3]
         constexpr int brigmaAlMg_index = 6;
         const double brigmaAlMg_latTC_a0 =  -4.331500000;
         const double brigmaAlMg_latTC_b1 =   1.027000000; 
@@ -151,7 +151,7 @@ namespace aspect
         // Coefficients for Fe,Al-bridgmanite
         // retreived from fitting dataset of
         // [Zhang & Marzotto 2025, in preparation]
-        // mineral composition [(Fe,Al,Mg)SiO3]
+        // mineral chemical formula [(Fe,Al,Mg)SiO3]
         constexpr int brigmaFeAl_index = 7;
         const double brigmaFeAl_latTC_a0 =  -4.510600000;
         const double brigmaFeAl_latTC_b1 =   1.066800000; 
@@ -163,7 +163,7 @@ namespace aspect
         // retreived from fitting dataset of 
         // [Schloessin & Dvorak, 1972, GJI, 27(5), 499-516]
         // https://doi.org/10.1111/j.1365-246X.1972.tb06105.x
-        // mineral composition [Mg2Si2O6]
+        // mineral chemical formula [Mg2Si2O6]
         constexpr int opxenstati_index = 8;
         const double opxenstati_latTC_a0 =   -3.0047;
         const double opxenstati_latTC_b1 =    2.6;
@@ -175,7 +175,7 @@ namespace aspect
         // retreived from fitting dataset of 
         // [Wang et al., 2014, JGR: Solid Earth, 119(8), 6277-6287]
         // https://doi.org/10.1002/2014JB011208
-        // mineral composition [CaMgSi2O6]
+        // mineral chemical formula [CaMgSi2O6]
         constexpr int cpxdiopsid_index = 9;
         const double cpxdiopsid_latTC_a0 =   -3.251100000;
         const double cpxdiopsid_latTC_b1 =    1.689100000;
@@ -187,7 +187,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
         // https://doi.org/10.2138/am-2023-8953
-        // mineral composition [Mg3Al2Si3O12]
+        // mineral chemical formula [Mg3Al2Si3O12]
         constexpr int grtpyropes_index = 10;
         const double grtpyropes_latTC_a0 =   -4.3637;
         const double grtpyropes_latTC_b1 =    2.0368;
@@ -199,7 +199,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
         // https://doi.org/10.2138/am-2023-8953
-        // mineral composition [(Ca0.986Fe0.014)3Al2(SiO4)3]
+        // mineral chemical formula [(Ca0.986Fe0.014)3Al2(SiO4)3]
         constexpr int grtgrossul_index = 11;
         const double grtgrossul_latTC_a0 =  -4.7584;
         const double grtgrossul_latTC_b1 =   2.0816;
@@ -211,7 +211,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Hung et al. 2024, American Mineralogist, 109(3), 482-487]
         // https://doi.org/10.2138/am-2023-8953
-        // mineral composition [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3]
+        // mineral chemical formula [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3]
         constexpr int grtalmandi_index = 12;
         const double grtalmandi_latTC_a0 =  -4.5047;
         const double grtalmandi_latTC_b1 =   2.0988;
@@ -223,7 +223,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Giesting et al.2004  EPSL, 218(1-2), 45-56]
         // https://doi.org/10.1016/S0012-821X(03)00630-7
-        // mineral composition [Mg3(MgSi)(SiO4)3]
+        // mineral chemical formula [Mg3(MgSi)(SiO4)3]
         constexpr int grtmajorit_index = 13;
         const double grtmajorit_latTC_a0 =  -4.3637;
         const double grtmajorit_latTC_b1 =   2.0368;
@@ -235,7 +235,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Xiong et al., 2019 - Journal of Applied Physics, 126(21)]
         // https://doi.org/10.1063/1.5114992
-        // mineral composition [SiO2]
+        // mineral chemical formula [SiO2]
         constexpr int quartzpure_index = 14;
         const double quartzpure_latTC_a0 =   -2.0203;
         const double quartzpure_latTC_b1 =    2.4456;
@@ -247,7 +247,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Yukutake & Shimada, 1978, PEPI, 17(3), 193-200]
         // https://doi.org/10.1016/0031-9201(78)90036-5
-        // mineral composition [SiO2]
+        // mineral chemical formula [SiO2]
         constexpr int coesitSiO2_index = 15;
         const double coesitSiO2_latTC_a0 =   -12.728;
         const double coesitSiO2_latTC_b1 =    2.9998;
@@ -259,7 +259,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Hsieh et al., 2022, EPSL, vol. 584, 117477]
         // https://doi.org/10.1016/j.epsl.2022.117477
-        // mineral composition [SiO2]
+        // mineral chemical formula [SiO2]
         constexpr int stishovite_index = 16;
         // Assign coefficients based on pressure ranges
         // Pressure < 52 [GPa]
@@ -284,7 +284,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Hsieh et al., 2022, EPSL, vol. 584, 117477]
         // https://doi.org/10.1016/j.epsl.2022.117477
-        // mineral composition [(Al,Si)O2]
+        // mineral chemical formula [(Al,Si)O2]
         constexpr int stisho05Al_index = 17;
         const double stisho05Al_latTC_a0 = -6.4411;
         const double stisho05Al_latTC_b1 =  1.5885;
@@ -296,7 +296,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Chien et al., 2024, Nature Communications, 15(1), 5198.]
         // https://doi.org/10.1038/s41467-024-49418-3
-        // mineral composition [(Mg2.80Fe0.05)Si2.08O5(OH)3.77]
+        // mineral chemical formula [(Mg2.80Fe0.05)Si2.08O5(OH)3.77]
         // 010 direction
         constexpr int antigor010_index = 18;
         const double antigor010_latTC_a0 = -4.3374;
@@ -316,7 +316,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Hsieh et al., 2022, JGR: Solid Earth, vol. 127(6), e2022JB024556]
         // https://doi.org/10.1029/2022JB024556
-        // mineral composition [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
+        // mineral chemical formula [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
         constexpr int phaseDFeAl_index = 20;
         // (Fe,Al)-Phase D - 0-24 [GPa]
         const double phaseDFeAl_latTC_1_a0 = -3.9909;
@@ -345,7 +345,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Hsieh et al., 2022, JGR: Solid Earth, vol. 127(6), e2022JB024556]
         // https://doi.org/10.1029/2022JB024556
-        // mineral composition [Mg1.29Al0.17Si1.73H1.98O6]
+        // mineral chemical formula [Mg1.29Al0.17Si1.73H1.98O6]
         constexpr int phaseD02Al_index = 21;
         const double phaseD02Al_latTC_a0 = -6.1829;
         const double phaseD02Al_latTC_b1 =  1.8514;
@@ -359,28 +359,28 @@ namespace aspect
         // https://doi.org/10.1073/pnas.1718557115
         // [Zhang et al., 2023., GRL, 50(7), e2022GL101769] - 20% Iron
         // https://doi.org/10.1029/2022GL101769
-        // mineral composition [Mg0.92Fe0.08O] - (8% Iron)
+        // mineral chemical formula [Mg0.92Fe0.08O] - (8% Iron)
         constexpr int ferroper08_index = 22;
         const double ferroper08_latTC_a0 = -6.9942;
         const double ferroper08_latTC_b1 =  1.953;
         const double ferroper08_latTC_ymin = 1.629240539; 
         const double ferroper08_latTC_ymax = 4.118362306;
         const double ferroper08_Tdep_n_exp = 0.5;
-        // mineral composition [Mg0.90Fe0.10O] - (10% Iron)
+        // mineral chemical formula [Mg0.90Fe0.10O] - (10% Iron)
         constexpr int ferroper10_index = 23;
         const double ferroper10_latTC_a0 = -7.0133;
         const double ferroper10_latTC_b1 =  1.9321;
         const double ferroper10_latTC_ymin = 1.5040773968; 
         const double ferroper10_latTC_ymax = 4.0250359042;
         const double ferroper10_Tdep_n_exp = 0.5;
-        // mineral composition [Mg0.80Fe0.20O] (20% Iron)
+        // mineral chemical formula [Mg0.80Fe0.20O] (20% Iron)
         constexpr int ferroper20_index = 24;
         const double ferroper20_latTC_a0 = -5.2408;
         const double ferroper20_latTC_b1 =  0.9649;
         const double ferroper20_latTC_ymin = 1.2490430868; 
         const double ferroper20_latTC_ymax = 3.9318256327;
         const double ferroper20_Tdep_n_exp = 0.025;
-        // mineral composition [Mg0.44Fe0.56O] (56% Iron)
+        // mineral chemical formula [Mg0.44Fe0.56O] (56% Iron)
         constexpr int ferroper56_index = 25;
         const double ferroper56_latTC_a0 = -3.8298;
         const double ferroper56_latTC_b1 =  1.1507;
@@ -392,7 +392,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Zhang et al., 2021, Physical Review B, vol. 104, 184101]
         // https://doi.org/10.1103/PhysRevB.104.184101
-        // mineral composition [CaSiO3]
+        // mineral chemical formula [CaSiO3]
         constexpr int davemaoite_index = 26;
         const double davemaoite_latTC_a0 = -4.7377;
         const double davemaoite_latTC_b1 =  1.3661;
@@ -404,7 +404,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Hsieh et al., 2022, EPSL, vol. 584]
         // https://doi.org/10.1016/j.epsl.2022.117477
-        // mineral composition [Na0.71Mg2.05Al4.62Si1.16Fe(2+)0.09Fe(3+)0.17O12]
+        // mineral chemical formula [Na0.71Mg2.05Al4.62Si1.16Fe(2+)0.09Fe(3+)0.17O12]
         constexpr int newhexAlph_index = 27;
         const double newhexAlph_latTC_a0 = -29.421;
         const double newhexAlph_latTC_b1 =  7.7792;
@@ -415,7 +415,7 @@ namespace aspect
         // Coefficients for akimotoite
         // assumed to be equal to En100-Bridgmanite
         // [Zhang & Marzotto 2025, in preparation]
-        // mineral composition [MgSiO3]
+        // mineral chemical formula [MgSiO3]
         constexpr int akimotoite_index = 28;
         const double akimotoite_latTC_a0 =  -4.368700000;
         const double akimotoite_latTC_b1 =   1.076600000; 
@@ -431,7 +431,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Marzotto et al. 2025, Nature Communication, 16, 6058]
         // https://doi.org/10.1038/s41467-025-61148-8
-        // mineral composition [Mg1.8 Fe0.2 SiO4]
+        // mineral chemical formula [Mg1.8 Fe0.2 SiO4]
         const double olivinedry_radTC_c0 =   -10.00900000;
         const double olivinedry_radTC_d1 =    1.883900000;
         const double olivinedry_radTC_jmin = -23.02585093;
@@ -441,7 +441,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
         // https://doi.org/10.1016/j.epsl.2012.09.035
-        // mineral composition [Mg1.8 Fe0.2 SiO4]
+        // mineral chemical formula [Mg1.8 Fe0.2 SiO4]
         const double wadsleydry_radTC_c0 =   -21.717;
         const double wadsleydry_radTC_d1 =    3.4271;
         const double wadsleydry_radTC_jmin = -23.025850930;
@@ -451,7 +451,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Thomas et al., 2012, EPSL, vol. 357, p. 130-136.]
         // https://doi.org/10.1016/j.epsl.2012.09.035
-        // mineral composition [Mg1.8 Fe0.2 SiO4]
+        // mineral chemical formula [Mg1.8 Fe0.2 SiO4]
         const double ringwoodry_radTC_c0 =   -23.067000000;
         const double ringwoodry_radTC_d1 =    3.5985000000;
         const double ringwoodry_radTC_jmin = -23.025850930;
@@ -461,7 +461,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
-        // mineral composition [MgSiO3]
+        // mineral chemical formula [MgSiO3]
         const double brigm100Mg_radTC_c0 =  66.278;
         const double brigm100Mg_radTC_d1 = -8.2756; 
         const double brigm100Mg_radTC_jmin = -7.2568958208;         
@@ -471,7 +471,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
-        // mineral composition [Fe0.03Mg0.97SiO3]
+        // mineral chemical formula [Fe0.03Mg0.97SiO3]
         const double brigma97Mg_radTC_c0 =  66.278;
         const double brigma97Mg_radTC_d1 = -8.2756; 
         const double brigma97Mg_radTC_jmin = -7.2568958208;         
@@ -481,7 +481,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
-        // mineral composition [Fe0.1Mg0.9SiO3]
+        // mineral chemical formula [Fe0.1Mg0.9SiO3]
         const double brigma90Mg_radTC_c0 =  66.278;
         const double brigma90Mg_radTC_d1 = -8.2756; 
         const double brigma90Mg_radTC_jmin = -7.2568958208;         
@@ -491,7 +491,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
-        // mineral composition [(Al,Mg)SiO3]
+        // mineral chemical formula [(Al,Mg)SiO3]
         const double brigmaAlMg_radTC_c0 =  66.278;
         const double brigmaAlMg_radTC_d1 = -8.2756; 
         const double brigmaAlMg_radTC_jmin = -7.2568958208;         
@@ -501,7 +501,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
-        // mineral composition [(Fe,Al,Mg)SiO3]
+        // mineral chemical formula [(Fe,Al,Mg)SiO3]
         const double brigmaFeAl_radTC_c0 =  66.278;
         const double brigmaFeAl_radTC_d1 = -8.2756; 
         const double brigmaFeAl_radTC_jmin = -7.2568958208;         
@@ -511,7 +511,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
-        // mineral composition [Mg2Si2O6]
+        // mineral chemical formula [Mg2Si2O6]
         const double opxenstati_radTC_c0 =   -13.532000000;
         const double opxenstati_radTC_d1 =    2.4004000000;
         const double opxenstati_radTC_jmin = -23.025850930; 
@@ -521,7 +521,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
-        // mineral composition [CaMgSi2O6]
+        // mineral chemical formula [CaMgSi2O6]
         const double cpxdiopsid_radTC_c0 =   -14.286000000;       
         const double cpxdiopsid_radTC_d1 =    2.5119000000; 
         const double cpxdiopsid_radTC_jmin = -23.025850930; 
@@ -531,7 +531,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
-        // mineral composition [Mg3Al2(SiO4)3]
+        // mineral chemical formula [Mg3Al2(SiO4)3]
         const double grtpyropes_radTC_c0 =   -11.782000000;
         const double grtpyropes_radTC_d1 =    2.0718000000;
         const double grtpyropes_radTC_jmin = -23.025850930; 
@@ -541,7 +541,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
-        // mineral composition [Ca3Al2(SiO4)3]
+        // mineral chemical formula [Ca3Al2(SiO4)3]
         const double grtgrossul_radTC_c0 =   -11.782000000;
         const double grtgrossul_radTC_d1 =    2.0718000000;
         const double grtgrossul_radTC_jmin = -23.025850930; 
@@ -551,7 +551,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
-        // mineral composition [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3 ]
+        // mineral chemical formula [(Mg0.44Fe0.45Ca0.1Mn0.01)3Al2(SiO4)3 ]
         const double grtalmandi_radTC_c0  =  -11.782000000;
         const double grtalmandi_radTC_d1 =    2.0718000000;
         const double grtalmandi_radTC_jmin = -23.025850930; 
@@ -561,7 +561,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Grose & Afonso, 2019, GCubed, 20(5), 2378-2394]
         // https://doi.org/10.1029/2019GC008187
-        // mineral composition [Mg3(MgSi)(SiO4)3]
+        // mineral chemical formula [Mg3(MgSi)(SiO4)3]
         const double grtmajorit_radTC_c0  =  -11.782000000;
         const double grtmajorit_radTC_d1 =    2.0718000000;
         const double grtmajorit_radTC_jmin = -23.025850930;
@@ -569,7 +569,7 @@ namespace aspect
 
         // Coefficients for quartz
         // assumed 0 for now - no data available
-        // mineral composition [SiO2]
+        // mineral chemical formula [SiO2]
         const double quartzpure_radTC_c0  =   0;
         const double quartzpure_radTC_d1  =   0;
         const double quartzpure_radTC_jmin = -23.025850930; 
@@ -577,7 +577,7 @@ namespace aspect
 
         // Coefficients for coesite
         // assumed 0 for now - no data available
-        // mineral composition [SiO2]
+        // mineral chemical formula [SiO2]
         const double coesitSiO2_radTC_c0  =   0;
         const double coesitSiO2_radTC_d1  =   0;
         const double coesitSiO2_radTC_jmin = -23.025850930; 
@@ -585,7 +585,7 @@ namespace aspect
 
         // Coefficients for stishovite
         // assumed 0 for now - no data available
-        // mineral composition [SiO2]
+        // mineral chemical formula [SiO2]
         const double stishovite_radTC_c0  =   0;
         const double stishovite_radTC_d1  =   0;
         const double stishovite_radTC_jmin = -23.025850930; 
@@ -593,7 +593,7 @@ namespace aspect
 
         // Coefficients for Al-stishovite (5 vol%)
         // assumed 0 for now - no data available
-        // mineral composition [(Al,Si)O2]
+        // mineral chemical formula [(Al,Si)O2]
         const double stisho05Al_radTC_c0  =   0;
         const double stisho05Al_radTC_d1  =   0;
         const double stisho05Al_radTC_jmin = -23.025850930; 
@@ -601,7 +601,7 @@ namespace aspect
 
         // Coefficients for antigorite (serpentine)
         // assumed 0 for now - no data available
-        // mineral composition [///]
+        // mineral chemical formula [///]
         // 010 direction
         const double antigor010_radTC_c0  =   0;
         const double antigor010_radTC_d1  =   0;
@@ -615,7 +615,7 @@ namespace aspect
 
         // Coefficients for Fe,Al-phase D (Dense Hydrous Magnesium Silicate)
         // assumed 0 for now - no data available
-        // mineral composition [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
+        // mineral chemical formula [Mg1.19Fe0.12Al0.174Si1.71H2.02O6]
         const double phaseDFeAl_radTC_c0  =   0;
         const double phaseDFeAl_radTC_d1  =   0;
         const double phaseDFeAl_radTC_jmin = -23.025850930; 
@@ -623,7 +623,7 @@ namespace aspect
 
         // Coefficients for Al-phase D (Dense Hydrous Magnesium Silicate)
         // assumed 0 for now - no data available
-        // mineral composition [Mg1.29Al0.17Si1.73H1.98O6]
+        // mineral chemical formula [Mg1.29Al0.17Si1.73H1.98O6]
         const double phaseD02Al_radTC_c0  =   0;
         const double phaseD02Al_radTC_d1  =   0;
         const double phaseD02Al_radTC_jmin = -23.025850930; 
@@ -633,22 +633,22 @@ namespace aspect
         // retreived from fitting dataset of
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
-        // mineral composition [Mg0.92Fe0.08O] - (8% Iron)
+        // mineral chemical formula [Mg0.92Fe0.08O] - (8% Iron)
         const double ferroper08_radTC_c0 =  66.278;
         const double ferroper08_radTC_d1 = -8.2756; 
         const double ferroper08_radTC_jmin = -7.2568958208;         
         const double ferroper08_radTC_jmax = -0.3403920329;  
-        // mineral composition [Mg0.90Fe0.10O] - (10% Iron)
+        // mineral chemical formula [Mg0.90Fe0.10O] - (10% Iron)
         const double ferroper10_radTC_c0 =  66.278;
         const double ferroper10_radTC_d1 = -8.2756; 
         const double ferroper10_radTC_jmin = -7.2568958208;         
         const double ferroper10_radTC_jmax = -0.3403920329; 
-        // mineral composition [Mg0.80Fe0.20O] - (20% Iron)
+        // mineral chemical formula [Mg0.80Fe0.20O] - (20% Iron)
         const double ferroper20_radTC_c0 =  66.278;
         const double ferroper20_radTC_d1 = -8.2756; 
         const double ferroper20_radTC_jmin = -7.2568958208;         
         const double ferroper20_radTC_jmax = -0.3403920329;  
-        // mineral composition [Mg0.44Fe0.56O] (56% Iron)
+        // mineral chemical formula [Mg0.44Fe0.56O] (56% Iron)
         const double ferroper56_radTC_c0 =  66.278;
         const double ferroper56_radTC_d1 = -8.2756; 
         const double ferroper56_radTC_jmin = -7.2568958208;         
@@ -658,7 +658,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
-        // mineral composition [CaSiO3] 
+        // mineral chemical formula [CaSiO3] 
         const double davemaoite_radTC_c0 =  66.278;
         const double davemaoite_radTC_d1 = -8.2756; 
         const double davemaoite_radTC_jmin = -7.2568958208;         
@@ -668,7 +668,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
-        // mineral composition [Na0.71Mg2.05Al4.62Si1.16Fe(2+)0.09Fe(3+)0.17O12] 
+        // mineral chemical formula [Na0.71Mg2.05Al4.62Si1.16Fe(2+)0.09Fe(3+)0.17O12] 
         const double newhexAlph_radTC_c0 =  66.278;
         const double newhexAlph_radTC_d1 = -8.2756; 
         const double newhexAlph_radTC_jmin = -7.2568958208;         
@@ -678,7 +678,7 @@ namespace aspect
         // retreived from fitting dataset of
         // [Lobanov et al., 2020, EPSL, vol. 537, 116176]
         // https://doi.org/10.1016/j.epsl.2020.116176
-        // mineral composition [MgSiO3] 
+        // mineral chemical formula [MgSiO3] 
         const double akimotoite_radTC_c0 =  66.278;
         const double akimotoite_radTC_d1 = -8.2756; 
         const double akimotoite_radTC_jmin = -7.2568958208;         
@@ -833,7 +833,14 @@ namespace aspect
           double T_mod = current_temperature;
 
           // Take lithology of the model
-          double lithology = in.composition[0][i];
+          // double lithology = in.composition[0][i];
+
+          double lithology = 0.0;
+          // if there is a compositional field, use the first one as indicator for lithology
+          if (in.composition[i].size() > 0)
+          {
+            lithology = in.composition[i][0];
+          }
 
           std::vector<double> mineral_fraction;    // Mineral fractions for the current lithology
           std::vector<unsigned int> mineral_index; // Mineral indexes for the current lithology

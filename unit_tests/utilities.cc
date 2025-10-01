@@ -64,15 +64,7 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
   // Assigning a lithology index to in.composition 
   //(0: pyrolite, 1: harzburgite, 2: meta-MORB, 3: dunite, 99: test)
   std::vector<double> lithologies = {0, 1, 2, 3, 99};
-  /*
-    std::vector<std::vector<double>> lithologies = {
-    {0, 0, 0, 0, 0},
-    {1, 1, 1, 1, 1},
-    {2, 2, 2, 2, 2},
-    {3, 3, 3, 3, 3},
-    {99, 99, 99, 99, 99}
-  };
-  */
+  std::vector<std::vector<double>> current_lithology(temperatures.size(), lithologies);
 
   // Preallocate the expected total thermal conductivities (k) in [W/m/K] of minerals
   constexpr int olivinedry_exptID = 0;
@@ -619,14 +611,16 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
   // Loop over all lithologies
   for (unsigned int lID = 0; lID < lithologies.size(); ++lID)
   {
-
-    // std::vector<double> current_lithology = lithologies[lID]; // Set the current lithology
-    std::vector<double> current_lithology(temperatures.size(), lithologies[lID]);
     
     if (lithologies[lID] == 99)
     {
 
       INFO("Checking thermal conductivity (k) for different minerals as a function of temperature (T) and pressure (P)");
+
+      for (size_t row = 0; row < in.composition.size(); ++row)
+     {
+        in.composition[row][0] = current_lithology[row][lID];
+     }
 
       // Loop over all mID values
       for (unsigned int mID = 0; mID < mineralpar_index; ++mID)
@@ -636,9 +630,6 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
         // Loop over the different combinations of pressures (P) and temperatures (T)
         for (size_t row = 0; row < temperatures.size(); ++row)
         {
-
-         // in.composition[row] = current_lithology;  // Assign the current lithology as model in.composition input
-         in.composition[row] = current_lithology;  // Assign the current lithology as model in.composition input
 
          model.evaluate(in, out);  // Call the function to compute the thermal conductivities
 
@@ -888,7 +879,6 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
      // Loop over the different combinations of pressures (P) and temperatures (T)
      for (size_t row = 0; row < temperatures.size(); ++row)
      {
-       in.composition[row] = current_lithology;  // Assign the current lithology as model in.composition input
 
        model.evaluate(in, out);  // Call the function to compute the thermal conductivities
 
@@ -896,7 +886,7 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
        {
          case pyrolite_exptID: // Pyrolite
          {
-           INFO("Lithology: " << in.composition[row][lID] << " (Pyrolite) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
+           INFO("Lithology: " << in.composition[row][0] << " (Pyrolite) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
            INFO("Pyrolite expected k = " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
            INFO("Pyrolite computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
@@ -904,7 +894,7 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
           }
          case harzburg_exptID: // Harzburgite
          {
-           INFO("Lithology: " << in.composition[row][lID] << " (Harzburgite) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
+           INFO("Lithology: " << in.composition[row][0] << " (Harzburgite) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
            INFO("Harzburgite expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
            INFO("Harzburgite computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
@@ -912,7 +902,7 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
           }
          case metaMORB_exptID: // Metabasalt (MORB)
          {
-           INFO("Lithology: " << in.composition[row][lID] << " (Metabasalt) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
+           INFO("Lithology: " << in.composition[row][0] << " (Metabasalt) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
            INFO("Metabasalt expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
            INFO("Metabasalt computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
@@ -920,7 +910,7 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
           }
          case duniteOl_exptID: // Dunite (100% olivine)
          {
-           INFO("Lithology: " << in.composition[row][lID] << " (Dunite) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
+           INFO("Lithology: " << in.composition[row][0] << " (Dunite) ; Conditions: T= " << in.temperature[row] << "[K] ; P= " << (in.pressure[row]/1e9) << "[GPa]");
            INFO("Dunite expected k= " << expt_rocks_totTcond[row][lID] << "[W/m/K]");
            INFO("Dunite computed k= " << out.thermal_conductivities[row] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[row] == Approx(expt_rocks_totTcond[row][lID]));
