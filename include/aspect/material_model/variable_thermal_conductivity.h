@@ -42,7 +42,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Variable_Thermal_Conductivity : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class VariableThermalConductivity : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,

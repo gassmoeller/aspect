@@ -31,11 +31,11 @@ namespace aspect
   {
     template <int dim>
     void
-    Variable_Thermal_Conductivity<dim>::
+    VariableThermalConductivity<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      // The Variable_Thermal_Conductivity model has up to one compositional field (plus one background field)
+      // The VariableThermalConductivity model has up to one compositional field (plus one background field)
       // that can influence the density
       const unsigned int n_compositions_for_eos = std::min(this->n_compositional_fields()+1, 2u);
       EquationOfStateOutputs<dim> eos_outputs (n_compositions_for_eos);
@@ -98,7 +98,7 @@ namespace aspect
 
     template <int dim>
     bool
-    Variable_Thermal_Conductivity<dim>::
+    VariableThermalConductivity<dim>::
     is_compressible () const
     {
       return equation_of_state.is_compressible ();
@@ -108,11 +108,11 @@ namespace aspect
 
     template <int dim>
     void
-    Variable_Thermal_Conductivity<dim>::declare_parameters (ParameterHandler &prm)
+    VariableThermalConductivity<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Variable_Thermal_Conductivity model");
+        prm.enter_subsection("VariableThermalConductivity model");
         {
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm, 1);
 
@@ -160,11 +160,11 @@ namespace aspect
 
     template <int dim>
     void
-    Variable_Thermal_Conductivity<dim>::parse_parameters (ParameterHandler &prm)
+    VariableThermalConductivity<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Variable_Thermal_Conductivity model");
+        prm.enter_subsection("VariableThermalConductivity model");
         {
           equation_of_state.parse_parameters (prm, 1);
 
@@ -206,13 +206,13 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(Variable_Thermal_Conductivity,
+    ASPECT_REGISTER_MATERIAL_MODEL(VariableThermalConductivity,
                                    "variable_thermal_conductivity",
                                    "A material model that has constant values for all coefficients but"
                                    "the density, viscosity and thermal conductivity. " 
                                    "The defaults for all coefficients are chosen to be similar to what is believed to be correct "
                                    "for Earth's mantle. All of the values that define this model are read "
-                                   "from a section ``Material model/Variable_Thermal_Conductivity model'' in the input file, see "
+                                   "from a section ``Material model/VariableThermalConductivity model'' in the input file, see "
                                    "Section~\\ref{parameters:Material_20model/Simple_20model}."
                                    "\n\n"
                                    "This model uses the following set of equations for the two coefficients that "
