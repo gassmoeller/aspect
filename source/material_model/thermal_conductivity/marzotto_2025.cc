@@ -20,6 +20,7 @@
 */
 
 #include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
+#include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
 // Helper functions in anonymous namespace to compute thermal conductivities using the Marzotto et al. (2025) formulations
 namespace 
@@ -745,8 +746,6 @@ namespace aspect
           minindex_allminerals_test[i] = i;
           minfract_allminerals_test[i] = 1.00;
         }
-
-        #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
         // Check if the sum of Rock Mineral Fraction is equal to 1
         double sum_min_fract_pyrolite_UM = std::accumulate(minfract_pyrolite_UM.begin(), minfract_pyrolite_UM.end(), 0.0);
