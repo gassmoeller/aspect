@@ -20,6 +20,7 @@
 */
 
 #include <aspect/material_model/thermal_conductivity/stackhouse_2015.h>
+#include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
 // Helper functions in anonymous namespace to compute thermal conductivities using the Stackhouse (2015) formulations
 namespace 
@@ -45,8 +46,7 @@ namespace aspect
       stackhouse_2015<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                     MaterialModel::MaterialModelOutputs<dim> &out) const
      {
-       #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
-
+      
        // Coefficients for lower mantle assemblage 
        constexpr int lowermantl_index = 0;
        const double lowermantl_sta15_latTC_room =  4.9;     // lattice thermal conductivity at room P,T conditions (latTC_room)
