@@ -20,6 +20,7 @@
 */
 
 #include <aspect/material_model/thermal_conductivity/nondimensional_Tcond.h>
+#include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
 // Helper functions in anonymous namespace to compute thermal conductivities using the Marzotto et al. (2025) formulations
 namespace 
@@ -184,8 +185,6 @@ namespace aspect
           minindex_allminerals_test[i] = i;
           minfract_allminerals_test[i] = 1.00;
         }
-
-        #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
         // Check if the sum of Rock Mineral Fraction is equal to 1
         double sum_min_fract_onelayer_UpMa = std::accumulate(minfract_onelayer_UpMa.begin(), minfract_onelayer_UpMa.end(), 0.0);
