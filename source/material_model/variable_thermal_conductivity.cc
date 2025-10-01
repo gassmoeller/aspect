@@ -207,7 +207,7 @@ namespace aspect
   namespace MaterialModel
   {
     ASPECT_REGISTER_MATERIAL_MODEL(VariableThermalConductivity,
-                                   "variable_thermal_conductivity",
+                                   "variable thermal conductivity",
                                    "A material model that has constant values for all coefficients but"
                                    "the density, viscosity and thermal conductivity. " 
                                    "The defaults for all coefficients are chosen to be similar to what is believed to be correct "
