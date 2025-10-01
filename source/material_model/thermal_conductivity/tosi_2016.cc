@@ -20,6 +20,7 @@
 */
 
 #include <aspect/material_model/thermal_conductivity/tosi_2016.h>
+#include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
 // Helper functions in anonymous namespace to compute thermal conductivities using the Tosi et al. (2016) formulations
 namespace
@@ -46,8 +47,7 @@ namespace aspect
       tosi_2016<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
-
+        
         // Coefficients for Upper Mantle (UM) 
         constexpr int uppermantl_index = 0;
         const double uppermantl_tos16_latTC_room =  2.47; // lattice thermal conductivity at room temperature (latTC_room)
