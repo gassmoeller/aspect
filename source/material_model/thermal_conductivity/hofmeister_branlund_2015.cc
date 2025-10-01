@@ -20,6 +20,7 @@
 */
 
 #include <aspect/material_model/thermal_conductivity/hofmeister_branlund_2015.h>
+#include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
 // Helper functions in anonymous namespace to compute thermal conductivities using the Hofmeister and Branlund (2015) formulations
 namespace 
@@ -44,8 +45,7 @@ namespace aspect
       hofmeister_branlund_2015<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                             MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
-
+      
         // Coefficients for oceanic crust (pyroxene, plagioclase)
         constexpr int oceanicrus_index = 0;
         const double oceanicrus_hbr15_latTC_room =  1.217;     // lattice thermal conductivity at room P,T conditions (latTC_room)
