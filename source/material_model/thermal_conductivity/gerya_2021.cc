@@ -20,6 +20,7 @@
 */
 
 #include <aspect/material_model/thermal_conductivity/gerya_2021.h>
+#include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
 // Helper functions in anonymous namespace to compute thermal conductivities using the Gerya (2021) formulations
 namespace 
@@ -43,7 +44,6 @@ namespace aspect
       gerya_2021<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                                  MaterialModel::MaterialModelOutputs<dim> &out) const
      {
-       #include <deal.II/base/exceptions.h> // Ensure this is included for AssertThrow
 
        // Coefficients for oceanic crust  
        constexpr int oceanicrus_index = 0;
