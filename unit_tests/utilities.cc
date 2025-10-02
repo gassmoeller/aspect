@@ -2041,6 +2041,7 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
   // Assigning a lithology index to in.composition 
   //(0: uniform lithology, 99: test)
   std::vector<double> lithologies = {0, 1, 2, 99};
+  std::vector<std::vector<double>> current_lithology(temperatures.size(), lithologies);
 
   // Preallocate the expected total thermal conductivities (k) in [W/m/K]
   constexpr int nondimoliv_exptID = 0;
@@ -2277,7 +2278,10 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
   for (unsigned int lID = 0; lID < lithologies.size(); ++lID)
   {
 
-    std::vector<double> current_lithology(temperatures.size(), lithologies[lID]);
+    for (size_t row = 0; row < in.temperature.size(); ++row)
+    {
+      in.composition[row][0] = current_lithology[row][lID];
+    }
     
     if (lithologies[lID] == 99)
     {
@@ -2291,8 +2295,6 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
 
         for (size_t row = 0; row < temperatures.size(); ++row)
         {
-
-         in.composition[row] = current_lithology;  // Assign the current lithology as model in.composition input
 
          model.evaluate(in, out);  // Call the function to compute the thermal conductivities
 
@@ -2333,7 +2335,6 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
      // Loop over the different combinations of pressures (P) and temperatures (T)
      for (size_t row = 0; row < temperatures.size(); ++row)
      {
-       in.composition[row] = current_lithology;  // Assign the current lithology as model in.composition input
 
        model.evaluate(in, out);  // Call the function to compute the thermal conductivities
 
@@ -2341,7 +2342,7 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
        {
          case onelayer_exptID: // One Layer Convection
          {
-           INFO("Lithology: " << in.composition[row][lID] << " (One Layer Convection) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
+           INFO("Lithology: " << in.composition[row][0] << " (One Layer Convection) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
            INFO("One Layer Convection expected k = " << expt_nondim_rock_totTcond[row][lID] << "[W/m/K]");
            INFO("One Layer Convection computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[row] == Approx(expt_nondim_rock_totTcond[row][lID]));
@@ -2349,7 +2350,7 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
           }
          case twolayer_exptID: // Two Layer Convection
          {
-           INFO("Lithology: " << in.composition[row][lID] << " (Two Layer Convection) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
+           INFO("Lithology: " << in.composition[row][0] << " (Two Layer Convection) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
            INFO("Two Layer Convection expected k = " << expt_nondim_rock_totTcond[row][lID] << "[W/m/K]");
            INFO("Two Layer Convection computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[row] == Approx(expt_nondim_rock_totTcond[row][lID]));
@@ -2357,7 +2358,7 @@ TEST_CASE("Utilities:: nondimensional thermal conductivity")
           }
          case trelayer_exptID: // Three Layer Convection
          {
-           INFO("Lithology: " << in.composition[row][lID] << " (Three Layer Convection) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
+           INFO("Lithology: " << in.composition[row][0] << " (Three Layer Convection) ; Conditions: T = " << in.temperature[row] << "[K] ; P = " << (in.pressure[row]/1e9) << "[GPa]");
            INFO("Three Layer Convection expected k = " << expt_nondim_rock_totTcond[row][lID] << "[W/m/K]");
            INFO("Three Layer Convection computed k = " << out.thermal_conductivities[row] << "[W/m/K]");
            REQUIRE(out.thermal_conductivities[row] == Approx(expt_nondim_rock_totTcond[row][lID]));

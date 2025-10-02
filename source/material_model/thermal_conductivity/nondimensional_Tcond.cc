@@ -284,8 +284,12 @@ namespace aspect
           double P_log = std::log(P_ratio);
           double T_log = std::log(T_ratio);
 
-          // Take lithology of the model
-          double lithology = in.composition[0][i];
+          double lithology = 0.0;
+          // if there is a compositional field, use the first one as indicator for lithology
+          if (in.composition[i].size() > 0)
+          {
+            lithology = in.composition[i][0];
+          }
 
           std::vector<double> mineral_fraction;    // Mineral fractions for the current lithology
           std::vector<unsigned int> mineral_index; // Mineral indexes for the current lithology
