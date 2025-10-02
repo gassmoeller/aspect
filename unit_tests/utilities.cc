@@ -611,16 +611,15 @@ TEST_CASE("Utilities:: P,T dependent thermal conductivity Marzotto et al., 2025"
   // Loop over all lithologies
   for (unsigned int lID = 0; lID < lithologies.size(); ++lID)
   {
-    
+     for (size_t row = 0; row < in.temperature.size(); ++row)
+     {
+       in.composition[row][0] = current_lithology[row][lID];
+     }
+
     if (lithologies[lID] == 99)
     {
 
       INFO("Checking thermal conductivity (k) for different minerals as a function of temperature (T) and pressure (P)");
-
-      for (size_t row = 0; row < in.composition.size(); ++row)
-     {
-        in.composition[row][0] = current_lithology[row][lID];
-     }
 
       // Loop over all mID values
       for (unsigned int mID = 0; mID < mineralpar_index; ++mID)
