@@ -106,9 +106,9 @@ subsection Gravity model
 end
 
 subsection Material model
-  set Model name =  variable_thermal_conductivity
+  set Model name = variable thermal conductivity
 
-  subsection Variable_Thermal_Conductivity model
+  subsection VariableThermalConductivity model
     set Reference density             = 1
     set Reference specific heat       = 1
     set Reference temperature         = 0
