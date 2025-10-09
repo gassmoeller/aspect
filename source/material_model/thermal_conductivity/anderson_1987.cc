@@ -102,21 +102,21 @@ namespace aspect
         const double grtmajorit_and87_densi_room =  3477;  // density at room P,T conditions [kg m^-3]
         const double grtmajorit_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
 
-        // Coefficients for davemaoite 
-        // mineral composition [CaSiO3]
-        constexpr int davemaoite_index = 8;
-        const double davemaoite_and87_latTC_room =  10.9; // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
-        const double davemaoite_and87_densi_room =  4184; // density at room P,T conditions [kg m^-3]
-        const double davemaoite_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
-
         // Coefficients for ferropericlase (10% Iron)
         // mineral composition [Mg0.90Fe0.10O] 
-        constexpr int ferroper10_index = 9;
-        const double ferroper10_and87_latTC_room =  3.5;  // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
-        const double ferroper10_and87_densi_room =  4006; // density at room P,T conditions [kg m^-3]
+        constexpr int ferroper10_index = 8;
+        const double ferroper10_and87_latTC_room =  10.9;  // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
+        const double ferroper10_and87_densi_room =  4184; // density at room P,T conditions [kg m^-3]
         const double ferroper10_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
 
-        unsigned int mineralpar_index = ferroper10_index+1; // Number of minerals
+        // Coefficients for davemaoite 
+        // mineral composition [CaSiO3]
+        constexpr int davemaoite_index = 9;
+        const double davemaoite_and87_latTC_room =  3.5; // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
+        const double davemaoite_and87_densi_room =  4006; // density at room P,T conditions [kg m^-3]
+        const double davemaoite_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
+
+        // unsigned int mineralpar_index = davemaoite_index+1; // Number of minerals
 
         // Preallocate a vector for mineral fractions of different rocks and a vector for mineral indices
 
@@ -225,175 +225,323 @@ namespace aspect
         AssertThrow(std::abs(sum_min_fract_and87_duniteOl_LM - 1.0) < 1e-6,
                     dealii::ExcMessage("Error: The sum of minfract_and87_duniteOl_LM must be equal to 1."));
 
+        double density_UpMa_bot = 3725; // Upper Mantle bottom density in kg/m^3
+        double density_UMTZ_top = 3725; // Upper Transition Zone top density in kg/m^3
+        double density_UMTZ_bot = 3975; // Upper Transition Zone bottom density in kg/m^3
+        double density_LMTZ_top = 3975; // Lower Transition Zone top density in kg/m^3
+        double density_LMTZ_bot = 4000; // Lower Transition Zone bottom density in kg/m^3
+
         const unsigned int n_points = in.n_evaluation_points();
 
         for (unsigned int i = 0; i < n_points; ++i) 
         {
-          // Preallocate a vector for storing thermal conductivities of minerals
-          std::vector<double> and87_minerals_latTcond(mineralpar_index, 0.0); // Lattice thermal conductivity
-          std::vector<double> and87_minerals_totTcond(mineralpar_index, 0.0); // Total thermal conductivity
-          // Preallocate a matrix for storing thermal conductivities of minerals
-          std::vector<std::vector<double>> and87_all_minerals_Tconds(mineralpar_index, std::vector<double>(3, 0.0));
-
           double densi_model = in.density[i];
 
-          unsigned int mID = in.Mineral_ID;
-
           double lithology = 0.0;
-          double min_frac = 0.0;
           // if there is a compositional field, use the first one as indicator for lithology
           if (in.composition[i].size() > 0)
           {
             lithology = in.composition[i][0];
-            min_frac = in.composition[i][0];
           }
 
-          switch (mID) // Compute the lattice, radiative and total thermal conductivities of the given mineral
+          std::vector<double> mineral_and87_fraction;    // Mineral fractions for the current lithology
+          std::vector<unsigned int> mineral_and87_index; // Mineral indexes for the current lithology
+
+          if (densi_model < density_UpMa_bot) // upper mantle
           {
-           case olivinedry_index: // Dry Olivine
-            {      
-             double olivinedry_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
-             olivinedry_and87_latTC_room,
-             olivinedry_and87_densi_room,
-             densi_model,
-             olivinedry_and87_k_Pexponen); 
-             double olivinedry_and87_totTcon = olivinedry_and87_latTcon;
-             // Store the thermal conductivities in the vector
-             and87_minerals_latTcond[olivinedry_index] = olivinedry_and87_latTcon;
-             and87_minerals_totTcond[olivinedry_index] = olivinedry_and87_totTcon;
-             break;
-            }
-            case wadsleydry_index: // Dry Wadsleyite 
-            {      
-             double wadsleydry_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
-             wadsleydry_and87_latTC_room,
-             wadsleydry_and87_densi_room,
-             densi_model,
-             wadsleydry_and87_k_Pexponen); 
-             double wadsleydry_and87_totTcon = wadsleydry_and87_latTcon;
-             // Store the thermal conductivities in the vector
-             and87_minerals_latTcond[wadsleydry_index] = wadsleydry_and87_latTcon;
-             and87_minerals_totTcond[wadsleydry_index] = wadsleydry_and87_totTcon;
-             break;
-            }
-            case ringwoodry_index: // Dry Ringwoodite
-            {      
-             double ringwoodry_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
-             ringwoodry_and87_latTC_room,
-             ringwoodry_and87_densi_room,
-             densi_model,
-             ringwoodry_and87_k_Pexponen); 
-             double ringwoodry_and87_totTcon = ringwoodry_and87_latTcon;
-             // Store the thermal conductivities in the vector
-             and87_minerals_latTcond[ringwoodry_index] = ringwoodry_and87_latTcon;
-             and87_minerals_totTcond[ringwoodry_index] = ringwoodry_and87_totTcon;
-             break;
-            }
-            case brigma90Mg_index: // Fe-Bridgmanite (10%)
-            {      
-             double brigma90Mg_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
-             brigma90Mg_and87_latTC_room,
-             brigma90Mg_and87_densi_room,
-             densi_model,
-             brigma90Mg_and87_k_Pexponen); 
-             double brigma90Mg_and87_totTcon = brigma90Mg_and87_latTcon;
-             // Store the thermal conductivities in the vector
-             and87_minerals_latTcond[brigma90Mg_index] = brigma90Mg_and87_latTcon;
-             and87_minerals_totTcond[brigma90Mg_index] = brigma90Mg_and87_totTcon;
-             break;
-            }
-            case opxenstati_index: // Orthopyroxene (Enstatite)
-            {      
-             double opxenstati_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
-             opxenstati_and87_latTC_room,
-             opxenstati_and87_densi_room,
-             densi_model,
-             opxenstati_and87_k_Pexponen); 
-             double opxenstati_and87_totTcon = opxenstati_and87_latTcon;
-             // Store the thermal conductivities in the vector
-             and87_minerals_latTcond[opxenstati_index] = opxenstati_and87_latTcon;
-             and87_minerals_totTcond[opxenstati_index] = opxenstati_and87_totTcon;
-             break;
-            }
-            case cpxdiopsid_index: // Clinopyroxene (Diopside)
-            { 
-              double cpxdiopsid_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
-              cpxdiopsid_and87_latTC_room,
-              cpxdiopsid_and87_densi_room,
-              densi_model,
-              cpxdiopsid_and87_k_Pexponen); 
-              double cpxdiopsid_and87_totTcon = cpxdiopsid_and87_latTcon;
-              // Store the thermal conductivities in the vector
-              and87_minerals_latTcond[cpxdiopsid_index] = cpxdiopsid_and87_latTcon;
-              and87_minerals_totTcond[cpxdiopsid_index] = cpxdiopsid_and87_totTcon;
-              break;
-            }
-            case grtpyropes_index: // Garnet (Pyrope)
-            { 
-              double grtpyropes_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
-              grtpyropes_and87_latTC_room,
-              grtpyropes_and87_densi_room,
-              densi_model,
-              grtpyropes_and87_k_Pexponen); 
-              double grtpyropes_and87_totTcon = grtpyropes_and87_latTcon;
-              // Store the thermal conductivities in the vector
-              and87_minerals_latTcond[grtpyropes_index] = grtpyropes_and87_latTcon;
-              and87_minerals_totTcond[grtpyropes_index] = grtpyropes_and87_totTcon;
-              break;
-            }
-            case grtmajorit_index: // Garnet (Majorite)
-            { 
-              double grtmajorit_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
-              grtmajorit_and87_latTC_room,
-              grtmajorit_and87_densi_room,
-              densi_model,
-              grtmajorit_and87_k_Pexponen); 
-              double grtmajorit_and87_totTcon = grtmajorit_and87_latTcon;
-              // Store the thermal conductivities in the vector
-              and87_minerals_latTcond[grtmajorit_index] = grtmajorit_and87_latTcon;
-              and87_minerals_totTcond[grtmajorit_index] = grtmajorit_and87_totTcon;
-              break;
-            }
-            case ferroper10_index: // Ferropericlase (Mg90Fe10O)
-            { 
-              double ferroper10_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
-              ferroper10_and87_latTC_room,
-              ferroper10_and87_densi_room,
-              densi_model,
-              ferroper10_and87_k_Pexponen); 
-              double ferroper10_and87_totTcon = ferroper10_and87_latTcon;
-              // Store the thermal conductivities in the vector
-              and87_minerals_latTcond[ferroper10_index] = ferroper10_and87_latTcon;
-              and87_minerals_totTcond[ferroper10_index] = ferroper10_and87_totTcon;
-              break;
-            }
-            case davemaoite_index: // Davemaoite
+            if (lithology == 0) // pyrolite
             {
-              double davemaoite_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
-              davemaoite_and87_latTC_room,
-              davemaoite_and87_densi_room,
-              densi_model,
-              davemaoite_and87_k_Pexponen); 
-              double davemaoite_and87_totTcon = davemaoite_and87_latTcon;
-              // Store the thermal conductivities in the vector
-              and87_minerals_latTcond[davemaoite_index] = davemaoite_and87_latTcon;
-              and87_minerals_totTcond[davemaoite_index] = davemaoite_and87_totTcon;
-              break;
+              mineral_and87_fraction = minfract_and87_pyrolite_UM; 
+              mineral_and87_index = minindex_and87_pyrolite_UM;
+            }
+            else if (lithology == 1) // harzburgite
+            {
+              mineral_and87_fraction = minfract_and87_harzburg_UM; 
+              mineral_and87_index = minindex_and87_harzburg_UM;
+            }
+            else if (lithology == 2) // meta-MORB
+            {
+              mineral_and87_fraction = minfract_and87_metaMORB_UM; 
+              mineral_and87_index = minindex_and87_metaMORB_UM;
+            }
+            else if (lithology == 3) // dunite
+            {
+              mineral_and87_fraction = minfract_and87_duniteOl_UM; 
+              mineral_and87_index = minindex_and87_duniteOl_UM;
+            }
+            else if (lithology == 99) // test (all minerals)
+            {
+              mineral_and87_fraction = {1.00}; 
+              mineral_and87_index = {in.Mineral_ID};
+            }
+            else
+            {
+              AssertThrow(false, dealii::ExcMessage("Invalid lithology for the upper mantle."));
             }
           }
-
-          // Fill the matrix column by column
-          for (unsigned int row = 0; row < mineralpar_index; ++row)
+          else if (densi_model >= density_UMTZ_top && densi_model <= density_UMTZ_bot) // upper transition zone
           {
-            and87_all_minerals_Tconds[row][0] = and87_minerals_latTcond[row]; // Column 0: Lattice conductivities
-            and87_all_minerals_Tconds[row][1] = and87_minerals_totTcond[row]; // Column 1: Total conductivities
+            if (lithology == 0) // pyrolite
+            {
+              mineral_and87_fraction = minfract_and87_pyrolite_UMTZ; 
+              mineral_and87_index = minindex_and87_pyrolite_UMTZ;
+            }
+            else if (lithology == 1) // harzburgite
+            {
+              mineral_and87_fraction = minfract_and87_harzburg_UMTZ; 
+              mineral_and87_index = minindex_and87_harzburg_UMTZ;
+            }
+            else if (lithology == 2) // meta-MORB
+            {
+              mineral_and87_fraction = minfract_and87_metaMORB_UMTZ; 
+              mineral_and87_index = minindex_and87_metaMORB_UMTZ;
+            }
+            else if (lithology == 3) // dunite
+            {
+              mineral_and87_fraction = minfract_and87_duniteOl_UMTZ; 
+              mineral_and87_index = minindex_and87_duniteOl_UMTZ;
+            }
+            else if (lithology == 99) // test (all minerals)
+            {
+              mineral_and87_fraction = {1.00};  
+              mineral_and87_index = {in.Mineral_ID};
+            }
+            else
+            {
+              AssertThrow(false, dealii::ExcMessage("Invalid lithology for the upper mantle transition zone."));
+            }
+          }
+          else if (densi_model > density_LMTZ_top && densi_model <= density_LMTZ_bot) // lower transition zone
+          {
+            if (lithology == 0) // pyrolite
+            {
+              mineral_and87_fraction = minfract_and87_pyrolite_LMTZ; 
+              mineral_and87_index = minindex_and87_pyrolite_LMTZ;
+            }
+            else if (lithology == 1) // harzburgite
+            {
+              mineral_and87_fraction = minfract_and87_harzburg_LMTZ; 
+              mineral_and87_index = minindex_and87_harzburg_LMTZ;
+            }
+            else if (lithology == 2) // meta-MORB
+            {
+              mineral_and87_fraction = minfract_and87_metaMORB_LMTZ; 
+              mineral_and87_index = minindex_and87_metaMORB_LMTZ;
+            }
+            else if (lithology == 3) // dunite
+            {
+              mineral_and87_fraction = minfract_and87_duniteOl_LMTZ; 
+              mineral_and87_index = minindex_and87_duniteOl_LMTZ;
+            }
+            else if (lithology == 99) // test (all minerals)
+            {
+              mineral_and87_fraction = {1.00}; 
+              mineral_and87_index = {in.Mineral_ID};
+            }
+            else
+            {
+              AssertThrow(false, dealii::ExcMessage("Invalid lithology for the lower mantle transition zone."));
+            }
+          }
+          else if (densi_model > density_LMTZ_bot) // lower mantle
+          {
+            if (lithology == 0) // pyrolite
+            {
+              mineral_and87_fraction = minfract_and87_pyrolite_LM; 
+              mineral_and87_index = minindex_and87_pyrolite_LM;
+            }
+            else if (lithology == 1) // harzburgite
+            {
+              mineral_and87_fraction = minfract_and87_harzburg_LM; 
+              mineral_and87_index = minindex_and87_harzburg_LM;
+            }
+            else if (lithology == 2) // meta-MORB
+            {
+              mineral_and87_fraction = minfract_and87_metaMORB_LM; 
+              mineral_and87_index = minindex_and87_metaMORB_LM;
+            }
+            else if (lithology == 3) // dunite
+            {
+              mineral_and87_fraction = minfract_and87_duniteOl_LM; 
+              mineral_and87_index = minindex_and87_duniteOl_LM;
+            }
+            else if (lithology == 99) // test (all minerals)
+            {
+              mineral_and87_fraction = {1.00}; 
+              mineral_and87_index = {in.Mineral_ID};
+            }
+            else
+            {
+              AssertThrow(false, dealii::ExcMessage("Invalid lithology for the lower mantle."));
+            }
+          }
+          else
+          {
+           AssertThrow(false, dealii::ExcMessage("Invalid pressure range for the mantle."));
           }
 
-          // Aggregate rock thermal conductivity: geometric mean of the total thermal conductivities  of the minerals weighted by their fraction
-          double aggrock_testcase_and87_Tcond = std::pow(and87_all_minerals_Tconds[mID][1], min_frac);
+          // Preallocate a vector for storing thermal conductivities of minerals
+          std::vector<double> and87_minerals_latTcond(mineral_and87_fraction.size(), 0.0); // Lattice thermal conductivity
+          std::vector<double> and87_minerals_totTcond(mineral_and87_fraction.size(), 0.0); // Total thermal conductivity
 
-          // Test Case
-          out.thermal_conductivities[i] = aggrock_testcase_and87_Tcond;
+          // Preallocate total thermal conductivity of the aggregate rock
+          double and87_aggregate_rock_totTcond = 1;
+
+          for (size_t col = 0; col < mineral_and87_fraction.size(); ++col)
+          {
+
+           unsigned int mID = mineral_and87_index[col];
+
+           switch (mID) // Compute the lattice, radiative and total thermal conductivities of the given mineral
+           {
+             case olivinedry_index: // Dry Olivine
+             {      
+               double olivinedry_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
+               olivinedry_and87_latTC_room,
+               olivinedry_and87_densi_room,
+               densi_model,
+               olivinedry_and87_k_Pexponen); 
+               double olivinedry_and87_totTcon = olivinedry_and87_latTcon;
+               // Store the thermal conductivities in the vector
+               and87_minerals_latTcond[col] = olivinedry_and87_latTcon;
+               and87_minerals_totTcond[col] = olivinedry_and87_totTcon;
+               break;
+              }
+             case wadsleydry_index: // Dry Wadsleyite 
+             {      
+               double wadsleydry_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
+               wadsleydry_and87_latTC_room,
+               wadsleydry_and87_densi_room,
+               densi_model,
+               wadsleydry_and87_k_Pexponen); 
+               double wadsleydry_and87_totTcon = wadsleydry_and87_latTcon;
+               // Store the thermal conductivities in the vector
+               and87_minerals_latTcond[col] = wadsleydry_and87_latTcon;
+               and87_minerals_totTcond[col] = wadsleydry_and87_totTcon;
+               break;
+              }
+             case ringwoodry_index: // Dry Ringwoodite
+             {      
+               double ringwoodry_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
+               ringwoodry_and87_latTC_room,
+               ringwoodry_and87_densi_room,
+               densi_model,
+               ringwoodry_and87_k_Pexponen); 
+               double ringwoodry_and87_totTcon = ringwoodry_and87_latTcon;
+               // Store the thermal conductivities in the vector
+               and87_minerals_latTcond[col] = ringwoodry_and87_latTcon;
+               and87_minerals_totTcond[col] = ringwoodry_and87_totTcon;
+               break;
+              }
+             case brigma90Mg_index: // Fe-Bridgmanite (10%)
+             {      
+               double brigma90Mg_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
+               brigma90Mg_and87_latTC_room,
+               brigma90Mg_and87_densi_room,
+               densi_model,
+               brigma90Mg_and87_k_Pexponen); 
+               double brigma90Mg_and87_totTcon = brigma90Mg_and87_latTcon;
+               // Store the thermal conductivities in the vector
+               and87_minerals_latTcond[col] = brigma90Mg_and87_latTcon;
+               and87_minerals_totTcond[col] = brigma90Mg_and87_totTcon;
+               break;
+              }
+             case opxenstati_index: // Orthopyroxene (Enstatite)
+             {      
+               double opxenstati_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
+               opxenstati_and87_latTC_room,
+               opxenstati_and87_densi_room,
+               densi_model,
+               opxenstati_and87_k_Pexponen); 
+               double opxenstati_and87_totTcon = opxenstati_and87_latTcon;
+               // Store the thermal conductivities in the vector
+               and87_minerals_latTcond[col] = opxenstati_and87_latTcon;
+               and87_minerals_totTcond[col] = opxenstati_and87_totTcon;
+               break;
+              }
+             case cpxdiopsid_index: // Clinopyroxene (Diopside)
+             { 
+               double cpxdiopsid_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
+               cpxdiopsid_and87_latTC_room,
+               cpxdiopsid_and87_densi_room,
+               densi_model,
+               cpxdiopsid_and87_k_Pexponen); 
+               double cpxdiopsid_and87_totTcon = cpxdiopsid_and87_latTcon;
+               // Store the thermal conductivities in the vector
+               and87_minerals_latTcond[col] = cpxdiopsid_and87_latTcon;
+               and87_minerals_totTcond[col] = cpxdiopsid_and87_totTcon;
+               break;
+             }
+             case grtpyropes_index: // Garnet (Pyrope)
+             { 
+               double grtpyropes_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
+               grtpyropes_and87_latTC_room,
+               grtpyropes_and87_densi_room,
+               densi_model,
+               grtpyropes_and87_k_Pexponen); 
+               double grtpyropes_and87_totTcon = grtpyropes_and87_latTcon;
+               // Store the thermal conductivities in the vector
+               and87_minerals_latTcond[col] = grtpyropes_and87_latTcon;
+               and87_minerals_totTcond[col] = grtpyropes_and87_totTcon;
+               break;
+             }
+             case grtmajorit_index: // Garnet (Majorite)
+             { 
+               double grtmajorit_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
+               grtmajorit_and87_latTC_room,
+               grtmajorit_and87_densi_room,
+               densi_model,
+               grtmajorit_and87_k_Pexponen); 
+               double grtmajorit_and87_totTcon = grtmajorit_and87_latTcon;
+               // Store the thermal conductivities in the vector
+               and87_minerals_latTcond[col] = grtmajorit_and87_latTcon;
+               and87_minerals_totTcond[col] = grtmajorit_and87_totTcon;
+               break;
+             }
+             case ferroper10_index: // Ferropericlase (Mg90Fe10O)
+             { 
+               double ferroper10_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
+               ferroper10_and87_latTC_room,
+               ferroper10_and87_densi_room,
+               densi_model,
+               ferroper10_and87_k_Pexponen); 
+               double ferroper10_and87_totTcon = ferroper10_and87_latTcon;
+               // Store the thermal conductivities in the vector
+               and87_minerals_latTcond[col] = ferroper10_and87_latTcon;
+               and87_minerals_totTcond[col] = ferroper10_and87_totTcon;
+               break;
+             }
+             case davemaoite_index: // Davemaoite
+             {
+               double davemaoite_and87_latTcon = compute_lattice_thermal_conductivity_and1987(
+               davemaoite_and87_latTC_room,
+               davemaoite_and87_densi_room,
+               densi_model,
+               davemaoite_and87_k_Pexponen); 
+               double davemaoite_and87_totTcon = davemaoite_and87_latTcon;
+               // Store the thermal conductivities in the vector
+               and87_minerals_latTcond[col] = davemaoite_and87_latTcon;
+               and87_minerals_totTcond[col] = davemaoite_and87_totTcon;
+               break;
+             }
+            }
+
+           // Thermal conductivity of the aggregate rock is computed as the
+           // geometric mean of the total thermal conductivities of the minerals weighted by their fraction
+           and87_aggregate_rock_totTcond = and87_aggregate_rock_totTcond * std::pow(and87_minerals_totTcond[col], mineral_and87_fraction[col]);
+
+          }
+
+          if (lithology != 99)
+          {
+             out.thermal_conductivities[i] = and87_aggregate_rock_totTcond;
+          }
+          else if (lithology == 99)
+             out.thermal_conductivities[i] = and87_minerals_totTcond[0];
+          else
+          {
+             AssertThrow(false, dealii::ExcMessage("Invalid lithology for the mantle."));
+          }
         }
       }
     }
