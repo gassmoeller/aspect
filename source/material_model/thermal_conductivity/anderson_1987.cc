@@ -172,6 +172,59 @@ namespace aspect
         std::vector<double> minfract_and87_duniteOl_LM = {1.00};
         std::vector<unsigned int> minindex_and87_duniteOl_LM = {brigma90Mg_index};
 
+         // Check if the sum of Rock Mineral Fraction is equal to 1
+        double sum_min_fract_and87_pyrolite_UM = std::accumulate(minfract_and87_pyrolite_UM.begin(), minfract_and87_pyrolite_UM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_pyrolite_UM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_pyrolite_UM must be equal to 1."));
+        double sum_min_fract_and87_pyrolite_UMTZ = std::accumulate(minfract_and87_pyrolite_UMTZ.begin(), minfract_and87_pyrolite_UMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_pyrolite_UMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_pyrolite_UMTZ must be equal to 1."));
+        double sum_min_fract_and87_pyrolite_LMTZ = std::accumulate(minfract_and87_pyrolite_LMTZ.begin(), minfract_and87_pyrolite_LMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_pyrolite_LMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_pyrolite_LMTZ must be equal to 1."));
+        double sum_min_fract_and87_pyrolite_LM = std::accumulate(minfract_and87_pyrolite_LM.begin(), minfract_and87_pyrolite_LM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_pyrolite_LM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_pyrolite_LM must be equal to 1."));
+
+        double sum_min_fract_and87_harzburg_UM = std::accumulate(minfract_and87_harzburg_UM.begin(), minfract_and87_harzburg_UM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_harzburg_UM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_harzburg_UM must be equal to 1."));
+        double sum_min_fract_and87_harzburg_UMTZ = std::accumulate(minfract_and87_harzburg_UMTZ.begin(), minfract_and87_harzburg_UMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_harzburg_UMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_harzburg_UMTZ must be equal to 1."));
+        double sum_min_fract_and87_harzburg_LMTZ = std::accumulate(minfract_and87_harzburg_LMTZ.begin(), minfract_and87_harzburg_LMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_harzburg_LMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_harzburg_LMTZ must be equal to 1."));
+        double sum_min_fract_and87_harzburg_LM = std::accumulate(minfract_and87_harzburg_LM.begin(), minfract_and87_harzburg_LM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_harzburg_LM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_harzburg_LM must be equal to 1."));
+
+        double sum_min_fract_and87_metaMORB_UM = std::accumulate(minfract_and87_metaMORB_UM.begin(), minfract_and87_metaMORB_UM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_metaMORB_UM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_metaMORB_UM must be equal to 1."));
+        double sum_min_fract_and87_metaMORB_UMTZ = std::accumulate(minfract_and87_metaMORB_UMTZ.begin(), minfract_and87_metaMORB_UMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_metaMORB_UMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_metaMORB_UMTZ must be equal to 1."));
+        double sum_min_fract_and87_metaMORB_LMTZ = std::accumulate(minfract_and87_metaMORB_LMTZ.begin(), minfract_and87_metaMORB_LMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_metaMORB_LMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_metaMORB_LMTZ must be equal to 1."));
+        double sum_min_fract_and87_metaMORB_LM = std::accumulate(minfract_and87_metaMORB_LM.begin(), minfract_and87_metaMORB_LM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_metaMORB_LM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_metaMORB_LM must be equal to 1."));
+
+        double sum_min_fract_and87_duniteOl_UM = std::accumulate(minfract_and87_duniteOl_UM.begin(), minfract_and87_duniteOl_UM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_duniteOl_UM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_duniteOl_UM must be equal to 1."));
+        double sum_min_fract_and87_duniteOl_UMTZ = std::accumulate(minfract_and87_duniteOl_UMTZ.begin(), minfract_and87_duniteOl_UMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_duniteOl_UMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_duniteOl_UMTZ must be equal to 1."));
+        double sum_min_fract_and87_duniteOl_LMTZ = std::accumulate(minfract_and87_duniteOl_LMTZ.begin(), minfract_and87_duniteOl_LMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_duniteOl_LMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_duniteOl_LMTZ must be equal to 1."));
+        double sum_min_fract_and87_duniteOl_LM = std::accumulate(minfract_and87_duniteOl_LM.begin(), minfract_and87_duniteOl_LM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_and87_duniteOl_LM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_and87_duniteOl_LM must be equal to 1."));
+
         const unsigned int n_points = in.n_evaluation_points();
 
         for (unsigned int i = 0; i < n_points; ++i) 
