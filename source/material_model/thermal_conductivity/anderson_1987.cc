@@ -235,12 +235,18 @@ namespace aspect
           // Preallocate a matrix for storing thermal conductivities of minerals
           std::vector<std::vector<double>> and87_all_minerals_Tconds(mineralpar_index, std::vector<double>(3, 0.0));
 
-          // Take the mineral fraction of the model
-          double min_frac = in.composition[0][i];
-
           double densi_model = in.density[i];
 
           unsigned int mID = in.Mineral_ID;
+
+          double lithology = 0.0;
+          double min_frac = 0.0;
+          // if there is a compositional field, use the first one as indicator for lithology
+          if (in.composition[i].size() > 0)
+          {
+            lithology = in.composition[i][0];
+            min_frac = in.composition[i][0];
+          }
 
           switch (mID) // Compute the lattice, radiative and total thermal conductivities of the given mineral
           {
