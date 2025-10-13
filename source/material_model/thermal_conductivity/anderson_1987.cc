@@ -47,70 +47,90 @@ namespace aspect
      {
         
         // Coefficients for dry olivine 
-        // mineral composition [(Mg1.8Fe0.2)SiO4]    
+        // mineral chemical formula [(Mg1.8Fe0.2)SiO4]    
+        // room density: [Angel et al., 2018, Phy. Chem. Min., 45(2), 95-113]
+        //               https://doi.org/10.1007/s00269-017-0900-7
         constexpr int olivinedry_index = 0;
         const double olivinedry_and87_latTC_room =  3.6;  // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
         const double olivinedry_and87_densi_room =  3329; // density at room P,T conditions [kg m^-3]
         const double olivinedry_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
         
         // Coefficients for dry wadsleyite
-        // mineral composition [(Mg1.8Fe0.2)SiO4]
+        // mineral chemical formula [(Mg1.8Fe0.2)SiO4]
+        // room density: [Su et al., 2022, Frontiers in Earth Science, 10, 879678]
+        //               https://doi.org/10.3389/feart.2022.879678
         constexpr int wadsleydry_index = 1;
         const double wadsleydry_and87_latTC_room =  5.9;  // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
         const double wadsleydry_and87_densi_room =  3626; // density at room P,T conditions [kg m^-3]
         const double wadsleydry_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
 
         // Coefficients for dry ringwoodite
-        // mineral composition [(Mg1.8Fe0.2)SiO4]
+        // mineral chemical formula [(Mg1.8Fe0.2)SiO4]
+        // room density: [Jacobs & De Jong, 2005, Geochimica et cosmochimica acta, 69(17), 4361-4375]
+        //               https://doi.org/10.1016/j.gca.2005.05.002
         constexpr int ringwoodry_index = 2;
         const double ringwoodry_and87_latTC_room =  4.9;  // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
         const double ringwoodry_and87_densi_room =  3842; // density at room P,T conditions [kg m^-3]
         const double ringwoodry_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
 
         // Coefficients for Fe-bridgmanite (10%)
-        // mineral composition [Fe0.1Mg0.9SiO3]
+        // mineral chemical formula [Fe0.1Mg0.9SiO3]
+        // room density: [Wolf et al., 2015, Journal of Geophysical Research: Solid Earth, 120(11), 7460-7489] 
+        //               https://doi.org/10.1002/2015JB012108
         constexpr int brigma90Mg_index = 3;
         const double brigma90Mg_and87_latTC_room =  3.8;  // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
         const double brigma90Mg_and87_densi_room =  4262; // density at room P,T conditions [kg m^-3]
         const double brigma90Mg_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
 
         // Coefficients for orthopyroxene (enstatite)
-        // mineral composition [Mg2Si2O6]
+        // mineral chemical formula [Mg2Si2O6]
+        // room density: [Angel & Hugh‐Jones, 1994, Journal of Geophysical Research: Solid Earth, 99(B10), 19777-19783]
+        //               https://doi.org/10.1029/94JB01750
         constexpr int opxenstati_index = 4;
         const double opxenstati_and87_latTC_room =  5.8;  // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
         const double opxenstati_and87_densi_room =  3304; // density at room P,T conditions [kg m^-3]
         const double opxenstati_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
 
         // Coefficients for clinopyroxene (diopside)
-        // mineral composition [CaMgSi2O6]
+        // mineral chemical formula [CaMgSi2O6]
+        // room density: [Zhao et al., 1998, The Review of High-Pressure Science and Technology, 7, 25-27] 
+        //               https://doi.org/10.4131/jshpreview.7.25
         constexpr int cpxdiopsid_index = 5;
         const double cpxdiopsid_and87_latTC_room =  6.0;  // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
         const double cpxdiopsid_and87_densi_room =  3288; // density at room P,T conditions [kg m^-3]
         const double cpxdiopsid_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
 
         // Coefficients for garnet (pyrope)
-        // mineral composition [Mg3Al2Si3O12]
+        // mineral chemical formula [Mg3Al2Si3O12]
+        // room density: [Angel et al., 2022, Contributions to Mineralogy and Petrology, 177(5), 54]
+        //               https://doi.org/10.1007/s00410-022-01918-5
         constexpr int grtpyropes_index = 6;
         const double grtpyropes_and87_latTC_room =  4.4;  // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
         const double grtpyropes_and87_densi_room =  3568; // density at room P,T conditions [kg m^-3]
         const double grtpyropes_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
 
         // Coefficients for garnet (majorite)
-        // mineral composition [Mg3(MgSi)(SiO4)3]
+        // mineral chemical formula [Mg3(MgSi)(SiO4)3]
+        // room density: [Dymshits et al., 2014, Journal of Geophysical Research: Solid Earth, 119(11), 8034-8046] 
+        //               https://doi.org/10.1002/2014JB011194
         constexpr int grtmajorit_index = 7;
         const double grtmajorit_and87_latTC_room =  9.7;  // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
         const double grtmajorit_and87_densi_room =  3477;  // density at room P,T conditions [kg m^-3]
         const double grtmajorit_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
 
         // Coefficients for ferropericlase (10% Iron)
-        // mineral composition [Mg0.90Fe0.10O] 
+        // mineral chemical formula [Mg0.90Fe0.10O] 
+        // room density: [Matsui, et al., 2012, American Mineralogist, 97(1), 176-183] 
+        //               https://doi.org/10.2138/am.2012.3937
         constexpr int ferroper10_index = 8;
         const double ferroper10_and87_latTC_room =  10.9;  // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
         const double ferroper10_and87_densi_room =  4184; // density at room P,T conditions [kg m^-3]
         const double ferroper10_and87_k_Pexponen =  1.0;  // exponent for P-dependent thermal conductivity (k_Pexp)
 
         // Coefficients for davemaoite 
-        // mineral composition [CaSiO3]
+        // mineral chemical formula [CaSiO3]
+        // room density: [Zhang et al., 2006, Physics and chemistry of minerals, 33, 126-137] 
+        //               https://doi.org/10.1007/s00269-006-0060-7
         constexpr int davemaoite_index = 9;
         const double davemaoite_and87_latTC_room =  3.5; // lattice thermal conductivity at room P,T conditions (latTC_room) [W m^-1 K^-1]
         const double davemaoite_and87_densi_room =  4006; // density at room P,T conditions [kg m^-3]
@@ -225,6 +245,7 @@ namespace aspect
         AssertThrow(std::abs(sum_min_fract_and87_duniteOl_LM - 1.0) < 1e-6,
                     dealii::ExcMessage("Error: The sum of minfract_and87_duniteOl_LM must be equal to 1."));
 
+        // Define density boundaries for different mantle layers (in kg/m^3) taken from PREM model
         double density_UpMa_bot = 3725; // Upper Mantle bottom density in kg/m^3
         double density_UMTZ_top = 3725; // Upper Transition Zone top density in kg/m^3
         double density_UMTZ_bot = 3975; // Upper Transition Zone bottom density in kg/m^3
