@@ -10,10 +10,23 @@ set Output directory                       = output
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Use conduction timestep                = true
+set End time                               = 1e9
 
 subsection Termination criteria
-  set Termination criteria                 = end step
+  set Termination criteria                 = end time
   set End step                             = 100
+end
+
+subsection Compositional fields
+  set Number of fields = 0
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.0
+  end
 end
 
 subsection Formulation
@@ -24,9 +37,9 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent = 9.424777e6 # pi * 3e6
+    set X extent = 3e6
     set Y extent = 3e6
-    set X repetitions = 3
+    set X repetitions = 1
     set Y repetitions = 1
   end
 end
@@ -37,7 +50,7 @@ subsection Initial temperature model
   subsection Function
     set Variable names      = x,z
     set Function constants  = p=1, L=9.424777e6, H=3.0e6, pi=3.1415926536, k=2
-    set Function expression = 2500 * (1.0-z/H) - p*cos(k*pi*x/L)*sin(pi*z/H)
+    set Function expression = 1600 - p*cos(k*pi*x/L)*sin(pi*z/H)
   end
 end
 
@@ -47,9 +60,7 @@ subsection Boundary temperature model
 
   subsection Box
     set Bottom temperature = 2500
-    set Left temperature   = 0
-    set Right temperature  = 0
-    set Top temperature    = 0
+    set Top temperature    = 273
   end
 end
 
@@ -66,20 +77,20 @@ subsection Gravity model
 end
 
 subsection Material model
-  set Model name = simple
+  set Model name = variable thermal conductivity
 
-  subsection Simple model
-    set Reference density             = 4000
+  subsection VariableThermalConductivity model
+    set Reference density             = 3300
     set Reference specific heat       = 1250
-    set Reference temperature         = 0
+    set Reference temperature         = 1600
     set Thermal conductivity          = 4.0
     set Thermal expansion coefficient = 3e-5
-    set Viscosity                     = 1e23
+    set Viscosity                     = 1e22 # could reduce this further
   end
 end
 
 subsection Mesh refinement
-  set Initial global refinement                = 4
+  set Initial global refinement                = 6
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
@@ -88,6 +99,11 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, visualization
 
   subsection Visualization
-    set Time steps between graphical output = 5
+    set Time between graphical output = 1e6
+    set List of output variables = material properties
+
+    subsection Material properties
+      set List of material properties = density,thermal expansivity,specific heat,viscosity, thermal conductivity
+    end
   end
 end

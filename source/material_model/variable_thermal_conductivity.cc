@@ -21,9 +21,6 @@
 
 #include <aspect/material_model/variable_thermal_conductivity.h>
 #include <aspect/material_model/equation_of_state/interface.h>
-#include <aspect/material_model/thermal_conductivity/constant.h>
-// #include <aspect/material_model/thermal_conductivity/nondimensional_Tcond.h>
-// #include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
 
 
 namespace aspect
@@ -74,9 +71,8 @@ namespace aspect
           out.entropy_derivative_pressure[i] = eos_outputs.entropy_derivative_pressure[0];
           out.entropy_derivative_temperature[i] = eos_outputs.entropy_derivative_temperature[0];
  
-          aspect::MaterialModel::ThermalConductivity::Constant<dim> thermal_conductivity;
+          
           thermal_conductivity.evaluate(in, out);
-          out.thermal_conductivities[i] = out.thermal_conductivities[0]; // k_value; 
 
           // Change in composition due to chemical reactions at the
           // given positions. The term reaction_terms[i][c] is the
@@ -168,6 +164,7 @@ namespace aspect
         prm.enter_subsection("VariableThermalConductivity model");
         {
           equation_of_state.parse_parameters (prm, 1);
+          thermal_conductivity.parse_parameters(prm);
 
           reference_T                = prm.get_double ("Reference temperature");
           eta                        = prm.get_double ("Viscosity");
