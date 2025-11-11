@@ -166,4 +166,5 @@ testing/index.md
 benchmarking-run-time.md
 future-plans.md
 release-tasklist-link.md
+email-templates.md
 :::
