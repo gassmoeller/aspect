@@ -201,6 +201,10 @@ namespace aspect
           finite_element_values (mapping,
                                  finite_element, quadrature,
                                  update_flags),
+          evaluator(mapping,
+                    finite_element, quadrature.get_tensor_basis()[0],
+                    update_flags, 0),
+          advection_dofs(finite_element.dofs_per_cell),
           face_finite_element_values (face_quadrature.size() > 0
                                       ?
                                       std::make_unique<FEFaceValues<dim>> (mapping,
@@ -289,6 +293,8 @@ namespace aspect
                                  scratch.finite_element_values.get_fe(),
                                  scratch.finite_element_values.get_quadrature(),
                                  scratch.finite_element_values.get_update_flags()),
+          evaluator(scratch.evaluator),
+          advection_dofs(scratch.advection_dofs),
           face_finite_element_values (scratch.face_finite_element_values.get()
                                       ?
                                       std::make_unique<FEFaceValues<dim>> (scratch.face_finite_element_values->get_mapping(),

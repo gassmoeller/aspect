@@ -26,6 +26,7 @@
 #include <aspect/material_model/interface.h>
 
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/matrix_free/fe_evaluation.h>
 
 namespace aspect
 {
@@ -227,6 +228,8 @@ namespace aspect
           AdvectionSystem (const AdvectionSystem &scratch);
 
           FEValues<dim> finite_element_values;
+          FEEvaluation<dim, -1, 0, 1> evaluator;
+          std::vector<unsigned int> advection_dofs;
 
           void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
 
