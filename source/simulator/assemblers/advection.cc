@@ -66,7 +66,6 @@ namespace aspect
       internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>&> (data_base);
 
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = this->get_fe();
 
       const AdvectionField advection_field = *scratch.advection_field;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
@@ -78,7 +77,6 @@ namespace aspect
                                                      (time_step + old_time_step)) : 1.0;
 
       const bool advection_field_is_temperature = advection_field.is_temperature();
-      const unsigned int solution_component = advection_field.component_index(introspection);
       auto &eval = *(scratch.evaluator);
       eval.reinit(scratch.finite_element_values.get_cell());
 
@@ -87,13 +85,10 @@ namespace aspect
              ExcMessage("The 'AdvectionSystem' assembler can only be executed for fields "
                         "that use the advection method 'field'."));
 
-      for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
+      scratch.advection_dofs.resize(advection_dofs_per_cell);
+      for (unsigned int i_advection=0; i_advection<advection_dofs_per_cell;++i_advection)
         {
-          if (fe.system_to_component_index(i).first == solution_component)
-            {
-              scratch.advection_dofs[i] = i_advection++;
-            }
-          ++i;
+              scratch.advection_dofs[i_advection] = i_advection;
         }
 
       constexpr unsigned int n_lanes = VectorizedArray<double>::size();
@@ -157,9 +152,8 @@ namespace aspect
 
               const Tensor<1, dim, VectorizedArray<double>> grad = eval.get_gradient(q);
               const VectorizedArray<double> value = eval.get_value(q);
-              eval.submit_value((density_c_P + latent_heat_LHS) * bdf2_factor * value, q);
-              eval.submit_gradient(time_step * diffusion_constant * grad
-                                   + (density_c_P + latent_heat_LHS) * time_step * value * current_u , q);
+              eval.submit_value((density_c_P + latent_heat_LHS) * bdf2_factor * value + (density_c_P + latent_heat_LHS) * time_step * (grad * current_u), q);
+              eval.submit_gradient(time_step * diffusion_constant * grad, q);
             }
 
           eval.integrate(EvaluationFlags::gradients | EvaluationFlags::values);
@@ -177,8 +171,6 @@ namespace aspect
 
 
       // RHS
-      eval.reinit(scratch.finite_element_values.get_cell());
-
       for (const unsigned int q : eval.quadrature_point_indices())
         {
           const double gamma =
@@ -247,25 +239,6 @@ namespace aspect
           for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
             data.local_rhs(advection_i[v]) = val[v];
         }
-
-      // for (unsigned int q=0; q<n_q_points; ++q)
-      //   {
-      //     const double JxW = scratch.finite_element_values.JxW(q);
-      //     // do the actual assembly. note that we only need to loop over the advection
-      //     // shape functions because these are the only contributions we compute here
-      //     for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
-      //       {
-      //         data.local_rhs(i)
-      //         += (field_term_for_rhs * scratch.phi_field[i]
-      //             + time_step *
-      //             scratch.phi_field[i]
-      //             * gamma
-      //             + scratch.phi_field[i]
-      //             * reaction_term)
-      //            *
-      //            JxW;
-      //       }
-      //   }
     }
 
 
