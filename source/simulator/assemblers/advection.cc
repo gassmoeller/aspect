@@ -93,102 +93,40 @@ namespace aspect
               scratch.advection_dofs[i] = i_advection++;
         }
 
-      constexpr unsigned int n_lanes = VectorizedArray<double>::size();
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const bool use_supg = (this->get_parameters().advection_stabilization_method
+                             == Parameters<dim>::AdvectionStabilizationMethod::supg);
+      const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
-      const unsigned int n_dofs = eval.dofs_per_cell;
-      const auto &lex = eval.get_internal_dof_numbering();
-      for (unsigned int i = 0; i < n_dofs; i += n_lanes)
+      Assert(advection_field.advection_method(introspection)
+             == Parameters<dim>::AdvectionFieldMethod::fem_field,
+             ExcMessage("The 'AdvectionSystem' assembler can only be executed for fields "
+                        "that use the advection method 'field'."));
+
+      // cache material parameter terms that go into the matrix
+      small_vector<double> value_value(n_q_points);
+      small_vector<Tensor<1,dim>> grad_value(n_q_points);
+      small_vector<double> grad_grad(n_q_points);
+
+      for (unsigned int q=0; q<n_q_points; ++q)
         {
-          for (unsigned int j = 0; j < n_dofs; ++j)
-            eval.begin_dof_values()[j] = VectorizedArray<double>();
-          for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
-            eval.begin_dof_values()[i + v][v] = 1.;
-          eval.evaluate(EvaluationFlags::gradients | EvaluationFlags::values);
-
-          for (const unsigned int q : eval.quadrature_point_indices())
+          // precompute the values of shape functions and their gradients.
+          // We only need to look up values of shape functions if they
+          // belong to 'our' component. They are zero otherwise anyway.
+          // Note that we later only look at the values that we do set here.
+          for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
             {
-              const double density_c_P              =
-                ((advection_field_is_temperature)
-                 ?
-                 scratch.material_model_outputs.densities[q] *
-                 scratch.material_model_outputs.specific_heat[q]
-                 :
-                 1.0);
+              if (fe.system_to_component_index(i).first == solution_component)
+                {
+                  if (use_supg)
+                    scratch.laplacian_phi_field[i_advection] = trace(scratch.finite_element_values[solution_field].hessian (i,q));
 
-              AssertThrow (density_c_P >= 0,
-                           ExcMessage ("The product of density and c_P needs to be a "
-                                       "non-negative quantity."));
-
-              const double latent_heat_LHS =
-                ((advection_field_is_temperature)
-                 ?
-                 scratch.heating_model_outputs.lhs_latent_heat_terms[q]
-                 :
-                 0.0);
-              AssertThrow (density_c_P + latent_heat_LHS >= 0,
-                           ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                       "to the left hand side needs to be a non-negative quantity."));
-
-              Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-              // Subtract off the mesh velocity for ALE corrections if necessary
-              if (this->get_parameters().mesh_deformation_enabled)
-                current_u -= scratch.mesh_velocity_values[q];
-
-              // For the diffusion constant, use the larger of the physical
-              // and the artificial viscosity/conductivity/diffusion constant.
-              // One could also choose the sum of the two, but if the
-              // physical diffusion is larger than the artificial one,
-              // then (because the latter is chosen sufficiently large to
-              // make the problem stable) one may as well stick with the
-              // physical one. And if the physical diffusion is too small to
-              // make the problem stable, then we ought to choose the smallest
-              // diffusivity value that makes the problem stable -- which is
-              // exactly the artificial viscosity.
-              const double conductivity = (advection_field_is_temperature
-                                           ?
-                                           scratch.material_model_outputs.thermal_conductivities[q]
-                                           :
-                                           0.0);
-
-              const double diffusion_constant = std::max (conductivity, scratch.artificial_viscosity);
-
-              const Tensor<1, dim, VectorizedArray<double>> grad = eval.get_gradient(q);
-              const VectorizedArray<double> value = eval.get_value(q);
-              eval.submit_value((density_c_P + latent_heat_LHS) * bdf2_factor * value, q);
-              eval.submit_gradient(time_step * diffusion_constant * grad
-                + (density_c_P + latent_heat_LHS) * time_step * (value * current_u), q);
+                  scratch.grad_phi_field[i_advection] = scratch.finite_element_values[solution_field].gradient (i,q);
+                  scratch.phi_field[i_advection]      = scratch.finite_element_values[solution_field].value (i,q);
+                  ++i_advection;
+                }
+              ++i;
             }
-
-          eval.integrate(EvaluationFlags::gradients | EvaluationFlags::values);
-          std::array<unsigned int, VectorizedArray<double>::size()> advection_i;
-          for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
-            advection_i[v] = scratch.advection_dofs[lex[i + v]];
-          for (unsigned int j = 0; j < n_dofs; ++j)
-            {
-              const unsigned int advection_j = scratch.advection_dofs[lex[j]];
-              const VectorizedArray<double> val = eval.begin_dof_values()[j];
-              for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
-                data.local_matrix(advection_j, advection_i[v]) = val[v];
-            }
-        }
-
-
-      // RHS
-      for (const unsigned int q : eval.quadrature_point_indices())
-        {
-          const double gamma =
-            ((advection_field_is_temperature)
-             ?
-             scratch.heating_model_outputs.heating_source_terms[q]
-             :
-             0.0);
-
-          const double reaction_term =
-            ((advection_field_is_temperature)
-             ?
-             0.0
-             :
-             scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
 
           const double density_c_P              =
             ((advection_field_is_temperature)
@@ -212,6 +150,22 @@ namespace aspect
                        ExcMessage ("The sum of density times c_P and the latent heat contribution "
                                    "to the left hand side needs to be a non-negative quantity."));
 
+          value_value[q] = (density_c_P + latent_heat_LHS) * bdf2_factor;
+
+          const double gamma =
+            ((advection_field_is_temperature)
+             ?
+             scratch.heating_model_outputs.heating_source_terms[q]
+             :
+             0.0);
+
+          const double reaction_term =
+            ((advection_field_is_temperature)
+             ?
+             0.0
+             :
+             scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+
           const double field_term_for_rhs
             = (use_bdf2_scheme ?
                (scratch.old_field_values[q] *
@@ -225,23 +179,173 @@ namespace aspect
               *
               (density_c_P + latent_heat_LHS);
 
-          eval.submit_value(field_term_for_rhs
-                            + time_step
-                            * gamma
-                            + reaction_term, q);
+          Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+          // Subtract off the mesh velocity for ALE corrections if necessary
+          if (this->get_parameters().mesh_deformation_enabled)
+            current_u -= scratch.mesh_velocity_values[q];
+
+          grad_value[q] = (density_c_P + latent_heat_LHS) * time_step * current_u;
+
+          // For the diffusion constant, use the larger of the physical
+          // and the artificial viscosity/conductivity/diffusion constant.
+          // One could also choose the sum of the two, but if the
+          // physical diffusion is larger than the artificial one,
+          // then (because the latter is chosen sufficiently large to
+          // make the problem stable) one may as well stick with the
+          // physical one. And if the physical diffusion is too small to
+          // make the problem stable, then we ought to choose the smallest
+          // diffusivity value that makes the problem stable -- which is
+          // exactly the artificial viscosity.
+          const double conductivity = (advection_field_is_temperature
+                                        ?
+                                        scratch.material_model_outputs.thermal_conductivities[q]
+                                        :
+                                        0.0);
+
+          const double diffusion_constant = std::max (conductivity, scratch.artificial_viscosity);
+
+          grad_grad[q] = time_step * diffusion_constant;
+
+          const double JxW = scratch.finite_element_values.JxW(q);
+          const double tau = (use_supg) ? scratch.artificial_viscosity : 0.0;
+
+          // do the actual assembly. note that we only need to loop over the advection
+          // shape functions because these are the only contributions we compute here
+          for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+            {
+              data.local_rhs(i)
+              += (field_term_for_rhs * scratch.phi_field[i]
+                  + time_step *
+                  scratch.phi_field[i]
+                  * gamma
+                  + scratch.phi_field[i]
+                  * reaction_term)
+                 *
+                 JxW;
+
+              if (use_supg)
+                data.local_rhs(i)
+                += tau *
+                   (
+                     (current_u * (density_c_P + latent_heat_LHS)) *
+                     scratch.grad_phi_field[i] *
+                     (
+                       field_term_for_rhs
+                       +
+                       time_step * gamma
+                       +
+                       reaction_term
+                     )
+                   ) * JxW;
+            }
         }
 
-      eval.integrate(EvaluationFlags::values);
-      std::array<unsigned int, VectorizedArray<double>::size()> advection_i;
+      constexpr unsigned int n_lanes = VectorizedArray<double>::size();
+
+      const unsigned int n_dofs = eval.dofs_per_cell;
+      const auto &lex = eval.get_internal_dof_numbering();
       for (unsigned int i = 0; i < n_dofs; i += n_lanes)
         {
+          for (unsigned int j = 0; j < n_dofs; ++j)
+            eval.begin_dof_values()[j] = VectorizedArray<double>();
+          for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
+            eval.begin_dof_values()[i + v][v] = 1.;
+          eval.evaluate(EvaluationFlags::gradients | EvaluationFlags::values);
+
+          for (const unsigned int q : eval.quadrature_point_indices())
+            {
+              const Tensor<1, dim, VectorizedArray<double>> grad = eval.get_gradient(q);
+              const VectorizedArray<double> value = eval.get_value(q);
+              eval.submit_value(value_value[q] * value, q);
+              eval.submit_gradient(grad_grad[q] * grad
+                + grad_value[q] * value, q);
+            }
+
+          eval.integrate(EvaluationFlags::gradients | EvaluationFlags::values);
+          std::array<unsigned int, VectorizedArray<double>::size()> advection_i;
           for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
             advection_i[v] = scratch.advection_dofs[lex[i + v]];
-
-          const VectorizedArray<double> val = eval.begin_dof_values()[i];
-          for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
-            data.local_rhs(advection_i[v]) = val[v];
+          for (unsigned int j = 0; j < n_dofs; ++j)
+            {
+              const unsigned int advection_j = scratch.advection_dofs[lex[j]];
+              const VectorizedArray<double> val = eval.begin_dof_values()[j];
+              for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
+                data.local_matrix(advection_j, advection_i[v]) = val[v];
+            }
         }
+
+      
+      // FEEvaluation RHS
+      // for (const unsigned int q : eval.quadrature_point_indices())
+      //   {
+      //     const double gamma =
+      //       ((advection_field_is_temperature)
+      //        ?
+      //        scratch.heating_model_outputs.heating_source_terms[q]
+      //        :
+      //        0.0);
+
+      //     const double reaction_term =
+      //       ((advection_field_is_temperature)
+      //        ?
+      //        0.0
+      //        :
+      //        scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+
+      //     const double density_c_P              =
+      //       ((advection_field_is_temperature)
+      //        ?
+      //        scratch.material_model_outputs.densities[q] *
+      //        scratch.material_model_outputs.specific_heat[q]
+      //        :
+      //        1.0);
+
+      //     AssertThrow (density_c_P >= 0,
+      //                  ExcMessage ("The product of density and c_P needs to be a "
+      //                              "non-negative quantity."));
+
+      //     const double latent_heat_LHS =
+      //       ((advection_field_is_temperature)
+      //        ?
+      //        scratch.heating_model_outputs.lhs_latent_heat_terms[q]
+      //        :
+      //        0.0);
+      //     AssertThrow (density_c_P + latent_heat_LHS >= 0,
+      //                  ExcMessage ("The sum of density times c_P and the latent heat contribution "
+      //                              "to the left hand side needs to be a non-negative quantity."));
+
+      //     const double field_term_for_rhs
+      //       = (use_bdf2_scheme ?
+      //          (scratch.old_field_values[q] *
+      //           (1 + time_step/old_time_step)
+      //           -
+      //           scratch.old_old_field_values[q] *
+      //           (time_step * time_step) /
+      //           (old_time_step * (time_step + old_time_step)))
+      //          :
+      //          scratch.old_field_values[q])
+      //         *
+      //         (density_c_P + latent_heat_LHS);
+
+      //     // eval.submit_value(field_term_for_rhs
+      //     //                   + time_step
+      //     //                   * gamma
+      //     //                   + reaction_term, q);
+
+      //     eval.submit_value(-1, q);
+      //   }
+
+      // eval.integrate(EvaluationFlags::values);
+      // std::array<unsigned int, VectorizedArray<double>::size()> advection_i;
+      // for (unsigned int i = 0; i < n_dofs; i += n_lanes)
+      //   {
+      //     for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
+      //       advection_i[v] = scratch.advection_dofs[lex[i + v]];
+
+      //     const VectorizedArray<double> val = eval.begin_dof_values()[i];
+      //     for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
+      //       data.local_rhs(advection_i[v]) = val[v];
+      //   }
     }
 
 
