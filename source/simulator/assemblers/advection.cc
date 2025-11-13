@@ -66,6 +66,7 @@ namespace aspect
       internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>&> (data_base);
 
       const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
 
       const AdvectionField advection_field = *scratch.advection_field;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
@@ -77,6 +78,7 @@ namespace aspect
                                                      (time_step + old_time_step)) : 1.0;
 
       const bool advection_field_is_temperature = advection_field.is_temperature();
+      const unsigned int solution_component = advection_field.component_index(introspection);
       auto &eval = *(scratch.evaluator);
       eval.reinit(scratch.finite_element_values.get_cell());
 
@@ -85,16 +87,16 @@ namespace aspect
              ExcMessage("The 'AdvectionSystem' assembler can only be executed for fields "
                         "that use the advection method 'field'."));
 
-      scratch.advection_dofs.resize(advection_dofs_per_cell);
-      for (unsigned int i_advection=0; i_advection<advection_dofs_per_cell;++i_advection)
+      for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;++i)
         {
-              scratch.advection_dofs[i_advection] = i_advection;
+          if (fe.system_to_component_index(i).first == solution_component)
+              scratch.advection_dofs[i] = i_advection++;
         }
 
       constexpr unsigned int n_lanes = VectorizedArray<double>::size();
 
       const unsigned int n_dofs = eval.dofs_per_cell;
-      const auto &lex = eval.get_shape_info().lexicographic_numbering;
+      const auto &lex = eval.get_internal_dof_numbering();
       for (unsigned int i = 0; i < n_dofs; i += n_lanes)
         {
           for (unsigned int j = 0; j < n_dofs; ++j)
@@ -152,8 +154,9 @@ namespace aspect
 
               const Tensor<1, dim, VectorizedArray<double>> grad = eval.get_gradient(q);
               const VectorizedArray<double> value = eval.get_value(q);
-              eval.submit_value((density_c_P + latent_heat_LHS) * bdf2_factor * value + (density_c_P + latent_heat_LHS) * time_step * (grad * current_u), q);
-              eval.submit_gradient(time_step * diffusion_constant * grad, q);
+              eval.submit_value((density_c_P + latent_heat_LHS) * bdf2_factor * value, q);
+              eval.submit_gradient(time_step * diffusion_constant * grad
+                + (density_c_P + latent_heat_LHS) * time_step * (value * current_u), q);
             }
 
           eval.integrate(EvaluationFlags::gradients | EvaluationFlags::values);

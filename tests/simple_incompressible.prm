@@ -48,6 +48,7 @@ end
 
 subsection Material model
   set Model name = simple
+  set Material averaging = none
 
   subsection Simple model
     set Reference density = 3340
