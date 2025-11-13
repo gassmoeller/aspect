@@ -315,6 +315,8 @@ namespace aspect
                                   update_flags,
                                   face_update_flags,
                                   introspection.n_compositional_fields,
+                                  advection_field.component_index(introspection),
+                                  /*make_evaluator =*/ false,
                                   advection_field);
 
     std::vector<Tensor<1,dim>> face_old_velocity_values (scratch.face_finite_element_values->n_quadrature_points);

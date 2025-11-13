@@ -224,12 +224,13 @@ namespace aspect
                            const UpdateFlags         update_flags,
                            const UpdateFlags         face_update_flags,
                            const unsigned int        n_compositional_fields,
+                           const unsigned int        component_index,
+                           const bool                make_evaluator,
                            const AdvectionField     &field);
           AdvectionSystem (const AdvectionSystem &scratch);
 
           FEValues<dim> finite_element_values;
-          FEEvaluation<dim, -1, 0, 1> evaluator;
-          std::vector<unsigned int> advection_dofs;
+          std::unique_ptr<FEEvaluation<dim, -1, 0, 1>> evaluator;
 
           void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
 
@@ -238,6 +239,8 @@ namespace aspect
           std::unique_ptr<FESubfaceValues<dim>> subface_finite_element_values;
 
           std::vector<types::global_dof_index>   local_dof_indices;
+          std::vector<unsigned int> advection_dofs;
+          unsigned int component_index;
 
           /**
            * Variables describing the values and gradients of the

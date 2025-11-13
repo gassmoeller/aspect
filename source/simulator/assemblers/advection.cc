@@ -79,7 +79,8 @@ namespace aspect
 
       const bool advection_field_is_temperature = advection_field.is_temperature();
       const unsigned int solution_component = advection_field.component_index(introspection);
-      scratch.evaluator.reinit(scratch.finite_element_values.get_cell());
+      auto &eval = *(scratch.evaluator);
+      eval.reinit(scratch.finite_element_values.get_cell());
 
       Assert(advection_field.advection_method(introspection)
              == Parameters<dim>::AdvectionFieldMethod::fem_field,
@@ -97,7 +98,6 @@ namespace aspect
 
       constexpr unsigned int n_lanes = VectorizedArray<double>::size();
 
-      auto &eval = scratch.evaluator;
       const unsigned int n_dofs = eval.dofs_per_cell;
       const auto &lex = eval.get_shape_info().lexicographic_numbering;
       for (unsigned int i = 0; i < n_dofs; i += n_lanes)
@@ -107,6 +107,7 @@ namespace aspect
           for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
             eval.begin_dof_values()[i + v][v] = 1.;
           eval.evaluate(EvaluationFlags::gradients | EvaluationFlags::values);
+
           for (const unsigned int q : eval.quadrature_point_indices())
             {
               const double density_c_P              =
@@ -130,33 +131,6 @@ namespace aspect
               AssertThrow (density_c_P + latent_heat_LHS >= 0,
                            ExcMessage ("The sum of density times c_P and the latent heat contribution "
                                        "to the left hand side needs to be a non-negative quantity."));
-
-              const double gamma =
-                ((advection_field_is_temperature)
-                 ?
-                 scratch.heating_model_outputs.heating_source_terms[q]
-                 :
-                 0.0);
-
-              const double reaction_term =
-                ((advection_field_is_temperature)
-                 ?
-                 0.0
-                 :
-                 scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
-
-              const double field_term_for_rhs
-                = (use_bdf2_scheme ?
-                   (scratch.old_field_values[q] *
-                    (1 + time_step/old_time_step)
-                    -
-                    scratch.old_old_field_values[q] *
-                    (time_step * time_step) /
-                    (old_time_step * (time_step + old_time_step)))
-                   :
-                   scratch.old_field_values[q])
-                  *
-                  (density_c_P + latent_heat_LHS);
 
               Tensor<1,dim> current_u = scratch.current_velocity_values[q];
               // Subtract off the mesh velocity for ALE corrections if necessary
@@ -202,100 +176,76 @@ namespace aspect
         }
 
 
-        // RHS
-        scratch.evaluator.reinit(scratch.finite_element_values.get_cell());
+      // RHS
+      eval.reinit(scratch.finite_element_values.get_cell());
 
-          for (const unsigned int q : eval.quadrature_point_indices())
-            {
-              const double density_c_P              =
-                ((advection_field_is_temperature)
-                 ?
-                 scratch.material_model_outputs.densities[q] *
-                 scratch.material_model_outputs.specific_heat[q]
-                 :
-                 1.0);
+      for (const unsigned int q : eval.quadrature_point_indices())
+        {
+          const double gamma =
+            ((advection_field_is_temperature)
+             ?
+             scratch.heating_model_outputs.heating_source_terms[q]
+             :
+             0.0);
 
-              AssertThrow (density_c_P >= 0,
-                           ExcMessage ("The product of density and c_P needs to be a "
-                                       "non-negative quantity."));
+          const double reaction_term =
+            ((advection_field_is_temperature)
+             ?
+             0.0
+             :
+             scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
 
-              const double latent_heat_LHS =
-                ((advection_field_is_temperature)
-                 ?
-                 scratch.heating_model_outputs.lhs_latent_heat_terms[q]
-                 :
-                 0.0);
-              AssertThrow (density_c_P + latent_heat_LHS >= 0,
-                           ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                       "to the left hand side needs to be a non-negative quantity."));
+          const double density_c_P              =
+            ((advection_field_is_temperature)
+             ?
+             scratch.material_model_outputs.densities[q] *
+             scratch.material_model_outputs.specific_heat[q]
+             :
+             1.0);
 
-              const double gamma =
-                ((advection_field_is_temperature)
-                 ?
-                 scratch.heating_model_outputs.heating_source_terms[q]
-                 :
-                 0.0);
+          AssertThrow (density_c_P >= 0,
+                       ExcMessage ("The product of density and c_P needs to be a "
+                                   "non-negative quantity."));
 
-              const double reaction_term =
-                ((advection_field_is_temperature)
-                 ?
-                 0.0
-                 :
-                 scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+          const double latent_heat_LHS =
+            ((advection_field_is_temperature)
+             ?
+             scratch.heating_model_outputs.lhs_latent_heat_terms[q]
+             :
+             0.0);
+          AssertThrow (density_c_P + latent_heat_LHS >= 0,
+                       ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                   "to the left hand side needs to be a non-negative quantity."));
 
-              const double field_term_for_rhs
-                = (use_bdf2_scheme ?
-                   (scratch.old_field_values[q] *
-                    (1 + time_step/old_time_step)
-                    -
-                    scratch.old_old_field_values[q] *
-                    (time_step * time_step) /
-                    (old_time_step * (time_step + old_time_step)))
-                   :
-                   scratch.old_field_values[q])
-                  *
-                  (density_c_P + latent_heat_LHS);
+          const double field_term_for_rhs
+            = (use_bdf2_scheme ?
+               (scratch.old_field_values[q] *
+                (1 + time_step/old_time_step)
+                -
+                scratch.old_old_field_values[q] *
+                (time_step * time_step) /
+                (old_time_step * (time_step + old_time_step)))
+               :
+               scratch.old_field_values[q])
+              *
+              (density_c_P + latent_heat_LHS);
 
-              Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-              // Subtract off the mesh velocity for ALE corrections if necessary
-              if (this->get_parameters().mesh_deformation_enabled)
-                current_u -= scratch.mesh_velocity_values[q];
+          eval.submit_value(field_term_for_rhs
+                            + time_step
+                            * gamma
+                            + reaction_term, q);
+        }
 
-              // For the diffusion constant, use the larger of the physical
-              // and the artificial viscosity/conductivity/diffusion constant.
-              // One could also choose the sum of the two, but if the
-              // physical diffusion is larger than the artificial one,
-              // then (because the latter is chosen sufficiently large to
-              // make the problem stable) one may as well stick with the
-              // physical one. And if the physical diffusion is too small to
-              // make the problem stable, then we ought to choose the smallest
-              // diffusivity value that makes the problem stable -- which is
-              // exactly the artificial viscosity.
-              const double conductivity = (advection_field_is_temperature
-                                           ?
-                                           scratch.material_model_outputs.thermal_conductivities[q]
-                                           :
-                                           0.0);
-
-              const double diffusion_constant = std::max (conductivity, scratch.artificial_viscosity);
-
-              eval.submit_value(field_term_for_rhs
-                   + time_step 
-                   * gamma
-                   + reaction_term, q);
-            }
-
-          eval.integrate(EvaluationFlags::values);
-          std::array<unsigned int, VectorizedArray<double>::size()> advection_i;
+      eval.integrate(EvaluationFlags::values);
+      std::array<unsigned int, VectorizedArray<double>::size()> advection_i;
+      for (unsigned int i = 0; i < n_dofs; i += n_lanes)
+        {
           for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
             advection_i[v] = scratch.advection_dofs[lex[i + v]];
-          for (unsigned int j = 0; j < n_dofs; ++j)
-            {
-              const unsigned int advection_j = scratch.advection_dofs[lex[j]];
-              const VectorizedArray<double> val = eval.begin_dof_values()[j];
-              for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
-                data.local_rhs(advection_i[v]) = val[v];
-            }
+
+          const VectorizedArray<double> val = eval.begin_dof_values()[i];
+          for (unsigned int v = 0; v < n_lanes && i + v < n_dofs; ++v)
+            data.local_rhs(advection_i[v]) = val[v];
         }
 
       // for (unsigned int q=0; q<n_q_points; ++q)

@@ -1248,7 +1248,7 @@ namespace aspect
 
     Vector<double> viscosity_per_cell;
     viscosity_per_cell.reinit(triangulation.n_active_cells());
-    //get_artificial_viscosity(viscosity_per_cell, advection_field);
+    get_artificial_viscosity(viscosity_per_cell, advection_field);
 
     // We have to assemble the term u.grad phi_i * phi_j, which is
     // of total polynomial degree
@@ -1324,6 +1324,8 @@ namespace aspect
                                update_flags,
                                face_update_flags,
                                introspection.n_compositional_fields,
+                               advection_field.component_index(introspection),
+                               /*make_evaluator =*/true,
                                advection_field),
          internal::Assembly::CopyData::
          AdvectionSystem<dim> (finite_element.base_element(advection_field.base_element(introspection)),

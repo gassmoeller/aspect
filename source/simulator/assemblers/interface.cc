@@ -194,6 +194,8 @@ namespace aspect
                          const UpdateFlags         update_flags,
                          const UpdateFlags         face_update_flags,
                          const unsigned int        n_compositional_fields,
+                         const unsigned int        component_index,
+                         const bool                make_evaluator,
                          const AdvectionField &field)
           :
           ScratchBase<dim>(),
@@ -201,10 +203,9 @@ namespace aspect
           finite_element_values (mapping,
                                  finite_element, quadrature,
                                  update_flags),
-          evaluator(mapping,
+          evaluator(make_evaluator ? std::make_unique<FEEvaluation<dim, -1, 0, 1>> (mapping,
                     finite_element, quadrature.get_tensor_basis()[0],
-                    update_flags, 0),
-          advection_dofs(finite_element.dofs_per_cell),
+                    update_flags, component_index) : nullptr),
           face_finite_element_values (face_quadrature.size() > 0
                                       ?
                                       std::make_unique<FEFaceValues<dim>> (mapping,
@@ -227,7 +228,8 @@ namespace aspect
                                          :
                                          nullptr),
           local_dof_indices (finite_element.dofs_per_cell),
-
+          advection_dofs(finite_element.dofs_per_cell),
+          component_index(component_index),
           phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<double>()),
           grad_phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<Tensor<1,dim>>()),
           laplacian_phi_field (advection_element.dofs_per_cell, numbers::signaling_nan<double>()),
@@ -293,8 +295,10 @@ namespace aspect
                                  scratch.finite_element_values.get_fe(),
                                  scratch.finite_element_values.get_quadrature(),
                                  scratch.finite_element_values.get_update_flags()),
-          evaluator(scratch.evaluator),
-          advection_dofs(scratch.advection_dofs),
+          evaluator(scratch.evaluator.get() ?
+        std::make_unique<FEEvaluation<dim, -1, 0, 1>> (scratch.finite_element_values.get_mapping(),
+                    scratch.finite_element_values.get_fe(), scratch.finite_element_values.get_quadrature().get_tensor_basis()[0],
+                    scratch.finite_element_values.get_update_flags(), scratch.component_index) : nullptr),
           face_finite_element_values (scratch.face_finite_element_values.get()
                                       ?
                                       std::make_unique<FEFaceValues<dim>> (scratch.face_finite_element_values->get_mapping(),
@@ -320,7 +324,8 @@ namespace aspect
                                          :
                                          nullptr),
           local_dof_indices (scratch.finite_element_values.get_fe().dofs_per_cell),
-
+          advection_dofs(scratch.advection_dofs),
+          component_index (scratch.component_index),
           phi_field (scratch.phi_field),
           grad_phi_field (scratch.grad_phi_field),
           laplacian_phi_field (scratch.laplacian_phi_field),
