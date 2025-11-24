@@ -1,0 +1,18 @@
+# This is the "NSinker" benchmark defined in May et al. (2015,G3) in the
+# implementation of Rudi et al., (2017, SIAM J.Sci.Comp.).
+# This .prm file is identical to nsinker_gmg.prm, but tests the implementation
+# of the GMG Stokes solver without material averaging.
+
+include nsinker_gmg.prm
+set Additional shared libraries            = ./libnsinker.so
+
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Stokes GMG type = global coarsening
+  end
+end
