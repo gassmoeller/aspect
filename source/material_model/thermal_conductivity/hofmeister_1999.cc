@@ -102,7 +102,21 @@ namespace aspect
         const double ringwoodry_hof99_radTC_coc2 =  2.2451e-7;  // coefficient for radiative thermal conductivity T^2 (c2)
         const double ringwoodry_hof99_radTC_cod3 = -3.4071e-11; // coefficient for radiative thermal conductivity T^3 (d3)
 
-        unsigned int mineralpar_index = ringwoodry_index+1; // Number of minerals
+        // Coefficients for Fe-bridgmanite (10%)
+        // mineral chemical formula [Fe0.1Mg0.9SiO3]
+        constexpr int brigma90Mg_index = 3;
+        const double brigma90Mg_hof99_latTC_room =  7.7;        // lattice thermal conductivity at room P,T conditions (latTC_room)
+        const double brigma90Mg_hof99_latTC_Texp =  0.3;        // temperature exponent (n_Texp)
+        const double brigma90Mg_hof99_latTC_grun =  1.25;       // Grueneisen parameter (gamma)
+        const double brigma90Mg_hof99_latTC_alph =  2.0535e-5;  // thermal expansion coefficient (alpha)
+        const double brigma90Mg_hof99_latTC_Kzer =  183;        // bulk modulus (K0)
+        const double brigma90Mg_hof99_latTC_Kpri =  5.2;        // pressure derivative of bulk modulus (K_prime)
+        const double brigma90Mg_hof99_radTC_coa0 =  1.7530e-2;  // coefficient for radiative thermal conductivity T^0 (a0)
+        const double brigma90Mg_hof99_radTC_cob1 = -1.0365e-4;  // coefficient for radiative thermal conductivity T^1 (b1)
+        const double brigma90Mg_hof99_radTC_coc2 =  2.2451e-7;  // coefficient for radiative thermal conductivity T^2 (c2)
+        const double brigma90Mg_hof99_radTC_cod3 = -3.4071e-11; // coefficient for radiative thermal conductivity T^3 (d3)
+
+        unsigned int mineralpar_index = brigma90Mg_index+1; // Number of minerals
 
         // Define room temperature [K] 
         const double T_room = 298.15; 
