@@ -131,6 +131,19 @@ namespace aspect
         std::vector<double> minfract_hof99_duniteOl_LM = {1.00};
         std::vector<unsigned int> minindex_hof99_duniteOl_LM = {brigma90Mg_index};
 
+        double sum_min_fract_hof99_duniteOl_UM = std::accumulate(minfract_hof99_duniteOl_UM.begin(), minfract_hof99_duniteOl_UM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_hof99_duniteOl_UM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_hof99_duniteOl_UM must be equal to 1."));
+        double sum_min_fract_hof99_duniteOl_UMTZ = std::accumulate(minfract_hof99_duniteOl_UMTZ.begin(), minfract_hof99_duniteOl_UMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_hof99_duniteOl_UMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_hof99_duniteOl_UMTZ must be equal to 1."));
+        double sum_min_fract_hof99_duniteOl_LMTZ = std::accumulate(minfract_hof99_duniteOl_LMTZ.begin(), minfract_hof99_duniteOl_LMTZ.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_hof99_duniteOl_LMTZ - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_hof99_duniteOl_LMTZ must be equal to 1."));
+        double sum_min_fract_hof99_duniteOl_LM = std::accumulate(minfract_hof99_duniteOl_LM.begin(), minfract_hof99_duniteOl_LM.end(), 0.0);
+        AssertThrow(std::abs(sum_min_fract_hof99_duniteOl_LM - 1.0) < 1e-6,
+                    dealii::ExcMessage("Error: The sum of minfract_hof99_duniteOl_LM must be equal to 1."));
+
         // Define room temperature [K] 
         const double T_room = 298.15; 
         
