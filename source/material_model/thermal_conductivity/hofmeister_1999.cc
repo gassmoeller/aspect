@@ -118,6 +118,19 @@ namespace aspect
 
         unsigned int mineralpar_index = brigma90Mg_index+1; // Number of minerals
 
+        // Dunite Upper Mantle (100% olivine)
+        std::vector<double> minfract_hof99_duniteOl_UM = {1.00}; 
+        std::vector<unsigned int> minindex_hof99_duniteOl_UM = {olivinedry_index};
+        // Dunite Upper Mantle Transition Zone (100% wadsleyite)
+        std::vector<double> minfract_hof99_duniteOl_UMTZ = {1.00};
+        std::vector<unsigned int> minindex_hof99_duniteOl_UMTZ = {wadsleydry_index};
+        // Dunite Lower Mantle Transition Zone (100% ringwoodite)
+        std::vector<double> minfract_hof99_duniteOl_LMTZ = {1.00};
+        std::vector<unsigned int> minindex_hof99_duniteOl_LMTZ = {ringwoodry_index};
+        // Dunite Lower Mantle (100% bridgmanite)
+        std::vector<double> minfract_hof99_duniteOl_LM = {1.00};
+        std::vector<unsigned int> minindex_hof99_duniteOl_LM = {brigma90Mg_index};
+
         // Define room temperature [K] 
         const double T_room = 298.15; 
         
