@@ -25,9 +25,9 @@
 #include <aspect/material_model/equation_of_state/linearized_incompressible.h>
 #include <aspect/simulator_access.h>
 
-#include <aspect/material_model/thermal_conductivity/constant.h>
+// #include <aspect/material_model/thermal_conductivity/constant.h>
 // #include <aspect/material_model/thermal_conductivity/nondimensional_Tcond.h>
-// #include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
+#include <aspect/material_model/thermal_conductivity/marzotto_2025.h>
 
 namespace aspect
 {
@@ -106,7 +106,7 @@ namespace aspect
 
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;
 
-        MaterialModel::ThermalConductivity::Constant<dim> thermal_conductivity;
+        MaterialModel::ThermalConductivity::marzotto_2025<dim> thermal_conductivity;
     };
 
   }

@@ -18,7 +18,7 @@ subsection Termination criteria
 end
 
 subsection Compositional fields
-  set Number of fields = 0
+  set Number of fields = 1
 end
 
 subsection Initial composition model
@@ -90,7 +90,7 @@ subsection Material model
 end
 
 subsection Mesh refinement
-  set Initial global refinement                = 6
+  set Initial global refinement                = 4
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
