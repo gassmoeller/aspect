@@ -34,23 +34,24 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/numerics/vector_tools.h>
 
-
 namespace aspect
 {
 
   template <int dim>
   void Simulator<dim>::set_initial_temperature_and_compositional_fields ()
   {
+
     // create a fully distributed vector since we
     // need to write into it and we can not
     // write into vectors with ghost elements
     LinearAlgebra::BlockVector initial_solution;
+    initial_solution.reinit(introspection.index_sets.system_partitioning,
+                            mpi_communicator);
+
     double max_sum_comp = 0.0;
 
     // we need to track whether we need to normalize the totality of fields
     bool normalize_composition = false;
-
-    initial_solution.reinit(system_rhs, false);
 
     // below, we would want to call VectorTools::interpolate on the
     // entire FESystem. there currently is no way to restrict the
@@ -360,8 +361,8 @@ namespace aspect
         }
 
     LinearAlgebra::BlockVector particle_solution;
-
-    particle_solution.reinit(system_rhs, false);
+    particle_solution.reinit(introspection.index_sets.system_partitioning,
+                             mpi_communicator);
 
     const unsigned int base_element_index = advection_fields[0].base_element(introspection);
 
@@ -500,7 +501,8 @@ namespace aspect
         // this kind of thing. interpolate into it and later copy it into the
         // solution vector that does have the necessary ghost elements
         LinearAlgebra::BlockVector system_tmp;
-        system_tmp.reinit (system_rhs);
+        system_tmp.reinit(introspection.index_sets.system_partitioning,
+                          mpi_communicator);
 
         // First grab the correct pressure to work on:
         const FEVariable<dim> &pressure_variable
