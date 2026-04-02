@@ -93,7 +93,7 @@ namespace aspect
           const std::string columns[] = {"Max depth [m] for composition " + this->introspection().name_for_compositional_index(c)};
           for (const auto &col: columns)
             {
-              statistics.set_precision(col, 8);
+              statistics.set_precision(col, 14);
               statistics.set_scientific(col, true);
             }
         }

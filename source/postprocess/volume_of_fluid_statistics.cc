@@ -94,7 +94,7 @@ namespace aspect
 
           // also make sure that the columns filled by this object
           // show up with sufficient accuracy and in scientific notation
-          statistics.set_precision (col_name, 8);
+          statistics.set_precision (col_name, 14);
           statistics.set_scientific (col_name, true);
         }
 

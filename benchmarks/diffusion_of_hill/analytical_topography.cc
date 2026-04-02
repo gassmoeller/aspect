@@ -216,7 +216,7 @@ namespace aspect
                               };
       for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
         {
-          statistics.set_precision (columns[i], 8);
+          statistics.set_precision (columns[i], 14);
           statistics.set_scientific (columns[i], true);
         }
 

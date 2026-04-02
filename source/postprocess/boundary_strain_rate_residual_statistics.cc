@@ -235,11 +235,11 @@ namespace aspect
           statistics.add_value (name_rms, rms->second*unit_scale_factor);
           // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          statistics.set_precision (name_max, 8);
+          statistics.set_precision (name_max, 14);
           statistics.set_scientific (name_max, true);
-          statistics.set_precision (name_min, 8);
+          statistics.set_precision (name_min, 14);
           statistics.set_scientific (name_min, true);
-          statistics.set_precision (name_rms, 8);
+          statistics.set_precision (name_rms, 14);
           statistics.set_scientific (name_rms, true);
 
           screen_text << max_eii->second *unit_scale_factor << " " << units << ", "

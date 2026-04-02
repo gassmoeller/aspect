@@ -115,7 +115,7 @@ namespace aspect
           // all show up with sufficient accuracy and in scientific notation
           const std::string column = "Viscous dissipation " + unit + " for composition " + this->introspection().name_for_compositional_index(c);
 
-          statistics.set_precision (column, 8);
+          statistics.set_precision (column, 14);
           statistics.set_scientific (column, true);
         }
 
@@ -124,7 +124,7 @@ namespace aspect
                             viscous_dissipation[n_compositional_fields]);
 
       const std::string column = "Viscous dissipation " + unit;
-      statistics.set_precision (column, 8);
+      statistics.set_precision (column, 14);
       statistics.set_scientific (column, true);
 
       std::ostringstream output;

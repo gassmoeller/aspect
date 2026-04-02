@@ -111,7 +111,7 @@ namespace aspect
                                 vrms * year_in_seconds);
           for (auto &column : columns)
             {
-              statistics.set_precision (column, 8);
+              statistics.set_precision (column, 14);
               statistics.set_scientific (column, true);
             }
         }
@@ -128,7 +128,7 @@ namespace aspect
           statistics.add_value (columns[2], vrms);
           for (auto &column : columns)
             {
-              statistics.set_precision (column, 8);
+              statistics.set_precision (column, 14);
               statistics.set_scientific (column, true);
             }
         }

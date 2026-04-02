@@ -39,7 +39,7 @@ namespace aspect
                                  TableHandler &statistics)
       {
         statistics.add_value(name,value);
-        statistics.set_precision (name, 8);
+        statistics.set_precision (name, 14);
         statistics.set_scientific (name, true);
       }
     }

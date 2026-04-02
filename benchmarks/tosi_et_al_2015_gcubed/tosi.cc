@@ -618,13 +618,13 @@ namespace aspect
           // make sure that the columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
           statistics.add_value ("Viscous dissipation (J/yr)", viscous_dissipation * year_in_seconds);
-          statistics.set_precision ("Viscous dissipation (J/yr)", 8);
+          statistics.set_precision ("Viscous dissipation (J/yr)", 14);
           statistics.set_scientific ("Viscous dissipation (J/yr)", true);
           statistics.add_value ("Rate of work (Km/yr)", work * year_in_seconds);
-          statistics.set_precision ("Rate of work (Km/yr)", 8);
+          statistics.set_precision ("Rate of work (Km/yr)", 14);
           statistics.set_scientific ("Rate of work (Km/yr)", true);
           statistics.add_value ("Error", error);
-          statistics.set_precision ("Error", 8);
+          statistics.set_precision ("Error", 14);
           statistics.set_scientific ("Error", true);
         }
       else
@@ -633,13 +633,13 @@ namespace aspect
           // make sure that the columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
           statistics.add_value ("Viscous dissipation (W)", viscous_dissipation);
-          statistics.set_precision ("Viscous dissipation (W)", 8);
+          statistics.set_precision ("Viscous dissipation (W)", 14);
           statistics.set_scientific ("Viscous dissipation (W)", true);
           statistics.add_value ("Rate of work (W)", work);
-          statistics.set_precision ("Rate of work (W)", 8);
+          statistics.set_precision ("Rate of work (W)", 14);
           statistics.set_scientific ("Rate of work (W)", true);
           statistics.add_value ("Error", error);
-          statistics.set_precision ("Error", 8);
+          statistics.set_precision ("Error", 14);
           statistics.set_scientific ("Error", true);
         }
 

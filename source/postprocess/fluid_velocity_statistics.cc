@@ -141,7 +141,7 @@ namespace aspect
       // all show up with sufficient accuracy and in scientific notation
       for (auto &column : column_name)
         {
-          statistics.set_precision (column, 8);
+          statistics.set_precision (column, 14);
           statistics.set_scientific (column, true);
         }
 

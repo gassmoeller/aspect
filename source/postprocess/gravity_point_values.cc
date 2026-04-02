@@ -535,32 +535,32 @@ namespace aspect
       // write quantities in the statistic file
       const std::string name2("Average gravity acceleration (m/s^2)");
       statistics.add_value (name2, sum_g/n_satellites);
-      statistics.set_precision (name2, precision);
+      statistics.set_precision (name2, 14);
       statistics.set_scientific (name2, true);
 
       const std::string name3("Minimum gravity acceleration (m/s^2)");
       statistics.add_value (name3, min_g);
-      statistics.set_precision (name3, precision);
+      statistics.set_precision (name3, 14);
       statistics.set_scientific (name3, true);
 
       const std::string name4("Maximum gravity acceleration (m/s^2)");
       statistics.add_value (name4, max_g);
-      statistics.set_precision (name4, precision);
+      statistics.set_precision (name4, 14);
       statistics.set_scientific (name4, true);
 
       const std::string name5("Average gravity potential (m^2/s^2)");
       statistics.add_value (name5, sum_g_potential/n_satellites);
-      statistics.set_precision (name5, precision);
+      statistics.set_precision (name5, 14);
       statistics.set_scientific (name5, true);
 
       const std::string name6("Minimum gravity potential (m^2/s^2)");
       statistics.add_value (name6, min_g_potential);
-      statistics.set_precision (name6, precision);
+      statistics.set_precision (name6, 14);
       statistics.set_scientific (name6, true);
 
       const std::string name7("Maximum gravity potential (m^2/s^2)");
       statistics.add_value (name7, max_g_potential);
-      statistics.set_precision (name7, precision);
+      statistics.set_precision (name7, 14);
       statistics.set_scientific (name7, true);
 
       // up the next time we need output:

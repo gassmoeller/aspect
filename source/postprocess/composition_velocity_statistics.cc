@@ -127,7 +127,7 @@ namespace aspect
 
           for (const auto &column : columns)
             {
-              statistics.set_precision(column, 8);
+              statistics.set_precision(column, 14);
               statistics.set_scientific(column, true);
             }
         }
@@ -140,7 +140,7 @@ namespace aspect
 
           const std::string column = "RMS velocity (" + unit + ") for the selected field(s)";
 
-          statistics.set_precision(column, 8);
+          statistics.set_precision(column, 14);
           statistics.set_scientific(column, true);
         }
 

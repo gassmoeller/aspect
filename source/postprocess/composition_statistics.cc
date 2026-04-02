@@ -128,7 +128,7 @@ namespace aspect
                                         };
           for (const auto &col : columns)
             {
-              statistics.set_precision (col, 8);
+              statistics.set_precision (col, 14);
               statistics.set_scientific (col, true);
             }
         }

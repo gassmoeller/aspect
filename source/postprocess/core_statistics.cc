@@ -60,7 +60,7 @@ namespace aspect
 
       // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
-      statistics.set_precision (name, 3);
+      statistics.set_precision (name, 14);
       statistics.set_scientific (name, true);
 
       // finally have something for the screen
@@ -73,19 +73,19 @@ namespace aspect
 
       // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
-      statistics.set_precision (name1, 2);
+      statistics.set_precision (name1, 14);
       statistics.set_scientific (name1, false);
 
       const std::string name2 = "Inner core radius (km)";
       statistics.add_value (name2, core_data.Ri*1e-3);
       // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
-      statistics.set_precision (name2, 2);
+      statistics.set_precision (name2, 14);
       statistics.set_scientific (name2, false);
 
       const std::string name3 = "Light element concentration (%)";
       statistics.add_value (name3, core_data.Xi*100);
-      statistics.set_precision (name3, 4);
+      statistics.set_precision (name3, 14);
       statistics.set_scientific (name3, false);
 
       if (excess_entropy_only)
@@ -98,39 +98,39 @@ namespace aspect
                                  + core_data.Eg*core_data.dR_dt
                                  - core_data.Ek;
           statistics.add_value (name4, delta_E);
-          statistics.set_precision (name4, 3);
+          statistics.set_precision (name4, 14);
           statistics.set_scientific (name4, true);
         }
       else
         {
           const std::string name5 = "Es (W/K)";
           statistics.add_value (name5, core_data.Es*core_data.dT_dt);
-          statistics.set_precision (name5, 3);
+          statistics.set_precision (name5, 14);
           statistics.set_scientific (name5, true);
 
           const std::string name6 = "Er (W/K)";
           statistics.add_value (name6, core_data.Er);
-          statistics.set_precision (name6, 3);
+          statistics.set_precision (name6, 14);
           statistics.set_scientific (name6, true);
 
           const std::string name7 = "Eh (W/K)";
           statistics.add_value (name7, core_data.Eh*core_data.dR_dt);
-          statistics.set_precision (name7, 3);
+          statistics.set_precision (name7, 14);
           statistics.set_scientific (name7, true);
 
           const std::string name8 = "El (W/K)";
           statistics.add_value (name8, core_data.El*core_data.dR_dt);
-          statistics.set_precision (name8, 3);
+          statistics.set_precision (name8, 14);
           statistics.set_scientific (name8, true);
 
           const std::string name9 = "Eg (W/K)";
           statistics.add_value (name9, core_data.Eg*core_data.dR_dt);
-          statistics.set_precision (name9, 3);
+          statistics.set_precision (name9, 14);
           statistics.set_scientific (name9, true);
 
           const std::string name10 = "Ek (W/K)";
           statistics.add_value (name10, core_data.Ek);
-          statistics.set_precision (name10, 3);
+          statistics.set_precision (name10, 14);
           statistics.set_scientific (name10, true);
         }
 
@@ -138,7 +138,7 @@ namespace aspect
         {
           const std::string name11 = "Other energy source (W)";
           statistics.add_value (name11, core_data.Q_OES);
-          statistics.set_precision (name11, 3);
+          statistics.set_precision (name11, 14);
           statistics.set_scientific (name11, true);
         }
 

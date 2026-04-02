@@ -131,7 +131,7 @@ namespace aspect
                                 };
         for (auto &column : columns)
           {
-            statistics.set_precision (column, 8);
+            statistics.set_precision (column, 14);
             statistics.set_scientific (column, true);
           }
 
@@ -141,7 +141,7 @@ namespace aspect
              !=
              this->get_boundary_temperature_manager().minimal_temperature(this->get_fixed_temperature_boundary_indicators())))
           {
-            statistics.set_precision ("Average nondimensional temperature (K)", 8);
+            statistics.set_precision ("Average nondimensional temperature (K)", 14);
             statistics.set_scientific ("Average nondimensional temperature (K)", true);
           }
       }

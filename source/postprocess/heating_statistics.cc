@@ -125,14 +125,14 @@ namespace aspect
           statistics.add_value (name1, global_heating_integrals[index]/global_mass);
           // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          statistics.set_precision (name1, 8);
+          statistics.set_precision (name1, 14);
           statistics.set_scientific (name1, true);
 
           const std::string name2("Total " + heating_model_names[index] + " rate (W)");
           statistics.add_value (name2, global_heating_integrals[index]);
           // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          statistics.set_precision (name2, 8);
+          statistics.set_precision (name2, 14);
           statistics.set_scientific (name2, true);
 
           total_heating_integral += global_heating_integrals[index];

@@ -81,17 +81,17 @@ namespace aspect
 
       const std::string name1("Average density (kg/m^3)");
       statistics.add_value (name1, average_density);
-      statistics.set_precision (name1, 8);
+      statistics.set_precision (name1, 14);
       statistics.set_scientific (name1, true);
 
       const std::string name2("Average viscosity (Pa s)");
       statistics.add_value (name2, average_viscosity);
-      statistics.set_precision (name2, 8);
+      statistics.set_precision (name2, 14);
       statistics.set_scientific (name2, true);
 
       const std::string name3("Total mass (kg)");
       statistics.add_value (name3, global_mass);
-      statistics.set_precision (name3, 8);
+      statistics.set_precision (name3, 14);
       statistics.set_scientific (name3, true);
 
       std::ostringstream output;
