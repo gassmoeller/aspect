@@ -209,10 +209,7 @@ namespace aspect
         this->get_mpi_communicator());
 
       interface_contained_global.block(volume_fraction_block) = interface_contained_local.block(volume_fraction_block);
-
-#ifndef ASPECT_USE_TPETRA
       interface_contained_global.update_ghost_values();
-#endif
 
       const FEValuesExtractors::Scalar ic_extract = this->get_volume_of_fluid_handler().field_struct_for_field_index(0)
                                                     .volume_fraction.extractor_scalar();
