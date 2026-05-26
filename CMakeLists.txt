@@ -124,6 +124,20 @@ endif()
 
 message(STATUS "Found deal.II version ${DEAL_II_PACKAGE_VERSION} at '${deal.II_DIR}'")
 
+set(_DEALII_GOOD ON)
+
+if (NOT DEAL_II_TRILINOS_WITH_EPETRA)
+  if (NOT DEAL_II_TRILINOS_WITH_TPETRA OR NOT DEAL_II_TRILINOS_WITH_TPETRA_MUELU)
+    message(SEND_ERROR
+      "\n-- deal.II was built without support for Trilinos Epetra and without support for Trilinos Tpetra. This is not supported. \n"
+      )
+    set(_DEALII_GOOD OFF)
+  endif()
+
+  # If Epetra is not available, always use Tpetra instead.
+  set(ASPECT_USE_TPETRA ON)
+endif()
+
 if (ASPECT_USE_TPETRA)
   message(STATUS "Using ASPECT_USE_TPETRA = '${ASPECT_USE_TPETRA}'")
 
@@ -140,14 +154,7 @@ if (ASPECT_USE_TPETRA)
           )
         set(_DEALII_GOOD OFF)
   endif()
-
-  message(SEND_ERROR
-      "\n-- Tpetra support is not yet complete. Only remove this check if you want to test Tpetra support.\n"
-      )
-    set(_DEALII_GOOD OFF)
 endif()
-
-set(_DEALII_GOOD ON)
 
 if(NOT DEAL_II_WITH_P4EST)
     message(SEND_ERROR
