@@ -5,6 +5,7 @@
 <VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
 <UnstructuredGrid>
 <FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">0</DataArray>
 <DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">0</DataArray>
 </FieldData>
 <Piece NumberOfPoints="9" NumberOfCells="9" >
@@ -39,7 +40,7 @@ AQAAACQAAAAkAAAAIQAAAA==eAFjYAABBwcGhgZ7IAbSDEC8AIgPAPEDIGZwBABTDAWB
 AQAAACQAAAAkAAAAFAAAAA==eAFjYGiwZ0DBDFAAEocAAFnvA7w=
     </DataArray>
     <DataArray type="Float32" Name="initial C_1" format="binary">
-AQAAACQAAAAkAAAALQAAAA==eAH78K/e/s/fevtZvTb2N5ZI2LsLsloem9VjwfSn3l541S27+I+8FgBVIRC5
+AQAAACQAAAAkAAAALQAAAA==eAH78K/e/s/fevtZvTb2N5ZI2LsLsloen9VjwfSn3l541S27+I+8FgBVMRC6
     </DataArray>
   </PointData>
  </Piece>

@@ -11,8 +11,8 @@ Number of mesh deformation degrees of freedom: 5,346
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+18 iterations.
-   Solving fluid velocity system... 11 iterations.
+   Solving Stokes system (AMG)... 0+21 iterations.
+   Solving fluid velocity system... 9 iterations.
 
 Number of active cells: 760 (on 5 levels)
 Number of degrees of freedom: 23,646 (6,550+3,138+6,550+858+3,275+3,275)
@@ -24,8 +24,8 @@ Number of mesh deformation degrees of freedom: 6,550
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+19 iterations.
-   Solving fluid velocity system... 11 iterations.
+   Solving Stokes system (AMG)... 0+21 iterations.
+   Solving fluid velocity system... 9 iterations.
 
 Number of active cells: 1,360 (on 6 levels)
 Number of degrees of freedom: 42,688 (11,842+5,621+11,842+1,541+5,921+5,921)
@@ -37,8 +37,8 @@ Number of mesh deformation degrees of freedom: 11,842
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+18 iterations.
-   Solving fluid velocity system... 12 iterations.
+   Solving Stokes system (AMG)... 0+20 iterations.
+   Solving fluid velocity system... 9 iterations.
 
    Postprocessing:
      Topography min/max:        0 m, 0 m
@@ -51,8 +51,8 @@ Number of mesh deformation degrees of freedom: 11,842
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+16 iterations.
-   Solving fluid velocity system... 12 iterations.
+   Solving Stokes system (AMG)... 0+18 iterations.
+   Solving fluid velocity system... 9 iterations.
 
    Postprocessing:
      Topography min/max:        -124.8 m, 135 m
@@ -65,14 +65,14 @@ Number of mesh deformation degrees of freedom: 11,842
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+15 iterations.
-   Solving fluid velocity system... 12 iterations.
+   Solving Stokes system (AMG)... 0+17 iterations.
+   Solving fluid velocity system... 9 iterations.
 
    Postprocessing:
      Topography min/max:        -186.8 m, 203.6 m
      RMS, max velocity:         0.00971 m/year, 0.0161 m/year
      Writing graphical output:  output-free_surface_blob_nonzero_melt/solution/solution-00002
-     Compositions min/max/mass: -9.652e-07/0.02005/5.948e+08
+     Compositions min/max/mass: -9.651e-07/0.02005/5.948e+08
 
 Termination requested by criterion: end time
 

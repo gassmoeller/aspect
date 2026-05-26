@@ -27,16 +27,23 @@ Additional information:
     --------------------------------------------------------
 (line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
-    void dealii::SolverFGMRES<VectorType>::solve(const MatrixType&,
-    VectorType&, const VectorType&, const PreconditionerType&) [with
-    MatrixType = aspect::internal::StokesBlock; PreconditionerType =
-    aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::TrilinosWrappers::PreconditionAMG,
-    dealii::TrilinosWrappers::MPI::Vector,
-    dealii::TrilinosWrappers::SparseMatrix>,
+    void dealii::SolverMPGMRES<VectorType>::solve_internal(const
+    MatrixType&, VectorType&, const VectorType&, const
+    dealii::SolverMPGMRES<VectorType>::IndexingStrategy&, const
+    PreconditionerTypes& ...) [with MatrixType =
+    aspect::internal::StokesBlock; PreconditionerTypes =
+    {aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::LinearAlgebra::TpetraWrappers::PreconditionAMGMueLu<double,
+    dealii::MemorySpace::Host>,
+    dealii::LinearAlgebra::TpetraWrappers::Vector<double,
+    dealii::MemorySpace::Host>,
+    dealii::LinearAlgebra::TpetraWrappers::SparseMatrix<double,
+    dealii::MemorySpace::Host> >,
     aspect::internal::SchurComplementOperator,
-    dealii::TrilinosWrappers::SparseMatrix,
-    dealii::TrilinosWrappers::MPI::BlockVector>; VectorType =
-    dealii::TrilinosWrappers::MPI::BlockVector]
+    dealii::LinearAlgebra::TpetraWrappers::SparseMatrix<double,
+    dealii::MemorySpace::Host>,
+    dealii::LinearAlgebra::TpetraWrappers::BlockVector<double,
+    dealii::MemorySpace::Host> >}; VectorType =
+    dealii::LinearAlgebra::TpetraWrappers::BlockVector<double>]
     Additional information:
     Iterative method reported convergence failure in step 10. The residual
     in the last step was 3.667e+11.

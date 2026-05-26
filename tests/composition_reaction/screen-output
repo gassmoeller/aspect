@@ -9,7 +9,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.2262/1.01/0.9695 // -0.03313/1.223/0.02968
+     Compositions min/max/mass: -0.2262/1.01/0.9703 // -0.03313/1.223/0.02968
 
 *** Timestep 1:  t=0.03125 seconds, dt=0.03125 seconds
    Solving temperature system... 11 iterations.
@@ -18,7 +18,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.03593/1.043/0.969 // -0.02436/0.9834/0.03015
+     Compositions min/max/mass: -0.04436/1.043/0.9699 // -0.02437/0.9834/0.03015
 
 *** Timestep 2:  t=0.0625 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
@@ -27,7 +27,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.05965/1.072/0.9596 // -0.02176/0.9957/0.03959
+     Compositions min/max/mass: -0.06921/1.072/0.9604 // -0.02175/0.9957/0.03959
 
 *** Timestep 3:  t=0.09375 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
@@ -36,7 +36,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.07176/1.085/0.9545 // -0.0307/0.9769/0.04465
+     Compositions min/max/mass: -0.08148/1.085/0.9554 // -0.03071/0.9769/0.04464
 
 *** Timestep 4:  t=0.125 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
@@ -45,7 +45,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.07506/1.082/0.9468 // -0.03943/0.9812/0.05229
+     Compositions min/max/mass: -0.07512/1.081/0.9477 // -0.03943/0.9812/0.05229
 
 *** Timestep 5:  t=0.15625 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
@@ -54,7 +54,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.07365/1.085/0.9407 // -0.03218/0.98/0.05842
+     Compositions min/max/mass: -0.07369/1.085/0.9416 // -0.03218/0.98/0.05842
 
 *** Timestep 6:  t=0.1875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
@@ -63,7 +63,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.06903/1.08/0.9344 // -0.02232/0.9824/0.06472
+     Compositions min/max/mass: -0.06905/1.08/0.9353 // -0.02231/0.9824/0.06472
 
 *** Timestep 7:  t=0.21875 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
@@ -72,7 +72,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.06337/1.07/0.928 // -0.01679/0.9856/0.07111
+     Compositions min/max/mass: -0.06339/1.07/0.9289 // -0.01678/0.9856/0.07111
 
 *** Timestep 8:  t=0.25 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
@@ -81,7 +81,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.05917/1.055/0.9221 // -0.02033/0.9868/0.07698
+     Compositions min/max/mass: -0.05918/1.055/0.923 // -0.02033/0.9869/0.07698
 
 *** Timestep 9:  t=0.28125 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
@@ -90,7 +90,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.05589/1.037/0.9174 // -0.01705/0.9887/0.08165
+     Compositions min/max/mass: -0.05589/1.037/0.9183 // -0.01703/0.9887/0.08165
 
 *** Timestep 10:  t=0.3 seconds, dt=0.01875 seconds
    Solving temperature system... 11 iterations.
@@ -99,7 +99,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.05399/1.027/0.9133 // -0.0178/1.015/0.08573
+     Compositions min/max/mass: -0.05398/1.027/0.9142 // -0.01781/1.015/0.08573
 
 Termination requested by criterion: end time
 

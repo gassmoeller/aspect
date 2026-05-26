@@ -27,7 +27,7 @@ Number of degrees of freedom: 1,275 (386+55+193+40+193+193+55+160)
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: 0/1/0.5 // 0/1/0.4583 // 0/1/0.4583 // 0/1/0.375 // 0/1/0.375
                                 
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.22 MB.
 Total system matrix nnz: 8,489
 system matrix nnz by block: 
            0           0           0           0           0           0           0           0
@@ -57,7 +57,7 @@ system preconditioner matrix nnz by block:
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: 1.106e-10/0.9992/0.5 // -0.0158/1.028/0.4583 // -0.0158/1.028/0.4583 // -0.07232/1.07/0.375 // -0.1145/1.119/0.375
                                 
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.22 MB.
 Total system matrix nnz: 8,489
 system matrix nnz by block: 
            0           0           0           0           0           0           0           0
@@ -87,7 +87,7 @@ system preconditioner matrix nnz by block:
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: 2.282e-10/0.9985/0.5 // -0.02062/1.033/0.4583 // -0.02062/1.033/0.4583 // -0.1054/1.098/0.375 // -0.1495/1.157/0.3749
                                 
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.22 MB.
 Total system matrix nnz: 8,489
 system matrix nnz by block: 
            0           0           0           0           0           0           0           0

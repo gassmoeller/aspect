@@ -44,7 +44,7 @@ Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
    Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   999.1 K, 1005 K, 1020 K
+     Temperature min/avg/max:   999 K, 1005 K, 1020 K
      Compositions min/max/mass: 8e-05/8e-05/4e+06
 
 Termination requested by criterion: end time

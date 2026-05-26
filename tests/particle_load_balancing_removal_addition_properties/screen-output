@@ -18,25 +18,25 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 8 iterations.
-   Solving Stokes system (GMG)... 3+0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
 
    Postprocessing:
      Number of advected particles: 70
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 2:  t=456.087 seconds, dt=207.601 seconds
+*** Timestep 2:  t=456.234 seconds, dt=207.748 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 8 iterations.
-   Solving Stokes system (GMG)... 3+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Number of advected particles: 74
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 3:  t=500 seconds, dt=43.9128 seconds
+*** Timestep 3:  t=500 seconds, dt=43.766 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 8 iterations.
