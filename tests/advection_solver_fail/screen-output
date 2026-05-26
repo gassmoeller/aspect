@@ -14,8 +14,8 @@ Additional information:
     The iterative advection solver in Simulator::solve_advection did not
     converge.
     
-    The initial residual was: 5.598499e+05
-    The final residual is: 3.467533e-47
+    The initial residual was: 5.994871e+05
+    The final residual is: 4.493189e-47
     The required residual for convergence is: 1.000000e-50
     See output-advection_solver_fail/solver_history.txt for the full
     convergence history.
@@ -27,16 +27,14 @@ Additional information:
 (line in output replaced by default.sh script)
     void dealii::SolverGMRES<VectorType>::solve(const MatrixType&,
     VectorType&, const VectorType&, const PreconditionerType&) [with
-    MatrixType =
-    dealii::LinearAlgebra::TpetraWrappers::SparseMatrix<double>;
-    PreconditionerType =
-    dealii::LinearAlgebra::TpetraWrappers::PreconditionILU<double>;
-    VectorType = dealii::LinearAlgebra::TpetraWrappers::Vector<double>]
+    MatrixType = dealii::TrilinosWrappers::SparseMatrix;
+    PreconditionerType = dealii::TrilinosWrappers::PreconditionILU;
+    VectorType = dealii::TrilinosWrappers::MPI::Vector]
     The violated condition was:
     iteration_state == SolverControl::success
     Additional information:
     Iterative method reported convergence failure in step 1000. The
-    residual in the last step was 3.46753e-47.
+    residual in the last step was 4.49319e-47.
     
     This error message can indicate that you have simply not allowed a
     sufficiently large number of iterations for your iterative solver to

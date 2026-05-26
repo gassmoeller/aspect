@@ -8,42 +8,42 @@ Number of degrees of freedom: 30,600 (8,450+4,161+8,450+1,089+4,225+4,225)
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 121+0 iterations.
-   Solving fluid velocity system... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.64629e-16, 0.160998
+   Solving Stokes system (AMG)... 61+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57339e-16, 0.160998
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.160998
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 110+0 iterations.
-   Solving fluid velocity system... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.64629e-16, 0.0330929
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0330929
+   Solving Stokes system (AMG)... 53+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57339e-16, 0.023865
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.023865
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 39+0 iterations.
-   Solving fluid velocity system... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.64629e-16, 0.00661032
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00661032
+   Solving Stokes system (AMG)... 48+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57339e-16, 0.00797407
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00797407
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 98+0 iterations.
-   Solving fluid velocity system... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.64629e-16, 0.000143487
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000143487
+   Solving Stokes system (AMG)... 4+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57339e-16, 0.0011172
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0011172
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 5+0 iterations.
-   Solving fluid velocity system... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.64629e-16, 0.000122761
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000122761
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57339e-16, 1.0247e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.0247e-05
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -52,9 +52,9 @@ Number of degrees of freedom: 30,600 (8,450+4,161+8,450+1,089+4,225+4,225)
 
    Postprocessing:
      RMS, max velocity:                                                  0.223 m/s, 0.34 m/s
-     Pressure min/avg/max:                                               0.5107 Pa, 1.574 Pa, 2.961 Pa
+     Pressure min/avg/max:                                               0.5076 Pa, 1.574 Pa, 2.963 Pa
      Max, min, and rms velocity along boundary parts:                    0.3386 m/s, 0.1254 m/s, 0.2234 m/s, 0.3386 m/s, 0.1254 m/s, 0.2234 m/s, 0.125 m/s, 0.125 m/s, 0.125 m/s, 0.3398 m/s, 0.3398 m/s, 0.3398 m/s
-     Errors u_L2, p_L2, p_f_L2, p_c_bar_L2, p_c_L2, porosity_L2, u_f_L2: 1.648810e-04, 1.648810e-04, 3.909044e-03, 2.772179e-05, 1.660156e-03, 1.660774e-03, 9.409271e-08, 4.338781e-02
+     Errors u_L2, p_L2, p_f_L2, p_c_bar_L2, p_c_L2, porosity_L2, u_f_L2: 8.559920e-06, 8.559920e-06, 1.394215e-03, 1.595645e-05, 4.816367e-04, 4.817175e-04, 9.409271e-08, 4.339486e-02
 
 Termination requested by criterion: end time
 

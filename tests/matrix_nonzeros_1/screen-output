@@ -9,7 +9,7 @@ Number of degrees of freedom: 120 (50+9+36+25)
 
    Postprocessing:
       
-Total system matrix memory consumption: 0.04 MB.
+Total system matrix memory consumption: 0.03 MB.
 Total system matrix nnz: 1,261
 system matrix nnz by block: 
            0           0           0           0

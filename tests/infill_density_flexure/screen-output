@@ -23,8 +23,8 @@ Number of mesh deformation degrees of freedom: 58,322
    Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 1000+11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.31019e-16, 0, 0, 0, 0, 0, 0, 0, 1
+   Solving Stokes system (AMG)... 85+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70436e-16, 0, 0, 0, 0, 0, 0, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
@@ -34,11 +34,11 @@ Number of mesh deformation degrees of freedom: 58,322
    Skipping ve_stress_xx_old composition solve because RHS is zero.
    Skipping ve_stress_yy_old composition solve because RHS is zero.
    Skipping ve_stress_xy_old composition solve because RHS is zero.
-   Solving lithosphere system ... 1 iterations.
+   Solving lithosphere system ... 2 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.31019e-16, 0, 0, 0, 0, 0, 0, 0, 3.84146e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.84146e-08
+   Solving Stokes system (AMG)... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70436e-16, 0, 0, 0, 0, 0, 0, 0, 8.83042e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.83042e-08
 
 
    Postprocessing:
@@ -47,10 +47,10 @@ Number of mesh deformation degrees of freedom: 58,322
      RMS, max velocity:        2.46 m/year, 6.76 m/year
      Writing graphical output: output-infill_density_flexure/solution/solution-00000
 
-Number of active cells: 5,829 (on 3 levels)
-Number of degrees of freedom: 438,419 (47,666+17,487+6,039+52,461+52,461+52,461+52,461+52,461+52,461+52,461)
+Number of active cells: 5,826 (on 3 levels)
+Number of degrees of freedom: 438,194 (47,642+17,478+6,036+52,434+52,434+52,434+52,434+52,434+52,434+52,434)
 
-Number of mesh deformation degrees of freedom: 47,666
+Number of mesh deformation degrees of freedom: 47,642
    Solving mesh displacement system... 0 iterations.
 Termination requested by criterion: end time
 

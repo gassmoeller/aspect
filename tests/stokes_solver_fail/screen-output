@@ -32,18 +32,13 @@ Additional information:
     dealii::SolverMPGMRES<VectorType>::IndexingStrategy&, const
     PreconditionerTypes& ...) [with MatrixType =
     aspect::internal::StokesBlock; PreconditionerTypes =
-    {aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::LinearAlgebra::TpetraWrappers::PreconditionAMGMueLu<double,
-    dealii::MemorySpace::Host>,
-    dealii::LinearAlgebra::TpetraWrappers::Vector<double,
-    dealii::MemorySpace::Host>,
-    dealii::LinearAlgebra::TpetraWrappers::SparseMatrix<double,
-    dealii::MemorySpace::Host> >,
+    {aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::TrilinosWrappers::PreconditionAMG,
+    dealii::TrilinosWrappers::MPI::Vector,
+    dealii::TrilinosWrappers::SparseMatrix>,
     aspect::internal::SchurComplementOperator,
-    dealii::LinearAlgebra::TpetraWrappers::SparseMatrix<double,
-    dealii::MemorySpace::Host>,
-    dealii::LinearAlgebra::TpetraWrappers::BlockVector<double,
-    dealii::MemorySpace::Host> >}; VectorType =
-    dealii::LinearAlgebra::TpetraWrappers::BlockVector<double>]
+    dealii::TrilinosWrappers::SparseMatrix,
+    dealii::TrilinosWrappers::MPI::BlockVector>}; VectorType =
+    dealii::TrilinosWrappers::MPI::BlockVector]
     Additional information:
     Iterative method reported convergence failure in step 10. The residual
     in the last step was 3.667e+11.

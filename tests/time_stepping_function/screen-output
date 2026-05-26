@@ -320,19 +320,19 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 51:  t=11826.2 seconds, dt=311.515 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 2+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
 *** Timestep 52:  t=12138 seconds, dt=311.826 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
 *** Timestep 53:  t=12450.1 seconds, dt=312.138 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 2+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
@@ -344,25 +344,25 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 55:  t=13075.4 seconds, dt=312.763 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 2+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
 *** Timestep 56:  t=13388.4 seconds, dt=313.075 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
 *** Timestep 57:  t=13701.8 seconds, dt=313.388 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 2+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
 *** Timestep 58:  t=14015.5 seconds, dt=313.702 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
@@ -374,7 +374,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 60:  t=14643.9 seconds, dt=314.33 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
@@ -382,7 +382,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 61:  t=14958.5 seconds, dt=314.644 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 

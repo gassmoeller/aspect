@@ -215,7 +215,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00022
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 23:  t=1.73093e-05 years, dt=2.28857e-06 years
+*** Timestep 23:  t=1.73093e-05 years, dt=2.28856e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Solving Stokes system (GMG)... 57+0 iterations.
@@ -269,7 +269,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00028
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 29:  t=6.77184e-05 years, dt=1.24597e-05 years
+*** Timestep 29:  t=6.77183e-05 years, dt=1.24596e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 17 iterations.
    Solving Stokes system (GMG)... 24+0 iterations.
@@ -290,7 +290,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 349 (162+25+81+81)
 
-*** Timestep 31:  t=8.91834e-05 years, dt=1.39163e-05 years
+*** Timestep 31:  t=8.91833e-05 years, dt=1.39163e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 16 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -326,7 +326,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00034
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 35:  t=0.000130348 years, dt=8.95445e-06 years
+*** Timestep 35:  t=0.000130348 years, dt=8.95451e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 21 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -335,7 +335,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00035
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 36:  t=0.000147451 years, dt=1.7103e-05 years
+*** Timestep 36:  t=0.000147451 years, dt=1.71031e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 26 iterations.
    Solving Stokes system (GMG)... 21+0 iterations.
@@ -344,7 +344,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00036
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 37:  t=0.000155413 years, dt=7.96236e-06 years
+*** Timestep 37:  t=0.000155413 years, dt=7.96232e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 19 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -353,7 +353,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00037
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 38:  t=0.000170621 years, dt=1.52081e-05 years
+*** Timestep 38:  t=0.000170621 years, dt=1.5208e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 22 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -362,7 +362,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00038
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 39:  t=0.000183508 years, dt=1.28864e-05 years
+*** Timestep 39:  t=0.000183508 years, dt=1.28865e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 19 iterations.
    Solving Stokes system (GMG)... 18+0 iterations.
@@ -371,7 +371,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00039
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 40:  t=0.000208121 years, dt=2.46131e-05 years
+*** Timestep 40:  t=0.000208121 years, dt=2.46133e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 32 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -382,7 +382,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 41:  t=0.000218985 years, dt=1.08647e-05 years
+*** Timestep 41:  t=0.000218986 years, dt=1.08646e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 20 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -400,7 +400,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00042
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 43:  t=0.000255893 years, dt=1.61562e-05 years
+*** Timestep 43:  t=0.000255893 years, dt=1.61564e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 19 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -409,7 +409,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00043
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 44:  t=0.000286751 years, dt=3.08584e-05 years
+*** Timestep 44:  t=0.000286752 years, dt=3.08586e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 29 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -418,7 +418,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00044
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 45:  t=0.000299355 years, dt=1.26035e-05 years
+*** Timestep 45:  t=0.000299356 years, dt=1.26035e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 19 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -436,7 +436,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00046
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 47:  t=0.000341403 years, dt=1.79749e-05 years
+*** Timestep 47:  t=0.000341403 years, dt=1.79751e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 18 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -445,7 +445,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00047
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 48:  t=0.000375735 years, dt=3.43321e-05 years
+*** Timestep 48:  t=0.000375736 years, dt=3.43324e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 27 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -454,7 +454,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00048
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 49:  t=0.000388438 years, dt=1.27037e-05 years
+*** Timestep 49:  t=0.000388439 years, dt=1.27037e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 19 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -463,7 +463,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00049
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 50:  t=0.000412703 years, dt=2.42642e-05 years
+*** Timestep 50:  t=0.000412704 years, dt=2.42641e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 20 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -474,7 +474,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 51:  t=0.000432163 years, dt=1.94604e-05 years
+*** Timestep 51:  t=0.000432164 years, dt=1.94606e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 18 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -483,7 +483,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00051
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 52:  t=0.000469332 years, dt=3.71694e-05 years
+*** Timestep 52:  t=0.000469334 years, dt=3.71697e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 26 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -492,7 +492,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00052
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 53:  t=0.000481655 years, dt=1.23224e-05 years
+*** Timestep 53:  t=0.000481656 years, dt=1.23223e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 18 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -501,7 +501,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00053
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 54:  t=0.00050519 years, dt=2.35357e-05 years
+*** Timestep 54:  t=0.000505192 years, dt=2.35356e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 20 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -510,7 +510,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00054
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 55:  t=0.00052668 years, dt=2.14894e-05 years
+*** Timestep 55:  t=0.000526681 years, dt=2.14895e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 18 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -519,7 +519,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00055
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 56:  t=0.000567725 years, dt=4.10448e-05 years
+*** Timestep 56:  t=0.000567726 years, dt=4.1045e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 26 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -528,7 +528,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00056
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 57:  t=0.000580897 years, dt=1.31722e-05 years
+*** Timestep 57:  t=0.000580899 years, dt=1.31722e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 19 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -537,7 +537,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00057
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 58:  t=0.000606056 years, dt=2.51589e-05 years
+*** Timestep 58:  t=0.000606057 years, dt=2.51589e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 21 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -546,7 +546,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00058
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 59:  t=0.00062927 years, dt=2.32137e-05 years
+*** Timestep 59:  t=0.000629271 years, dt=2.32138e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 18 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -555,7 +555,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00059
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 60:  t=0.000673608 years, dt=4.43382e-05 years
+*** Timestep 60:  t=0.000673609 years, dt=4.43383e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 27 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -566,7 +566,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 61:  t=0.000688323 years, dt=1.47148e-05 years
+*** Timestep 61:  t=0.000688324 years, dt=1.47148e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 20 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -575,7 +575,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00061
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 62:  t=0.000716428 years, dt=2.81053e-05 years
+*** Timestep 62:  t=0.00071643 years, dt=2.81053e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 22 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -584,7 +584,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00062
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 63:  t=0.000741208 years, dt=2.47799e-05 years
+*** Timestep 63:  t=0.00074121 years, dt=2.478e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 19 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -593,7 +593,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00063
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 64:  t=0.000788538 years, dt=4.73297e-05 years
+*** Timestep 64:  t=0.000788539 years, dt=4.73297e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 28 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -602,7 +602,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00064
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 65:  t=0.000804723 years, dt=1.61854e-05 years
+*** Timestep 65:  t=0.000804725 years, dt=1.61854e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 20 iterations.
    Solving Stokes system (GMG)... 18+0 iterations.
@@ -611,7 +611,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00065
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 66:  t=0.000835637 years, dt=3.09141e-05 years
+*** Timestep 66:  t=0.000835639 years, dt=3.09142e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 23 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -620,7 +620,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00066
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 67:  t=0.000861829 years, dt=2.61916e-05 years
+*** Timestep 67:  t=0.000861831 years, dt=2.61916e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 19 iterations.
    Solving Stokes system (GMG)... 18+0 iterations.
@@ -629,7 +629,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00067
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 68:  t=0.000911855 years, dt=5.0026e-05 years
+*** Timestep 68:  t=0.000911857 years, dt=5.0026e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 29 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -638,7 +638,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00068
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 69:  t=0.000929807 years, dt=1.79519e-05 years
+*** Timestep 69:  t=0.000929808 years, dt=1.79519e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 20 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -647,7 +647,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00069
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 70:  t=0.000964095 years, dt=3.4288e-05 years
+*** Timestep 70:  t=0.000964097 years, dt=3.42881e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 24 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -658,7 +658,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 71:  t=0.000990939 years, dt=2.68441e-05 years
+*** Timestep 71:  t=0.000990941 years, dt=2.68441e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 19 iterations.
    Solving Stokes system (GMG)... 18+0 iterations.
@@ -667,7 +667,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00071
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 72:  t=0.001 years, dt=9.06128e-06 years
+*** Timestep 72:  t=0.001 years, dt=9.05934e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 13 iterations.
    Solving Stokes system (GMG)... 18+0 iterations.

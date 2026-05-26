@@ -818,7 +818,7 @@ Number of degrees of freedom: 211 (126+22+63)
 
    Postprocessing:
      Temperature min/avg/max:            333 K, 353 K, 373 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -39.83 W, 40.32 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.01 W, 40.29 W
      Writing graphical output:           output-convective_heating/solution/solution-00101
 
 Termination requested by criterion: end time

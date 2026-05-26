@@ -7,7 +7,7 @@ Number of degrees of freedom: 84 (50+9+25)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     System matrix memory consumption:  0.02 MB
+     System matrix memory consumption:  0.01 MB
 
 Termination requested by criterion: end time
 

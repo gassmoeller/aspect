@@ -7,9 +7,9 @@ Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
 
    Postprocessing:
      Compositions min/max/mass:         0/1/1 // 0/0/0 // 1/1/2
-     System matrix memory consumption:  0.21 MB
+     System matrix memory consumption:  0.20 MB
                                         
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.20 MB.
 Total system matrix nnz: 0
 system matrix nnz by block: 
            0           0           0           0           0           0
@@ -29,9 +29,9 @@ system preconditioner matrix nnz by block:
 
    Postprocessing:
      Compositions min/max/mass:         0/1/1 // 0/0/0 // 1/1/2
-     System matrix memory consumption:  0.21 MB
+     System matrix memory consumption:  0.20 MB
                                         
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.20 MB.
 Total system matrix nnz: 0
 system matrix nnz by block: 
            0           0           0           0           0           0
@@ -51,9 +51,9 @@ system preconditioner matrix nnz by block:
 
    Postprocessing:
      Compositions min/max/mass:         0/1/1 // 0/0/0 // 1/1/2
-     System matrix memory consumption:  0.21 MB
+     System matrix memory consumption:  0.20 MB
                                         
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.20 MB.
 Total system matrix nnz: 0
 system matrix nnz by block: 
            0           0           0           0           0           0
@@ -73,9 +73,9 @@ system preconditioner matrix nnz by block:
 
    Postprocessing:
      Compositions min/max/mass:         0/1/1 // 0/0/0 // 1/1/2
-     System matrix memory consumption:  0.21 MB
+     System matrix memory consumption:  0.20 MB
                                         
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.20 MB.
 Total system matrix nnz: 0
 system matrix nnz by block: 
            0           0           0           0           0           0
@@ -95,9 +95,9 @@ system preconditioner matrix nnz by block:
 
    Postprocessing:
      Compositions min/max/mass:         0/1/1 // 0/0/0 // 1/1/2
-     System matrix memory consumption:  0.21 MB
+     System matrix memory consumption:  0.20 MB
                                         
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.20 MB.
 Total system matrix nnz: 0
 system matrix nnz by block: 
            0           0           0           0           0           0
@@ -117,9 +117,9 @@ system preconditioner matrix nnz by block:
 
    Postprocessing:
      Compositions min/max/mass:         0/1/1 // 0/0/0 // 1/1/2
-     System matrix memory consumption:  0.21 MB
+     System matrix memory consumption:  0.20 MB
                                         
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.20 MB.
 Total system matrix nnz: 0
 system matrix nnz by block: 
            0           0           0           0           0           0
@@ -139,9 +139,9 @@ system preconditioner matrix nnz by block:
 
    Postprocessing:
      Compositions min/max/mass:         0/1/1 // 0/0/0 // 1/1/2
-     System matrix memory consumption:  0.21 MB
+     System matrix memory consumption:  0.20 MB
                                         
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.20 MB.
 Total system matrix nnz: 0
 system matrix nnz by block: 
            0           0           0           0           0           0
@@ -161,9 +161,9 @@ system preconditioner matrix nnz by block:
 
    Postprocessing:
      Compositions min/max/mass:         0/1/1 // 0/0/0 // 1/1/2
-     System matrix memory consumption:  0.21 MB
+     System matrix memory consumption:  0.20 MB
                                         
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.20 MB.
 Total system matrix nnz: 0
 system matrix nnz by block: 
            0           0           0           0           0           0
@@ -183,9 +183,9 @@ system preconditioner matrix nnz by block:
 
    Postprocessing:
      Compositions min/max/mass:         0/1/1 // 0/0/0 // 1/1/2
-     System matrix memory consumption:  0.21 MB
+     System matrix memory consumption:  0.20 MB
                                         
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.20 MB.
 Total system matrix nnz: 0
 system matrix nnz by block: 
            0           0           0           0           0           0
@@ -205,9 +205,9 @@ system preconditioner matrix nnz by block:
 
    Postprocessing:
      Compositions min/max/mass:         0/1/1 // 0/0/0 // 1/1/2
-     System matrix memory consumption:  0.21 MB
+     System matrix memory consumption:  0.20 MB
                                         
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.20 MB.
 Total system matrix nnz: 0
 system matrix nnz by block: 
            0           0           0           0           0           0
@@ -227,9 +227,9 @@ system preconditioner matrix nnz by block:
 
    Postprocessing:
      Compositions min/max/mass:         0/1/1 // 0/0/0 // 1/1/2
-     System matrix memory consumption:  0.21 MB
+     System matrix memory consumption:  0.20 MB
                                         
-Total system matrix memory consumption: 0.21 MB.
+Total system matrix memory consumption: 0.20 MB.
 Total system matrix nnz: 0
 system matrix nnz by block: 
            0           0           0           0           0           0

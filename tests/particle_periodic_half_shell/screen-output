@@ -7,7 +7,7 @@ Number of degrees of freedom: 27,125 (12,738+1,649+6,369+6,369)
    Advecting particles...  done.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 53+0 iterations.
+   Solving Stokes system (AMG)... 56+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.0095 m/s, 0.0248 m/s
@@ -19,7 +19,7 @@ Number of degrees of freedom: 27,125 (12,738+1,649+6,369+6,369)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 18 iterations.
-   Solving Stokes system (AMG)... 47+0 iterations.
+   Solving Stokes system (AMG)... 48+0 iterations.
 
    Postprocessing:
      RMS, max velocity:            0.0103 m/s, 0.0268 m/s
@@ -30,7 +30,7 @@ Number of degrees of freedom: 27,125 (12,738+1,649+6,369+6,369)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 18 iterations.
-   Solving Stokes system (AMG)... 43+0 iterations.
+   Solving Stokes system (AMG)... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity:            0.0112 m/s, 0.0303 m/s
@@ -41,7 +41,7 @@ Number of degrees of freedom: 27,125 (12,738+1,649+6,369+6,369)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 11 iterations.
-   Solving Stokes system (AMG)... 33+0 iterations.
+   Solving Stokes system (AMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.0112 m/s, 0.0305 m/s
