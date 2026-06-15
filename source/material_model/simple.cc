@@ -45,7 +45,7 @@ namespace aspect
             = (reference_T > 0
                ?
                std::max(std::min(std::exp(-thermal_viscosity_exponent *
-                                          delta_temp/reference_T),
+                                          delta_temp),
                                  maximum_thermal_prefactor),
                         minimum_thermal_prefactor)
                :
