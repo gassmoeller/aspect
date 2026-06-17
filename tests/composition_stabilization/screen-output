@@ -876,7 +876,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
    Postprocessing:
      Writing graphical output:  output-composition_stabilization/solution/solution-00026
-     Temperature min/avg/max:   -0.09574 K, 0.5098 K, 1.138 K
+     Temperature min/avg/max:   -0.09575 K, 0.5098 K, 1.138 K
      Compositions min/max/mass: -0.01991/1.01/0.1237 // -9.713/1010/132.5
 
 *** Timestep 85:  t=2.65625 seconds, dt=0.03125 seconds

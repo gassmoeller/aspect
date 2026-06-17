@@ -117,7 +117,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 3 iterations.
+   Solving C_1 system ... 2 iterations.
 
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00011
@@ -145,7 +145,7 @@ Number of degrees of freedom: 3,078 (1,202+159+601+1,116)
 
 *** Timestep 14:  t=0.875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 2 iterations.
+   Solving C_1 system ... 3 iterations.
 
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00014
@@ -155,7 +155,7 @@ Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
 
 *** Timestep 15:  t=0.9375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 2 iterations.
+   Solving C_1 system ... 3 iterations.
 
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00015
@@ -165,7 +165,7 @@ Number of degrees of freedom: 3,313 (1,278+172+639+1,224)
 
 *** Timestep 16:  t=1 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 3 iterations.
+   Solving C_1 system ... 2 iterations.
 
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00016
@@ -185,7 +185,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 
 *** Timestep 18:  t=1.125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 2 iterations.
+   Solving C_1 system ... 3 iterations.
 
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00018
@@ -311,7 +311,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
 *** Timestep 31:  t=1.9375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 3 iterations.
+   Solving C_1 system ... 2 iterations.
 
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00031
@@ -338,7 +338,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 34:  t=2.125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 2 iterations.
+   Solving C_1 system ... 3 iterations.
 
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00034
@@ -357,7 +357,7 @@ Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 
 *** Timestep 36:  t=2.25 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 2 iterations.
+   Solving C_1 system ... 3 iterations.
 
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00036
@@ -461,7 +461,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
 *** Timestep 47:  t=2.9375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 3 iterations.
+   Solving C_1 system ... 2 iterations.
 
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00047

@@ -11,4 +11,4 @@
 # 11: Average function rate (W/kg)
 # 12: Total function rate (W)
 # 13: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 192 1968 864 0 23 24 24 3.08250816e-17 6.75457953e-17 output-heating_function/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 192 1968 864 0 16 17 17 -1.46975770e-16 -3.22062255e-16 output-heating_function/solution/solution-00000 

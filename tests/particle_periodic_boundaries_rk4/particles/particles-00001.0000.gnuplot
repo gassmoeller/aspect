@@ -5,7 +5,7 @@
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
 # <x> <y> <id> <function> <initial C_1> <initial position> <initial position> 
-0.0569567 0.276217 2 0 0.00492534 0.906718 0.233091 
+0.0569567 0.276216 2 0 0.00492534 0.906718 0.233091 
 
 0.472019 0.00957782 0 1 1 0.503524 0.0103346 
 

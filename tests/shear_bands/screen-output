@@ -8,33 +8,33 @@ Number of degrees of freedom: 30,824 (8,514+4,177+8,514+1,105+4,257+4,257)
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 31+0 iterations.
-   Solving fluid velocity system... 11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.4737e-16, 1
+   Solving Stokes system (AMG)... 29+0 iterations.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.37877e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
-
-   Skipping temperature solve because RHS is zero.
-   Solving porosity system ... 9 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 11+0 iterations.
-   Solving fluid velocity system... 11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.13104e-16, 0.0307263
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0307263
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 11+0 iterations.
-   Solving fluid velocity system... 11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.07419e-16, 0.0184908
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.06783e-16, 0.0307263
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0307263
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+0 iterations.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.9782e-17, 0.0184908
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0184908
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 10+0 iterations.
-   Solving fluid velocity system... 11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.04037e-16, 0.0132089
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.01777e-16, 0.0132089
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0132089
 
 
@@ -52,32 +52,32 @@ Number of degrees of freedom: 30,824 (8,514+4,177+8,514+1,105+4,257+4,257)
    Solving porosity system ... 22 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 10+0 iterations.
-   Solving fluid velocity system... 11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00261608, 0.00039958
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00039958
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00261608, 0.000399581
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000399581
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 21 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 10+0 iterations.
-   Solving fluid velocity system... 11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000365742, 0.000243985
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000243985
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000365748, 0.000243983
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000243983
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 21 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 10+0 iterations.
-   Solving fluid velocity system... 11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000247726, 0.000178924
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000178924
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000247728, 0.000178922
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000178922
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 21 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 10+0 iterations.
-   Solving fluid velocity system... 11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000211639, 0.00014165
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00021164, 0.00014165
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00014165
 
 

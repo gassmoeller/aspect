@@ -508,6 +508,9 @@ namespace aspect
     Amg_data.higher_order_elements = true;
 #endif
 
+    Amg_data.constant_modes = DoFTools::extract_constant_modes (dof_handler,
+                                                                introspection.component_masks.velocities);
+
     Amg_data.elliptic = true;
     // set the AMG parameters in a way that minimizes the run
     // time. compared to some of the deal.II tutorial programs, we

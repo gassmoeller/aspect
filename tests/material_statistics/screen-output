@@ -17,7 +17,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Average density / Average viscosity / Total mass:  3221 kg/m^3, 5.971e+20 Pa s, 3.221e+13 kg
 
 *** Timestep 2:  t=9.99999e+06 years, dt=5e+06 years
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
@@ -38,14 +38,14 @@ Number of degrees of freedom: 31 (18+4+9)
      Average density / Average viscosity / Total mass:  2991 kg/m^3, 1.165e+20 Pa s, 2.991e+13 kg
 
 *** Timestep 5:  t=2.5e+07 years, dt=5e+06 years
-   Solving temperature system... 2 iterations.
+   Solving temperature system... 1 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Average density / Average viscosity / Total mass:  2972 kg/m^3, 1.016e+20 Pa s, 2.972e+13 kg
 
 *** Timestep 6:  t=3e+07 years, dt=5e+06 years
-   Solving temperature system... 2 iterations.
+   Solving temperature system... 1 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -66,14 +66,14 @@ Number of degrees of freedom: 31 (18+4+9)
      Average density / Average viscosity / Total mass:  2969 kg/m^3, 9.907e+19 Pa s, 2.969e+13 kg
 
 *** Timestep 9:  t=4.5e+07 years, dt=5e+06 years
-   Solving temperature system... 2 iterations.
+   Solving temperature system... 1 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Average density / Average viscosity / Total mass:  2969 kg/m^3, 9.964e+19 Pa s, 2.969e+13 kg
 
 *** Timestep 10:  t=5e+07 years, dt=5e+06 years
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -94,7 +94,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
 
 *** Timestep 13:  t=6.5e+07 years, dt=5e+06 years
-   Solving temperature system... 2 iterations.
+   Solving temperature system... 1 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:

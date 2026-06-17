@@ -11,8 +11,8 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
 
    Postprocessing:
      Writing particle output:       output-particle_interpolator_linear_least_squares_solkz/particles/particles-00000
-     Errors u_L1, p_L1, u_L2, p_L2: 1.994935e-08, 2.125664e-04, 4.732659e-08, 5.352561e-04
-     Compositions min/max/mass:     -0.9999/0.9999/1.469e-17 // 1.055/9.475e+05/7.235e+04
+     Errors u_L1, p_L1, u_L2, p_L2: 1.994930e-08, 2.125665e-04, 4.732662e-08, 5.352561e-04
+     Compositions min/max/mass:     -0.9999/0.9999/-1.208e-08 // 1.055/9.475e+05/7.235e+04
 
 Termination requested by criterion: end time
 

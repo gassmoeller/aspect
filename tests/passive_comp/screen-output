@@ -44,7 +44,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 *** Timestep 2:  t=5.6325e+12 seconds, dt=2.81625e+12 seconds
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 21 iterations.
-   Solving Stokes system (GMG)... 2+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00002
@@ -56,13 +56,13 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 *** Timestep 3:  t=8e+12 seconds, dt=2.3675e+12 seconds
    Solving temperature system... 15 iterations.
    Solving C_1 system ... 19 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00003
      RMS, max velocity:                  5.11e-08 m/s, 6.34e-08 m/s
      Temperature min/avg/max:            -3.128e-06 K, 0.0004743 K, 0.002085 K
-     Heat fluxes through boundary parts: 180.9 W, 182 W
+     Heat fluxes through boundary parts: 180.8 W, 182 W
      Writing depth average:              output-passive_comp/depth_average
 
 Termination requested by criterion: end time

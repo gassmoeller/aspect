@@ -6,15 +6,15 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
 
-Number of active cells: 232 (on 5 levels)
-Number of degrees of freedom: 3,302 (2,022+269+1,011)
+Number of active cells: 238 (on 5 levels)
+Number of degrees of freedom: 3,367 (2,062+274+1,031)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 14+0 iterations.
 
-Number of active cells: 436 (on 6 levels)
-Number of degrees of freedom: 6,194 (3,798+497+1,899)
+Number of active cells: 439 (on 6 levels)
+Number of degrees of freedom: 6,233 (3,822+500+1,911)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
@@ -26,10 +26,10 @@ Number of degrees of freedom: 6,194 (3,798+497+1,899)
      Heat fluxes through boundary parts: 0 W, 0 W, -1 W, 1 W
      Writing graphical output:           output-refinement_nonadiabatic_temperature/solution/solution-00000
 
-Number of active cells: 448 (on 6 levels)
-Number of degrees of freedom: 6,308 (3,868+506+1,934)
+Number of active cells: 454 (on 6 levels)
+Number of degrees of freedom: 6,373 (3,908+511+1,954)
 
-*** Timestep 1:  t=0.0061685 seconds, dt=0.0061685 seconds
+*** Timestep 1:  t=0.00616854 seconds, dt=0.00616854 seconds
    Solving temperature system... 53 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
@@ -41,7 +41,7 @@ Number of degrees of freedom: 6,308 (3,868+506+1,934)
 Number of active cells: 436 (on 6 levels)
 Number of degrees of freedom: 6,194 (3,798+497+1,899)
 
-*** Timestep 2:  t=0.0091642 seconds, dt=0.0029957 seconds
+*** Timestep 2:  t=0.00916422 seconds, dt=0.00299568 seconds
    Solving temperature system... 40 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
@@ -53,9 +53,9 @@ Number of degrees of freedom: 6,194 (3,798+497+1,899)
 Number of active cells: 448 (on 6 levels)
 Number of degrees of freedom: 6,308 (3,868+506+1,934)
 
-*** Timestep 3:  t=0.011003 seconds, dt=0.00183883 seconds
+*** Timestep 3:  t=0.011003 seconds, dt=0.00183882 seconds
    Solving temperature system... 33 iterations.
-   Solving Stokes system (GMG)... 12+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  8.45 m/s, 12 m/s
@@ -66,7 +66,7 @@ Number of degrees of freedom: 6,308 (3,868+506+1,934)
 Number of active cells: 436 (on 6 levels)
 Number of degrees of freedom: 6,194 (3,798+497+1,899)
 
-*** Timestep 4:  t=0.0123105 seconds, dt=0.00130752 seconds
+*** Timestep 4:  t=0.0123105 seconds, dt=0.00130751 seconds
    Solving temperature system... 27 iterations.
    Solving Stokes system (GMG)... 12+0 iterations.
 
@@ -90,7 +90,7 @@ Number of degrees of freedom: 6,308 (3,868+506+1,934)
 Number of active cells: 436 (on 6 levels)
 Number of degrees of freedom: 6,194 (3,798+497+1,899)
 
-*** Timestep 6:  t=0.0141472 seconds, dt=0.000825165 seconds
+*** Timestep 6:  t=0.0141472 seconds, dt=0.000825162 seconds
    Solving temperature system... 22 iterations.
    Solving Stokes system (GMG)... 12+0 iterations.
 
@@ -102,7 +102,7 @@ Number of degrees of freedom: 6,194 (3,798+497+1,899)
 Number of active cells: 454 (on 6 levels)
 Number of degrees of freedom: 6,396 (3,922+513+1,961)
 
-*** Timestep 7:  t=0.0148449 seconds, dt=0.000697666 seconds
+*** Timestep 7:  t=0.0148449 seconds, dt=0.000697664 seconds
    Solving temperature system... 20 iterations.
    Solving Stokes system (GMG)... 12+0 iterations.
 
@@ -114,7 +114,7 @@ Number of degrees of freedom: 6,396 (3,922+513+1,961)
 Number of active cells: 445 (on 6 levels)
 Number of degrees of freedom: 6,324 (3,878+507+1,939)
 
-*** Timestep 8:  t=0.0154501 seconds, dt=0.000605184 seconds
+*** Timestep 8:  t=0.0154501 seconds, dt=0.000605183 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system (GMG)... 12+0 iterations.
 
@@ -126,7 +126,7 @@ Number of degrees of freedom: 6,324 (3,878+507+1,939)
 Number of active cells: 451 (on 6 levels)
 Number of degrees of freedom: 6,360 (3,900+510+1,950)
 
-*** Timestep 9:  t=0.0159852 seconds, dt=0.000535093 seconds
+*** Timestep 9:  t=0.0159852 seconds, dt=0.000535092 seconds
    Solving temperature system... 18 iterations.
    Solving Stokes system (GMG)... 12+0 iterations.
 
@@ -174,7 +174,7 @@ Number of degrees of freedom: 6,409 (3,930+514+1,965)
 Number of active cells: 457 (on 6 levels)
 Number of degrees of freedom: 6,448 (3,954+517+1,977)
 
-*** Timestep 13:  t=0.0176709 seconds, dt=0.000369585 seconds
+*** Timestep 13:  t=0.0176708 seconds, dt=0.000369585 seconds
    Solving temperature system... 14 iterations.
    Solving Stokes system (GMG)... 11+0 iterations.
 
@@ -221,7 +221,7 @@ Number of degrees of freedom: 6,448 (3,954+517+1,977)
 Number of active cells: 466 (on 6 levels)
 Number of degrees of freedom: 6,582 (4,036+528+2,018)
 
-*** Timestep 17:  t=0.0189262 seconds, dt=0.000286395 seconds
+*** Timestep 17:  t=0.0189262 seconds, dt=0.000286394 seconds
    Solving temperature system... 12 iterations.
    Solving Stokes system (GMG)... 12+0 iterations.
 
@@ -257,7 +257,7 @@ Number of degrees of freedom: 6,513 (3,994+522+1,997)
 Number of active cells: 466 (on 6 levels)
 Number of degrees of freedom: 6,572 (4,030+527+2,015)
 
-*** Timestep 20:  t=0.0197042 seconds, dt=0.000247318 seconds
+*** Timestep 20:  t=0.0197041 seconds, dt=0.000247318 seconds
    Solving temperature system... 12 iterations.
    Solving Stokes system (GMG)... 11+0 iterations.
 
@@ -269,7 +269,7 @@ Number of degrees of freedom: 6,572 (4,030+527+2,015)
 Number of active cells: 460 (on 6 levels)
 Number of degrees of freedom: 6,513 (3,994+522+1,997)
 
-*** Timestep 21:  t=0.0199412 seconds, dt=0.000236996 seconds
+*** Timestep 21:  t=0.0199411 seconds, dt=0.000236996 seconds
    Solving temperature system... 11 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
@@ -281,7 +281,7 @@ Number of degrees of freedom: 6,513 (3,994+522+1,997)
 Number of active cells: 475 (on 6 levels)
 Number of degrees of freedom: 6,705 (4,112+537+2,056)
 
-*** Timestep 22:  t=0.02 seconds, dt=5.88423e-05 seconds
+*** Timestep 22:  t=0.02 seconds, dt=5.88548e-05 seconds
    Solving temperature system... 5 iterations.
    Solving Stokes system (GMG)... 12+0 iterations.
 

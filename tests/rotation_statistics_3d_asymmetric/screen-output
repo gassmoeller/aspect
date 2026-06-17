@@ -7,7 +7,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
    Postprocessing:
      RMS, max velocity:                                                               0.632 m/s, 1 m/s
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 2.48 kg*m^2/s, 2.48 kg*m^2, 1 1/s, 1 1/s
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 2.5 kg*m^2/s, 2.5 kg*m^2, 1 1/s, 1 1/s
 
 Termination requested by criterion: end time
 

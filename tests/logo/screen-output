@@ -6,12 +6,12 @@ Number of degrees of freedom: 41,280 (25,344+3,264+12,672)
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
 
-Number of active cells: 2,784 (on 6 levels)
-Number of degrees of freedom: 40,704 (24,960+3,264+12,480)
+Number of active cells: 3,648 (on 6 levels)
+Number of degrees of freedom: 54,432 (33,408+4,320+16,704)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 10+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
 Number of active cells: 3,072 (on 7 levels)
 Number of degrees of freedom: 48,288 (29,568+3,936+14,784)

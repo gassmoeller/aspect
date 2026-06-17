@@ -7,11 +7,11 @@ Number of degrees of freedom: 5,223 (1,666+225+833+833+833+833)
    Solving composition system ... 0 iterations.
    Solving another_field system ... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
-   Initial Newton Stokes residual = 1.22791e+14, v = 1.22791e+14, p = 0
+   Initial Newton Stokes residual = 1.25135e+14, v = 1.25135e+14, p = 0
 
    Solving Stokes system (GMG)... 15+0 iterations.
-      Newton system information: Norm of the rhs: 1.22791e+14
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71633e-16, 1.61486e-16, 0, 1.56133e-16, 1
+      Newton system information: Norm of the rhs: 1.25135e+14
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5729e-16, 1.5083e-16, 0, 1.425e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
@@ -19,36 +19,36 @@ Number of degrees of freedom: 5,223 (1,666+225+833+833+833+833)
    Solving another_field system ... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 9+0 iterations.
-      Newton system information: Norm of the rhs: 2.23856e+12, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71633e-16, 1.61486e-16, 0, 1.56133e-16, 0.0182306
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0182306
+      Newton system information: Norm of the rhs: 2.23873e+12, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5729e-16, 1.5083e-16, 0, 1.425e-16, 0.0178905
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0178905
+
+   Solving temperature system... 0 iterations.
+   Solving composition system ... 0 iterations.
+   Solving another_field system ... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Solving Stokes system (GMG)... 9+0 iterations.
+      Newton system information: Norm of the rhs: 6.56726e+10, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5729e-16, 1.5083e-16, 0, 1.425e-16, 0.000524813
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000524813
 
    Solving temperature system... 0 iterations.
    Solving composition system ... 0 iterations.
    Solving another_field system ... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 11+0 iterations.
-      Newton system information: Norm of the rhs: 6.56738e+10, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71633e-16, 1.61486e-16, 0, 1.56133e-16, 0.000534842
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000534842
-
-   Solving temperature system... 0 iterations.
-   Solving composition system ... 0 iterations.
-   Solving another_field system ... 0 iterations.
-   Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 10+0 iterations.
-      Newton system information: Norm of the rhs: 1.62308e+09, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71633e-16, 1.61486e-16, 0, 1.56133e-16, 1.32183e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.32183e-05
+      Newton system information: Norm of the rhs: 1.62317e+09, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5729e-16, 1.5083e-16, 0, 1.425e-16, 1.29713e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.29713e-05
 
    Solving temperature system... 0 iterations.
    Solving composition system ... 0 iterations.
    Solving another_field system ... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 11+0 iterations.
-      Newton system information: Norm of the rhs: 4.47762e+07, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71633e-16, 1.61486e-16, 0, 1.56133e-16, 3.64653e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 3.64653e-07
+      Newton system information: Norm of the rhs: 4.47745e+07, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5729e-16, 1.5083e-16, 0, 1.425e-16, 3.57809e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 3.57809e-07
 
 
    Postprocessing:
@@ -63,11 +63,11 @@ Number of degrees of freedom: 5,223 (1,666+225+833+833+833+833)
    Solving composition system ... 11 iterations.
    Solving another_field system ... 11 iterations.
    Copying properties into prescribed compositional field density_field... done.
-   Initial Newton Stokes residual = 8.39912e+13, v = 8.31745e+13, p = 1.16846e+13
+   Initial Newton Stokes residual = 8.39912e+13, v = 8.31744e+13, p = 1.16846e+13
 
    Solving Stokes system (GMG)... 11+0 iterations.
-      Newton system information: Norm of the rhs: 1.49315e+13
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00377681, 0.0202636, 0, 0.0108039, 0.177774
+      Newton system information: Norm of the rhs: 1.49314e+13
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0037768, 0.0202636, 0, 0.0108039, 0.177774
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.177774
 
    Solving temperature system... 11 iterations.
@@ -75,36 +75,36 @@ Number of degrees of freedom: 5,223 (1,666+225+833+833+833+833)
    Solving another_field system ... 9 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 13+0 iterations.
-      Newton system information: Norm of the rhs: 2.55278e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00012418, 0.000414973, 0, 0.000193229, 0.00303934
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00303934
+      Newton system information: Norm of the rhs: 2.55276e+11, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00012418, 0.000414972, 0, 0.000193228, 0.00303932
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00303932
 
    Solving temperature system... 10 iterations.
    Solving composition system ... 8 iterations.
    Solving another_field system ... 8 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 13+0 iterations.
-      Newton system information: Norm of the rhs: 2.2233e+10, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.8685e-06, 3.11444e-05, 0, 1.43921e-05, 0.000264707
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000264707
+      Newton system information: Norm of the rhs: 2.22333e+10, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.86842e-06, 3.11444e-05, 0, 1.43918e-05, 0.00026471
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00026471
 
    Solving temperature system... 8 iterations.
    Solving composition system ... 7 iterations.
    Solving another_field system ... 7 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 12+0 iterations.
-      Newton system information: Norm of the rhs: 1.00197e+09, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.1136e-07, 2.60566e-06, 0, 1.38988e-06, 1.19295e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.19295e-05
+      Newton system information: Norm of the rhs: 1.00198e+09, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.11372e-07, 2.60569e-06, 0, 1.38987e-06, 1.19296e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.19296e-05
 
    Solving temperature system... 7 iterations.
    Solving composition system ... 6 iterations.
    Solving another_field system ... 5 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 13+0 iterations.
-      Newton system information: Norm of the rhs: 9.33523e+07, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.31558e-08, 1.25138e-07, 0, 8.13073e-08, 1.11145e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.11145e-06
+      Newton system information: Norm of the rhs: 9.33512e+07, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.31571e-08, 1.25139e-07, 0, 8.13072e-08, 1.11144e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.11144e-06
 
 
    Postprocessing:

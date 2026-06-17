@@ -8,31 +8,112 @@ Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system (direct)... done.
-   Solving fluid velocity system... 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.69836e-16, 1
+   Solving fluid velocity system... 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system (direct)... done.
-   Solving fluid velocity system... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.69836e-16, 0.23454
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.23454
+   Solving fluid velocity system... 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 1.89772
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.89772
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system (direct)... done.
-   Solving fluid velocity system... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.69836e-16, 0.000263994
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000263994
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.0351532
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0351532
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system (direct)... done.
-   Solving fluid velocity system... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.69836e-16, 2.69329e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 2.69329e-05
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000623154
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000623154
 
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000245328
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000245328
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000223319
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000223319
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000227115
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.000227115
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000222901
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.000222901
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000222405
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.000222405
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000221132
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.000221132
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000222961
+      Relative nonlinear residual (total system) after nonlinear iteration 11: 0.000222961
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000224227
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.000224227
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000226433
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.000226433
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000224169
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.000224169
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59493e-16, 0.000219232
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.000219232
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
      RMS, max velocity:                               0.666 m/s, 1.1 m/s
@@ -44,33 +125,239 @@ Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 11 iterations.
    Solving Stokes system (direct)... done.
-   Solving fluid velocity system... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.43567e-05, 2.6516e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.6516e-05
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.43586e-05, 0.000206262
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000206262
 
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.74213e-10, 0.000205516
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000205516
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.09376e-10, 0.000204826
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000204826
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.20867e-10, 0.000202689
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000202689
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.15997e-10, 0.000204473
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000204473
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.36874e-10, 0.000206718
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000206718
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.11348e-10, 0.000206548
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.000206548
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.84611e-10, 0.00020705
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.00020705
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.39329e-10, 0.000200534
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.000200534
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.45067e-10, 0.000200748
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.000200748
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.78648e-10, 0.000206586
+      Relative nonlinear residual (total system) after nonlinear iteration 11: 0.000206586
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.3941e-10, 0.000210037
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.000210037
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.3882e-10, 0.000207915
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.000207915
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.35852e-10, 0.000205346
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.000205346
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 5 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.31371e-10, 0.000205688
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.000205688
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
      RMS, max velocity:                               0.666 m/s, 1.1 m/s
      Pressure min/avg/max:                            -17.99 Pa, -3.368 Pa, 0.4757 Pa
      Max, min, and rms velocity along boundary parts: 1.096 m/s, 0.1035 m/s, 0.6658 m/s, 1.096 m/s, 0.1035 m/s, 0.6658 m/s, 0.1 m/s, 0.1 m/s, 0.1 m/s, 1.1 m/s, 1.1 m/s, 1.1 m/s
-     Error porosity_L2:                               1.280985e-04
+     Error porosity_L2:                               1.280986e-04
 
 *** Timestep 2:  t=0.025 seconds, dt=0.0107955 seconds
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 7 iterations.
    Solving Stokes system (direct)... done.
-   Solving fluid velocity system... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.26868e-06, 2.87375e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.87375e-05
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.26879e-06, 0.000230287
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000230287
 
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.71102e-10, 0.00020689
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00020689
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.4405e-10, 0.000204806
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000204806
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.97473e-10, 0.000206625
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000206625
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.29198e-10, 0.000208666
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000208666
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.36543e-10, 0.000203452
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000203452
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.81994e-10, 0.000208417
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.000208417
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.96097e-10, 0.00020894
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.00020894
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.17993e-10, 0.000208595
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.000208595
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.83143e-10, 0.000206308
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.000206308
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.87426e-10, 0.00020301
+      Relative nonlinear residual (total system) after nonlinear iteration 11: 0.00020301
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.41131e-10, 0.000206859
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.000206859
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.30288e-10, 0.000204687
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.000204687
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.14485e-10, 0.000204336
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.000204336
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.6165e-10, 0.000201732
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.000201732
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
      RMS, max velocity:                               0.666 m/s, 1.1 m/s
-     Pressure min/avg/max:                            -17.99 Pa, -3.368 Pa, 0.4757 Pa
+     Pressure min/avg/max:                            -17.99 Pa, -3.368 Pa, 0.4756 Pa
      Max, min, and rms velocity along boundary parts: 1.096 m/s, 0.1035 m/s, 0.6658 m/s, 1.096 m/s, 0.1035 m/s, 0.6658 m/s, 0.1 m/s, 0.1 m/s, 0.1 m/s, 1.1 m/s, 1.1 m/s, 1.1 m/s
-     Error porosity_L2:                               1.407989e-04
+     Error porosity_L2:                               1.407992e-04
 
 Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 3 nonlinear solver failures occurred!

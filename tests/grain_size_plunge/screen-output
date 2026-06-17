@@ -10,7 +10,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 5e+12
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
@@ -18,7 +18,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.19663e+12, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.839327
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.839327
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.839327
 
    Solving temperature system... 0 iterations.
@@ -26,7 +26,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 3.52226e+12, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.704451
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.704451
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.704451
 
    Solving temperature system... 0 iterations.
@@ -34,7 +34,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 2.78152e+12, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.556303
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.556303
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.556303
 
    Solving temperature system... 0 iterations.
@@ -42,7 +42,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 2.09133e+12, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.418266
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.418266
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.418266
 
    Solving temperature system... 0 iterations.
@@ -50,7 +50,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.51567e+12, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.303134
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.303134
       Relative nonlinear residual (total system) after nonlinear iteration 6: 0.303134
 
    Solving temperature system... 0 iterations.
@@ -58,7 +58,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.06991e+12, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.213981
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.213981
       Relative nonlinear residual (total system) after nonlinear iteration 7: 0.213981
 
    Solving temperature system... 0 iterations.
@@ -66,7 +66,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 7.41481e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.148296
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.148296
       Relative nonlinear residual (total system) after nonlinear iteration 8: 0.148296
 
    Solving temperature system... 0 iterations.
@@ -74,7 +74,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 5.07421e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.101484
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.101484
       Relative nonlinear residual (total system) after nonlinear iteration 9: 0.101484
 
    Solving temperature system... 0 iterations.
@@ -82,7 +82,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 3.44277e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.0688553
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.0688553
       Relative nonlinear residual (total system) after nonlinear iteration 10: 0.0688553
 
    Solving temperature system... 0 iterations.
@@ -90,7 +90,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 2.32236e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.0464471
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.0464471
       Relative nonlinear residual (total system) after nonlinear iteration 11: 0.0464471
 
    Solving temperature system... 0 iterations.
@@ -98,7 +98,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.56048e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.0312095
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.0312095
       Relative nonlinear residual (total system) after nonlinear iteration 12: 0.0312095
 
    Solving temperature system... 0 iterations.
@@ -106,7 +106,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.04581e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.0209161
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.0209161
       Relative nonlinear residual (total system) after nonlinear iteration 13: 0.0209161
 
    Solving temperature system... 0 iterations.
@@ -114,7 +114,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 6.99657e+10, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.0139931
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.0139931
       Relative nonlinear residual (total system) after nonlinear iteration 14: 0.0139931
 
    Solving temperature system... 0 iterations.
@@ -122,7 +122,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.67533e+10, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.00935066
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.00935066
       Relative nonlinear residual (total system) after nonlinear iteration 15: 0.00935066
 
    Solving temperature system... 0 iterations.
@@ -130,7 +130,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 3.12176e+10, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.00624353
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.00624353
       Relative nonlinear residual (total system) after nonlinear iteration 16: 0.00624353
 
    Solving temperature system... 0 iterations.
@@ -138,7 +138,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 2.08335e+10, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.00416669
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.00416669
       Relative nonlinear residual (total system) after nonlinear iteration 17: 0.00416669
 
    Solving temperature system... 0 iterations.
@@ -146,7 +146,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.38986e+10, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.00277973
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.00277973
       Relative nonlinear residual (total system) after nonlinear iteration 18: 0.00277973
 
    Solving temperature system... 0 iterations.
@@ -154,7 +154,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 9.27006e+09, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.00185401
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.00185401
       Relative nonlinear residual (total system) after nonlinear iteration 19: 0.00185401
 
    Solving temperature system... 0 iterations.
@@ -162,7 +162,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 6.18195e+09, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.00123639
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.00123639
       Relative nonlinear residual (total system) after nonlinear iteration 20: 0.00123639
 
    Solving temperature system... 0 iterations.
@@ -170,7 +170,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.12215e+09, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.00082443
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.00082443
       Relative nonlinear residual (total system) after nonlinear iteration 21: 0.00082443
 
    Solving temperature system... 0 iterations.
@@ -178,7 +178,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 2.74848e+09, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.000549696
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.000549696
       Relative nonlinear residual (total system) after nonlinear iteration 22: 0.000549696
 
    Solving temperature system... 0 iterations.
@@ -186,7 +186,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.83249e+09, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.000366497
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.000366497
       Relative nonlinear residual (total system) after nonlinear iteration 23: 0.000366497
 
    Solving temperature system... 0 iterations.
@@ -194,7 +194,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.22173e+09, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.000244347
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.000244347
       Relative nonlinear residual (total system) after nonlinear iteration 24: 0.000244347
 
    Solving temperature system... 0 iterations.
@@ -202,7 +202,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 8.14522e+08, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.000162904
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.000162904
       Relative nonlinear residual (total system) after nonlinear iteration 25: 0.000162904
 
    Solving temperature system... 0 iterations.
@@ -210,7 +210,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 5.43029e+08, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 0.000108606
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 0.000108606
       Relative nonlinear residual (total system) after nonlinear iteration 26: 0.000108606
 
    Solving temperature system... 0 iterations.
@@ -218,7 +218,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 3.62026e+08, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 7.24052e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 7.24052e-05
       Relative nonlinear residual (total system) after nonlinear iteration 27: 7.24052e-05
 
    Solving temperature system... 0 iterations.
@@ -226,7 +226,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 2.41354e+08, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 4.82707e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 4.82707e-05
       Relative nonlinear residual (total system) after nonlinear iteration 28: 4.82707e-05
 
    Solving temperature system... 0 iterations.
@@ -234,7 +234,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.60904e+08, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 3.21807e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 3.21807e-05
       Relative nonlinear residual (total system) after nonlinear iteration 29: 3.21807e-05
 
    Solving temperature system... 0 iterations.
@@ -242,7 +242,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.0727e+08, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 2.14539e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 2.14539e-05
       Relative nonlinear residual (total system) after nonlinear iteration 30: 2.14539e-05
 
    Solving temperature system... 0 iterations.
@@ -250,7 +250,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 7.15134e+07, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 1.43027e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 1.43027e-05
       Relative nonlinear residual (total system) after nonlinear iteration 31: 1.43027e-05
 
    Solving temperature system... 0 iterations.
@@ -258,7 +258,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.76757e+07, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 1.58051e-16, 9.53514e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10201e-16, 2.13515e-16, 9.53514e-06
       Relative nonlinear residual (total system) after nonlinear iteration 32: 9.53514e-06
 
 
@@ -271,13 +271,13 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 1:  t=10 years, dt=10 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Initial Newton Stokes residual = 5e+12, v = 5e+12, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.06765e+12
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00130736, 0.81353
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23209e-16, 0.00130736, 0.81353
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.81353
 
    Solving temperature system... 0 iterations.
@@ -303,7 +303,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.06772e+12
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.07453e-16, 2.28817e-06, 0.813544
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.46692e-16, 2.28817e-06, 0.813544
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.813544
 
    Solving temperature system... 0 iterations.
@@ -311,7 +311,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 2.47189e+06, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.46692e-16, 2.70691e-09, 4.94377e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.28012e-16, 2.70691e-09, 4.94377e-07
       Relative nonlinear residual (total system) after nonlinear iteration 2: 4.94377e-07
 
 
@@ -329,7 +329,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.06775e+12
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.33458e-17, 3.11984e-06, 0.81355
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.64452e-16, 3.11984e-06, 0.81355
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.81355
 
    Solving temperature system... 0 iterations.
@@ -337,7 +337,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.17197e+07, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.94872e-10, 2.34395e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.28012e-16, 6.94872e-10, 2.34395e-06
       Relative nonlinear residual (total system) after nonlinear iteration 2: 2.34395e-06
 
 
@@ -355,7 +355,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.06774e+12
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.33458e-16, 3.45764e-06, 0.813549
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.79676e-16, 3.45764e-06, 0.813549
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.813549
 
    Solving temperature system... 0 iterations.
@@ -363,7 +363,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 9.35999e+06, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.33458e-16, 1.15975e-09, 1.872e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.29812e-16, 1.15975e-09, 1.872e-06
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.872e-06
 
 
@@ -381,7 +381,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.06772e+12
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.39284e-16, 3.62082e-06, 0.813545
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.26189e-15, 3.62082e-06, 0.813545
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.813545
 
    Solving temperature system... 0 iterations.
@@ -389,7 +389,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 3.10074e+06, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.39284e-16, 4.83175e-09, 6.20147e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.26189e-15, 4.83175e-09, 6.20147e-07
       Relative nonlinear residual (total system) after nonlinear iteration 2: 6.20147e-07
 
 
@@ -407,7 +407,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.06771e+12
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.31205e-15, 3.71788e-06, 0.813542
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51028e-15, 3.71788e-06, 0.813542
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.813542
 
    Solving temperature system... 0 iterations.
@@ -415,7 +415,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.43161e+06, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.18266e-15, 7.50958e-09, 2.86323e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38388e-15, 7.50958e-09, 2.86323e-07
       Relative nonlinear residual (total system) after nonlinear iteration 2: 2.86323e-07
 
 
@@ -433,7 +433,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.06771e+12
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.28093e-15, 3.79005e-06, 0.813541
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.31205e-15, 3.79005e-06, 0.813541
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.813541
 
    Solving temperature system... 0 iterations.
@@ -441,7 +441,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 2.6708e+06, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.25333e-15, 8.3844e-09, 5.3416e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.44474e-15, 8.3844e-09, 5.3416e-07
       Relative nonlinear residual (total system) after nonlinear iteration 2: 5.3416e-07
 
 
@@ -459,7 +459,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.06771e+12
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.44474e-15, 3.85507e-06, 0.813542
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6086e-15, 3.85507e-06, 0.813542
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.813542
 
    Solving temperature system... 0 iterations.
@@ -467,7 +467,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 1.74328e+06, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51028e-15, 8.06395e-09, 3.48656e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.57992e-15, 8.06395e-09, 3.48656e-07
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.48656e-07
 
 
@@ -485,7 +485,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.06771e+12
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.67415e-15, 3.92039e-06, 0.813543
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.91262e-15, 3.92039e-06, 0.813543
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.813543
 
    Solving temperature system... 0 iterations.
@@ -493,7 +493,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 358438, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64006e-15, 7.48312e-09, 7.16875e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.83804e-15, 7.48312e-09, 7.16875e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 7.16875e-08
 
 
@@ -511,7 +511,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 4.06771e+12
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51955e-15, 1.46266e-06, 0.813543
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.26058e-15, 1.46266e-06, 0.813543
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.813543
 
    Solving temperature system... 0 iterations.
@@ -519,7 +519,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
       Newton system information: Norm of the rhs: 199617, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.34038e-15, 1.6689e-09, 3.99234e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.11884e-15, 1.6689e-09, 3.99234e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.99234e-08
 
 

@@ -41,7 +41,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1 W, 1 W
      Writing graphical output:           output-refinement_switch/solution/solution-00002
 
-*** Timestep 1:  t=0.0246706 seconds, dt=0.0246706 seconds
+*** Timestep 1:  t=0.02467 seconds, dt=0.02467 seconds
    Solving temperature system... 19 iterations.
    Solving heat system ... 14 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.

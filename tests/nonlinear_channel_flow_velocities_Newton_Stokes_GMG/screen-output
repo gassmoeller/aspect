@@ -233,8 +233,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 17+0 iterations.
       Newton system information: Norm of the rhs: 547272, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.51204e-12
-      Relative nonlinear residual (total system) after nonlinear iteration 6: 7.51204e-12
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.51203e-12
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 7.51203e-12
 
 
    Postprocessing:
@@ -265,7 +265,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 17+0 iterations.
-      Newton system information: Norm of the rhs: 927173, Derivative scaling factor: 0
+      Newton system information: Norm of the rhs: 927172, Derivative scaling factor: 0
       Relative nonlinear residuals (temperature, Stokes system): 0, 1.27267e-11
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.27267e-11
 
@@ -298,7 +298,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 17+0 iterations.
-      Newton system information: Norm of the rhs: 779918, Derivative scaling factor: 0
+      Newton system information: Norm of the rhs: 779919, Derivative scaling factor: 0
       Relative nonlinear residuals (temperature, Stokes system): 0, 1.07054e-11
       Relative nonlinear residual (total system) after nonlinear iteration 3: 1.07054e-11
 

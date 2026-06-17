@@ -46,7 +46,7 @@ Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 6:  t=0.375 seconds, dt=0.0625 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system (GMG)... 9+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00006

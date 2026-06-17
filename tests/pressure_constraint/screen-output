@@ -15,7 +15,7 @@ adding constraint idx= 162 to value= 100
      Pressure min/avg/max:               76.12 Pa, 155 Pa, 5000 Pa
      Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
                                          
-Total system matrix memory consumption: 0.02 MB.
+Total system matrix memory consumption: 0.03 MB.
 Total system matrix nnz: 777
 system matrix nnz by block: 
            0           0           0
@@ -37,7 +37,7 @@ adding constraint idx= 162 to value= 100
      Pressure min/avg/max:               153 Pa, 230.7 Pa, 5000 Pa
      Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
                                          
-Total system matrix memory consumption: 0.02 MB.
+Total system matrix memory consumption: 0.03 MB.
 Total system matrix nnz: 777
 system matrix nnz by block: 
            0           0           0

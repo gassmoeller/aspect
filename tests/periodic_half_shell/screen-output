@@ -1,9 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 1,536 (on 5 levels)
 Number of degrees of freedom: 20,756 (12,738+1,649+6,369)
 
@@ -20,7 +15,7 @@ Number of degrees of freedom: 20,756 (12,738+1,649+6,369)
 *** Timestep 1:  t=849443 years, dt=849443 years
    Solving temperature system... 20 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 51+0 iterations.
+   Solving Stokes system (AMG)... 50+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.0808 m/year, 0.1 m/year
@@ -30,7 +25,7 @@ Number of degrees of freedom: 20,756 (12,738+1,649+6,369)
 *** Timestep 2:  t=1e+06 years, dt=150557 years
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 34+0 iterations.
+   Solving Stokes system (AMG)... 32+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.0808 m/year, 0.1 m/year
@@ -40,9 +35,4 @@ Number of degrees of freedom: 20,756 (12,738+1,649+6,369)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

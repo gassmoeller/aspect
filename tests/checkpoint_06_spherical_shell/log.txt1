@@ -20,7 +20,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0103 m/year, 0.0244 m/year
 
-*** Timestep 2:  t=1.38244e+07 years, dt=6.9291e+06 years
+*** Timestep 2:  t=1.38244e+07 years, dt=6.92909e+06 years
    Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 14+0 iterations.
 

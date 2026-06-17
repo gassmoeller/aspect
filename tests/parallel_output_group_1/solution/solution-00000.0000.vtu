@@ -5,6 +5,7 @@
 <VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
 <UnstructuredGrid>
 <FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">0</DataArray>
 <DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">0</DataArray>
 </FieldData>
 <Piece NumberOfPoints="40" NumberOfCells="10" >
@@ -38,6 +39,7 @@ AQAAAKAAAACgAAAAUwAAAA==eAFjcCh2YQDhD8quDA56QAzlg9ggMSA+bKXtytAQ7ir0IwbCBsqB2Aw2
   </PointData>
  </Piece>
 <FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">0</DataArray>
 <DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">0</DataArray>
 </FieldData>
 <Piece NumberOfPoints="40" NumberOfCells="10" >
@@ -60,7 +62,7 @@ AQAAAAoAAAAKAAAACwAAAA==eAHj5IQBAAH5AFs=
   </Cells>
   <PointData Scalars="scalars">
     <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary" units="m/year">
-AQAAAOABAADgAQAApgAAAA==eAHTvtG/N1T1py0DEDAtvK4HxOtA7J8RhrY7uWfuBrHj2WP3xgExiI2sBqRPG6gfXc0BoD6QfpA4sjlTPx3eY3lACaze9baa7Trp/WB2cHf17gue28BsZDXI9iKrudsQuxeEQebjMgckhw3gMgebWpAYshssgG6fBvQDSBzZDSC3hwP9ABJHVoMcDshq1gP97Qb0Pz5zQHLYAC5zsKkFiQEAZe2GaQ==
+AQAAAOABAADgAQAApgAAAA==eAHTvtG/N1T1py0DEDRMvK4HxOtA7J8RhrY7uWfuBrHj2WP3xgExiI2sBqRPG6gfXc0BoD6QfpA4sjlTPx3eY3lACaze9baa7Trp/WB2cHf17gue28BsZDXI9iKrudsQuxeEQebjMgckhw3gMgebWpAYshssgG6fBvQDSBzZDSC3hwP9ABJHVoMcDshq1gP97Qb0Pz5zQHLYAC5zsKkFiQEAaFqIIQ==
     </DataArray>
     <DataArray type="Float32" Name="p" format="binary" units="Pa">
 AQAAAKAAAACgAAAAYAAAAA==eAE7xcB+5skv1bM+AiqBubIqgSD2KaAYiA0SA+E7YiqBJ74UBPJYFYLZIDkQuzekEC5+Wn1+YGn2fLg4iP2ufT7YTJB+kFqYfpCZIDbITJg4SC1MP0gcxAaZCQAyEz5F
@@ -71,6 +73,7 @@ AQAAAKAAAACgAAAAVQAAAA==eAFjcCh2YQDhD8quDAskXcFsEB/EBokBse1SGVeGhnDXd+xBEDZQDsRm
   </PointData>
  </Piece>
 <FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">0</DataArray>
 <DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">0</DataArray>
 </FieldData>
 <Piece NumberOfPoints="40" NumberOfCells="10" >

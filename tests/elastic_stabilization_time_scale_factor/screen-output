@@ -17,7 +17,7 @@ Number of mesh deformation degrees of freedom: 1,230
    Solving inclusion system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 35+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.05549e-17, 0, 0, 0, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.90355e-17, 0, 0, 0, 0, 0, 0, 0, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
@@ -27,11 +27,11 @@ Number of mesh deformation degrees of freedom: 1,230
    Skipping ve_stress_xx_old composition solve because RHS is zero.
    Skipping ve_stress_yy_old composition solve because RHS is zero.
    Skipping ve_stress_xy_old composition solve because RHS is zero.
-   Solving plate system ... 2 iterations.
+   Solving plate system ... 1 iterations.
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.65678e-17, 0, 0, 0, 0, 0, 0, 0, 0, 7.39828e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.73373e-17, 0, 0, 0, 0, 0, 0, 0, 0, 7.39828e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 7.39828e-08
 
 
@@ -54,7 +54,7 @@ Number of mesh deformation degrees of freedom: 1,230
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 43+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.60481e-16, 0.00425047, 0.00461316, 0.00532667, 0, 0, 0, 0, 0, 2.41259
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5002e-16, 0.00425047, 0.00461316, 0.00532667, 0, 0, 0, 0, 0, 2.41259
       Relative nonlinear residual (total system) after nonlinear iteration 1: 2.41259
 
    Solving temperature system... 0 iterations.
@@ -68,7 +68,7 @@ Number of mesh deformation degrees of freedom: 1,230
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 37+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.45306e-16, 0.0021846, 0.0021883, 0.00129147, 0, 0, 0, 0, 0, 2.20399
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39328e-16, 0.0021846, 0.0021883, 0.00129147, 0, 0, 0, 0, 0, 2.20399
       Relative nonlinear residual (total system) after nonlinear iteration 2: 2.20399
 
    Solving temperature system... 0 iterations.
@@ -82,7 +82,7 @@ Number of mesh deformation degrees of freedom: 1,230
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.42077e-16, 0.000362164, 0.000387358, 0.00033779, 0, 0, 0, 0, 0, 0.303825
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.30144e-16, 0.000362164, 0.000387358, 0.00033779, 0, 0, 0, 0, 0, 0.303825
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.303825
 
    Solving temperature system... 0 iterations.
@@ -96,7 +96,7 @@ Number of mesh deformation degrees of freedom: 1,230
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.56825e-16, 2.3369e-05, 2.92412e-05, 4.33509e-05, 0, 0, 0, 0, 0, 0.000152582
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.49762e-16, 2.3369e-05, 2.92412e-05, 4.33509e-05, 0, 0, 0, 0, 0, 0.000152582
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000152582
 
    Solving temperature system... 0 iterations.
@@ -110,7 +110,7 @@ Number of mesh deformation degrees of freedom: 1,230
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.60722e-16, 3.46913e-08, 3.22834e-08, 2.42197e-08, 0, 0, 0, 0, 0, 1.46991e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39328e-16, 3.46913e-08, 3.22834e-08, 2.42197e-08, 0, 0, 0, 0, 0, 1.46991e-07
       Relative nonlinear residual (total system) after nonlinear iteration 5: 1.46991e-07
 
 
