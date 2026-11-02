@@ -135,7 +135,7 @@ namespace aspect
 #ifndef ASPECT_USE_TPETRA
       TrilinosWrappers::SolverDirect solver(cn);
 #else
-      dealii::LinearAlgebra::TpetraWrappers::SolverDirectKLU2<double> solver(cn);
+      dealii::LinearAlgebra::TpetraWrappers::SolverDirectKLU2<double, MemorySpace::Default> solver(cn);
 #endif
 
       try

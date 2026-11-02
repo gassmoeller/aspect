@@ -42,6 +42,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <deal.II/lac/trilinos_tpetra_block_vector.h>
 #include <deal.II/lac/trilinos_tpetra_sparse_matrix.h>
 #include <deal.II/lac/trilinos_tpetra_block_sparse_matrix.h>
+#include <deal.II/lac/trilinos_tpetra_block_sparse_matrix.templates.h>
 #else
 #include <deal.II/lac/trilinos_sparse_matrix.h>
 #include <deal.II/lac/trilinos_block_sparse_matrix.h>
@@ -270,24 +271,24 @@ namespace aspect
     /**
      * Typedef for the vector type used.
      */
-    using Vector = dealii::LinearAlgebra::TpetraWrappers::Vector<double>;
+    using Vector = dealii::LinearAlgebra::TpetraWrappers::Vector<double, MemorySpace::Default>;
 
     /**
      * Typedef for the type used to describe vectors that consist of multiple
      * blocks.
      */
-    using BlockVector = dealii::LinearAlgebra::TpetraWrappers::BlockVector<double>;
+    using BlockVector = dealii::LinearAlgebra::TpetraWrappers::BlockVector<double, MemorySpace::Default>;
 
     /**
      * Typedef for the sparse matrix type used.
      */
-    using SparseMatrix = dealii::LinearAlgebra::TpetraWrappers::SparseMatrix<double>;
+    using SparseMatrix = dealii::LinearAlgebra::TpetraWrappers::SparseMatrix<double, MemorySpace::Default>;
 
     /**
      * Typedef for the type used to describe sparse matrices that consist of
      * multiple blocks.
      */
-    using BlockSparseMatrix = dealii::LinearAlgebra::TpetraWrappers::BlockSparseMatrix<double>;
+    using BlockSparseMatrix = dealii::LinearAlgebra::TpetraWrappers::BlockSparseMatrix<double, MemorySpace::Default>;
 #else
     /**
      * Typedef for the vector type used.

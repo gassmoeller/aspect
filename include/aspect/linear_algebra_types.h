@@ -50,25 +50,25 @@ namespace aspect
     /**
      * Typedef for the base class for all preconditioners.
      */
-    using PreconditionBase = dealii::LinearAlgebra::TpetraWrappers::PreconditionBase<double>;
+    using PreconditionBase = dealii::LinearAlgebra::TpetraWrappers::PreconditionBase<double, MemorySpace::Default>;
 
     /**
      * Typedef for the AMG preconditioner type used for the top left block of
      * the Stokes matrix.
      */
-    using PreconditionAMG = dealii::LinearAlgebra::TpetraWrappers::PreconditionAMGMueLu<double>;
+    using PreconditionAMG = dealii::LinearAlgebra::TpetraWrappers::PreconditionAMGMueLu<double, MemorySpace::Default>;
 
     /**
      * Typedef for the Incomplete LU decomposition preconditioner used for
      * other blocks of the system matrix.
      */
-    using PreconditionILU = dealii::LinearAlgebra::TpetraWrappers::PreconditionILU<double>;
+    using PreconditionILU = dealii::LinearAlgebra::TpetraWrappers::PreconditionILU<double, MemorySpace::Default>;
 
     /**
      * Typedef for the Jacobi preconditioner used for free surface velocity
      * projection.
      */
-    using PreconditionJacobi = dealii::LinearAlgebra::TpetraWrappers::PreconditionJacobi<double>;
+    using PreconditionJacobi = dealii::LinearAlgebra::TpetraWrappers::PreconditionJacobi<double, MemorySpace::Default>;
 #else
     /**
      * Typedef for the base class for all preconditioners.
