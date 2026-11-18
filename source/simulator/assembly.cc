@@ -602,7 +602,9 @@ namespace aspect
           = dynamic_cast<LinearAlgebra::PreconditionAMG *> (Mp_preconditioner.get());
         Mp_preconditioner_AMG->initialize (system_preconditioner_matrix.block(1,1), Amg_data);
       }
-
+#ifdef ASPECT_USE_TPETRA_GPU
+    Amg_data.additional_parameters.set("tentative: calculate qr", false);
+#endif
     if (parameters.use_full_A_block_preconditioner)
       Amg_preconditioner->initialize (system_matrix.block(0,0),
                                       Amg_data);
