@@ -387,10 +387,6 @@ endif()
 # WorldBuilder
 set(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "Whether to enable compiling aspect with the Geodynamic World Builder.")
 
-if (ASPECT_WITH_WORLD_BUILDER AND ASPECT_USE_TPETRA_GPU)
-  message(SEND_ERROR "World Builder is currently not supported with TPETRA with GPU support due to a compiler incompatibility.")
-endif()
-
 message(STATUS "Using ASPECT_WITH_WORLD_BUILDER = '${ASPECT_WITH_WORLD_BUILDER}'")
 if(ASPECT_WITH_WORLD_BUILDER)
   # Check whether we can find the WorldBuilder.
