@@ -20,6 +20,7 @@
 
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/solver_cg.h>
+#include <deal.II/lac/solver_idr.h>
 
 namespace aspect
 {
@@ -603,6 +604,162 @@ namespace aspect
               inverse_velocity_block_expensive,
               *schur,
               system_matrix.block(0,1));
+
+
+
+
+      // Time vmult of different matrix-free operators, solver IDR with the cheap preconditioner, and
+      // solver GMRES with the cheap preconditioner. Each timing is repeated 10 times, and the
+      // function may be called a couple of times within each timing, depending on the argument repeats.
+      constexpr bool do_timings = true;
+      if (do_timings)
+        {
+          const int n_timings = 10;
+          Timer timer(this->get_mpi_communicator());
+
+          auto time_this = [&](const char *name, int repeats, const std::function<void()> &body, const std::function<void()> &prepare)
+          {
+            this->get_pcout() << "Timing " << name << ' ' << n_timings << " time(s) and repeat "
+                              << repeats << " time(s) within each timing:" << std::endl;
+
+            body(); // warm up
+
+            double average_time = 0.;
+
+            for (int i=0; i<n_timings; ++i)
+              {
+                prepare();
+                this->get_pcout() << "\t..." << std::flush;
+                timer.restart();
+
+                for (int r=0; r<repeats; ++r)
+                  body();
+
+                timer.stop();
+                double time = timer.wall_time();
+                const double average_time_per_timing = time/repeats;
+                this->get_pcout() << average_time_per_timing << std::endl;
+                average_time += average_time_per_timing;
+              }
+
+            this->get_pcout() << "\taverage wall time of all: "<< average_time/n_timings << " seconds" << std::endl;
+
+          };
+
+          // stokes vmult
+          {
+            LinearAlgebra::BlockVector tmp_dst = distributed_stokes_solution;
+            LinearAlgebra::BlockVector tmp_src = distributed_stokes_rhs;
+            time_this("stokes_vmult", 10,
+                      [&] ()
+            {
+              stokes_block.vmult(tmp_dst, tmp_src);
+            },
+            [&] ()
+            {
+              tmp_src = tmp_dst;
+            }
+                     );
+          }
+
+          // stokes preconditioner
+          {
+            LinearAlgebra::BlockVector tmp_dst = distributed_stokes_solution;
+            LinearAlgebra::BlockVector tmp_src = distributed_stokes_rhs;
+            time_this("stokes_preconditioner", 1,
+                      [&] ()
+            {
+              preconditioner_cheap.vmult(tmp_dst, tmp_src);
+            },
+            [&] ()
+            {
+              tmp_src = tmp_dst;
+            }
+                     );
+          }
+          // A preconditioner
+          {
+            LinearAlgebra::BlockVector tmp_dst = distributed_stokes_solution;
+            LinearAlgebra::BlockVector tmp_src = distributed_stokes_rhs;
+            time_this("A_preconditioner", 1,
+                      [&] ()
+            {
+              inverse_velocity_block_cheap.vmult(tmp_dst.block(0), tmp_src.block(0));
+            },
+            [&] ()
+            {
+              tmp_src = tmp_dst;
+            }
+                     );
+          }
+          // S preconditioner
+          {
+            LinearAlgebra::BlockVector tmp_dst = distributed_stokes_solution;
+            LinearAlgebra::BlockVector tmp_src = distributed_stokes_rhs;
+            time_this("S_preconditioner", 5,
+                      [&] ()
+            {
+              schur->vmult(tmp_dst.block(1), tmp_src.block(1));
+            },
+            [&] ()
+            {
+              tmp_src = tmp_dst;
+            }
+                     );
+          }
+          // Solve
+          {
+            // hard-code the number of iterations here to always do cheap iterations
+            SolverControl solver_control_cheap (1000, solver_tolerance, true);
+
+            LinearAlgebra::BlockVector tmp_dst = distributed_stokes_solution;
+            LinearAlgebra::BlockVector tmp_src = distributed_stokes_rhs;
+            // time_this("Stokes_solve_cheap_idr", 1,
+            //           [&]
+            // {
+            //   SolverIDR<LinearAlgebra::BlockVector>
+            //   solver(solver_control_cheap, mem,
+            //   SolverIDR<LinearAlgebra::BlockVector>::
+            //   AdditionalData(this->get_parameters().idr_s_parameter));
+
+            //   solver.solve (stokes_block,
+            //   tmp_dst,
+            //   tmp_src,
+            //   preconditioner_cheap);
+            // },
+            // [&] ()
+            // {
+            //   tmp_dst = distributed_stokes_solution;
+            // }
+            //          );
+
+          SolverFGMRES<LinearAlgebra::BlockVector>
+          solver(solver_control_cheap, mem,
+                 SolverFGMRES<LinearAlgebra::BlockVector>::
+                 AdditionalData(this->get_parameters().stokes_gmres_restart_length));
+
+            time_this("Stokes_solve_cheap_gmres", 1,
+                      [&]
+            {
+              SolverGMRES<LinearAlgebra::BlockVector>
+              solver(solver_control_cheap, mem,
+              SolverGMRES<LinearAlgebra::BlockVector>::
+              AdditionalData(this->get_parameters().stokes_gmres_restart_length+2,
+              true));
+
+              solver.solve (stokes_block,
+              tmp_dst,
+              tmp_src,
+              preconditioner_cheap);
+            },
+            [&] ()
+            {
+              tmp_dst = distributed_stokes_solution;
+            }
+                     );
+          }
+        }
+
       // step 1a: try if the simple and fast solver
       // succeeds in n_cheap_stokes_solver_steps steps or less.
       try
