@@ -1511,7 +1511,7 @@ namespace ApprovalTests
         verifyAll(const std::string& header,
                   const Iterator& start,
                   const Iterator& finish,
-                  std::function<void(decltype(*start), std::ostream&)> converter,
+                  std::function<void(decltype(*std::declval<const Iterator&>()), std::ostream&)> converter,
                   const Options& options = Options())
         {
             std::stringstream s;
