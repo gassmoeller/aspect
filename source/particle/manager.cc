@@ -949,8 +949,6 @@ namespace aspect
     void
     Manager<dim>::update_particles()
     {
-      // TODO: Change this loop over all cells to use the WorkStream interface
-
       if (property_manager->get_n_property_components() > 0)
         {
           this->get_computing_timer().enter_subsection("Particles: Update properties");
@@ -962,15 +960,49 @@ namespace aspect
 
           PropertyUpdateScratchData scratch_data(*this, property_manager->get_update_flags());
 
-          // Loop over all cells and update the particles cell-wise
-          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-            if (cell->is_locally_owned())
-              {
-                // Only update particles if there are any in this cell
-                if (particle_handler->n_particles_in_cell(cell) > 0)
-                  local_update_particles(cell, scratch_data);
+          // Workers modify only the properties of their cell's particles.
+          // Particle storage is not resized or sorted, and no results need
+          // to be passed to a copier.
+          struct CopyData {};
+          const auto worker = [this](const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                     PropertyUpdateScratchData &scratch_data,
+                                     CopyData &)
+          {
+            if (cell->is_locally_owned() && particle_handler->n_particles_in_cell(cell) > 0)
+              local_update_particles(cell, scratch_data);
+          };
 
-              }
+#ifdef ASPECT_USE_TPETRA
+          if (MultithreadInfo::n_threads() > 1)
+            {
+              // Prepare lazy Tpetra vector-read caches before workers start.
+              // Property plugins may also evaluate material models that read
+              // the old solution or the current linearization point. Reading
+              // one cell initializes every block because all cells use the
+              // same finite element.
+              for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+                if (cell->is_locally_owned())
+                  {
+                    cell->get_dof_values(this->get_solution(),
+                                         scratch_data.solution_values.begin(),
+                                         scratch_data.solution_values.end());
+                    cell->get_dof_values(this->get_old_solution(),
+                                         scratch_data.solution_values.begin(),
+                                         scratch_data.solution_values.end());
+                    cell->get_dof_values(this->get_current_linearization_point(),
+                                         scratch_data.solution_values.begin(),
+                                         scratch_data.solution_values.end());
+                    break;
+                  }
+            }
+#endif
+
+          WorkStream::run(this->get_dof_handler().begin_active(),
+                          this->get_dof_handler().end(),
+                          worker,
+                          std::function<void(const CopyData &)>(),
+                          scratch_data,
+                          CopyData());
 
           this->get_computing_timer().leave_subsection("Particles: Update properties");
         }
