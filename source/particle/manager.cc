@@ -688,38 +688,79 @@ namespace aspect
 
 
     template <int dim>
-    void
-    Manager<dim>::local_update_particles(Property::ParticleUpdateInputs<dim> &inputs,
-                                         small_vector<Point<dim>> &positions,
-                                         const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags,
-                                         SolutionEvaluator<dim> &evaluator)
+    Manager<dim>::PropertyUpdateScratchData::PropertyUpdateScratchData(const SimulatorAccess<dim> &simulator,
+                                                                       const std::vector<UpdateFlags> &update_flags)
+      : simulator(simulator),
+        mapping_flags(update_default),
+        evaluation_flags(update_flags.size(), EvaluationFlags::nothing),
+        evaluation_flags_union(EvaluationFlags::nothing),
+        solution_values(simulator.get_fe().dofs_per_cell)
     {
-      const unsigned int n_particles = particle_handler->n_particles_in_cell(inputs.current_cell);
-
-      typename ParticleHandler<dim>::particle_iterator_range particles = particle_handler->particles_in_cell(inputs.current_cell);
-
-      positions.resize(n_particles);
-      unsigned int p = 0;
-      for (const auto &particle : particles)
+      // FEPointEvaluation uses different evaluation flags than the common
+      // UpdateFlags. Translate them and combine the mapping flags once.
+      for (unsigned int i=0; i<update_flags.size(); ++i)
         {
-          positions[p] = particle.get_reference_location();
-          ++p;
+          mapping_flags |= update_flags[i];
+
+          if (update_flags[i] & update_values)
+            evaluation_flags[i] |= EvaluationFlags::values;
+
+          if (update_flags[i] & update_gradients)
+            evaluation_flags[i] |= EvaluationFlags::gradients;
+
+          evaluation_flags_union |= evaluation_flags[i];
         }
 
-      small_vector<double> solution_values(this->get_fe().dofs_per_cell);
+      evaluator = construct_solution_evaluator(simulator, mapping_flags);
+    }
 
-      inputs.current_cell->get_dof_values(this->get_solution(),
-                                          solution_values.begin(),
-                                          solution_values.end());
 
-      EvaluationFlags::EvaluationFlags evaluation_flags_union = EvaluationFlags::nothing;
-      for (const auto &flag : evaluation_flags)
-        evaluation_flags_union |= flag;
+
+    template <int dim>
+    Manager<dim>::PropertyUpdateScratchData::PropertyUpdateScratchData(const PropertyUpdateScratchData &scratch_data)
+      : simulator(scratch_data.simulator),
+        mapping_flags(scratch_data.mapping_flags),
+        evaluation_flags(scratch_data.evaluation_flags),
+        evaluation_flags_union(scratch_data.evaluation_flags_union),
+        evaluator(construct_solution_evaluator(simulator, mapping_flags)),
+        solution_values(simulator.get_fe().dofs_per_cell)
+    {}
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                         PropertyUpdateScratchData &scratch_data)
+    {
+      auto &inputs = scratch_data.inputs;
+      inputs.current_cell = cell;
+
+      const unsigned int n_particles = particle_handler->n_particles_in_cell(cell);
+      typename ParticleHandler<dim>::particle_iterator_range particles = particle_handler->particles_in_cell(cell);
+
+      auto &evaluator = *scratch_data.evaluator;
+      const auto &evaluation_flags = scratch_data.evaluation_flags;
+      const auto evaluation_flags_union = scratch_data.evaluation_flags_union;
 
       if (evaluation_flags_union & (EvaluationFlags::values | EvaluationFlags::gradients))
         {
+          auto &positions = scratch_data.positions;
+          positions.resize(n_particles);
+          unsigned int p = 0;
+          for (const auto &particle : particles)
+            {
+              positions[p] = particle.get_reference_location();
+              ++p;
+            }
+
+          auto &solution_values = scratch_data.solution_values;
+          cell->get_dof_values(this->get_solution(),
+                               solution_values.begin(),
+                               solution_values.end());
+
           // Reinitialize and evaluate the requested solution values and gradients
-          evaluator.reinit(inputs.current_cell,
+          evaluator.reinit(cell,
           {positions.data(), positions.size()});
 
           evaluator.evaluate({solution_values.data(),solution_values.size()},
@@ -919,32 +960,7 @@ namespace aspect
                             "of the class FEPointEvaluation. The mapping currently in use does not support this path. "
                             "It is safe to uncomment this assertion, but you can expect a performance penalty."));
 
-          const std::vector<UpdateFlags> update_flags = property_manager->get_update_flags();
-
-          // combine all update flags to a single flag, which is the required information
-          // for the mapping inside the solution evaluator
-          UpdateFlags mapping_flags = update_flags[0];
-          for (unsigned int i=1; i<update_flags.size(); ++i)
-            mapping_flags |= update_flags[i];
-
-          std::unique_ptr<SolutionEvaluator<dim>> evaluator = construct_solution_evaluator(*this,
-                                                               mapping_flags);
-
-          // FEPointEvaluation uses different evaluation flags than the common UpdateFlags.
-          // Translate between the two.
-          std::vector<EvaluationFlags::EvaluationFlags> evaluation_flags (update_flags.size(), EvaluationFlags::nothing);
-
-          for (unsigned int i=0; i<update_flags.size(); ++i)
-            {
-              if (update_flags[i] & update_values)
-                evaluation_flags[i] |= EvaluationFlags::values;
-
-              if (update_flags[i] & update_gradients)
-                evaluation_flags[i] |= EvaluationFlags::gradients;
-            }
-
-          Property::ParticleUpdateInputs<dim> inputs;
-          small_vector<Point<dim>> positions;
+          PropertyUpdateScratchData scratch_data(*this, property_manager->get_update_flags());
 
           // Loop over all cells and update the particles cell-wise
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -952,13 +968,7 @@ namespace aspect
               {
                 // Only update particles if there are any in this cell
                 if (particle_handler->n_particles_in_cell(cell) > 0)
-                  {
-                    inputs.current_cell = cell;
-                    local_update_particles(inputs,
-                                           positions,
-                                           evaluation_flags,
-                                           *evaluator);
-                  }
+                  local_update_particles(cell, scratch_data);
 
               }
 

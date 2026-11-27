@@ -510,20 +510,73 @@ namespace aspect
                                    const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
         /**
+         * Scratch data for evaluating the solution and updating particle
+         * properties on one cell. Copies have independent evaluators and
+         * temporary buffers.
+         */
+        struct PropertyUpdateScratchData
+        {
+          /**
+           * Constructor. Translate the per-component update flags into the
+           * flags required by the mapping and solution evaluator.
+           */
+          PropertyUpdateScratchData(const SimulatorAccess<dim> &simulator,
+                                    const std::vector<UpdateFlags> &update_flags);
+
+          /**
+           * Copy constructor. Reconstruct the evaluator without copying any
+           * cell-specific state.
+           */
+          PropertyUpdateScratchData(const PropertyUpdateScratchData &scratch_data);
+
+          /**
+           * Simulator access used to construct an independent evaluator when
+           * copying this scratch object.
+           */
+          const SimulatorAccess<dim> &simulator;
+
+          /**
+           * Combined update flags required by the evaluator's mapping.
+           */
+          UpdateFlags mapping_flags;
+
+          /**
+           * Evaluation flags for each solution component and their union.
+           */
+          std::vector<EvaluationFlags::EvaluationFlags> evaluation_flags;
+          EvaluationFlags::EvaluationFlags evaluation_flags_union;
+
+          /**
+           * Evaluator with its own mapping information and evaluation buffers.
+           */
+          std::unique_ptr<SolutionEvaluator<dim>> evaluator;
+
+          /**
+           * Cell and evaluated solution data passed to the property plugins.
+           */
+          Property::ParticleUpdateInputs<dim> inputs;
+
+          /**
+           * Reference positions of the particles in the current cell.
+           */
+          small_vector<Point<dim>> positions;
+
+          /**
+           * Cell-local solution values, reused across cells.
+           */
+          small_vector<double> solution_values;
+        };
+
+        /**
          * Update the particle properties of one cell.
          *
-         * @param inputs The input data required for the particle update. This
-         * function will fill this structure with the necessary data.
-         * @param positions The reference positions of the particles in the cell.
-         * This function will update these positions for the current cell.
-         * @param evaluation_flags The required evaluation flags for each component.
-         * @param evaluator The solution evaluator that is used to update the particles.
+         * @param cell The cell whose particles are updated.
+         * @param scratch_data The evaluator, input data, and temporary buffers,
+         * reused across cells.
          */
         void
-        local_update_particles(Property::ParticleUpdateInputs<dim> &inputs,
-                               small_vector<Point<dim>> &positions,
-                               const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags,
-                               SolutionEvaluator<dim> &evaluator);
+        local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                               PropertyUpdateScratchData &scratch_data);
 
         /**
         * Scratch data for evaluating velocities and advecting particles on
