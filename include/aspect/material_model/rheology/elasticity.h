@@ -19,6 +19,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 
+#include <deal.II/base/thread_local_storage.h>
 #include <deal.II/matrix_free/fe_point_evaluation.h>
 
 namespace aspect
@@ -307,11 +308,11 @@ namespace aspect
            * We cache the evaluators that are necessary to evaluate the velocity
            * gradients and the old compositions. They are required to compute the elastic stresses,
            * but are not provided by the material model.
-           * By caching the evaluators, we can avoid recreating them every time we need them.
+           * Each thread caches its own evaluators to avoid recreating them on every call.
            */
-          mutable std::unique_ptr<FEPointEvaluation<dim, dim>> evaluator;
+          mutable Threads::ThreadLocalStorage<std::unique_ptr<FEPointEvaluation<dim, dim>>> evaluator_storage;
           static constexpr unsigned int n_independent_components = SymmetricTensor<2, dim>::n_independent_components;
-          mutable std::unique_ptr<FEPointEvaluation<n_independent_components, dim>> evaluator_composition;
+          mutable Threads::ThreadLocalStorage<std::unique_ptr<FEPointEvaluation<n_independent_components, dim>>> evaluator_composition_storage;
 
       };
     }

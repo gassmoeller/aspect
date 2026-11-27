@@ -28,8 +28,7 @@ namespace aspect
       template <int dim>
       ViscoPlasticStrainInvariant<dim>::ViscoPlasticStrainInvariant ()
         :
-        n_components(0),
-        material_inputs(0,0)
+        n_components(0)
       {}
 
 
@@ -44,7 +43,6 @@ namespace aspect
                                "with the visco_plastic material model."));
 
         n_components = 0;
-        material_inputs.resize (1,this->n_compositional_fields());
 
         // Find out which fields are used.
         if (this->introspection().compositional_name_exists("plastic_strain"))
@@ -95,6 +93,13 @@ namespace aspect
       ViscoPlasticStrainInvariant<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
                                                                    typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
+        const typename Utilities::ScratchSpace<internal::MaterialModelScratchData<dim>>::ScopedScratchObject
+        scratch_object(material_model_scratch);
+        auto &scratch = static_cast<internal::MaterialModelScratchData<dim> &>(scratch_object);
+        auto &material_inputs = scratch.inputs;
+
+        material_inputs.resize(1, this->n_compositional_fields());
+
         // Find out plastic yielding by calling function in material model.
         const MaterialModel::ViscoPlastic<dim> &viscoplastic
           = MaterialModel::get_material_model_matches_or_uses<const MaterialModel::ViscoPlastic<dim>, dim>

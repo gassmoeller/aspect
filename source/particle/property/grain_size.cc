@@ -23,11 +23,7 @@ namespace aspect
     namespace Property
     {
       template <int dim>
-      GrainSize<dim>::GrainSize ()
-        :
-        material_inputs(0,0),
-        material_outputs(0,0)
-      {}
+      GrainSize<dim>::GrainSize () = default;
 
 
 
@@ -62,6 +58,12 @@ namespace aspect
       GrainSize<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
                                                  typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
+        const typename Utilities::ScratchSpace<internal::MaterialModelScratchData<dim>>::ScopedScratchObject
+        scratch_object(material_model_scratch);
+        auto &scratch = static_cast<internal::MaterialModelScratchData<dim> &>(scratch_object);
+        auto &material_inputs = scratch.inputs;
+        auto &material_outputs = scratch.outputs;
+
         material_inputs.resize(inputs.solution.size(), this->n_compositional_fields());
         material_outputs.resize(inputs.solution.size(), this->n_compositional_fields());
         material_inputs.requested_properties = MaterialModel::MaterialProperties::reaction_terms;

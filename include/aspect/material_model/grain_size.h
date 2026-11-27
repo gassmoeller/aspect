@@ -23,6 +23,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 
+#include <deal.II/base/thread_local_storage.h>
 #include <deal.II/matrix_free/fe_point_evaluation.h>
 
 #include <array>
@@ -427,10 +428,10 @@ namespace aspect
          * We cache the evaluators that are necessary to evaluate the temperature
          * and pressure at the vertices of the current cell.
          * By caching the evaluators, we can avoid recreating them
-         * every time we need them.
+         * every time we need them. Each thread has independent evaluators.
          */
-        mutable std::unique_ptr<FEPointEvaluation<1, dim>> temperature_evaluator;
-        mutable std::unique_ptr<FEPointEvaluation<1, dim>> pressure_evaluator;
+        mutable Threads::ThreadLocalStorage<std::unique_ptr<FEPointEvaluation<1, dim>>> temperature_evaluator_storage;
+        mutable Threads::ThreadLocalStorage<std::unique_ptr<FEPointEvaluation<1, dim>>> pressure_evaluator_storage;
 
         /*
          * Object for computing plastic stresses, viscosities, and additional outputs,

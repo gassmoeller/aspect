@@ -439,9 +439,8 @@ namespace aspect
         // keep leaking.
         this->get_signals().start_timestep.connect([&](const SimulatorAccess<dim> &)
         {
-          evaluator.reset();
-          for (auto &composition_evaluator : composition_evaluators)
-            composition_evaluator.reset();
+          evaluator_storage.clear();
+          composition_evaluators_storage.clear();
         });
 #endif
       }
@@ -685,6 +684,8 @@ namespace aspect
                                             old_solution_values.begin(),
                                             old_solution_values.end());
 
+            auto &composition_evaluators = composition_evaluators_storage.get();
+
             // If we have not been here before, create one evaluator for each compositional field
             if (composition_evaluators.size() == 0)
               composition_evaluators.resize(this->n_compositional_fields());
@@ -819,6 +820,7 @@ namespace aspect
                                             solution_values.end());
 
             // Only create the evaluator the first time we get here
+            auto &evaluator = evaluator_storage.get();
             if (!evaluator)
               evaluator = std::make_unique<FEPointEvaluation<dim, dim>>(this->get_mapping(),
                                                                          this->get_fe(),

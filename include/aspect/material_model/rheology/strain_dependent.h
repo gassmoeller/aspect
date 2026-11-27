@@ -20,6 +20,7 @@
 #include <aspect/simulator_access.h>
 
 #include<deal.II/fe/component_mask.h>
+#include <deal.II/base/thread_local_storage.h>
 #include <deal.II/matrix_free/fe_point_evaluation.h>
 
 namespace aspect
@@ -282,11 +283,11 @@ namespace aspect
           /**
            * We cache the evaluators that are necessary to evaluate the velocity
            * gradients and compositions.
-           * By caching the evaluator, we can avoid recreating them
-           * every time we need it.
+           * Each thread caches its own evaluators to avoid recreating them
+           * on every call.
            */
-          mutable std::unique_ptr<FEPointEvaluation<dim, dim>> evaluator;
-          mutable std::vector<std::unique_ptr<FEPointEvaluation<1, dim>>> composition_evaluators;
+          mutable Threads::ThreadLocalStorage<std::unique_ptr<FEPointEvaluation<dim, dim>>> evaluator_storage;
+          mutable Threads::ThreadLocalStorage<std::vector<std::unique_ptr<FEPointEvaluation<1, dim>>>> composition_evaluators_storage;
       };
     }
   }

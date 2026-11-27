@@ -35,8 +35,7 @@ namespace aspect
 
       template <int dim>
       void
-      CompositionReaction<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &/*inputs*/,
-                                                           typename ParticleHandler<dim>::particle_iterator_range &particles) const
+      CompositionReaction<dim>::update()
       {
         // we get time passed as seconds (always) but may want
         // to reinterpret it in years
@@ -44,6 +43,15 @@ namespace aspect
           reaction_rate->set_time (this->get_time() / year_in_seconds);
         else
           reaction_rate->set_time (this->get_time());
+      }
+
+
+
+      template <int dim>
+      void
+      CompositionReaction<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &/*inputs*/,
+                                                           typename ParticleHandler<dim>::particle_iterator_range &particles) const
+      {
 
         // Check if any reaction occurs during the current time step.
         const unsigned int n_reactions = reactant_indices.size();

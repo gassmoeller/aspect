@@ -366,6 +366,13 @@ namespace aspect
            * therefore derived plugins that do not require an update do not
            * need to implement this function.
            *
+           * This function must be thread-safe: calls for different cells may
+           * run concurrently on the same plugin object. Only modify particles
+           * in the supplied range and use local or thread-local temporary data.
+           * Prepare shared state in update(), which runs serially at the
+           * beginning of each time step. Plugins are called in their configured
+           * order for each cell.
+           *
            * @param [in] inputs A struct of type ParticleUpdateInputs that contains
            * all necessary inputs to compute the particle updates. See
            * the documentation of this struct in
@@ -409,6 +416,8 @@ namespace aspect
            * @deprecated This version of the function is deprecated.
            * Use update_particle_properties() instead, which allows to
            * update all particles of a cell in one function call.
+           * Like that function, implementations must be thread-safe because
+           * calls for particles in different cells may run concurrently.
            */
           DEAL_II_DEPRECATED
           virtual

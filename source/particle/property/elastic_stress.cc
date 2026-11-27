@@ -29,8 +29,6 @@ namespace aspect
       template <int dim>
       ElasticStress<dim>::ElasticStress ()
         :
-        material_inputs(0,0),
-        material_outputs(0,0),
         material_inputs_cell(0,0),
         material_outputs_cell(0,0)
       {}
@@ -56,12 +54,6 @@ namespace aspect
         const auto &manager = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
         AssertThrow(!manager.plugin_name_exists("composition"),
                     ExcMessage("The 'elastic stress' plugin cannot be used in combination with the 'composition' plugin."));
-
-        material_inputs.resize (1, this->n_compositional_fields());
-
-        material_outputs.resize (1, this->n_compositional_fields(), true);
-
-        material_inputs.requested_properties = MaterialModel::MaterialProperties::reaction_terms;
 
         // Get the indices of those compositions that correspond to stress tensor elements.
         stress_field_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
@@ -320,6 +312,16 @@ namespace aspect
       ElasticStress<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
                                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
+        const typename Utilities::ScratchSpace<internal::MaterialModelScratchData<dim>>::ScopedScratchObject
+        scratch_object(material_model_scratch);
+        auto &scratch = static_cast<internal::MaterialModelScratchData<dim> &>(scratch_object);
+        auto &material_inputs = scratch.inputs;
+        auto &material_outputs = scratch.outputs;
+
+        material_inputs.resize(1, this->n_compositional_fields());
+        material_outputs.resize(1, this->n_compositional_fields(), true);
+        material_inputs.requested_properties = MaterialModel::MaterialProperties::reaction_terms;
+
         const unsigned int n_total_stress_components = stress_field_indices.size();
 
         unsigned int p = 0;

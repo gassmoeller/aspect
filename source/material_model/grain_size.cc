@@ -443,7 +443,10 @@ namespace aspect
                                           solution_values.begin(),
                                           solution_values.end());
 
-          // Only create the evaluator the first time we get here
+          auto &temperature_evaluator = temperature_evaluator_storage.get();
+          auto &pressure_evaluator = pressure_evaluator_storage.get();
+
+          // Only create the evaluators the first time this thread gets here
           if (!temperature_evaluator)
             temperature_evaluator
               = std::make_unique<FEPointEvaluation<1,dim>>(this->get_mapping(),
@@ -1144,8 +1147,8 @@ namespace aspect
 // Work around a memory leak in deal.II that is fixed in 9.8.0-pre:
       this->get_signals().start_timestep.connect([&](const SimulatorAccess<dim> &)
       {
-        temperature_evaluator.reset();
-        pressure_evaluator.reset();
+        temperature_evaluator_storage.clear();
+        pressure_evaluator_storage.clear();
       });
 #endif
 

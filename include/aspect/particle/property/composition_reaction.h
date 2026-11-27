@@ -55,6 +55,12 @@ namespace aspect
                                             std::vector<double> &particle_properties) const override;
 
           /**
+           * Set the reaction function's time at the beginning of each time step.
+           */
+          void
+          update () override;
+
+          /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void

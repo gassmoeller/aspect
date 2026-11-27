@@ -21,6 +21,7 @@
 
 #include <array>
 #include <random>
+#include <vector>
 
 namespace aspect
 {
@@ -137,6 +138,11 @@ namespace aspect
 
           /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
+           *
+           * Sampling uses a local generator seeded from the configured random
+           * seed, the current time step number, and the cell's CellId. Repeated
+           * updates of a cell in the same time step use the same random stream,
+           * independently of cell processing order and the number of threads.
            */
           void
           update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
@@ -209,7 +215,8 @@ namespace aspect
           const Particle::Property::CrystalPreferredOrientation<dim> *cpo_particle_property;
 
           /**
-           * Random number generator.
+           * Random number generator used for serial particle initialization.
+           * Property updates construct their own cell-local generators.
            *
            * This variable is not considered part of the state of the particle
            * manager and is consequently not serialized. It is re-initialized in the

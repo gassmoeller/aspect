@@ -16,6 +16,7 @@
 #define _aspect_particle_property_grain_size_h
 
 #include <aspect/particle/property/interface.h>
+#include <aspect/particle/property/material_model_scratch.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -102,16 +103,10 @@ namespace aspect
 
         private:
           /**
-           * Objects that are used to compute the particle property. Since the
-           * object is expensive to create and is needed often it is kept as a
-           * member variable. Because it is changed inside a const member function
-           * (update_particle_property) it has to be mutable, but since it is
-           * only used inside that function and always set before being used
-           * that is not a problem. This implementation is not thread safe,
-           * but it is currently not used in a threaded context.
+           * Per-thread reusable material model buffers. Scoped scratch objects
+           * also keep nested calls on the same thread independent.
            */
-          mutable MaterialModel::MaterialModelInputs<dim> material_inputs;
-          mutable MaterialModel::MaterialModelOutputs<dim> material_outputs;
+          Utilities::ScratchSpace<internal::MaterialModelScratchData<dim>> material_model_scratch;
 
           /**
            * The index of the compositional field that stores the grain size.

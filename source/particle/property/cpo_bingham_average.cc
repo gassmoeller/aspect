@@ -120,9 +120,19 @@ namespace aspect
 
       template <int dim>
       void
-      CpoBinghamAverage<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &/*inputs*/,
+      CpoBinghamAverage<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
                                                          typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
+        // Use a stable cell identity instead of a rank-local active cell index.
+        // Mix the seed inputs rather than adding them, so different combinations
+        // of cell and time step numbers do not trivially give the same seed.
+        const auto cell_id = inputs.current_cell->id().template to_binary<dim>();
+        std::seed_seq seed {random_number_seed, this->get_timestep_number(),
+                            static_cast<unsigned int>(cell_id[0]), static_cast<unsigned int>(cell_id[0] >> 32),
+                            static_cast<unsigned int>(cell_id[1]), static_cast<unsigned int>(cell_id[1] >> 32),
+                            static_cast<unsigned int>(cell_id[2]), static_cast<unsigned int>(cell_id[2] >> 32)
+                           };
+        std::mt19937 random_number_generator(seed);
         std::vector<double> volume_fractions_grains(n_grains);
         std::vector<Tensor<2,3>> rotation_matrices_grains(n_grains);
 
@@ -138,7 +148,7 @@ namespace aspect
                     rotation_matrices_grains[grain_i] = cpo_particle_property->get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
                   }
 
-                const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
+                const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, random_number_generator);
 
                 switch (rotation_format)
                   {

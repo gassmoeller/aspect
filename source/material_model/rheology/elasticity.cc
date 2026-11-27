@@ -332,8 +332,8 @@ namespace aspect
         // rotation) is also reset here since it would otherwise keep leaking.
         this->get_signals().start_timestep.connect([&](const SimulatorAccess<dim> &)
         {
-          evaluator.reset();
-          evaluator_composition.reset();
+          evaluator_storage.clear();
+          evaluator_composition_storage.clear();
         });
 #endif
 
@@ -580,6 +580,7 @@ namespace aspect
                                             solution_values.end());
 
             // Only create the evaluator the first time we get here.
+            auto &evaluator = evaluator_storage.get();
             if (!evaluator)
               evaluator = std::make_unique<FEPointEvaluation<dim,dim>>(this->get_mapping(),
                                                                         this->get_fe(),
@@ -950,6 +951,7 @@ namespace aspect
             // range starting from a given index. To avoid having to evaluate
             // all fields, we still request that the stress fields are listed
             // in a consecutive order without interruption by other fields.
+            auto &evaluator_composition = evaluator_composition_storage.get();
             if (!evaluator_composition)
               evaluator_composition.reset(new FEPointEvaluation<n_independent_components, dim>(this->get_mapping(),
                                           this->get_fe(),
